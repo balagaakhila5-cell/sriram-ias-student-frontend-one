@@ -1,8 +1,19 @@
 import CoursePageClient from "./CoursePageClient";
 
-type Params = Promise<{ slug: string }>;
+//  Main page component (MUST be default export)
+export default function CourseRoute({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  return <CoursePageClient slug={params.slug} />;
+}
 
-export default async function CourseRoute({ params }: { params: Params }) {
-  const { slug } = await params;
-  return <CoursePageClient slug={slug} />;
+//  REQUIRED for static export (Hostinger)
+export async function generateStaticParams() {
+  return [
+    { slug: "course1" },
+    { slug: "course2" },
+    { slug: "course3" },
+  ];
 }
