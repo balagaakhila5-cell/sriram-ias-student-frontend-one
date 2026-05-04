@@ -309,7 +309,7 @@ const Footer: React.FC = () => {
 
             {/* IFS Column Wrapper (Outer Left) */}
             <div className="relative w-[45px] h-full overflow-hidden z-10">
-              <div className="moving-col absolute inset-0 flex flex-col gap-8 text-[42px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
+              <div className="moving-col absolute inset-0 flex flex-col gap-6 text-[42px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
                 <span className="[writing-mode:vertical-rl]">IFS</span>
                 <span className="[writing-mode:vertical-rl]">IFS</span>
                 <span className="[writing-mode:vertical-rl]">IFS</span>
@@ -319,7 +319,7 @@ const Footer: React.FC = () => {
 
             {/* IAS Column Wrapper (Middle Left) */}
             <div className="relative w-[70px] h-full overflow-hidden">
-              <div className="moving-col absolute inset-0 flex flex-col gap-8 text-[64px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
+              <div className="moving-col absolute inset-0 flex flex-col gap-6 text-[64px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
                 <span className="[writing-mode:vertical-rl]">IAS</span>
                 <span className="[writing-mode:vertical-rl]">IAS</span>
                 <span className="[writing-mode:vertical-rl]">IAS</span>
@@ -328,7 +328,7 @@ const Footer: React.FC = () => {
 
             {/* IPS Column Wrapper (Middle Right) */}
             <div className="relative w-[70px] h-full overflow-hidden">
-              <div className="moving-col absolute inset-0 flex flex-col gap-8 text-[64px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
+              <div className="moving-col absolute inset-0 flex flex-col gap-6 text-[64px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
                 <span className="[writing-mode:vertical-rl]">IPS</span>
                 <span className="[writing-mode:vertical-rl]">IPS</span>
                 <span className="[writing-mode:vertical-rl]">IPS</span>
@@ -337,7 +337,7 @@ const Footer: React.FC = () => {
 
             {/* IRS Column Wrapper (Outer Right) */}
             <div className="relative w-[45px] h-full overflow-hidden">
-              <div className="moving-col absolute inset-0 flex flex-col gap-8 text-[42px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
+              <div className="moving-col absolute inset-0 flex flex-col gap-6 text-[42px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
                 <span className="[writing-mode:vertical-rl]">IRS</span>
                 <span className="[writing-mode:vertical-rl]">IRS</span>
                 <span className="[writing-mode:vertical-rl]">IRS</span>

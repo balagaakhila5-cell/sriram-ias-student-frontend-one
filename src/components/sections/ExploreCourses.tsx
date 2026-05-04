@@ -186,7 +186,9 @@ const ExploreCourses: React.FC = () => {
             {visibleCourses.length > 0 ? (
               visibleCourses.map((course) => {
                 const staticMatch = findStaticMatch(course);
-                const href = `/course/${staticMatch?.slug ?? course.slug ?? course._id}`;
+                const courseSlug = staticMatch?.slug ?? course.slug;
+                const href = courseSlug ? `/course/${courseSlug}` : '/course';
+
                 const image = course.banner ?? staticMatch?.heroImage ?? '/assets/course_image.png';
                 const center = getCenterName(course) ?? staticMatch?.city ?? 'Delhi';
                 const fee = formatFee(course.onlineFees);
