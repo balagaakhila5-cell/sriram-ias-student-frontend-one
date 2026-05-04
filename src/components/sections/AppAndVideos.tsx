@@ -363,7 +363,7 @@ const AppAndVideos: React.FC = () => {
                 <div
                   key={video.id}
                   onClick={() => setActiveIndex(idx)}
-                  className="absolute w-[380px] md:w-[700px] lg:w-[750px] cursor-pointer transition-[transform,opacity] duration-700 ease-out will-change-transform"
+                className="absolute w-[340px] md:w-[620px] lg:w-[680px] cursor-pointer transition-[transform,opacity] duration-700 ease-out will-change-transform"
                   style={{
                     transform: transformStyle,
                     zIndex,

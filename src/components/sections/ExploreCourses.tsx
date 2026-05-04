@@ -44,17 +44,16 @@ const ExploreCourses: React.FC = () => {
   const { data: categories } = useCategories();
   const { data: allCourses } = useCourses();
 
-  const tabs = useMemo(() => {
-    const list = Array.isArray(categories) ? categories : [];
-    const names = list.map((c) => c.name).filter(Boolean);
-
-    if (names.length === 0) return FALLBACK_TABS;
-
-    const orderedTabs = TAB_ORDER.filter((tab) => names.includes(tab));
-    const remainingTabs = names.filter((tab) => !TAB_ORDER.includes(tab));
-
-    return [...orderedTabs, ...remainingTabs];
-  }, [categories]);
+ const tabs = useMemo(() => {
+  return [
+    'GS Foundation',
+    'Mentorship',
+    'Optional Foundation',
+    'Test Series',
+    'CSAT',
+    'Enrichment Courses',
+  ];
+}, []);
 
   const [activeTab, setActiveTab] = useState<string>('GS Foundation');
 

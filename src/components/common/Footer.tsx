@@ -106,14 +106,14 @@ const Footer: React.FC = () => {
 
           <div className="flex flex-wrap items-center gap-4">
             <button
-              className="text-white px-8 py-2.5 rounded-lg font-bold text-[13px] transition-all uppercase tracking-wide"
+              className="text-white px-8 py-2.5 rounded-lg font-bold text-[16px] transition-all uppercase tracking-wide"
               style={{ background: 'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)' }}
             >
               BOOK A DEMO
             </button>
 
            <button
-            className="text-white px-8 py-2.5 rounded-lg font-bold text-[13px] transition-all tracking-wide"
+            className="text-white px-8 py-2.5 rounded-lg font-bold text-[16px] transition-all tracking-wide"
             style={{
               background: 'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)',
             }}
@@ -126,33 +126,33 @@ const Footer: React.FC = () => {
             {/* Instagram */}
             <a
               href="#"
-              className="group w-10 h-10 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:scale-110 hover:bg-gradient-to-tr hover:from-[#f9ce34] hover:via-[#ee2a7b] hover:to-[#6228d7]"
+              className="group w-12 h-12 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:scale-110 hover:bg-gradient-to-tr hover:from-[#f9ce34] hover:via-[#ee2a7b] hover:to-[#6228d7]"
             >
-              <Image src="/assets/insta1.png.svg" alt="Instagram" width={18} height={18} />
+              <Image src="/assets/insta1.png.svg" alt="Instagram" width={26} height={26} />
             </a>
 
             {/* Facebook */}
             <a
               href="#"
-              className="group w-10 h-10 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:bg-[#1877F2] hover:scale-110"
+              className="group w-12 h-12 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:bg-[#1877F2] hover:scale-110"
             >
-              <Image src="/assets/facebook.png.svg" alt="Facebook" width={18} height={18} />
+              <Image src="/assets/facebook.png.svg" alt="Facebook" width={26} height={26} />
             </a>
 
             {/* Twitter */}
             <a
               href="#"
-              className="group w-10 h-10 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:bg-red hover:scale-110"
+              className="group w-12 h-12 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:bg-red hover:scale-110"
             >
-              <Image src="/assets/twitter.png.svg" alt="Twitter" width={18} height={18} />
+              <Image src="/assets/twitter.png.svg" alt="Twitter" width={26} height={26} />
             </a>
 
             {/* YouTube */}
             <a
               href="#"
-              className="group w-10 h-10 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:bg-red-600 hover:scale-110"
+              className="group w-12 h-12 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:bg-red-600 hover:scale-110"
             >
-              <Image src="/assets/youtube.png.svg" alt="YouTube" width={18} height={18} />
+              <Image src="/assets/youtube.png.svg" alt="YouTube" width={26} height={26} />
             </a>
           </div>
         </div>
@@ -164,11 +164,11 @@ const Footer: React.FC = () => {
           <div className="flex-1 space-y-16">
             <div className="footer-links grid grid-cols-1 md:grid-cols-3 gap-12">
 
-              <div className="footer-link-group space-y-6">
+              <div className="footer-link-group space-y-4">
                 <h4 className="text-[18px] md:text-[19px] font-medium tracking-[0.2px] text-white">
                   Website Links
                 </h4>
-                <ul className="space-y-2.5 text-[15px] text-[#B3B3B3] font-normal leading-[1.40]">
+                  <ul className="space-y-1.5 text-[15px] text-[#B3B3B3] font-normal leading-[1.25]">
                   <li><Link href="/" className="hover:text-white transition-colors">Home</Link></li>
                   <li><a href="/about" className="hover:text-white transition-colors">About Us</a></li>
                   <li><a href="/director-message" className="hover:text-white transition-colors">Director&apos;s Messages</a></li>
@@ -180,11 +180,11 @@ const Footer: React.FC = () => {
                 </ul>
               </div>
 
-              <div className="footer-link-group space-y-6">
+              <div className="footer-link-group space-y-4">
                 <h4 className="text-[18px] md:text-[19px] font-medium tracking-[0.2px] text-white">
                   Website Links
                 </h4>
-                <ul className="space-y-2.5 text-[15px] text-[#B3B3B3] font-normal leading-[1.40]">
+                  <ul className="space-y-1.5 text-[15px] text-[#B3B3B3] font-normal leading-[1.25]">
                   <li><a href="/articles" className="hover:text-white transition-colors">UPSC Articles</a></li>
                   <li><a href="/blogs" className="hover:text-white transition-colors">UPSC Blogs</a></li>
                   <li><a href="/exploration" className="hover:text-white transition-colors">Exploration</a></li>
@@ -196,11 +196,11 @@ const Footer: React.FC = () => {
                 </ul>
               </div>
 
-              <div className="footer-link-group space-y-6">
+              <div className="footer-link-group space-y-4">
                 <h4 className="text-[18px] md:text-[19px] font-medium tracking-[0.2px] text-white">
                   Courses Details
                 </h4>
-                <ul className="space-y-2.5 text-[15px] text-[#B3B3B3] font-normal leading-[1.40]">
+                <ul className="space-y-1.5 text-[15px] text-[#B3B3B3] font-normal leading-[1.25]">
                   <li><a href="/all-courses" className="hover:text-white transition-colors">All Courses</a></li>
                   <li><a href="/psir" className="hover:text-white transition-colors">PSIR Test Series and Mentorship</a></li>
                   <li><a href="/psir-optional" className="hover:text-white transition-colors">PSIR Optional Courses</a></li>

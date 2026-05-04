@@ -170,7 +170,7 @@ const MottoSection: React.FC = () => {
 
           <div className="motto-text-line mt-6 sm:mt-8 md:mt-10">
             <button
-              className="text-white font-['Montserrat'] font-medium text-sm sm:text-base md:text-lg flex items-center justify-center gap-[14px] rounded-[12px] w-full max-w-[436px] h-[44px] sm:h-[52px] md:h-[59px] px-[16px] py-[10px] hover:scale-[1.02] hover:brightness-110 transition-all duration-300"
+            className="text-white font-['Montserrat'] font-semibold text-base sm:text-lg md:text-xl lg:text-[22px] flex items-center justify-center gap-[14px] rounded-[12px] w-full max-w-[436px] h-[44px] sm:h-[52px] md:h-[59px] px-[16px] py-[10px] hover:scale-[1.02] hover:brightness-110 transition-all duration-300"
               style={{
                 background: 'linear-gradient(90deg, #00679C 0%, #002436 100%)',
                 boxShadow: '0px 4px 32px 0px #0000001A',

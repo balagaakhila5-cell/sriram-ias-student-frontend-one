@@ -9,9 +9,6 @@ import {
   ChevronDown,
   Menu,
   X,
-  Landmark,
-  Castle,
-  Building2,
   BookOpen,
   FileText,
   ClipboardCheck,
@@ -36,6 +33,8 @@ const Header: React.FC = () => {
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState('English');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isBlogLangOpen, setIsBlogLangOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
 
   const headerRef = useRef<HTMLElement>(null);
   const megaMenuRef = useRef<HTMLDivElement>(null);
@@ -47,26 +46,53 @@ const Header: React.FC = () => {
   const currentAffairsMenuRef = useRef<HTMLDivElement>(null);
   const currentAffairsDropdownRef = useRef<HTMLDivElement>(null);
   const langRef = useRef<HTMLDivElement>(null);
+  const blogLangRef = useRef<HTMLDivElement>(null);
+  const aboutMenuRef = useRef<HTMLDivElement>(null);
 
   const [activeCity, setActiveCity] = useState('New Delhi');
   const [activeTab, setActiveTab] = useState('GS Foundation');
+
+  const closeAllDesktopMenus = () => {
+    setIsCoursesOpen(false);
+    setIsCentersOpen(false);
+    setIsFreeResourcesOpen(false);
+    setIsCurrentAffairsOpen(false);
+    setIsBlogLangOpen(false);
+    setIsAboutOpen(false);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
 
-      if (megaMenuRef.current && !megaMenuRef.current.contains(target) && 
-          coursesButtonRef.current && !coursesButtonRef.current.contains(target)) {
+      if (
+        megaMenuRef.current &&
+        !megaMenuRef.current.contains(target) &&
+        coursesButtonRef.current &&
+        !coursesButtonRef.current.contains(target)
+      ) {
         setIsCoursesOpen(false);
       }
 
-      if (centersMenuRef.current && !centersMenuRef.current.contains(target) &&
-          centersButtonRef.current && !centersButtonRef.current.contains(target)) {
+      if (
+        centersMenuRef.current &&
+        !centersMenuRef.current.contains(target) &&
+        centersButtonRef.current &&
+        !centersButtonRef.current.contains(target)
+      ) {
         setIsCentersOpen(false);
       }
 
       if (langRef.current && !langRef.current.contains(target)) {
         setIsLangOpen(false);
+      }
+
+      if (blogLangRef.current && !blogLangRef.current.contains(target)) {
+        setIsBlogLangOpen(false);
+      }
+
+      if (aboutMenuRef.current && !aboutMenuRef.current.contains(target)) {
+        setIsAboutOpen(false);
       }
 
       const clickedInsideFreeResourcesButton =
@@ -94,44 +120,44 @@ const Header: React.FC = () => {
 
   useGSAP(() => {}, { scope: headerRef });
 
- const cities = [
-  {
-    name: 'New Delhi',
-    icon: (
-      <Image
-        src="/assets/del-footer.png"
-        alt="New Delhi"
-        width={28}
-        height={28}
-        className="w-[28px] h-[28px] object-contain"
-      />
-    ),
-  },
-  {
-    name: 'Hyderabad',
-    icon: (
-      <Image
-        src="/assets/hyd-footer.png"
-        alt="Hyderabad"
-        width={28}
-        height={28}
-        className="w-[28px] h-[28px] object-contain"
-      />
-    ),
-  },
-  {
-    name: 'Pune',
-    icon: (
-      <Image
-        src="/assets/pune-footer.png"
-        alt="Pune"
-        width={28}
-        height={28}
-        className="w-[28px] h-[28px] object-contain"
-      />
-    ),
-  },
-];
+  const cities = [
+    {
+      name: 'New Delhi',
+      icon: (
+        <Image
+          src="/assets/del-footer.png"
+          alt="New Delhi"
+          width={28}
+          height={28}
+          className="w-[28px] h-[28px] object-contain"
+        />
+      ),
+    },
+    {
+      name: 'Hyderabad',
+      icon: (
+        <Image
+          src="/assets/hyd-footer.png"
+          alt="Hyderabad"
+          width={28}
+          height={28}
+          className="w-[28px] h-[28px] object-contain"
+        />
+      ),
+    },
+    {
+      name: 'Pune',
+      icon: (
+        <Image
+          src="/assets/pune-footer.png"
+          alt="Pune"
+          width={28}
+          height={28}
+          className="w-[28px] h-[28px] object-contain"
+        />
+      ),
+    },
+  ];
 
   const tabs =
     activeCity === 'New Delhi'
@@ -194,71 +220,111 @@ const Header: React.FC = () => {
     />
   );
 
+  const topNavItemClass =
+    'px-2.5 xl:px-3 py-2 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer hover:text-white active:bg-transparent focus:bg-transparent';
+
+  const secondNavItemClass =
+    'px-2.5 xl:px-3 py-2 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer hover:text-white active:bg-transparent focus:bg-transparent';
+
   return (
     <>
       <header
         ref={headerRef}
-        className="absolute top-0 left-0 right-0 z-50 mx-auto w-full bg-transparent py-6 lg:py-4 px-4 md:px-6 lg:px-8 xl:px-12 font-['Montserrat']"
+        className="absolute top-0 left-0 right-0 z-50 mx-auto w-full bg-transparent py-5 lg:py-4 px-4 md:px-6 lg:px-8 xl:px-12 font-['Montserrat']"
       >
-        <div className="w-full max-w-[1400px] mx-auto flex justify-between items-center relative">
-          <div className="flex items-center cursor-pointer" onClick={() => (window.location.href = '/')}>
+        <div className="w-full max-w-[1440px] mx-auto flex justify-between items-start relative">
+         <div className="flex items-center">
             <Image
               src="/assets/40_years_experience.png"
               alt="40 Years of Excellence"
-              width={58}
-              height={58}
-              className="h-10 md:h-12 lg:h-[58px] object-contain hidden md:block transition-transform hover:scale-105 mr-1 md:mr-1.5"
-              style={{ width: '58px', height: '58px' }}
+              width={66}
+              height={66}
+              className="h-11 md:h-14 lg:h-[66px] w-auto object-contain hidden md:block transition-transform hover:scale-105 mr-[1px]"
             />
-            <div className="w-[1px] md:w-[2px] h-8 md:h-10 lg:h-[48px] bg-[#FF6B00] hidden md:block"></div>
+
             <Image
               src="/assets/Logo.png"
               alt="SRIRAM's IAS"
-              width={250}
-              height={68}
-              className="h-10 md:h-12 lg:h-[68px] object-contain transition-transform hover:scale-105 -ml-1.5 md:-ml-4"
+              width={70}
+              height={76}
+              className="h-11 md:h-14 lg:h-[76px] w-auto object-contain transition-transform hover:scale-105"
             />
           </div>
+          <div className="flex flex-col items-end lg:items-start gap-2 relative">
+            <div className="hidden lg:flex items-center gap-2 xl:gap-3 text-[16px] font-medium leading-[100%] tracking-normal uppercase text-white/80">
+         <div ref={blogLangRef} className="relative">
+  <button
+    type="button"
+    onClick={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-          <div className="flex flex-col items-end lg:items-start gap-3 relative">
-            <div className="hidden lg:flex items-center gap-3 text-[16px] font-medium leading-[100%] tracking-normal uppercase text-white/80 ml-[-8px]">
-              <a
-                href="/blogs"
-               className="hover:text-white px-3 py-2 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer"
-              >
-                BLOG
-              </a>
+      setIsBlogLangOpen((prev) => {
+        if (!prev) {
+          setIsCoursesOpen(false);
+          setIsCentersOpen(false);
+          setIsFreeResourcesOpen(false);
+          setIsCurrentAffairsOpen(false);
+          setIsAboutOpen(false);
+        }
+        return !prev;
+      });
+    }}
+    className={`${topNavItemClass} flex items-center gap-1`}
+  >
+    BLOG
+    <ChevronDown
+      size={14}
+      className={`transition-transform duration-300 ${
+        isBlogLangOpen ? 'rotate-180' : ''
+      }`}
+    />
+  </button>
 
-             <div className="relative" ref={centersButtonRef}>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsCentersOpen((prev) => {
-                    if (!prev) {
-                      setIsCoursesOpen(false);
-                      setIsFreeResourcesOpen(false);
-                    }
-                    return !prev;
-                  });
-                }}
-                className={`uppercase px-3 py-2 rounded-[6px] transition-all duration-300 hover:text-white text-[14px] xl:text-[14px] text-white/80 font-bold cursor-pointer ${
-                  isCentersOpen ? 'text-white' : ''
-                }`}
-              >
-                OUR CENTERS
-              </button>
-            </div>
+  {isBlogLangOpen && (
+    <div className="absolute top-full left-0 mt-2 w-36 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
+      {[
+        { label: 'English', href: '/blogs?lang=english' },
+        { label: 'Marathi', href: '/blogs?lang=marathi' },
+        { label: 'Telugu', href: '/blogs?lang=telugu' },
+      ].map((item) => (
+        <Link
+          key={item.label}
+          href={item.href}
+          onClick={() => setIsBlogLangOpen(false)}
+          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1897D8] cursor-pointer transition-colors font-medium normal-case"
+        >
+          {item.label}
+        </Link>
+      ))}
+    </div>
+  )}
+</div>
 
-             <a
-              href="/about"
-              className="px-3 py-2 rounded-[6px] transition-all duration-300 hover:text-white active:bg-transparent focus:bg-transparent text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer"
-            >
-              About us
-            </a>
+              <div className="relative" ref={centersButtonRef}>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsCentersOpen((prev) => {
+                      if (!prev) {
+                        closeAllDesktopMenus();
+                      }
+                      return !prev;
+                    });
+                  }}
+                  className={`${topNavItemClass} ${isCentersOpen ? 'text-white' : ''}`}
+                >
+                  OUR CENTERS
+                </button>
+              </div>
+
+              <Link href="/toppers" className={topNavItemClass}>
+                OUR TOPPERS
+              </Link>
 
               <div className="relative" ref={langRef}>
                 <div
-                  className="flex items-center gap-1 cursor-pointer hover:text-white px-3 py-2 rounded-[4px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold"
+                  className="flex items-center gap-1 cursor-pointer hover:text-white px-2.5 xl:px-3 py-2 rounded-[4px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold"
                   onClick={() => setIsLangOpen(!isLangOpen)}
                 >
                   <Image
@@ -269,15 +335,18 @@ const Header: React.FC = () => {
                     style={{ width: '15px', height: 'auto' }}
                   />
                   <span>{selectedLang === 'English' ? 'ENG' : selectedLang.substring(0, 3).toUpperCase()}</span>
-                  <ChevronDown size={12} className={`transition-transform duration-300 ${isLangOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown
+                    size={12}
+                    className={`transition-transform duration-300 ${isLangOpen ? 'rotate-180' : ''}`}
+                  />
                 </div>
 
                 {isLangOpen && (
-                  <div className="absolute top-full right-0 mt-2 w-32 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50 ">
-                    {['English', 'Telugu', 'Hindi', 'Marathi'].map((lang) => (
+                  <div className="absolute top-full right-0 mt-2 w-32 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
+                    {['English', 'Telugu', 'Marathi'].map((lang) => (
                       <div
                         key={lang}
-                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary cursor-pointer transition-colors font-medium "
+                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1897D8] cursor-pointer transition-colors font-medium"
                         onClick={() => {
                           setSelectedLang(lang);
                           setIsLangOpen(false);
@@ -296,13 +365,14 @@ const Header: React.FC = () => {
                 </span>
               </div>
 
-             <button
-              onClick={() => setIsBookDemoOpen(true)}
-              className="text-white font-bold px-3 py-2.5 rounded-[10px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase bg-transparent hover:bg-transparent shadow-none"
-            >
-              BOOK FREE DEMO
-            </button>
-            <div
+              <button
+                onClick={() => setIsBookDemoOpen(true)}
+                className="text-white font-bold px-3 py-2.5 rounded-[10px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase bg-transparent hover:bg-transparent shadow-none"
+              >
+                BOOK FREE DEMO
+              </button>
+
+              <div
                 onClick={() => setIsSearchOpen(true)}
                 className="w-[32px] h-[32px] bg-[#FFFFFF40] rounded-full flex items-center justify-center cursor-pointer flex-shrink-0"
               >
@@ -331,6 +401,7 @@ const Header: React.FC = () => {
               <div className="hidden md:flex border border-white/20 rounded-[4px] px-3 py-1.5 items-center gap-2">
                 <span className="text-white font-bold text-sm">+ 91 8686818384</span>
               </div>
+
               <button
                 onClick={() => setIsBookDemoOpen(true)}
                 className="hidden sm:block px-4 md:px-6 py-2 md:py-2.5 rounded-[4px] tracking-wide text-sm md:text-base whitespace-nowrap shadow-[0px_4px_32px_0px_#0000001A]"
@@ -338,145 +409,174 @@ const Header: React.FC = () => {
               >
                 BOOK A DEMO
               </button>
-              <div className="p-2 bg-white/10 rounded-full cursor-pointer hover:bg-white/20 transition-all flex items-center justify-center">
+
+              <div
+                onClick={() => setIsSearchOpen(true)}
+                className="p-2 bg-white/10 rounded-full cursor-pointer hover:bg-white/20 transition-all flex items-center justify-center"
+              >
                 <Search size={18} className="md:w-5 md:h-5" />
               </div>
+
               <div className="cursor-pointer hover:text-primary transition-colors" onClick={() => setIsMobileMenuOpen(true)}>
                 <Menu size={24} className="md:w-7 md:h-7" />
               </div>
-              <Link href="/login" aria-label="Login" className="cursor-pointer hover:text-primary transition-colors border-2 border-white rounded-full p-0.5 flex items-center justify-center">
+
+              <Link
+                href="/login"
+                aria-label="Login"
+                className="cursor-pointer hover:text-primary transition-colors border-2 border-white rounded-full p-0.5 flex items-center justify-center"
+              >
                 <User size={20} className="md:w-[22px] md:h-[22px]" />
               </Link>
             </div>
 
-          <nav className="hidden lg:flex items-center gap-0 text-[16px] uppercase text-white/80 font-medium">
+            <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2.5 text-[16px] uppercase text-white/80 font-medium">
               <div className="relative group" ref={coursesButtonRef}>
-               <button
-  onClick={(e) => {
-    e.stopPropagation();
-    setIsCoursesOpen((prev) => {
-      if (!prev) {
-        setIsCentersOpen(false);
-        setIsFreeResourcesOpen(false);
-      }
-      return !prev;
-    });
-  }}
-  className={`flex items-center gap-1 transition-all duration-300 px-1 py-2 rounded-[6px] hover:text-white text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer ${
-    isCoursesOpen ? 'text-white' : ''
-  }`}
->
-  Courses
-  <ChevronDown
-    size={16}
-    className={`transition-transform duration-300 ${
-      isCoursesOpen ? 'rotate-180' : ''
-    }`}
-  />
-</button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsCoursesOpen((prev) => {
+                      if (!prev) {
+                        closeAllDesktopMenus();
+                      }
+                      return !prev;
+                    });
+                  }}
+                  className={`flex items-center gap-1 ${secondNavItemClass} ${isCoursesOpen ? 'text-white' : ''}`}
+                >
+                  Courses
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform duration-300 ${isCoursesOpen ? 'rotate-180' : ''}`}
+                  />
+                </button>
               </div>
 
-           <div ref={freeResourcesMenuRef} className="flex items-center cursor-pointer">
-  <div className="flex items-center rounded-[6px] transition-all duration-300 cursor-pointer">
+              <div ref={freeResourcesMenuRef} className="flex items-center cursor-pointer">
+                <div className="flex items-center rounded-[6px] transition-all duration-300 cursor-pointer">
+                  <Link
+                    href="/free_resources/ncert-books"
+                    onClick={() => setIsFreeResourcesOpen(false)}
+                    className={`pl-2.5 xl:pl-3 pr-1 py-2 uppercase text-[14px] xl:text-[14px] font-bold active:bg-transparent focus:bg-transparent ${
+                      isFreeResourcesOpen ? 'text-white' : 'text-white/80 hover:text-white'
+                    }`}
+                  >
+                    Free Resources
+                  </Link>
 
-    <Link
-      href="/free_resources/ncert-books"
-      onClick={() => setIsFreeResourcesOpen(false)}
-      className={`pl-3 pr-1 py-2 uppercase text-[14px] xl:text-[14px] font-bold active:bg-transparent focus:bg-transparent ${
-        isFreeResourcesOpen
-          ? 'text-white'
-          : 'text-white/80 hover:text-white'
-      }`}
-    >
-      Free Resources
-    </Link>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsFreeResourcesOpen((prev) => {
+                        if (!prev) {
+                          closeAllDesktopMenus();
+                        }
+                        return !prev;
+                      });
+                    }}
+                    className={`pr-2 pl-1 py-2 flex items-center justify-center cursor-pointer active:bg-transparent focus:bg-transparent ${
+                      isFreeResourcesOpen ? 'text-white' : 'text-white/80 hover:text-white'
+                    }`}
+                  >
+                    <ChevronDown
+                      size={16}
+                      className={`transition-transform duration-300 ${isFreeResourcesOpen ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+                </div>
+              </div>
 
-   <button
-  onClick={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsFreeResourcesOpen((prev) => {
-      if (!prev) {
-        setIsCoursesOpen(false);
-        setIsCentersOpen(false);
-      }
-      return !prev;
-    });
-  }}
-  className={`pr-2 pl-1 py-2 flex items-center justify-center cursor-pointer active:bg-transparent focus:bg-transparent ${
-    isFreeResourcesOpen
-      ? 'text-white'
-      : 'text-white/80 hover:text-white'
-  }`}
->
-  <ChevronDown
-    size={16}
-    className={`transition-transform duration-300 ${
-      isFreeResourcesOpen ? 'rotate-180' : ''
-    }`}
-  />
-</button>
+              <div ref={currentAffairsMenuRef} className="flex items-center cursor-pointer">
+                <div className="flex items-center rounded-[6px] transition-all duration-300 cursor-pointer">
+                  <Link
+                    href="/current-affairs"
+                    onClick={() => setIsCurrentAffairsOpen(false)}
+                    className={`pl-2.5 xl:pl-3 pr-1 py-2 uppercase text-[14px] xl:text-[14px] font-bold active:bg-transparent focus:bg-transparent ${
+                      isCurrentAffairsOpen ? 'text-white' : 'text-white/80 hover:text-white'
+                    }`}
+                  >
+                    Current Affairs
+                  </Link>
 
-  </div>
-</div>
-            <div ref={currentAffairsMenuRef} className="flex items-center cursor-pointer">
-  <div className="flex items-center rounded-[6px] transition-all duration-300 cursor-pointer">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsCurrentAffairsOpen((prev) => {
+                        if (!prev) {
+                          closeAllDesktopMenus();
+                        }
+                        return !prev;
+                      });
+                    }}
+                    className={`pr-2 pl-1 py-2 flex items-center justify-center cursor-pointer active:bg-transparent focus:bg-transparent ${
+                      isCurrentAffairsOpen ? 'text-white' : 'text-white/80 hover:text-white'
+                    }`}
+                  >
+                    <ChevronDown
+                      size={16}
+                      className={`transition-transform duration-300 ${isCurrentAffairsOpen ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+                </div>
+              </div>
 
-    <Link
-      href="/current-affairs"
-      onClick={() => setIsCurrentAffairsOpen(false)}
-      className={`pl-2 pr-1 py-2 uppercase text-[14px] xl:text-[14px] font-bold active:bg-transparent focus:bg-transparent ${
-        isCurrentAffairsOpen
-          ? 'text-white'
-          : 'text-white/80 hover:text-white'
-      }`}
-    >
-      Current Affairs
-    </Link>
-
-    <button
-  onClick={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsCurrentAffairsOpen((prev) => {
-      if (!prev) {
-        setIsCoursesOpen(false);
-        setIsCentersOpen(false);
-        setIsFreeResourcesOpen(false);
-      }
-      return !prev;
-    });
-  }}
-  className={`pr-3 pl-1 py-2 flex items-center justify-center cursor-pointer active:bg-transparent focus:bg-transparent ${
-    isCurrentAffairsOpen
-      ? 'text-white'
-      : 'text-white/80 hover:text-white'
-  }`}
->
-  <ChevronDown
-    size={16}
-    className={`transition-transform duration-300 ${
-      isCurrentAffairsOpen ? 'rotate-180' : ''
-    }`}
-  />
-</button>
-
-  </div>
-</div>
-
-              <Link
-                href="/books"
-                className="px-2.5 py-2 rounded-[6px] transition-all duration-300 hover:text-white text-[14px] xl:text-[14px] text-white/80 font-bold cursor-pointer"
-              >
+              <Link href="/books" className={secondNavItemClass}>
                 Books
               </Link>
 
-              <Link
-                href="/toppers"
-                className="px-2.5 py-2 rounded-[6px] transition-all duration-300 hover:text-white text-[14px] xl:text-[14px] text-white/80 font-bold cursor-pointer"
-              >
-                Our Toppers
-              </Link>
+             <div ref={aboutMenuRef} className="relative">
+  <button
+    type="button"
+    onClick={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      setIsAboutOpen((prev) => {
+        if (!prev) {
+          setIsCoursesOpen(false);
+          setIsCentersOpen(false);
+          setIsFreeResourcesOpen(false);
+          setIsCurrentAffairsOpen(false);
+          setIsBlogLangOpen(false);
+        }
+        return !prev;
+      });
+    }}
+    className={`flex items-center gap-1 ${secondNavItemClass} ${
+      isAboutOpen ? 'text-white' : ''
+    }`}
+  >
+    About
+    <ChevronDown
+      size={16}
+      className={`transition-transform duration-300 ${
+        isAboutOpen ? 'rotate-180' : ''
+      }`}
+    />
+  </button>
+
+  {isAboutOpen && (
+    <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
+      <Link
+        href="/about"
+        onClick={() => setIsAboutOpen(false)}
+        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1897D8] cursor-pointer transition-colors font-medium normal-case"
+      >
+        About us
+      </Link>
+
+      <Link
+        href="/founders-message"
+        onClick={() => setIsAboutOpen(false)}
+        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1897D8] cursor-pointer transition-colors font-medium normal-case"
+      >
+        Founder&apos;s Message
+      </Link>
+    </div>
+  )}
+</div>
             </nav>
           </div>
         </div>
@@ -489,7 +589,7 @@ const Header: React.FC = () => {
                   <Link
                     href="/free_resources/ncert-books"
                     onClick={() => setIsFreeResourcesOpen(false)}
-                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1"
+                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                   >
                     <div className="mb-5 flex h-[60px] w-[60px] items-center justify-center rounded-[16px] bg-[#E8F3C9]">
                       <BookOpen className="h-8 w-8 text-[#6E9331]" strokeWidth={2} />
@@ -502,7 +602,7 @@ const Header: React.FC = () => {
                   <Link
                     href="/free_resources/ncert-books"
                     onClick={() => setIsFreeResourcesOpen(false)}
-                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1"
+                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                   >
                     <div className="mb-5 flex h-[60px] w-[60px] items-center justify-center rounded-[16px] bg-[#F7DDE0]">
                       <FileText className="h-8 w-8 text-[#C57A7E]" strokeWidth={2} />
@@ -515,7 +615,7 @@ const Header: React.FC = () => {
                   <Link
                     href="/free_resources/ncert-books"
                     onClick={() => setIsFreeResourcesOpen(false)}
-                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1"
+                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                   >
                     <div className="mb-5 flex h-[60px] w-[60px] items-center justify-center rounded-[16px] bg-[#E8F3C9]">
                       <ClipboardCheck className="h-8 w-8 text-[#6E9331]" strokeWidth={2} />
@@ -528,7 +628,7 @@ const Header: React.FC = () => {
                   <Link
                     href="/free_resources/ncert-books"
                     onClick={() => setIsFreeResourcesOpen(false)}
-                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1"
+                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                   >
                     <div className="mb-5 flex h-[60px] w-[60px] items-center justify-center rounded-[16px] bg-[#F7DDE0]">
                       <LibraryBig className="h-8 w-8 text-[#FF4B55]" strokeWidth={2} />
@@ -551,7 +651,7 @@ const Header: React.FC = () => {
                   <Link
                     href="/current-affairs"
                     onClick={() => setIsCurrentAffairsOpen(false)}
-                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1"
+                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                   >
                     <div className="mb-5 flex h-[60px] w-[60px] items-center justify-center rounded-[16px] bg-[#DCEEFF]">
                       <Newspaper className="h-8 w-8 text-[#4A90D9]" strokeWidth={2} />
@@ -564,7 +664,7 @@ const Header: React.FC = () => {
                   <Link
                     href="/current-affairs"
                     onClick={() => setIsCurrentAffairsOpen(false)}
-                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1"
+                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                   >
                     <div className="mb-5 flex h-[60px] w-[60px] items-center justify-center rounded-[16px] bg-[#EDE8F7]">
                       <BookMarked className="h-8 w-8 text-[#7B6FCF]" strokeWidth={2} />
@@ -577,7 +677,7 @@ const Header: React.FC = () => {
                   <Link
                     href="/current-affairs"
                     onClick={() => setIsCurrentAffairsOpen(false)}
-                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1"
+                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                   >
                     <div className="mb-5 flex h-[60px] w-[60px] items-center justify-center rounded-[16px] bg-[#E8F3C9]">
                       <ClipboardList className="h-8 w-8 text-[#6E9331]" strokeWidth={2} />
@@ -590,7 +690,7 @@ const Header: React.FC = () => {
                   <Link
                     href="/current-affairs"
                     onClick={() => setIsCurrentAffairsOpen(false)}
-                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1"
+                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                   >
                     <div className="mb-5 flex h-[60px] w-[60px] items-center justify-center rounded-[16px] bg-[#F7DDE0]">
                       <BarChart2 className="h-8 w-8 text-[#C57A7E]" strokeWidth={2} />
@@ -603,7 +703,7 @@ const Header: React.FC = () => {
                   <Link
                     href="/current-affairs"
                     onClick={() => setIsCurrentAffairsOpen(false)}
-                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1"
+                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                   >
                     <div className="mb-5 flex h-[60px] w-[60px] items-center justify-center rounded-[16px] bg-[#FEF0DC]">
                       <CalendarDays className="h-8 w-8 text-[#D9833A]" strokeWidth={2} />
@@ -628,6 +728,7 @@ const Header: React.FC = () => {
             <h3 className="text-[14px] font-[Montserrat] font-bold text-black mb-10 tracking-[0.1em] uppercase">
               COURSES
             </h3>
+
             <div className="space-y-4">
               {cities.map((city) => (
                 <button
@@ -645,6 +746,7 @@ const Header: React.FC = () => {
                   <div className={`transition-colors duration-300 ${activeCity === city.name ? 'text-[#0A73B7]' : 'text-gray-400'}`}>
                     {city.icon}
                   </div>
+
                   <span
                     className={`font-medium text-[17px] font-[Montserrat] tracking-tight ${
                       activeCity === city.name ? 'text-[#1E86C1]' : 'text-[#2D8CC6]'
@@ -828,6 +930,7 @@ const Header: React.FC = () => {
           isOpen={isBookDemoOpen}
           onClose={() => setIsBookDemoOpen(false)}
         />
+
         <SearchPopup
           isOpen={isSearchOpen}
           onClose={() => setIsSearchOpen(false)}
@@ -889,7 +992,11 @@ const Header: React.FC = () => {
             <a href="/current-affairs" className="hover:text-primary transition-colors">Current Affairs</a>
             <a href="/books" className="hover:text-primary transition-colors">Books</a>
             <a href="/toppers" className="hover:text-primary transition-colors">Our Toppers</a>
-            <a href="/blogs" className="hover:text-primary transition-colors">Blogs</a>
+            <a href="/about" className="hover:text-primary transition-colors">About us</a>
+            <a href="/founders-message" className="hover:text-primary transition-colors">Founder&apos;s Message</a>
+            <a href="/blogs?lang=english" className="hover:text-primary transition-colors">Blogs - English</a>
+            <a href="/blogs?lang=marathi" className="hover:text-primary transition-colors">Blogs - Marathi</a>
+            <a href="/blogs?lang=telugu" className="hover:text-primary transition-colors">Blogs - Telugu</a>
             <a href="/contact" className="hover:text-primary transition-colors">Contact Us</a>
 
             <div className="flex flex-col gap-2 mt-2">
@@ -906,7 +1013,7 @@ const Header: React.FC = () => {
 
               {isLangOpen && (
                 <div className="flex flex-col gap-3 pl-4 mt-1 border-l border-gray-100">
-                  {['English', 'Telugu', 'Hindi', 'Marathi'].map((lang) => (
+                  {['English', 'Telugu', 'Marathi'].map((lang) => (
                     <div
                       key={lang}
                       className={`text-sm cursor-pointer transition-colors ${
