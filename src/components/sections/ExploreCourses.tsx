@@ -185,11 +185,13 @@ const ExploreCourses: React.FC = () => {
           <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {visibleCourses.length > 0 ? (
               visibleCourses.map((course) => {
-                const staticMatch = findStaticMatch(course);
+               const staticMatch = findStaticMatch(course);
+
                 const courseSlug = staticMatch?.slug ?? course.slug;
                 const href = courseSlug ? `/course/${courseSlug}` : '/course';
 
-                const image = course.banner ?? staticMatch?.heroImage ?? '/assets/course_image.png';
+                const image = '/assets/course_image.png';
+
                 const center = getCenterName(course) ?? staticMatch?.city ?? 'Delhi';
                 const fee = formatFee(course.onlineFees);
 
