@@ -85,7 +85,7 @@ const BooksOverviewTabs: React.FC = () => {
 
           {activeTab === 'overview' && (
             <video
-              src="/assets/books/overview-video.mp4"
+              src="/assets/books/overview-video1.mp4"
               autoPlay
               muted
               loop
