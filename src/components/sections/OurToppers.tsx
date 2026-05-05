@@ -15,46 +15,58 @@ const OurToppers: React.FC = () => {
   const [isPaused, setIsPaused] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
 
-  useGSAP(() => {
-    if (prefersReducedMotion) return;
+  useGSAP(
+    () => {
+      if (prefersReducedMotion) return;
 
-    gsap.from('.our-toppers-heading', {
-      y: 70,
-      opacity: 0,
-      duration: 0.8,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top 60%',
-        once: true,
-      },
-    });
+      gsap.from('.our-toppers-heading', {
+        y: 70,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 60%',
+          once: true,
+        },
+      });
 
-    gsap.from('.our-toppers-card', {
-      y: 50,
-      opacity: 0,
-      scale: 0.95,
-      duration: 0.6,
-      stagger: { each: 0.03, from: 'center' },
-      ease: 'back.out(1.2)',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top 95%',
-        once: true,
-      },
-    });
-  }, { dependencies: [prefersReducedMotion], scope: containerRef });
+      gsap.from('.our-toppers-card', {
+        y: 50,
+        opacity: 0,
+        scale: 0.95,
+        duration: 0.6,
+        stagger: { each: 0.03, from: 'center' },
+        ease: 'back.out(1.2)',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 95%',
+          once: true,
+        },
+      });
+    },
+    { dependencies: [prefersReducedMotion], scope: containerRef }
+  );
 
   const toppers = [
     {
-      name: 'ANUJ AGNIHOTRI',
+      name: 'akhi',
       rank: 'AIR 01',
       course: 'GS Foundation Course',
-      img: 'ANUJ-AGNIHOTRI (AIR-1).png',
+      img: 'no background.png',
     },
   ];
 
-  const displayToppers = [...toppers, ...toppers, ...toppers, ...toppers, ...toppers, ...toppers, ...toppers, ...toppers];
+  const displayToppers = [
+    ...toppers,
+    ...toppers,
+    ...toppers,
+    ...toppers,
+    ...toppers,
+    ...toppers,
+    ...toppers,
+    ...toppers,
+  ];
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -95,31 +107,32 @@ const OurToppers: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="relative w-full min-h-[600px] flex flex-col items-center justify-center py-20 px-0 md:px-0 lg:px-0 overflow-hidden"
+      className="relative w-full min-h-[600px] flex flex-col items-center justify-start pt-6 pb-10 px-0 overflow-hidden"
     >
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <Image
           src="/assets/our-centers/centers-bg.png"
           alt="Background"
           fill
           sizes="100vw"
-          className="object-cover"
+          className="object-cover scale-[1.25]"
           priority
         />
       </div>
 
       <div className="relative z-10 w-full max-w-[1400px] flex flex-col items-center">
-        <div className="our-toppers-heading text-center mb-4">
+        <div className="our-toppers-heading text-center mb-2">
           <h2 className="global-section-heading">OUR TOPPERS</h2>
         </div>
 
-        <p className="our-toppers-heading text-center text-[#2A3742] font-medium max-w-[800px] mx-auto text-[14px] md:text-[16px] leading-relaxed mb-12 font-['Montserrat'] px-6">
-          Driven by a commitment to success, we stand behind our toppers with constant support, expert mentorship, and personalized attention.
+        <p className="our-toppers-heading text-center text-[#2A3742] font-medium max-w-[800px] mx-auto text-[14px] md:text-[16px] leading-relaxed mb-0 font-['Montserrat'] px-6">
+          Driven by a commitment to success, we stand behind our toppers with constant support,
+          expert mentorship, and personalized attention.
         </p>
 
         <div
           ref={scrollRef}
-          className="w-full mt-12 overflow-x-hidden flex gap-10 pb-8 px-10 md:px-16"
+          className="w-full mt-[-20px] overflow-x-hidden flex gap-4 pb-6 px-4 md:px-8"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
           onTouchStart={() => setIsPaused(true)}
@@ -128,21 +141,20 @@ const OurToppers: React.FC = () => {
           {displayToppers.map((topper, idx) => (
             <div
               key={idx}
-              className="our-toppers-card flex-shrink-0 flex flex-col items-center w-[260px]"
+             className="our-toppers-card flex-shrink-0 flex flex-col items-center w-[340px]"
             >
-              <div className="relative w-[240px] h-[270px] mb-4 rounded-[36px] overflow-hidden bg-[linear-gradient(135deg,#0087D5_0%,#E45562_100%)] shadow-[0_16px_35px_rgba(0,0,0,0.18)]">
-                <div className="absolute inset-[8px] rounded-[30px] overflow-hidden">
-                  <Image
-                    src={`/assets/ourtoppers/_originals/${topper.img}`}
-                    alt={topper.name}
-                    fill
-                    sizes="240px"
-                    className="object-contain object-bottom"
-                  />
-                </div>
+             {/* IMAGE WITHOUT FRAME */}
+              <div className="relative -mt-30 w-[480px] h-[580px] mb-[-20px] overflow-visible">
+                <Image
+                  src={`/assets/ourtoppers/_originals/${topper.img}`}
+                  alt={topper.name}
+                  fill
+                  sizes="340px"
+                  className="object-contain object-bottom"
+                />
               </div>
 
-              <h3 className="text-white text-[16px] font-bold mb-2 text-center min-h-[40px]">
+              <h3 className="text-white text-[16px] font-bold mb-2 text-center min-h-[30px]">
                 {topper.name}
               </h3>
 

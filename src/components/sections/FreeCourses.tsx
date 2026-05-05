@@ -15,9 +15,9 @@ const FreeCourses: React.FC = () => {
   const sections = [
     {
       id: 'quizzes',
-      title: 'Daily Quiz',
+      title: 'Daily Quizzes',
       description:
-        'Participate in our daily quiz to test your knowledge, strengthen your understanding of key concepts, and stay consistent with your learning journey.',
+        'Participate in our daily quizzes to test your knowledge, strengthen your understanding of key concepts, and stay consistent with your learning journey.',
       bg: 'bg-[#000000]',
       backgroundImage: '/assets/daily_quizes_full_bg.png',
       rightImage: '/assets/daily_quizes_right_image.png',
@@ -35,7 +35,7 @@ const FreeCourses: React.FC = () => {
     },
     {
       id: 'mains-question',
-      title: 'Daily Mains Questions',
+      title: 'Daily Mains Question',
       description:
         'Solve our Daily Mains Questions to improve your answer-writing skills, build strong arguments, and stay consistent with your UPSC Mains preparation.',
       bg: 'bg-[#0d47a1]',
@@ -57,6 +57,8 @@ const FreeCourses: React.FC = () => {
 
   useGSAP(
     () => {
+      if (prefersReducedMotion) return;
+
       gsap.from('.section-header h2', {
         y: 100,
         opacity: 0,
@@ -72,33 +74,27 @@ const FreeCourses: React.FC = () => {
         },
       });
 
-      /**
-       * IMPORTANT:
-       * This animation should run even if background motion looked invisible before.
-       * We animate a larger image wrapper, so movement is clearly visible.
-       */
-      if (!prefersReducedMotion) {
-        gsap.utils.toArray<HTMLElement>('.free-bg-motion').forEach((bg, index) => {
-          gsap.fromTo(
-            bg,
-            {
-              xPercent: index % 2 === 0 ? -6 : 6,
-              yPercent: -5,
-              scale: 1.08,
-            },
-            {
-              xPercent: index % 2 === 0 ? 6 : -6,
-              yPercent: 5,
-              scale: 1.18,
-              duration: 3.5,
-              ease: 'sine.inOut',
-              repeat: -1,
-              yoyo: true,
-              force3D: true,
-            }
-          );
-        });
-      }
+      // BACKGROUND MOTION FOR ALL CARDS
+      gsap.utils.toArray<HTMLElement>('.free-bg-motion').forEach((bg, index) => {
+        gsap.fromTo(
+          bg,
+          {
+            xPercent: index % 2 === 0 ? -5 : 5,
+            yPercent: -4,
+            scale: 1.08,
+          },
+          {
+            xPercent: index % 2 === 0 ? 5 : -5,
+            yPercent: 4,
+            scale: 1.18,
+            duration: 4,
+            ease: 'sine.inOut',
+            repeat: -1,
+            yoyo: true,
+            force3D: true,
+          }
+        );
+      });
 
       const cards = gsap.utils.toArray<HTMLElement>('.section-card');
 
@@ -135,15 +131,16 @@ const FreeCourses: React.FC = () => {
         {sections.map((section) => (
           <div
             key={section.id}
-            className={`section-card relative h-screen w-full overflow-hidden ${section.bg} text-white flex flex-col md:flex-row items-center justify-center gap-16 px-4 md:px-16 lg:px-24 shadow-2xl`}
+            className={`section-card relative h-screen w-full overflow-hidden ${section.bg} text-white flex items-center justify-center px-4 md:px-10 lg:px-16 xl:px-20 shadow-2xl`}
           >
+            {/* BACKGROUND IMAGE WITH MOTION */}
             {section.backgroundImage && (
               <div className="absolute inset-0 z-0 overflow-hidden">
                 <div className="free-bg-motion absolute top-[-10%] left-[-10%] w-[120%] h-[120%]">
                   <img
                     src={section.backgroundImage}
                     alt=""
-                    className="w-full h-full object-cover opacity-80"
+                    className="w-full h-full object-cover opacity-70"
                   />
                 </div>
 
@@ -151,15 +148,16 @@ const FreeCourses: React.FC = () => {
               </div>
             )}
 
-            <div className="relative z-10 flex flex-col md:flex-row items-center gap-24 md:gap-32 w-full max-w-[1400px] mx-auto">
-              <div className="section-text flex-1 space-y-12">
-              <h3 className="text-[35px] md:text-[45px] lg:text-[53px] xl:text-[57px] font-extrabold leading-[1.08] whitespace-nowrap">
+            <div className="relative z-10 grid w-full max-w-[1450px] mx-auto grid-cols-1 md:grid-cols-[60%_40%] items-center gap-8 md:gap-10 lg:gap-12">
+              {/* Text */}
+              <div className="section-text w-full min-w-0 space-y-8 md:space-y-10 overflow-visible">
+                <h3 className="text-[38px] md:text-[52px] lg:text-[62px] xl:text-[70px] font-extrabold leading-[1.02] whitespace-nowrap">
                   <span className={section.accentColor}>
                     {section.title}
                   </span>
                 </h3>
 
-                <p className="text-gray-100 text-lg md:text-[1.2rem] font-medium leading-relaxed max-w-xl opacity-90">
+                <p className="text-gray-100 text-base md:text-[1.1rem] lg:text-[1.2rem] font-medium leading-relaxed max-w-xl opacity-90">
                   {section.description}
                 </p>
 
@@ -168,13 +166,14 @@ const FreeCourses: React.FC = () => {
                 </button>
               </div>
 
-              <div className="flex-1 w-full flex justify-center lg:justify-end overflow-visible pr-8 md:pr-20 lg:pr-24">
+              {/* Image */}
+              <div className="w-full min-w-0 flex justify-center md:justify-end overflow-visible">
                 {section.rightImage && (
-                  <div className="section-image-wrapper relative w-full max-w-[900px] md:max-w-[1000px] overflow-visible">
+                  <div className="section-image-wrapper relative w-full h-[240px] md:h-[330px] lg:h-[400px] xl:h-[440px] flex items-center justify-center overflow-visible">
                     <img
                       src={section.rightImage}
                       alt={section.title}
-                      className="section-image w-[110%] md:w-[130%] max-w-none h-auto object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500 cursor-pointer"
+                      className="section-image h-full w-auto max-w-none object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500 cursor-pointer"
                     />
                   </div>
                 )}

@@ -220,11 +220,11 @@ const Header: React.FC = () => {
     />
   );
 
-  const topNavItemClass =
-    'px-2.5 xl:px-3 py-2 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer hover:text-white active:bg-transparent focus:bg-transparent';
+ const topNavItemClass =
+  'px-2 xl:px-2.5 py-1.5 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer hover:text-white active:bg-transparent focus:bg-transparent';
 
-  const secondNavItemClass =
-    'px-2.5 xl:px-3 py-2 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer hover:text-white active:bg-transparent focus:bg-transparent';
+const secondNavItemClass =
+  'px-2 xl:px-2.5 py-1.5 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer hover:text-white active:bg-transparent focus:bg-transparent';
 
   return (
     <>
@@ -233,7 +233,7 @@ const Header: React.FC = () => {
         className="absolute top-0 left-0 right-0 z-50 mx-auto w-full bg-transparent py-5 lg:py-4 px-4 md:px-6 lg:px-8 xl:px-12 font-['Montserrat']"
       >
         <div className="w-full max-w-[1440px] mx-auto flex justify-between items-start relative">
-         <div className="flex items-center">
+          <div className="flex items-center">
             <Image
               src="/assets/40_years_experience.png"
               alt="40 Years of Excellence"
@@ -250,56 +250,57 @@ const Header: React.FC = () => {
               className="h-11 md:h-14 lg:h-[76px] w-auto object-contain transition-transform hover:scale-105"
             />
           </div>
-          <div className="flex flex-col items-end lg:items-start gap-2 relative">
-            <div className="hidden lg:flex items-center gap-2 xl:gap-3 text-[16px] font-medium leading-[100%] tracking-normal uppercase text-white/80">
-         <div ref={blogLangRef} className="relative">
-  <button
-    type="button"
-    onClick={(e) => {
-      e.preventDefault();
-      e.stopPropagation();
 
-      setIsBlogLangOpen((prev) => {
-        if (!prev) {
-          setIsCoursesOpen(false);
-          setIsCentersOpen(false);
-          setIsFreeResourcesOpen(false);
-          setIsCurrentAffairsOpen(false);
-          setIsAboutOpen(false);
-        }
-        return !prev;
-      });
-    }}
-    className={`${topNavItemClass} flex items-center gap-1`}
-  >
-    BLOG
-    <ChevronDown
-      size={14}
-      className={`transition-transform duration-300 ${
-        isBlogLangOpen ? 'rotate-180' : ''
-      }`}
-    />
-  </button>
+          <div className="flex flex-col items-end lg:items-start gap-0.5 relative">
+           <div className="hidden lg:flex items-center gap-1.5 xl:gap-2 text-[16px] font-medium leading-[100%] tracking-normal uppercase text-white/80">
+              <div ref={blogLangRef} className="relative">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
 
-  {isBlogLangOpen && (
-    <div className="absolute top-full left-0 mt-2 w-36 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
-      {[
-        { label: 'English', href: '/blogs?lang=english' },
-        { label: 'Marathi', href: '/blogs?lang=marathi' },
-        { label: 'Telugu', href: '/blogs?lang=telugu' },
-      ].map((item) => (
-        <Link
-          key={item.label}
-          href={item.href}
-          onClick={() => setIsBlogLangOpen(false)}
-          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1897D8] cursor-pointer transition-colors font-medium normal-case"
-        >
-          {item.label}
-        </Link>
-      ))}
-    </div>
-  )}
-</div>
+                    setIsBlogLangOpen((prev) => {
+                      if (!prev) {
+                        setIsCoursesOpen(false);
+                        setIsCentersOpen(false);
+                        setIsFreeResourcesOpen(false);
+                        setIsCurrentAffairsOpen(false);
+                        setIsAboutOpen(false);
+                      }
+                      return !prev;
+                    });
+                  }}
+                  className={`${topNavItemClass} flex items-center gap-1`}
+                >
+                  BLOG
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform duration-300 ${
+                      isBlogLangOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+
+                {isBlogLangOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-36 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
+                    {[
+                      { label: 'English', href: '/blogs?lang=english' },
+                      { label: 'Marathi', href: '/blogs?lang=marathi' },
+                      { label: 'Telugu', href: '/blogs?lang=telugu' },
+                    ].map((item) => (
+                      <Link
+                        key={item.label}
+                        href={item.href}
+                        onClick={() => setIsBlogLangOpen(false)}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1897D8] cursor-pointer transition-colors font-medium normal-case"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               <div className="relative" ref={centersButtonRef}>
                 <button
@@ -324,7 +325,7 @@ const Header: React.FC = () => {
 
               <div className="relative" ref={langRef}>
                 <div
-                  className="flex items-center gap-1 cursor-pointer hover:text-white px-2.5 xl:px-3 py-2 rounded-[4px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold"
+                  className="flex items-center gap-1 cursor-pointer hover:text-white px-1.5 xl:px-2 py-1.5 rounded-[4px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold"
                   onClick={() => setIsLangOpen(!isLangOpen)}
                 >
                   <Image
@@ -359,7 +360,10 @@ const Header: React.FC = () => {
                 )}
               </div>
 
-              <div className="flex items-center gap-2 border rounded-[10px] px-3 py-2.5" style={{ borderColor: '#1897D8' }}>
+              <div
+                className="flex items-center gap-2 border rounded-[10px] px-2.5 py-2"
+                style={{ borderColor: '#1897D8' }}
+              >
                 <span className="text-white font-semibold text-[16px] leading-[100%] tracking-normal font-[Montserrat] xl:text-[14px] uppercase">
                   +91 8686818384
                 </span>
@@ -367,7 +371,7 @@ const Header: React.FC = () => {
 
               <button
                 onClick={() => setIsBookDemoOpen(true)}
-                className="text-white font-bold px-3 py-2.5 rounded-[10px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase bg-transparent hover:bg-transparent shadow-none"
+                className="text-white font-bold px-2.5 py-2 rounded-[10px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase bg-transparent hover:bg-transparent shadow-none"
               >
                 BOOK FREE DEMO
               </button>
@@ -430,7 +434,7 @@ const Header: React.FC = () => {
               </Link>
             </div>
 
-            <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2.5 text-[16px] uppercase text-white/80 font-medium">
+           <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2 text-[16px] uppercase text-white/80 font-medium">
               <div className="relative group" ref={coursesButtonRef}>
                 <button
                   onClick={(e) => {
@@ -457,7 +461,7 @@ const Header: React.FC = () => {
                   <Link
                     href="/free_resources/ncert-books"
                     onClick={() => setIsFreeResourcesOpen(false)}
-                    className={`pl-2.5 xl:pl-3 pr-1 py-2 uppercase text-[14px] xl:text-[14px] font-bold active:bg-transparent focus:bg-transparent ${
+                    className={`pl-1.5 xl:pl-2 pr-0.5 py-1.5 uppercase text-[14px] xl:text-[14px] font-bold active:bg-transparent focus:bg-transparent ${
                       isFreeResourcesOpen ? 'text-white' : 'text-white/80 hover:text-white'
                     }`}
                   >
@@ -475,7 +479,7 @@ const Header: React.FC = () => {
                         return !prev;
                       });
                     }}
-                    className={`pr-2 pl-1 py-2 flex items-center justify-center cursor-pointer active:bg-transparent focus:bg-transparent ${
+                    className={`pr-1.5 pl-0.5 py-1.5 flex items-center justify-center cursor-pointer active:bg-transparent focus:bg-transparent ${
                       isFreeResourcesOpen ? 'text-white' : 'text-white/80 hover:text-white'
                     }`}
                   >
@@ -492,7 +496,7 @@ const Header: React.FC = () => {
                   <Link
                     href="/current-affairs"
                     onClick={() => setIsCurrentAffairsOpen(false)}
-                    className={`pl-2.5 xl:pl-3 pr-1 py-2 uppercase text-[14px] xl:text-[14px] font-bold active:bg-transparent focus:bg-transparent ${
+                    className={`pl-1.5 xl:pl-2 pr-0.5 py-1.5 uppercase text-[14px] xl:text-[14px] font-bold active:bg-transparent focus:bg-transparent ${
                       isCurrentAffairsOpen ? 'text-white' : 'text-white/80 hover:text-white'
                     }`}
                   >
@@ -510,7 +514,7 @@ const Header: React.FC = () => {
                         return !prev;
                       });
                     }}
-                    className={`pr-2 pl-1 py-2 flex items-center justify-center cursor-pointer active:bg-transparent focus:bg-transparent ${
+                    className={`pr-1.5 pl-0.5 py-1.5 flex items-center justify-center cursor-pointer active:bg-transparent focus:bg-transparent ${
                       isCurrentAffairsOpen ? 'text-white' : 'text-white/80 hover:text-white'
                     }`}
                   >
@@ -526,57 +530,57 @@ const Header: React.FC = () => {
                 Books
               </Link>
 
-             <div ref={aboutMenuRef} className="relative">
-  <button
-    type="button"
-    onClick={(e) => {
-      e.preventDefault();
-      e.stopPropagation();
+              <div ref={aboutMenuRef} className="relative">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
 
-      setIsAboutOpen((prev) => {
-        if (!prev) {
-          setIsCoursesOpen(false);
-          setIsCentersOpen(false);
-          setIsFreeResourcesOpen(false);
-          setIsCurrentAffairsOpen(false);
-          setIsBlogLangOpen(false);
-        }
-        return !prev;
-      });
-    }}
-    className={`flex items-center gap-1 ${secondNavItemClass} ${
-      isAboutOpen ? 'text-white' : ''
-    }`}
-  >
-    About
-    <ChevronDown
-      size={16}
-      className={`transition-transform duration-300 ${
-        isAboutOpen ? 'rotate-180' : ''
-      }`}
-    />
-  </button>
+                    setIsAboutOpen((prev) => {
+                      if (!prev) {
+                        setIsCoursesOpen(false);
+                        setIsCentersOpen(false);
+                        setIsFreeResourcesOpen(false);
+                        setIsCurrentAffairsOpen(false);
+                        setIsBlogLangOpen(false);
+                      }
+                      return !prev;
+                    });
+                  }}
+                  className={`flex items-center gap-1 ${secondNavItemClass} ${
+                    isAboutOpen ? 'text-white' : ''
+                  }`}
+                >
+                  About
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform duration-300 ${
+                      isAboutOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
 
-  {isAboutOpen && (
-    <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
-      <Link
-        href="/about"
-        onClick={() => setIsAboutOpen(false)}
-        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1897D8] cursor-pointer transition-colors font-medium normal-case"
-      >
-        About us
-      </Link>
+                {isAboutOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
+                    <Link
+                      href="/about"
+                      onClick={() => setIsAboutOpen(false)}
+                      className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1897D8] cursor-pointer transition-colors font-medium normal-case"
+                    >
+                      About us
+                    </Link>
 
-      <Link
-        href="/founders-message"
-        onClick={() => setIsAboutOpen(false)}
-        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1897D8] cursor-pointer transition-colors font-medium normal-case"
-      >
-        Founder&apos;s Message
-      </Link>
-    </div>
-  )}
-</div>
+                    <Link
+                      href="/founders-message"
+                      onClick={() => setIsAboutOpen(false)}
+                      className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1897D8] cursor-pointer transition-colors font-medium normal-case"
+                    >
+                      Founder&apos;s Message
+                    </Link>
+                  </div>
+                )}
+              </div>
             </nav>
           </div>
         </div>

@@ -67,14 +67,14 @@ const Footer: React.FC = () => {
     if (!zone) return;
 
     const columns = Array.from(zone.querySelectorAll<HTMLElement>('.moving-col'));
-    const xSetters = columns.map((col) => gsap.quickTo(col, "x", { duration: 0.6, ease: "power3.out" }));
+    const xSetters = columns.map((col) => gsap.quickTo(col, 'x', { duration: 0.6, ease: 'power3.out' }));
     const movementMultipliers = [50, 80, 60, 70];
 
     const handleMouseMove = (e: MouseEvent) => {
       const rect = zone.getBoundingClientRect();
 
       const x = e.clientX - rect.left;
-      const normalizedX = (x / rect.width) - 0.5;
+      const normalizedX = x / rect.width - 0.5;
 
       xSetters.forEach((setX, index) => {
         setX(normalizedX * movementMultipliers[index]);
@@ -97,78 +97,78 @@ const Footer: React.FC = () => {
   return (
     <footer
       ref={footerRef}
-      className="bg-[#1a1a18] text-white pt-16 px-4 md:px-8 overflow-hidden"
+      className="bg-[#1a1a18] text-white pt-12 pb-8 px-4 md:px-8 overflow-hidden"
     >
-      <div className="max-w-8xl mx-auto space-y-16">
+      <div className="max-w-8xl mx-auto space-y-10">
 
         {/* Top CTA & Social Bar */}
-        <div className="footer-top-bar flex flex-col lg:flex-row items-center justify-between gap-8">
+       <div className="footer-top-bar flex flex-col lg:flex-row items-center justify-between gap-5 -mt-2">
 
-          <div className="flex flex-wrap items-center gap-4">
+         <div className="flex flex-wrap items-center gap-3 -mt-3">
             <button
-              className="text-white px-8 py-2.5 rounded-lg font-bold text-[16px] transition-all uppercase tracking-wide"
+              className="text-white px-7 py-2 rounded-lg font-bold text-[15px] transition-all uppercase tracking-wide"
               style={{ background: 'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)' }}
             >
               BOOK A DEMO
             </button>
 
-           <button
-            className="text-white px-8 py-2.5 rounded-lg font-bold text-[16px] transition-all tracking-wide"
-            style={{
-              background: 'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)',
-            }}
-          >
-            Book Free 1:1 Mentorship Session
-          </button>
+            <button
+              className="text-white px-7 py-2 rounded-lg font-bold text-[15px] transition-all tracking-wide"
+              style={{
+                background: 'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)',
+              }}
+            >
+              Book Free 1:1 Mentorship Session
+            </button>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-5">
             {/* Instagram */}
             <a
               href="#"
-              className="group w-12 h-12 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:scale-110 hover:bg-gradient-to-tr hover:from-[#f9ce34] hover:via-[#ee2a7b] hover:to-[#6228d7]"
+              className="group w-14 h-14 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:scale-110 hover:bg-gradient-to-tr hover:from-[#f9ce34] hover:via-[#ee2a7b] hover:to-[#6228d7]"
             >
-              <Image src="/assets/insta1.png.svg" alt="Instagram" width={26} height={26} />
+              <Image src="/assets/insta1.png.svg" alt="Instagram" width={32} height={32} />
             </a>
 
             {/* Facebook */}
             <a
               href="#"
-              className="group w-12 h-12 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:bg-[#1877F2] hover:scale-110"
+              className="group w-14 h-14 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:bg-[#1877F2] hover:scale-110"
             >
-              <Image src="/assets/facebook.png.svg" alt="Facebook" width={26} height={26} />
+              <Image src="/assets/facebook.png.svg" alt="Facebook" width={32} height={32} />
             </a>
 
             {/* Twitter */}
             <a
               href="#"
-              className="group w-12 h-12 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:bg-red hover:scale-110"
+              className="group w-14 h-14 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:bg-red hover:scale-110"
             >
-              <Image src="/assets/twitter.png.svg" alt="Twitter" width={26} height={26} />
+              <Image src="/assets/twitter.png.svg" alt="Twitter" width={32} height={32} />
             </a>
 
             {/* YouTube */}
             <a
               href="#"
-              className="group w-12 h-12 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:bg-red-600 hover:scale-110"
+              className="group w-14 h-14 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:bg-red-600 hover:scale-110"
             >
-              <Image src="/assets/youtube.png.svg" alt="YouTube" width={26} height={26} />
+              <Image src="/assets/youtube.png.svg" alt="YouTube" width={32} height={32} />
             </a>
           </div>
         </div>
 
         {/* Links & Vertical Text Section */}
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-24 relative">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-14 relative">
 
           {/* Left Side: Links and Contacts */}
-          <div className="flex-1 space-y-16">
-            <div className="footer-links grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="flex-1 space-y-10">
+           <div className="footer-links grid grid-cols-1 md:grid-cols-3 gap-8 -mt-4">
 
-              <div className="footer-link-group space-y-4">
-                <h4 className="text-[18px] md:text-[19px] font-medium tracking-[0.2px] text-white">
+              <div className="footer-link-group space-y-2.5">
+                <h4 className="text-[17px] md:text-[18px] font-medium tracking-[0.2px] text-white">
                   Website Links
                 </h4>
-                  <ul className="space-y-1.5 text-[15px] text-[#B3B3B3] font-normal leading-[1.25]">
+                <ul className="space-y-1 text-[14px] text-[#B3B3B3] font-normal leading-[1.2]">
                   <li><Link href="/" className="hover:text-white transition-colors">Home</Link></li>
                   <li><a href="/about" className="hover:text-white transition-colors">About Us</a></li>
                   <li><a href="/director-message" className="hover:text-white transition-colors">Director&apos;s Messages</a></li>
@@ -180,11 +180,11 @@ const Footer: React.FC = () => {
                 </ul>
               </div>
 
-              <div className="footer-link-group space-y-4">
-                <h4 className="text-[18px] md:text-[19px] font-medium tracking-[0.2px] text-white">
+              <div className="footer-link-group space-y-2.5">
+                <h4 className="text-[17px] md:text-[18px] font-medium tracking-[0.2px] text-white">
                   Website Links
                 </h4>
-                  <ul className="space-y-1.5 text-[15px] text-[#B3B3B3] font-normal leading-[1.25]">
+                <ul className="space-y-1 text-[14px] text-[#B3B3B3] font-normal leading-[1.2]">
                   <li><a href="/articles" className="hover:text-white transition-colors">UPSC Articles</a></li>
                   <li><a href="/blogs" className="hover:text-white transition-colors">UPSC Blogs</a></li>
                   <li><a href="/exploration" className="hover:text-white transition-colors">Exploration</a></li>
@@ -196,11 +196,11 @@ const Footer: React.FC = () => {
                 </ul>
               </div>
 
-              <div className="footer-link-group space-y-4">
-                <h4 className="text-[18px] md:text-[19px] font-medium tracking-[0.2px] text-white">
+              <div className="footer-link-group space-y-2.5">
+                <h4 className="text-[17px] md:text-[18px] font-medium tracking-[0.2px] text-white">
                   Courses Details
                 </h4>
-                <ul className="space-y-1.5 text-[15px] text-[#B3B3B3] font-normal leading-[1.25]">
+                <ul className="space-y-1 text-[14px] text-[#B3B3B3] font-normal leading-[1.2]">
                   <li><a href="/all-courses" className="hover:text-white transition-colors">All Courses</a></li>
                   <li><a href="/psir" className="hover:text-white transition-colors">PSIR Test Series and Mentorship</a></li>
                   <li><a href="/psir-optional" className="hover:text-white transition-colors">PSIR Optional Courses</a></li>
@@ -213,30 +213,30 @@ const Footer: React.FC = () => {
               </div>
             </div>
 
-            <div className="footer-contacts grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="footer-contacts grid grid-cols-1 md:grid-cols-3 gap-8">
 
-              <div className="footer-contact space-y-5">
-                <div className="flex items-center gap-3">
+              <div className="footer-contact space-y-3">
+                <div className="flex items-center gap-2.5">
                   <Image src="/assets/del-footer.png" alt="Delhi" width={24} height={24} className="w-6 h-6 object-contain" />
-                  <h4 className="text-[18px] md:text-[20px] font-bold tracking-[1px] uppercase text-white">
+                  <h4 className="text-[17px] md:text-[18px] font-bold tracking-[1px] uppercase text-white">
                     NEW DELHI
                   </h4>
                 </div>
 
-                <div className="space-y-4 text-[15px] text-[#B3B3B3] leading-[1.4] font-normal">
+                <div className="space-y-2.5 text-[14px] text-[#B3B3B3] leading-[1.25] font-normal">
                   <p className="max-w-[310px]">
                     SRIRAM&apos;S IAS TOWER,10 B, Pusa Road, Bada Bazar Rd, Near Metro Pillar No. 112, Old Rajinder Nagar, New Delhi - 110060
                   </p>
 
                   <div className="flex items-center gap-2">
-                    <Phone size={16} className="text-white shrink-0" />
+                    <Phone size={15} className="text-white shrink-0" />
                     <p>
                       <span className="text-white font-semibold">Contact Us :</span> 9811489560
                     </p>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <Mail size={16} className="text-white shrink-0" />
+                    <Mail size={15} className="text-white shrink-0" />
                     <p>
                       <span className="text-white font-semibold">Email Id :</span> sriramsias@gmail.com
                     </p>
@@ -244,28 +244,28 @@ const Footer: React.FC = () => {
                 </div>
               </div>
 
-              <div className="footer-contact space-y-5">
-                <div className="flex items-center gap-3">
+              <div className="footer-contact space-y-3">
+                <div className="flex items-center gap-2.5">
                   <Image src="/assets/hyd-footer.png" alt="Hyderabad" width={24} height={24} className="w-6 h-6 object-contain" />
-                  <h4 className="text-[18px] md:text-[20px] font-bold tracking-[1px] uppercase text-white">
+                  <h4 className="text-[17px] md:text-[18px] font-bold tracking-[1px] uppercase text-white">
                     HYDERABAD
                   </h4>
                 </div>
 
-                <div className="space-y-4 text-[15px] text-[#B3B3B3] leading-[1.4] font-normal">
+                <div className="space-y-2.5 text-[14px] text-[#B3B3B3] leading-[1.25] font-normal">
                   <p className="max-w-[310px]">
                     SRIRAM&apos;S IAS, Opposite Sudharshan Theatre, Pillar No 40, Ashoka Nagar, Hyderabad, 500020
                   </p>
 
                   <div className="flex items-center gap-2">
-                    <Phone size={16} className="text-white shrink-0" />
+                    <Phone size={15} className="text-white shrink-0" />
                     <p>
                       <span className="text-white font-semibold">Contact Us :</span> 8121191985
                     </p>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <Mail size={16} className="text-white shrink-0" />
+                    <Mail size={15} className="text-white shrink-0" />
                     <p>
                       <span className="text-white font-semibold">Email Id :</span> sriramsias@gmail.com
                     </p>
@@ -273,28 +273,28 @@ const Footer: React.FC = () => {
                 </div>
               </div>
 
-              <div className="footer-contact space-y-5">
-                <div className="flex items-center gap-3">
+              <div className="footer-contact space-y-3">
+                <div className="flex items-center gap-2.5">
                   <Image src="/assets/pune-footer.png" alt="Pune" width={24} height={24} className="w-6 h-6 object-contain" />
-                  <h4 className="text-[18px] md:text-[20px] font-bold tracking-[1px] uppercase text-white">
+                  <h4 className="text-[17px] md:text-[18px] font-bold tracking-[1px] uppercase text-white">
                     PUNE
                   </h4>
                 </div>
 
-                <div className="space-y-4 text-[15px] text-[#B3B3B3] leading-[1.4] font-normal">
+                <div className="space-y-2.5 text-[14px] text-[#B3B3B3] leading-[1.25] font-normal">
                   <p className="max-w-[310px]">
                     SRIRAM&apos;S IAS, 385, Near Modi Ganpati Mandir, Patrya Maruti Chowk Narayan Peth, Pune 41211
                   </p>
 
                   <div className="flex items-center gap-2">
-                    <Phone size={16} className="text-white shrink-0" />
+                    <Phone size={15} className="text-white shrink-0" />
                     <p>
                       <span className="text-white font-semibold">Contact Us :</span> 9689000979
                     </p>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <Mail size={16} className="text-white shrink-0" />
+                    <Mail size={15} className="text-white shrink-0" />
                     <p>
                       <span className="text-white font-semibold">Email Id :</span> sriramsias@gmail.com
                     </p>
@@ -305,11 +305,11 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Right Side: Masked Sliced Effect Zone */}
-          <div className="footer-vertical-text-container hidden lg:flex items-start select-none pr-4 shrink-0 justify-end h-[600px] pointer-events-none gap-2 lg:gap-4">
+          <div className="footer-vertical-text-container hidden lg:flex items-start select-none pr-4 shrink-0 justify-end h-[520px] pointer-events-none gap-2 lg:gap-3">
 
             {/* IFS Column Wrapper (Outer Left) */}
-            <div className="relative w-[45px] h-full overflow-hidden z-10">
-              <div className="moving-col absolute inset-0 flex flex-col gap-6 text-[42px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
+            <div className="relative w-[42px] h-full overflow-hidden z-10">
+              <div className="moving-col absolute inset-0 flex flex-col gap-5 text-[38px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
                 <span className="[writing-mode:vertical-rl]">IFS</span>
                 <span className="[writing-mode:vertical-rl]">IFS</span>
                 <span className="[writing-mode:vertical-rl]">IFS</span>
@@ -318,8 +318,8 @@ const Footer: React.FC = () => {
             </div>
 
             {/* IAS Column Wrapper (Middle Left) */}
-            <div className="relative w-[70px] h-full overflow-hidden">
-              <div className="moving-col absolute inset-0 flex flex-col gap-6 text-[64px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
+            <div className="relative w-[64px] h-full overflow-hidden">
+              <div className="moving-col absolute inset-0 flex flex-col gap-5 text-[58px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
                 <span className="[writing-mode:vertical-rl]">IAS</span>
                 <span className="[writing-mode:vertical-rl]">IAS</span>
                 <span className="[writing-mode:vertical-rl]">IAS</span>
@@ -327,8 +327,8 @@ const Footer: React.FC = () => {
             </div>
 
             {/* IPS Column Wrapper (Middle Right) */}
-            <div className="relative w-[70px] h-full overflow-hidden">
-              <div className="moving-col absolute inset-0 flex flex-col gap-6 text-[64px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
+            <div className="relative w-[64px] h-full overflow-hidden">
+              <div className="moving-col absolute inset-0 flex flex-col gap-5 text-[58px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
                 <span className="[writing-mode:vertical-rl]">IPS</span>
                 <span className="[writing-mode:vertical-rl]">IPS</span>
                 <span className="[writing-mode:vertical-rl]">IPS</span>
@@ -336,15 +336,15 @@ const Footer: React.FC = () => {
             </div>
 
             {/* IRS Column Wrapper (Outer Right) */}
-            <div className="relative w-[45px] h-full overflow-hidden">
-              <div className="moving-col absolute inset-0 flex flex-col gap-6 text-[42px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
+            <div className="relative w-[42px] h-full overflow-hidden">
+              <div className="moving-col absolute inset-0 flex flex-col gap-5 text-[38px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
                 <span className="[writing-mode:vertical-rl]">IRS</span>
                 <span className="[writing-mode:vertical-rl]">IRS</span>
                 <span className="[writing-mode:vertical-rl]">IRS</span>
                 <span className="[writing-mode:vertical-rl]">IRS</span>
               </div>
             </div>
-            
+
           </div>
         </div>
       </div>
