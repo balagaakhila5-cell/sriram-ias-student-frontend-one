@@ -29,7 +29,7 @@ const MottoSection: React.FC = () => {
         x: -100,
         opacity: 0,
         duration: 1.2,
-        stagger: 0.15,
+        stagger: 0.12,
         ease: 'power3.out',
         force3D: true,
         scrollTrigger: {
@@ -62,9 +62,7 @@ const MottoSection: React.FC = () => {
   useEffect(() => {
     const video = videoRef.current;
 
-    if (!video) {
-      return;
-    }
+    if (!video) return;
 
     if (prefersReducedMotion || !isInViewport) {
       video.pause();
@@ -79,8 +77,9 @@ const MottoSection: React.FC = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full bg-[#F6EEE4] overflow-hidden min-h-[400px] sm:min-h-[500px] md:min-h-[600px] flex items-center py-8 sm:py-12 md:py-16"
+      className="relative w-full bg-[#F6EEE4] overflow-hidden min-h-[430px] sm:min-h-[520px] md:min-h-[620px] flex items-center py-8 sm:py-10 md:py-12"
     >
+      {/* RIGHT WALL IMAGE */}
       <div className="motto-wall absolute top-0 right-0 w-full md:w-[68%] lg:w-[68%] h-full z-0 pointer-events-none">
         <div className="relative w-full h-full">
           <div className="absolute inset-y-0 left-0 w-[22%] bg-gradient-to-r from-[#F6EEE4] via-[#F6EEE4]/40 to-transparent z-10" />
@@ -95,75 +94,64 @@ const MottoSection: React.FC = () => {
         </div>
       </div>
 
-      {/* Background Video specifically for text area */}
-      {/* 
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden select-none translate-x-[-10%] md:translate-x-0">
-        <video
-          ref={videoRef}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          className="absolute left-0 top-0 h-full w-full md:w-[50%] object-cover opacity-[0.5] mix-blend-multiply transition-opacity duration-1500"
-          style={{
-            maskImage: 'linear-gradient(to right, black 50%, transparent 80%)',
-            WebkitMaskImage: 'linear-gradient(to right, black 50%, transparent 80%)',
-          }}
-        >
-          <source src="/assets/dropdown-video.mp4" type="video/mp4" />
-        </video>
-      </div> 
-      */}
+      {/* LEFT CONTENT */}
+      <div className="relative z-10 w-full max-w-[1600px] px-4 sm:px-6 md:px-8 lg:px-16">
+        <div className="w-full md:w-[62%] lg:w-[66%] xl:w-[68%]">
+          <div className="font-['Montserrat'] font-bold text-[24px] sm:text-[34px] md:text-[46px] lg:text-[58px] xl:text-[64px] leading-[1.08] tracking-[0%]">
+            
+            {/* LINE 1: LOGO + IN SHAPING */}
+<div className="motto-text-line flex items-start gap-0 sm:gap-1 md:gap-2 mb-3">
+  <div className="relative shrink-0 w-[135px] h-[115px] sm:w-[155px] sm:h-[125px] md:w-[185px] md:h-[145px] lg:w-[225px] lg:h-[170px] xl:w-[255px] xl:h-[190px]">
+    <Image
+      src="/assets/40_years_experience.png"
+      alt="40 Years Logo"
+      fill
+      sizes="255px"
+      className="object-contain"
+      priority
+    />
+  </div>
 
-      <div className="relative z-10 w-full max-w-[1600px] px-4 sm:px-6 md:px-5 lg:px-16">
-        <div className="w-[75%] sm:w-[62%] md:w-[50%] lg:w-[85%]">
-          <div className="font-['Montserrat'] font-bold text-[20px] sm:text-[28px] md:text-[40px] lg:text-[60px] leading-[1.2] lg:leading-[90px] tracking-[0%]">
-            {/* Block 1: Logo + In Shaping */}
-            <div className="flex items-center gap-2 -mb-6">
-              <Image
-                src="/assets/40_years_experience.png"
-                alt="40 Years"
-                width={500}
-                height={700}
-                className="h-[650px] w-[520px] lg:h-[280px] lg:w-[220px] object-contain shrink-0"
-              />
-
-              <div className="motto-text-line flex items-center gap-2 mt-[11%]">
-                <span className="text-[#00000099]">In Shaping</span>
-              </div>
-            </div>
-
-            {/* Block 2: Officers + Now it's */}
-            <div className="motto-text-line -mt-8 flex items-center gap-4">
+  <span className="text-[#00000099] whitespace-nowrap mt-[54px] sm:mt-[68px] md:mt-[84px] lg:mt-[100px] xl:mt-[112px] -ml-8">
+  In shaping
+</span>
+</div>
+            {/* LINE 2: OFFICERS + NOW IT'S */}
+            <div className="motto-text-line flex items-center gap-4 mb-2">
               <span
-                className="inline-block bg-clip-text text-transparent"
+                className="inline-block bg-clip-text text-transparent whitespace-nowrap"
                 style={gradientStyle}
               >
                 Officers
               </span>
 
-              <span className="text-[#00000099]">Now it&apos;s</span>
+              <span className="text-[#00000099] whitespace-nowrap">
+                Now it&apos;s
+              </span>
             </div>
 
-            {/* Block 3: your turn to serve */}
-            <div className="motto-text-line flex items-center gap-4">
-              <span className="text-[#00000099]">your turn to</span>
+            {/* LINE 3: YOUR TURN TO SERVE */}
+            <div className="motto-text-line flex items-center gap-4 mb-2">
+              <span className="text-[#00000099] whitespace-nowrap">
+                your turn to
+              </span>
 
               <span
-                className="bg-clip-text text-transparent"
+                className="inline-block bg-clip-text text-transparent whitespace-nowrap"
                 style={gradientStyle}
               >
                 serve
               </span>
             </div>
 
-            {/* Block 4: the nation */}
+            {/* LINE 4: THE NATION */}
             <div className="motto-text-line flex items-center gap-4">
-              <span className="text-[#00000099]">the</span>
+              <span className="text-[#00000099] whitespace-nowrap">
+                the
+              </span>
 
               <span
-                className="bg-clip-text text-transparent"
+                className="inline-block bg-clip-text text-transparent whitespace-nowrap"
                 style={gradientStyle}
               >
                 nation
@@ -171,9 +159,9 @@ const MottoSection: React.FC = () => {
             </div>
           </div>
 
-          <div className="motto-text-line mt-6 sm:mt-8 md:mt-10">
+          <div className="motto-text-line mt-7 sm:mt-8 md:mt-9">
             <button
-              className="text-white font-['Montserrat'] font-semibold text-base sm:text-lg md:text-xl lg:text-[22px] flex items-center justify-center gap-[14px] rounded-[12px] w-full max-w-[436px] h-[44px] sm:h-[52px] md:h-[59px] px-[16px] py-[10px] hover:scale-[1.02] hover:brightness-110 transition-all duration-300"
+              className="text-white font-['Montserrat'] font-semibold text-[18px] sm:text-[20px] md:text-[22px] lg:text-[26px] flex items-center justify-center gap-[14px] rounded-[12px] w-full max-w-[500px] h-[48px] sm:h-[56px] md:h-[64px] px-[18px] py-[10px] hover:scale-[1.02] hover:brightness-110 transition-all duration-300"
               style={{
                 background: 'linear-gradient(90deg, #00679C 0%, #002436 100%)',
                 boxShadow: '0px 4px 32px 0px #0000001A',
