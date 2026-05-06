@@ -1,7 +1,7 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
 
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://sriramias.onrender.com";
+  export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "https://backend-new-pmhw.onrender.com";
 
 export const TOKEN_STORAGE_KEY = "sriram_access_token";
 
