@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -9,106 +9,90 @@ import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const toppers = [
+  {
+    name: 'AAKASH GARG',
+    rank: 'AIR 5',
+    course: 'GS Foundation Course',
+    img: 'AAKASH GARG(AIR-5).png',
+  },
+  {
+    name: 'ABHI JAIN',
+    rank: 'AIR 34',
+    course: 'GS Foundation Course',
+    img: 'ABHI JAIN(AIR-34).png',
+  },
+  {
+    name: 'ABHISHEK SHARMA',
+    rank: 'AIR 38',
+    course: 'GS Foundation Course',
+    img: 'ABHISHEK-SHARMA-(AIR-38).png',
+  },
+];
+
+const duplicatedToppers = [
+  ...toppers,
+  ...toppers,
+  ...toppers,
+  ...toppers,
+  ...toppers,
+  ...toppers,
+];
+
 const OurToppers: React.FC = () => {
-  const containerRef = useRef<HTMLElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [isPaused, setIsPaused] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   useGSAP(
     () => {
-      if (prefersReducedMotion) return;
+      if (!sectionRef.current) return;
 
-      gsap.from('.our-toppers-heading', {
-        y: 70,
-        opacity: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top 60%',
-          once: true,
-        },
-      });
-
-      gsap.from('.our-toppers-card', {
-        y: 50,
-        opacity: 0,
-        scale: 0.95,
-        duration: 0.6,
-        stagger: { each: 0.03, from: 'center' },
-        ease: 'back.out(1.2)',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top 95%',
-          once: true,
-        },
-      });
-    },
-    { dependencies: [prefersReducedMotion], scope: containerRef }
-  );
-
-  const toppers = [
-    {
-      name: 'akhi',
-      rank: 'AIR 01',
-      course: 'GS Foundation Course',
-      img: 'no background.png',
-    },
-  ];
-
-  const displayToppers = [
-    ...toppers,
-    ...toppers,
-    ...toppers,
-    ...toppers,
-    ...toppers,
-    ...toppers,
-    ...toppers,
-    ...toppers,
-  ];
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el || prefersReducedMotion) return;
-
-    let rafId: number;
-    let lastTime = performance.now();
-    let scrollPos = 0;
-
-    const speed = 55;
-
-    const step = (time: number) => {
-      if (!isPaused) {
-        const delta = (time - lastTime) / 1000;
-        lastTime = time;
-
-        scrollPos += speed * delta;
-        el.scrollLeft = scrollPos;
-
-        const halfWidth = el.scrollWidth / 2;
-
-        if (scrollPos >= halfWidth) {
-          scrollPos = 0;
-          el.scrollLeft = 0;
-        }
-      } else {
-        lastTime = time;
+      if (!prefersReducedMotion) {
+        gsap.from('.our-toppers-heading', {
+          y: 70,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 70%',
+            once: true,
+          },
+        });
       }
 
-      rafId = requestAnimationFrame(step);
-    };
+      const track = trackRef.current;
+      if (!track || prefersReducedMotion) return;
 
-    rafId = requestAnimationFrame(step);
+      const tween = gsap.to(track, {
+        xPercent: -50,
+        repeat: -1,
+        duration: 38,
+        ease: 'none',
+      });
 
-    return () => cancelAnimationFrame(rafId);
-  }, [isPaused, prefersReducedMotion]);
+      const pause = () => tween.pause();
+      const play = () => tween.play();
+
+      track.addEventListener('mouseenter', pause);
+      track.addEventListener('mouseleave', play);
+
+      return () => {
+        tween.kill();
+        track.removeEventListener('mouseenter', pause);
+        track.removeEventListener('mouseleave', play);
+      };
+    },
+    { dependencies: [prefersReducedMotion], scope: sectionRef }
+  );
 
   return (
     <section
-      ref={containerRef}
-      className="relative w-full min-h-[600px] flex flex-col items-center justify-start pt-6 pb-10 px-0 overflow-hidden"
+      ref={sectionRef}
+      className="relative w-full min-h-[600px] flex flex-col items-center justify-start pt-6 pb-10 px-0 overflow-visible"
     >
+      {/* BACKGROUND */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <Image
           src="/assets/our-centers/centers-bg.png"
@@ -120,8 +104,9 @@ const OurToppers: React.FC = () => {
         />
       </div>
 
-      <div className="relative z-10 w-full max-w-[1400px] flex flex-col items-center">
-        <div className="our-toppers-heading text-center mb-2">
+      <div className="relative z-10 w-full max-w-[1400px] flex flex-col items-center overflow-visible">
+        {/* HEADING MOVED DOWN */}
+        <div className="our-toppers-heading text-center mb-2 mt-10">
           <h2 className="global-section-heading">OUR TOPPERS</h2>
         </div>
 
@@ -130,43 +115,42 @@ const OurToppers: React.FC = () => {
           expert mentorship, and personalized attention.
         </p>
 
-        <div
-          ref={scrollRef}
-          className="w-full mt-[-20px] overflow-x-hidden flex gap-4 pb-6 px-4 md:px-8"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          onTouchStart={() => setIsPaused(true)}
-          onTouchEnd={() => setIsPaused(false)}
-        >
-          {displayToppers.map((topper, idx) => (
-            <div
-              key={idx}
-             className="our-toppers-card flex-shrink-0 flex flex-col items-center w-[340px]"
-            >
-             {/* IMAGE WITHOUT FRAME */}
-              <div className="relative -mt-30 w-[480px] h-[580px] mb-[-20px] overflow-visible">
-                <Image
-                  src={`/assets/ourtoppers/_originals/${topper.img}`}
-                  alt={topper.name}
-                  fill
-                  sizes="340px"
-                  className="object-contain object-bottom"
-                />
-              </div>
-
-              <h3 className="text-white text-[16px] font-bold mb-2 text-center min-h-[30px]">
-                {topper.name}
-              </h3>
-
-              <span className="bg-[#FF9800] text-white text-[15px] font-semibold py-2 px-8 rounded-full mb-2">
-                {topper.rank}
-              </span>
-
-              <span className="text-white text-[13px] opacity-90 text-center">
-                {topper.course}
-              </span>
+        {/* SCROLL AREA - no hidden wall */}
+        <div className="w-full relative overflow-visible mt-[-20px] pb-6">
+          <div
+            ref={trackRef}
+            className="flex gap-8 w-max will-change-transform overflow-visible"
+          >
+            {duplicatedToppers.map((topper, idx) => (
+              <div
+                key={`${topper.name}-${idx}`}
+                className="our-toppers-card min-w-[300px] w-[300px] flex-shrink-0 flex flex-col items-center overflow-visible"
+              >
+               <div className="relative mt-[-170px] w-[520px] h-[650px] mb-[-25px] overflow-visible">
+              <Image
+                src={`/assets/ourtoppers/_originals/${topper.img}`}
+                alt={topper.name}
+                fill
+                sizes="520px"
+                className="object-contain object-bottom"
+                priority={idx < 4}
+              />
             </div>
-          ))}
+
+                <h3 className="text-white text-[16px] font-bold mb-2 text-center min-h-[30px] max-w-[300px]">
+                  {topper.name}
+                </h3>
+
+                <span className="bg-[#FF9800] text-white text-[15px] font-semibold py-2 px-8 rounded-full mb-2">
+                  {topper.rank}
+                </span>
+
+                <span className="text-white text-[13px] opacity-90 text-center">
+                  {topper.course}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
