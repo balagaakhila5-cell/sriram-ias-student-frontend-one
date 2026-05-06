@@ -230,7 +230,7 @@ const Footer: React.FC = () => {
             </div>
 
             {/* Cities moved down and text spacing added */}
-            <div className="footer-contacts grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20 mt-14 lg:mt-20">
+           <div className="footer-contacts grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20 mt-10 lg:mt-14">
               <div className="footer-contact space-y-4">
                 <div className="flex items-center gap-3">
                   <Image

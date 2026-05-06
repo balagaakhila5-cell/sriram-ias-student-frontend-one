@@ -15,7 +15,7 @@ const FreeCourses: React.FC = () => {
   const sections = [
     {
       id: 'quizzes',
-      title: 'Daily Quizzes',
+      title: 'Daily Quiz',
       description:
         'Participate in our daily quizzes to test your knowledge, strengthen your understanding of key concepts, and stay consistent with your learning journey.',
       bg: 'bg-[#000000]',
@@ -35,7 +35,7 @@ const FreeCourses: React.FC = () => {
     },
     {
       id: 'mains-question',
-      title: 'Daily Mains Question',
+      title: 'Daily Mains Questions',
       description:
         'Solve our Daily Mains Questions to improve your answer-writing skills, build strong arguments, and stay consistent with your UPSC Mains preparation.',
       bg: 'bg-[#0d47a1]',
@@ -148,10 +148,10 @@ const FreeCourses: React.FC = () => {
               </div>
             )}
 
-            <div className="relative z-10 grid w-full max-w-[1450px] mx-auto grid-cols-1 md:grid-cols-[60%_40%] items-center gap-8 md:gap-10 lg:gap-12">
+            <div className="relative z-10 grid w-full max-w-[1450px] mx-auto grid-cols-1 md:grid-cols-[58%_42%] items-center gap-8 md:gap-10 lg:gap-12">
               {/* Text */}
               <div className="section-text w-full min-w-0 space-y-8 md:space-y-10 overflow-visible">
-                <h3 className="text-[38px] md:text-[52px] lg:text-[62px] xl:text-[70px] font-extrabold leading-[1.02] whitespace-nowrap">
+                <h3 className="text-[32px] md:text-[44px] lg:text-[52px] xl:text-[58px] font-extrabold leading-[1.05] whitespace-nowrap">
                   <span className={section.accentColor}>
                     {section.title}
                   </span>
