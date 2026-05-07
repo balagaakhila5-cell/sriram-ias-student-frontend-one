@@ -560,26 +560,86 @@ const secondNavItemClass =
                     }`}
                   />
                 </button>
-
                 {isAboutOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
-                    <Link
-                      href="/about"
-                      onClick={() => setIsAboutOpen(false)}
-                      className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1897D8] cursor-pointer transition-colors font-medium normal-case"
-                    >
-                      About us
-                    </Link>
+  <div className="absolute top-full right-0 mt-10 w-[602px] h-[274px] rounded-[22px] bg-white shadow-[0px_18px_50px_rgba(0,0,0,0.18)] overflow-hidden z-50">
+    {/* Moving background animation */}
+    <div className="about-bg-motion absolute inset-0 pointer-events-none" />
 
-                    <Link
-                      href="/founders-message"
-                      onClick={() => setIsAboutOpen(false)}
-                      className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1897D8] cursor-pointer transition-colors font-medium normal-case"
-                    >
-                      Founder&apos;s Message
-                    </Link>
-                  </div>
-                )}
+    {/* Very light white overlay */}
+    <div className="absolute inset-0 bg-white/20 pointer-events-none" />
+
+    {/* Cards */}
+    <div className="relative z-10 flex h-full items-center justify-center gap-4 px-16">
+      <Link
+        href="/about"
+        onClick={() => setIsAboutOpen(false)}
+        className="group flex h-[170px] w-[184px] flex-col items-center justify-center rounded-[18px] bg-white/95 shadow-[0px_12px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]"
+      >
+        <Image
+          src="/assets/about/about-us-icon.png"
+          alt="About Us"
+          width={56}
+          height={56}
+          className="mb-5 h-[56px] w-[56px] object-contain transition-transform duration-300 group-hover:scale-110"
+        />
+
+        <span className="text-[18px] font-semibold normal-case text-[#B95D63]">
+          About Us
+        </span>
+      </Link>
+
+      <Link
+        href="/founders-message"
+        onClick={() => setIsAboutOpen(false)}
+        className="group flex h-[170px] w-[258px] flex-col items-center justify-center rounded-[18px] bg-white/95 shadow-[0px_12px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]"
+      >
+        <Image
+          src="/assets/about/founder's-message-icon.png"
+          alt="Founder Message"
+          width={56}
+          height={56}
+          className="mb-5 h-[56px] w-[56px] object-contain transition-transform duration-300 group-hover:scale-110"
+        />
+
+        <span className="text-[18px] font-semibold normal-case text-[#6F8E3B]">
+          Founder&apos;s Message
+        </span>
+      </Link>
+    </div>
+
+    <style jsx global>{`
+      .about-bg-motion {
+        background-image: url("/assets/about/background-animation-about.png");
+        background-size: 125% 125%;
+        background-repeat: no-repeat;
+        background-position: left bottom;
+        opacity: 1;
+        animation: aboutWaveMove 3s ease-in-out infinite alternate;
+        will-change: transform, background-position;
+      }
+
+      @keyframes aboutWaveMove {
+        0% {
+          background-position: left bottom;
+          transform: translateX(-18px) translateY(10px) scale(1.08);
+        }
+
+        50% {
+          background-position: center bottom;
+          transform: translateX(18px) translateY(-8px) scale(1.14);
+        }
+
+        100% {
+          background-position: right bottom;
+          transform: translateX(-10px) translateY(8px) scale(1.1);
+        }
+      }
+    `}</style>
+  </div>
+)}
+
+             
+
               </div>
             </nav>
           </div>
