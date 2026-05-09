@@ -22,15 +22,15 @@ const circleImages = [
 
 const imagePositions = [
   {
-    left: "196px",
+    left: "140px",
     top: "0px",
   },
   {
-    left: "28px",
+    left: "0px",
     top: "385px",
   },
   {
-    left: "390px",
+    left: "345px",
     top: "385px",
   },
 ];
@@ -80,9 +80,9 @@ const AboutPage = () => {
           <span className="orbit-dot orbit-dot-small" />
         </div>
 
-        <div className="relative z-10 grid w-full grid-cols-[720px_1fr] items-start gap-[40px] px-[24px]">
+        <div className="relative z-10 mx-auto grid w-full max-w-[1366px] grid-cols-[700px_650px] items-start justify-center gap-[20px] px-[20px]">
           {/* LEFT TEXT CARDS */}
-          <div className="ml-[35px] flex flex-col gap-[28px]">
+          <div className="flex flex-col gap-[28px]">
             <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]">
               <p className="font-['Montserrat'] text-[18px] leading-[39px] font-semibold text-[#666666]">
                 SRIRAM&apos;s IAS is one of the premier institutions for
@@ -124,15 +124,15 @@ const AboutPage = () => {
           </div>
 
           {/* RIGHT IMAGE NETWORK */}
-          <div className="relative mt-[170px] h-[840px] w-[680px]">
+          <div className="relative mt-[170px] h-[840px] w-[650px] shrink-0 overflow-visible">
             {/* Diagonal connector line to bottom left image */}
-            <div className="absolute left-[340px] top-[218px] h-[340px] w-[5px] origin-top rotate-[34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
+            <div className="absolute left-[282px] top-[218px] h-[340px] w-[5px] origin-top rotate-[34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
 
             {/* Diagonal connector line to bottom right image */}
-            <div className="absolute left-[340px] top-[218px] h-[340px] w-[5px] origin-top rotate-[-34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
+            <div className="absolute left-[282px] top-[218px] h-[340px] w-[5px] origin-top rotate-[-34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
 
             {/* Straight gradient line between bottom two images */}
-            <div className="absolute left-[285px] top-[528px] z-[5] h-[5px] w-[130px] rounded-full bg-gradient-to-r from-[#2D9CDB] via-[#B95D63] to-[#2D9CDB]" />
+            <div className="absolute left-[285px] top-[528px] z-[5] h-[5px] w-[95px] rounded-full bg-gradient-to-r from-[#2D9CDB] via-[#B95D63] to-[#2D9CDB]" />
 
             {circleImages.map((item, index) => {
               const positionIndex =
@@ -252,6 +252,29 @@ const AboutPage = () => {
 
           .about-text-card {
             cursor: pointer;
+          }
+
+          @media (max-width: 1279px) {
+            .about-page-bg-motion {
+              background-size: cover;
+              background-position: center top;
+            }
+
+            .half-circle-orbit {
+              left: 80px;
+              top: -220px;
+            }
+          }
+
+          @media (max-width: 1023px) {
+            .half-circle-orbit {
+              display: none;
+            }
+
+            .about-page-bg-motion {
+              background-size: cover;
+              background-position: center top;
+            }
           }
         `}</style>
       </section>
