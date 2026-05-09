@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
+import { useHomepage } from '@/features/homepage/hooks/useHomepage';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,7 +13,7 @@ const FreeCourses: React.FC = () => {
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
-  const sections = [
+  const fallbackSections = [
     {
       id: 'quizzes',
       title: 'Daily Quiz',
@@ -54,6 +55,43 @@ const FreeCourses: React.FC = () => {
       accentColor: 'text-[#EDD1AC]',
     },
   ];
+
+  const colorPalette = [
+    { bg: 'bg-[#000000]', accentColor: 'text-[#C5727A]' },
+    { bg: 'bg-[#5A0A0A]', accentColor: 'text-[#FFCE8C]' },
+    { bg: 'bg-[#0d47a1]', accentColor: 'text-[#EDD1AC]' },
+    { bg: 'bg-[#004D40]', accentColor: 'text-[#EDD1AC]' },
+  ];
+
+  const { data: homepage } = useHomepage();
+  const section4 = homepage?.section4;
+  const sectionTitle = section4?.title ?? 'ACCESS FREE LEARNING RESOURCES';
+
+  const sections = useMemo(() => {
+    const cards = section4?.cards ?? [];
+    if (cards.length === 0) return fallbackSections;
+
+    const sortedCards = [...cards].sort(
+      (a, b) => (a.order ?? 0) - (b.order ?? 0),
+    );
+
+    return sortedCards.map((card, index) => {
+      const fallback = fallbackSections[index % fallbackSections.length];
+      const palette = colorPalette[index % colorPalette.length];
+      const [backgroundImage, rightImage, floatingImage] = card.images ?? [];
+
+      return {
+        id: card._id ?? fallback.id ?? `card-${index}`,
+        title: card.title ?? fallback.title,
+        description: card.description ?? fallback.description,
+        backgroundImage: backgroundImage ?? fallback.backgroundImage,
+        rightImage: rightImage ?? fallback.rightImage,
+        floatingImage,
+        bg: palette.bg,
+        accentColor: palette.accentColor,
+      };
+    });
+  }, [section4]);
 
   useGSAP(
     () => {
@@ -116,14 +154,14 @@ const FreeCourses: React.FC = () => {
         });
       });
     },
-    { dependencies: [prefersReducedMotion], scope: containerRef }
+    { dependencies: [prefersReducedMotion, sections.length], scope: containerRef }
   );
 
   return (
     <section ref={containerRef} className="bg-white">
       <div className="section-header text-center py-20 px-4 bg-[#EAF7FF]">
         <h2 className="global-section-heading">
-          ACCESS FREE LEARNING RESOURCES
+          {sectionTitle}
         </h2>
       </div>
 
@@ -175,6 +213,13 @@ const FreeCourses: React.FC = () => {
                       alt={section.title}
                       className="section-image h-full w-auto max-w-none object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500 cursor-pointer"
                     />
+                    {section.floatingImage && (
+                      <img
+                        src={section.floatingImage}
+                        alt=""
+                        className="absolute -bottom-8 left-4 w-[110px] md:w-[140px] lg:w-[160px] rotate-[-6deg] rounded-xl shadow-2xl"
+                      />
+                    )}
                   </div>
                 )}
               </div>

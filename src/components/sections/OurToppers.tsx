@@ -1,12 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useHomepage } from '@/features/homepage/hooks/useHomepage';
 
-const toppers = [
+const fallbackToppers = [
   {
     name: 'AAKASH GARG',
     rank: 'AIR 5',
-    course: 'GS Foundation Course',
+    description: 'GS Foundation Course',
     img: 'AAKASH GARG(AIR-5) .png',
     y: 35,
     scale: 1,
@@ -14,7 +15,7 @@ const toppers = [
   {
     name: 'ABHI JAIN',
     rank: 'AIR 34',
-    course: 'GS Foundation Course',
+    description: 'GS Foundation Course',
     img: 'ABHI-JAIN(AIR-34).png',
     y: 15,
     scale: 1.03,
@@ -22,7 +23,7 @@ const toppers = [
   {
     name: 'ABHISHEK SHARMA',
     rank: 'AIR 38',
-    course: 'GS Foundation Course',
+    description: 'GS Foundation Course',
     img: 'ABHISHEK-SHARMA-(AIR-38) .png',
     y: 45,
     scale: 1.01,
@@ -30,7 +31,7 @@ const toppers = [
   {
     name: 'DIKSHA RAI',
     rank: 'AIR 40',
-    course: 'GS Foundation Course',
+    description: 'GS Foundation Course',
     img: 'DIKSHA-RAI(AIR-40).png',
     y: 28,
     scale: 0.98,
@@ -38,7 +39,7 @@ const toppers = [
   {
     name: 'NABIYA PARVEZ',
     rank: 'AIR 29',
-    course: 'GS Foundation Course',
+    description: 'GS Foundation Course',
     img: 'NABIYA-PARVEZ(AIR-29).png',
     y: 18,
     scale: 0.92,
@@ -46,7 +47,7 @@ const toppers = [
   {
     name: 'RAGHAV JHUNJHUNWALA',
     rank: 'AIR 4',
-    course: 'GS Foundation Course',
+    description: 'GS Foundation Course',
     img: 'RAGHAV-JHUNJWALA(AIR-4).png',
     y: 10,
     scale: 1,
@@ -54,7 +55,7 @@ const toppers = [
   {
     name: 'RAJ KRISHNA JHA',
     rank: 'AIR 8',
-    course: 'GS Foundation Course',
+    description: 'GS Foundation Course',
     img: 'RAJ-KRISHNA JHA(AIR-8).png',
     y: 5,
     scale: 1,
@@ -62,16 +63,44 @@ const toppers = [
   {
     name: 'ROHIN KUMAR',
     rank: 'AIR 39',
-    course: 'GS Foundation Course',
+    description: 'GS Foundation Course',
     img: 'ROHIN-KUMAR(AIR-39).png',
     y: 12,
     scale: 1,
   },
 ];
 
-const duplicatedToppers = [...toppers, ...toppers];
-
 const OurToppers: React.FC = () => {
+  const { data: homepage } = useHomepage();
+  const section = homepage?.section3;
+
+  const displayToppers = useMemo(() => {
+    const apiToppers = section?.toppers ?? [];
+    if (apiToppers.length === 0) return fallbackToppers;
+
+    return apiToppers.map((topper, index) => {
+      const fallback = fallbackToppers[index % fallbackToppers.length];
+      return {
+        name: topper.name,
+        rank: topper.rank,
+        description: topper.description ?? fallback.description,
+        img: fallback.img,
+        y: fallback.y,
+        scale: fallback.scale,
+      };
+    });
+  }, [section?.toppers]);
+
+  const duplicatedToppers = useMemo(
+    () => [...displayToppers, ...displayToppers],
+    [displayToppers],
+  );
+
+  const heading = section?.title ?? 'OUR TOPPERS';
+  const subTitle =
+    section?.subTitle ??
+    'Driven by a commitment to success, we stand behind our toppers with constant support, expert mentorship, and personalized attention.';
+
   return (
     <section className="relative w-full min-h-[680px] flex flex-col items-center pt-0 pb-6 overflow-hidden">
       {/* BACKGROUND */}
@@ -84,12 +113,11 @@ const OurToppers: React.FC = () => {
       <div className="relative z-10 w-full max-w-[1900px] flex flex-col items-center">
         {/* HEADING - MOVED DOWN */}
         <div className="text-center mt-10">
-          <h2 className="global-section-heading">OUR TOPPERS</h2>
+          <h2 className="global-section-heading">{heading}</h2>
         </div>
 
         <p className="text-center text-[#2A3742] font-medium max-w-[800px] mx-auto text-[14px] md:text-[16px] leading-relaxed px-6">
-          Driven by a commitment to success, we stand behind our toppers with constant support,
-          expert mentorship, and personalized attention.
+          {subTitle}
         </p>
 
         {/* SCROLL - IMAGES + TEXT MOVED DOWN LITTLE BIT */}
@@ -130,7 +158,7 @@ const OurToppers: React.FC = () => {
                   </span>
 
                   <span className="text-white text-[13px] opacity-90 text-center mt-1">
-                    {topper.course}
+                    {topper.description}
                   </span>
                 </div>
               </div>

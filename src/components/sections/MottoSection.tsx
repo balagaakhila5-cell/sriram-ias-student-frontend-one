@@ -7,6 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import useInViewport from '@/hooks/useInViewport';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
+import { useHomepage } from '@/features/homepage/hooks/useHomepage';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,6 +16,8 @@ const MottoSection: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const isInViewport = useInViewport(sectionRef, { threshold: 0.2 });
+  const { data: homepage } = useHomepage();
+  const tagline = homepage?.section2?.text;
 
   const gradientStyle = {
     backgroundImage:
@@ -98,6 +101,11 @@ const MottoSection: React.FC = () => {
       <div className="relative z-10 w-full max-w-[1600px] px-4 sm:px-6 md:px-8 lg:px-16">
         <div className="w-full md:w-[62%] lg:w-[66%] xl:w-[68%]">
           <div className="font-['Montserrat'] font-bold text-[24px] sm:text-[34px] md:text-[46px] lg:text-[58px] xl:text-[64px] leading-[1.08] tracking-[0%]">
+            {tagline && (
+              <p className="motto-text-line mb-4 text-[14px] sm:text-[16px] md:text-[18px] font-semibold tracking-[0.15em] uppercase text-[#00000080]">
+                {tagline}
+              </p>
+            )}
             
             {/* LINE 1: LOGO + IN SHAPING */}
 <div className="motto-text-line flex items-start gap-0 sm:gap-1 md:gap-2 mb-3">

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import Image from 'next/image';
 import { MapPin, Star, Building2, Phone, Mail } from 'lucide-react';
 import gsap from 'gsap';
@@ -9,39 +9,75 @@ import { useGSAP } from '@gsap/react';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import DiamondLayer from '../DiamondLayer';
 import { heroDiamondConfig } from '../diamondConfigs';
+import { useHomepage } from '@/features/homepage/hooks/useHomepage';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const fallbackCentres = [
+  {
+    id: 'delhi',
+    name: 'New Delhi',
+    rating: 4.8,
+    image: '/assets/Delhi-img.png',
+    address:
+      "New Delhi: SRIRAM'S IAS TOWER, 10 B, Pusa Road, Bada Bazar Rd, Near Metro Pillar No. 112, Old Rajinder Nagar, New Delhi - 110060",
+    phone: '9811489560',
+    email: 'sriram@gmail.com',
+  },
+  {
+    id: 'hyderabad',
+    name: 'Hyderabad',
+    rating: 4.8,
+    image: '/assets/hyd.png',
+    address:
+      'Hyderabad: Plot No. 123, Road No. 45, Jubilee Hills, Near Metro Station, Hyderabad - 500033',
+    phone: '9811489561',
+    email: 'sriram.hyd@gmail.com',
+  },
+  {
+    id: 'pune',
+    name: 'Pune',
+    rating: 4.8,
+    image: '/assets/pune.png',
+    address:
+      'Pune: 4th Floor, City Center, MG Road, Camp Area, Near Railway Station, Pune - 411001',
+    phone: '9811489562',
+    email: 'sriram.pune@gmail.com',
+  },
+];
+
+const centreDirectory: Record<string, typeof fallbackCentres[number]> = {
+  'new delhi': fallbackCentres[0],
+  delhi: { ...fallbackCentres[0], name: 'Delhi' },
+  hyderabad: fallbackCentres[1],
+  pune: fallbackCentres[2],
+  bengaluru: { ...fallbackCentres[1], name: 'Bengaluru', image: '/assets/hyd.png' },
+  bangalore: { ...fallbackCentres[1], name: 'Bangalore', image: '/assets/hyd.png' },
+};
+
+const normalizeKey = (value: string) =>
+  value.toLowerCase().replace(/\s+/g, ' ').trim();
+
 const OfflineCentres: React.FC = () => {
-  const centres = [
-    {
-      id: 1,
-      name: 'New Delhi',
-      rating: 4.8,
-      image: '/assets/Delhi-img.png',
-      address: "New Delhi: SRIRAM'S IAS TOWER, 10 B, Pusa Road, Bada Bazar Rd, Near Metro Pillar No. 112, Old Rajinder Nagar, New Delhi - 110060",
-      phone: '9811489560',
-      email: 'sriram@gmail.com'
-    },
-    {
-      id: 2,
-      name: 'Hyderabad',
-      rating: 4.8,
-      image: '/assets/hyd.png',
-      address: "Hyderabad: Plot No. 123, Road No. 45, Jubilee Hills, Near Metro Station, Hyderabad - 500033",
-      phone: '9811489561',
-      email: 'sriram.hyd@gmail.com'
-    },
-    {
-      id: 3,
-      name: 'Pune',
-      rating: 4.8,
-      image: '/assets/pune.png',
-      address: "Pune: 4th Floor, City Center, MG Road, Camp Area, Near Railway Station, Pune - 411001",
-      phone: '9811489562',
-      email: 'sriram.pune@gmail.com'
-    },
-  ];
+  const { data: homepage } = useHomepage();
+  const section5 = homepage?.section5;
+
+  const centres = useMemo(() => {
+    const apiCards = section5?.cards ?? [];
+    if (apiCards.length === 0) return fallbackCentres;
+
+    return apiCards.map((card, index) => {
+      const base =
+        centreDirectory[normalizeKey(card.name)]
+        ?? fallbackCentres[index % fallbackCentres.length];
+
+      return {
+        ...base,
+        id: card._id ?? base.id,
+        name: card.name ?? base.name,
+      };
+    });
+  }, [section5?.cards]);
 
   const buttonStyle = {
     background: 'linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)',
@@ -88,7 +124,7 @@ const OfflineCentres: React.FC = () => {
       }
     );
 
-  }, { dependencies: [prefersReducedMotion], scope: sectionRef });
+  }, { dependencies: [prefersReducedMotion, centres.length], scope: sectionRef });
 
   return (
     <section ref={sectionRef} className="relative py-12 px-4 md:px-16  bg-white">
@@ -98,7 +134,7 @@ const OfflineCentres: React.FC = () => {
         {/* Header */}
         <div className="offline-header text-center">
           <h2 className="global-section-heading">
-            OFFLINE CENTRES
+            {section5?.title ?? 'OFFLINE CENTRES'}
           </h2>
         </div>
 
