@@ -35,7 +35,7 @@ const FoundersMessagePage = () => {
       </section>
 
       {/* FOUNDER MESSAGE SECTION */}
-      <section className="relative bg-[#f8fbff] overflow-hidden min-h-[980px]">
+      <section className="relative bg-[#f8fbff] overflow-hidden min-h-[1100px]">
         <div className="absolute inset-0 founder-page-bg" />
 
         <div className="founder-moving-bg">
@@ -48,17 +48,17 @@ const FoundersMessagePage = () => {
           />
         </div>
 
-        <div className="relative z-10 w-full max-w-[1760px] mx-auto px-4 sm:px-8 lg:px-[18px] xl:px-[22px] py-[24px] lg:py-[26px]">
-          <div className="grid grid-cols-1 lg:grid-cols-[1.64fr_0.56fr] gap-0 lg:gap-4 xl:gap-6 items-start">
+        <div className="relative z-10 w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-[24px] xl:px-[28px] py-[24px] lg:py-[26px]">
+          <div className="grid grid-cols-1 lg:grid-cols-[820px_520px] items-start justify-center gap-0 lg:gap-[44px]">
             {/* LEFT DIALOG BOX */}
-            <div className="relative z-20 lg:ml-[28px] xl:ml-[45px]">
+            <div className="relative z-20 w-full">
               <div className="dialog-box-wrap">
                 <Image
                   src="/assets/about/founder's-message/dialog-box.png"
                   alt="Founder message dialog box"
                   fill
                   priority
-                  sizes="1250px"
+                  sizes="900px"
                   className="object-fill"
                 />
 
@@ -182,15 +182,15 @@ const FoundersMessagePage = () => {
         .dialog-box-wrap {
           position: relative;
           width: 100%;
-          max-width: 1250px;
-          height: 900px;
+          max-width: 820px;
+          height: 1040px;
           overflow: visible;
         }
 
         .dialog-text-content {
           position: relative;
           z-index: 2;
-          padding: 72px 128px 95px 112px;
+          padding: 86px 112px 145px 102px;
           color: #4f5b63;
           font-size: 18px !important;
           line-height: 1.86 !important;
@@ -213,9 +213,9 @@ const FoundersMessagePage = () => {
         }
 
         .right-founder-col {
-          margin-left: -34px;
+          margin-left: 0;
           margin-top: 0;
-          transform: translateX(62px);
+          transform: translateX(0);
         }
 
         .founder-photo-wrap {
@@ -280,12 +280,12 @@ const FoundersMessagePage = () => {
 
         @media (min-width: 1280px) and (max-width: 1450px) {
           .dialog-box-wrap {
-            max-width: 1210px;
-            height: 880px;
+            max-width: 800px;
+            height: 1020px;
           }
 
           .dialog-text-content {
-            padding: 66px 118px 92px 104px;
+            padding: 78px 104px 135px 96px;
             font-size: 17.4px !important;
             line-height: 1.84 !important;
           }
@@ -294,12 +294,6 @@ const FoundersMessagePage = () => {
             font-size: 17.4px !important;
             line-height: 1.84 !important;
             margin-bottom: 32px !important;
-          }
-
-          .right-founder-col {
-            margin-left: -28px;
-            margin-top: 0;
-            transform: translateX(68px);
           }
 
           .founder-photo-wrap {
@@ -331,11 +325,11 @@ const FoundersMessagePage = () => {
         @media (max-width: 1279px) {
           .dialog-box-wrap {
             max-width: 940px;
-            height: 820px;
+            height: 860px;
           }
 
           .dialog-text-content {
-            padding: 62px 80px 95px 80px;
+            padding: 62px 80px 105px 80px;
             font-size: 16px !important;
             line-height: 1.8 !important;
             font-weight: 600 !important;

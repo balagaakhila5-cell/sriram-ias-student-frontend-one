@@ -1,11 +1,51 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 
+const circleImages = [
+  {
+    src: "/assets/about/about-us/Ellipse 56.png",
+    alt: "Student",
+  },
+  {
+    src: "/assets/about/about-us/Ellipse 57.png",
+    alt: "Classroom Student",
+  },
+  {
+    src: "/assets/about/about-us/Ellipse 58.png",
+    alt: "Classroom Student",
+  },
+];
+
+const imagePositions = [
+  {
+    left: "136px",
+    top: "0px",
+  },
+  {
+    left: "-32px",
+    top: "385px",
+  },
+  {
+    left: "330px",
+    top: "385px",
+  },
+];
+
 const AboutPage = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % circleImages.length);
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <main className="min-h-screen bg-white overflow-hidden">
       <Header />
@@ -30,22 +70,20 @@ const AboutPage = () => {
       </section>
 
       {/* ABOUT CONTENT SECTION */}
-      <section className="relative w-full overflow-hidden bg-[#F6FBFF] pt-[70px] pb-[110px]">
-        {/* Moving background animation */}
+      <section className="relative -mt-[1px] w-full overflow-hidden bg-[#F6FBFF] pt-[38px] pb-[150px] min-h-[1120px]">
+        {/* STATIC BACKGROUND */}
         <div className="about-page-bg-motion absolute inset-0 pointer-events-none" />
 
-        {/* Big background circles like Figma */}
-        <div className="absolute right-[3%] top-[8%] h-[265px] w-[265px] rounded-full bg-[#DDF0FF]/75" />
-        <div className="absolute right-[18%] top-[33%] h-[165px] w-[165px] rounded-full bg-[#EAF7FF]/85" />
-        <div className="absolute left-[-5%] top-[24%] h-[215px] w-[215px] rounded-full bg-[#DDF0FF]/65" />
+        {/* BLUE MOVING DOTS */}
+        <div className="half-circle-orbit pointer-events-none">
+          <span className="orbit-dot orbit-dot-main" />
+          <span className="orbit-dot orbit-dot-small" />
+        </div>
 
-        <div className="relative z-10 grid w-full grid-cols-[720px_1fr] items-start gap-[40px] px-[24px]">
+        <div className="relative z-10 mx-auto grid w-full max-w-[1366px] grid-cols-[720px_560px] items-start justify-center gap-[40px] px-[24px]">
           {/* LEFT TEXT CARDS */}
-          <div className="relative flex flex-col gap-[28px]">
-            {/* Small blue dot/circle beside first text card like Figma */}
-            <div className="absolute right-[-42px] top-[72px] z-20 h-[10px] w-[10px] rounded-full bg-[#3A9AD7]" />
-
-            <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#F0FAFF] hover:shadow-[0px_18px_40px_rgba(24,151,216,0.16)]">
+          <div className="flex flex-col gap-[28px]">
+            <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]">
               <p className="font-['Montserrat'] text-[18px] leading-[39px] font-semibold text-[#666666]">
                 SRIRAM&apos;s IAS is one of the premier institutions for
                 Preparation of UPSC Civil Services Examination. Established in
@@ -56,7 +94,7 @@ const AboutPage = () => {
               </p>
             </div>
 
-            <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#FFF8F8] hover:shadow-[0px_18px_40px_rgba(185,93,99,0.16)]">
+            <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]">
               <p className="font-['Montserrat'] text-[18px] leading-[39px] font-semibold text-[#666666]">
                 We believe that preparation for the Civil Services is more than
                 a career choice, it is a journey towards leadership and public
@@ -68,7 +106,7 @@ const AboutPage = () => {
               </p>
             </div>
 
-            <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#F6FFF0] hover:shadow-[0px_18px_40px_rgba(111,142,59,0.16)]">
+            <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]">
               <p className="font-['Montserrat'] text-[18px] leading-[39px] font-semibold text-[#666666]">
                 The distinguished faculty team comprises highly experienced
                 educators, retired bureaucrats, and subject knowledge experts
@@ -80,93 +118,158 @@ const AboutPage = () => {
                 dedicated to guiding aspirants with the clarity, conviction and
                 care they deserve. Our legacy is built on a foundation of
                 rigorous academic standards combined with personalized
-                mentorship. At SRIRAM&apos;s IAS, we believe that successful UPSC
-                CSE preparation goes beyond memorizing facts, it requires a deep
-                understanding of concepts, practical insights into governance
-                and a holistic development of each candidate&apos;s skills.
+                mentorship.
               </p>
             </div>
           </div>
 
           {/* RIGHT IMAGE NETWORK */}
-          <div className="relative mt-[26px] h-[700px] w-full">
-            {/* Small blue dot beside image network */}
-            <div className="absolute left-[22px] top-[44px] h-[11px] w-[11px] rounded-full bg-[#3A9AD7]" />
+          <div className="relative mt-[170px] h-[840px] w-[560px] shrink-0">
+            {/* Diagonal connector line to bottom left image */}
+            <div className="absolute left-[280px] top-[218px] h-[340px] w-[5px] origin-top rotate-[34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
 
-            {/* Soft circles around top girl image like Figma */}
-            <div className="absolute left-[50%] top-[-40px] h-[270px] w-[270px] -translate-x-[5%] rounded-full bg-[#DDF0FF]/80" />
-            <div className="absolute left-[42%] top-[205px] h-[165px] w-[165px] rounded-full bg-[#EAF7FF]/90" />
+            {/* Diagonal connector line to bottom right image */}
+            <div className="absolute left-[280px] top-[218px] h-[340px] w-[5px] origin-top rotate-[-34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
 
-            {/* Diagonal connector lines - behind images */}
-            <div className="absolute left-[50%] top-[185px] h-[330px] w-[5px] origin-top rotate-[34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
+            {/* Straight gradient line between bottom two images */}
+            <div className="absolute left-[225px] top-[528px] z-[5] h-[5px] w-[130px] rounded-full bg-gradient-to-r from-[#2D9CDB] via-[#B95D63] to-[#2D9CDB]" />
 
-            <div className="absolute left-[50%] top-[185px] h-[330px] w-[5px] origin-top rotate-[-34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
+            {circleImages.map((item, index) => {
+              const positionIndex =
+                (index + activeIndex) % imagePositions.length;
+              const position = imagePositions[positionIndex];
 
-            {/* Bottom straight gradient line between bottom two images */}
-            <div className="absolute left-[350px] top-[512px] h-[5px] w-[115px] rounded-full bg-gradient-to-r from-[#2D9CDB] via-[#B95D63] to-[#2D9CDB]" />
-
-            {/* Top image */}
-            <div className="absolute left-1/2 top-0 z-10 h-[245px] w-[245px] -translate-x-1/2 overflow-hidden rounded-full border-[9px] border-white shadow-[0px_15px_42px_rgba(0,0,0,0.2)] transition-all duration-300 hover:scale-110">
-              <Image
-                src="/assets/about/about-us/Ellipse 56.png"
-                alt="Student"
-                fill
-                className="object-cover"
-              />
-            </div>
-
-            {/* Bottom left image */}
-            <div className="absolute left-[105px] top-[390px] z-10 h-[245px] w-[245px] overflow-hidden rounded-full border-[9px] border-white shadow-[0px_15px_42px_rgba(0,0,0,0.2)] transition-all duration-300 hover:scale-110">
-              <Image
-                src="/assets/about/about-us/Ellipse 57.png"
-                alt="Classroom"
-                fill
-                className="object-cover"
-              />
-            </div>
-
-            {/* Bottom right image */}
-            <div className="absolute right-[105px] top-[390px] z-10 h-[245px] w-[245px] overflow-hidden rounded-full border-[9px] border-white shadow-[0px_15px_42px_rgba(0,0,0,0.2)] transition-all duration-300 hover:scale-110">
-              <Image
-                src="/assets/about/about-us/Ellipse 58.png"
-                alt="Classroom"
-                fill
-                className="object-cover"
-              />
-            </div>
+              return (
+                <div
+                  key={item.src}
+                  className="absolute z-10 h-[285px] w-[285px] overflow-hidden rounded-full shadow-[0px_14px_35px_rgba(0,0,0,0.16)] transition-all duration-[900ms] ease-in-out hover:scale-105"
+                  style={{
+                    left: position.left,
+                    top: position.top,
+                  }}
+                >
+                  <Image
+                    src={item.src}
+                    alt={item.alt}
+                    fill
+                    sizes="285px"
+                    className="object-cover scale-[1.08]"
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
 
         <style jsx global>{`
           .about-page-bg-motion {
             background-image: url("/assets/about/about-us/about-us-background-animation.png");
-            background-size: 120% 120%;
+            background-size: 155% 155%;
             background-repeat: no-repeat;
-            background-position: center bottom;
+            background-position: center -360px;
             opacity: 1;
-            animation: aboutPageWaveMove 4s ease-in-out infinite alternate;
-            will-change: transform, background-position;
+            min-height: 1250px;
           }
 
-          @keyframes aboutPageWaveMove {
-            0% {
-              transform: translateX(-26px) translateY(16px) scale(1.05);
-              background-position: left bottom;
-            }
+          .half-circle-orbit {
+            position: absolute;
+            left: 190px;
+            top: -235px;
+            width: 760px;
+            height: 760px;
+            border-radius: 50%;
+            border: 2px solid rgba(133, 151, 255, 0.22);
+            z-index: 2;
+          }
 
-            50% {
-              transform: translateX(26px) translateY(-14px) scale(1.08);
-              background-position: center bottom;
+          .half-circle-orbit::before {
+            content: "";
+            position: absolute;
+            inset: 95px;
+            border-radius: 50%;
+            border: 2px solid rgba(133, 151, 255, 0.2);
+          }
+
+          .half-circle-orbit::after {
+            content: "";
+            position: absolute;
+            inset: 190px;
+            border-radius: 50%;
+            border: 2px solid rgba(133, 151, 255, 0.16);
+          }
+
+          .orbit-dot {
+            position: absolute;
+            border-radius: 50%;
+            z-index: 4;
+          }
+
+          .orbit-dot-main {
+            width: 18px;
+            height: 18px;
+            left: calc(50% - 9px);
+            top: calc(50% - 9px);
+            background: #18a8e8;
+            border: 4px solid #dff6ff;
+            box-shadow:
+              0 0 0 8px rgba(24, 168, 232, 0.16),
+              0 0 18px rgba(24, 168, 232, 0.65);
+            animation: mainDotFullCircle 5s linear infinite;
+          }
+
+          .orbit-dot-small {
+            width: 12px;
+            height: 12px;
+            left: calc(50% - 6px);
+            top: calc(50% - 6px);
+            background: #1ca7df;
+            border: 3px solid #e6f9ff;
+            box-shadow:
+              0 0 0 5px rgba(28, 167, 223, 0.14),
+              0 0 14px rgba(28, 167, 223, 0.55);
+            animation: smallDotFullCircle 6s linear infinite;
+          }
+
+          @keyframes mainDotFullCircle {
+            0% {
+              transform: rotate(0deg) translateX(380px) rotate(0deg);
             }
 
             100% {
-              transform: translateX(-18px) translateY(12px) scale(1.06);
-              background-position: right bottom;
+              transform: rotate(360deg) translateX(380px) rotate(-360deg);
+            }
+          }
+
+          @keyframes smallDotFullCircle {
+            0% {
+              transform: rotate(0deg) translateX(285px) rotate(0deg);
+            }
+
+            100% {
+              transform: rotate(360deg) translateX(285px) rotate(-360deg);
             }
           }
 
           .about-text-card {
             cursor: pointer;
+          }
+
+          @media (max-width: 1279px) {
+            .about-page-bg-motion {
+              background-size: cover;
+              background-position: center top;
+            }
+
+            .half-circle-orbit {
+              left: 80px;
+              top: -220px;
+            }
+          }
+
+          @media (max-width: 1023px) {
+            .half-circle-orbit {
+              display: none;
+            }
           }
         `}</style>
       </section>
