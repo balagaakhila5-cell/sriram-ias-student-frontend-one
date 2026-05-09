@@ -560,28 +560,32 @@ const secondNavItemClass =
                     }`}
                   />
                 </button>
-                {isAboutOpen && (
+               {isAboutOpen && (
   <div className="absolute top-full right-0 mt-10 w-[602px] h-[274px] rounded-[22px] bg-white shadow-[0px_18px_50px_rgba(0,0,0,0.18)] overflow-hidden z-50">
     {/* Moving background animation */}
     <div className="about-bg-motion absolute inset-0 pointer-events-none" />
 
-    {/* Very light white overlay */}
-    <div className="absolute inset-0 bg-white/20 pointer-events-none" />
+    {/* Light overlay only for background, not for icons */}
+    <div className="absolute inset-0 bg-white/10 pointer-events-none" />
 
     {/* Cards */}
-    <div className="relative z-10 flex h-full items-center justify-center gap-4 px-16">
+    <div className="relative z-20 flex h-full items-center justify-center gap-5 px-16">
       <Link
         href="/about"
         onClick={() => setIsAboutOpen(false)}
-        className="group flex h-[170px] w-[184px] flex-col items-center justify-center rounded-[18px] bg-white/95 shadow-[0px_12px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]"
+        className="group flex h-[172px] w-[190px] flex-col items-center justify-center rounded-[18px] bg-white shadow-[0px_12px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]"
       >
-        <Image
-          src="/assets/about/about-us-icon.png"
-          alt="About Us"
-          width={56}
-          height={56}
-          className="mb-5 h-[56px] w-[56px] object-contain transition-transform duration-300 group-hover:scale-110"
-        />
+        <div className="mb-5 flex h-[72px] w-[72px] items-center justify-center">
+          <Image
+            src="/assets/about/about-us-icon.svg"
+            alt="About Us"
+            width={72}
+            height={72}
+            priority
+            unoptimized
+            className="h-[72px] w-[72px] object-contain transition-transform duration-300 group-hover:scale-110"
+          />
+        </div>
 
         <span className="text-[18px] font-semibold normal-case text-[#B95D63]">
           About Us
@@ -591,15 +595,19 @@ const secondNavItemClass =
       <Link
         href="/founders-message"
         onClick={() => setIsAboutOpen(false)}
-        className="group flex h-[170px] w-[258px] flex-col items-center justify-center rounded-[18px] bg-white/95 shadow-[0px_12px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]"
+        className="group flex h-[172px] w-[258px] flex-col items-center justify-center rounded-[18px] bg-white shadow-[0px_12px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]"
       >
-        <Image
-          src="/assets/about/founder's-message-icon.png"
-          alt="Founder Message"
-          width={56}
-          height={56}
-          className="mb-5 h-[56px] w-[56px] object-contain transition-transform duration-300 group-hover:scale-110"
-        />
+        <div className="mb-5 flex h-[72px] w-[72px] items-center justify-center">
+          <Image
+            src="/assets/about/founder's-message-icon.svg"
+            alt="Founder Message"
+            width={72}
+            height={72}
+            priority
+            unoptimized
+            className="h-[72px] w-[72px] object-contain transition-transform duration-300 group-hover:scale-110"
+          />
+        </div>
 
         <span className="text-[18px] font-semibold normal-case text-[#6F8E3B]">
           Founder&apos;s Message
@@ -613,7 +621,7 @@ const secondNavItemClass =
         background-size: 125% 125%;
         background-repeat: no-repeat;
         background-position: left bottom;
-        opacity: 1;
+        opacity: 0.9;
         animation: aboutWaveMove 3s ease-in-out infinite alternate;
         will-change: transform, background-position;
       }
@@ -637,7 +645,6 @@ const secondNavItemClass =
     `}</style>
   </div>
 )}
-
              
 
               </div>

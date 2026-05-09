@@ -1,11 +1,51 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 
+const circleImages = [
+  {
+    src: "/assets/about/about-us/Ellipse 56.png",
+    alt: "Student",
+  },
+  {
+    src: "/assets/about/about-us/Ellipse 57.png",
+    alt: "Classroom Student",
+  },
+  {
+    src: "/assets/about/about-us/Ellipse 58.png",
+    alt: "Classroom Student",
+  },
+];
+
+const imagePositions = [
+  {
+    left: "196px",
+    top: "0px",
+  },
+  {
+    left: "28px",
+    top: "385px",
+  },
+  {
+    left: "390px",
+    top: "385px",
+  },
+];
+
 const AboutPage = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % circleImages.length);
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <main className="min-h-screen bg-white overflow-hidden">
       <Header />
@@ -30,9 +70,15 @@ const AboutPage = () => {
       </section>
 
       {/* ABOUT CONTENT SECTION */}
-      <section className="relative w-full overflow-hidden bg-[#F6FBFF] pt-[70px] pb-[110px]">
-        {/* Moving background animation */}
+      <section className="relative -mt-[1px] w-full overflow-hidden bg-[#F6FBFF] pt-[38px] pb-[150px] min-h-[1120px]">
+        {/* STATIC BACKGROUND */}
         <div className="about-page-bg-motion absolute inset-0 pointer-events-none" />
+
+        {/* BLUE MOVING DOTS */}
+        <div className="half-circle-orbit pointer-events-none">
+          <span className="orbit-dot orbit-dot-main" />
+          <span className="orbit-dot orbit-dot-small" />
+        </div>
 
         <div className="relative z-10 grid w-full grid-cols-[720px_1fr] items-start gap-[40px] px-[24px]">
           {/* LEFT TEXT CARDS */}
@@ -78,7 +124,7 @@ const AboutPage = () => {
           </div>
 
           {/* RIGHT IMAGE NETWORK */}
-          <div className="relative mt-[20px] h-[720px] w-[680px]">
+          <div className="relative mt-[170px] h-[840px] w-[680px]">
             {/* Diagonal connector line to bottom left image */}
             <div className="absolute left-[340px] top-[218px] h-[340px] w-[5px] origin-top rotate-[34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
 
@@ -88,66 +134,119 @@ const AboutPage = () => {
             {/* Straight gradient line between bottom two images */}
             <div className="absolute left-[285px] top-[528px] z-[5] h-[5px] w-[130px] rounded-full bg-gradient-to-r from-[#2D9CDB] via-[#B95D63] to-[#2D9CDB]" />
 
-            {/* Top girl image */}
-            <div className="absolute left-[196px] top-0 z-10 h-[285px] w-[285px] overflow-hidden rounded-full shadow-[0px_14px_35px_rgba(0,0,0,0.16)] transition-all duration-300 hover:scale-105">
-              <Image
-                src="/assets/about/about-us/Ellipse 56.png"
-                alt="Student"
-                fill
-                sizes="285px"
-                className="object-cover scale-[1.08]"
-              />
-            </div>
+            {circleImages.map((item, index) => {
+              const positionIndex =
+                (index + activeIndex) % imagePositions.length;
+              const position = imagePositions[positionIndex];
 
-            {/* Bottom left image */}
-            <div className="absolute left-[28px] top-[385px] z-10 h-[285px] w-[285px] overflow-hidden rounded-full shadow-[0px_14px_35px_rgba(0,0,0,0.16)] transition-all duration-300 hover:scale-105">
-              <Image
-                src="/assets/about/about-us/Ellipse 57.png"
-                alt="Classroom"
-                fill
-                sizes="285px"
-                className="object-cover scale-[1.08]"
-              />
-            </div>
-
-            {/* Bottom right image */}
-            <div className="absolute left-[390px] top-[385px] z-10 h-[285px] w-[285px] overflow-hidden rounded-full shadow-[0px_14px_35px_rgba(0,0,0,0.16)] transition-all duration-300 hover:scale-105">
-              <Image
-                src="/assets/about/about-us/Ellipse 58.png"
-                alt="Classroom"
-                fill
-                sizes="285px"
-                className="object-cover scale-[1.08]"
-              />
-            </div>
+              return (
+                <div
+                  key={item.src}
+                  className="absolute z-10 h-[285px] w-[285px] overflow-hidden rounded-full shadow-[0px_14px_35px_rgba(0,0,0,0.16)] transition-all duration-[900ms] ease-in-out hover:scale-105"
+                  style={{
+                    left: position.left,
+                    top: position.top,
+                  }}
+                >
+                  <Image
+                    src={item.src}
+                    alt={item.alt}
+                    fill
+                    sizes="285px"
+                    className="object-cover scale-[1.08]"
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
 
         <style jsx global>{`
           .about-page-bg-motion {
             background-image: url("/assets/about/about-us/about-us-background-animation.png");
-            background-size: 120% 120%;
+            background-size: 155% 155%;
             background-repeat: no-repeat;
-            background-position: center bottom;
+            background-position: center -360px;
             opacity: 1;
-            animation: aboutPageWaveMove 4s ease-in-out infinite alternate;
-            will-change: transform, background-position;
+            min-height: 1250px;
           }
 
-          @keyframes aboutPageWaveMove {
-            0% {
-              transform: translateX(-26px) translateY(16px) scale(1.05);
-              background-position: left bottom;
-            }
+          .half-circle-orbit {
+            position: absolute;
+            left: 190px;
+            top: -235px;
+            width: 760px;
+            height: 760px;
+            border-radius: 50%;
+            border: 2px solid rgba(133, 151, 255, 0.22);
+            z-index: 2;
+          }
 
-            50% {
-              transform: translateX(26px) translateY(-14px) scale(1.08);
-              background-position: center bottom;
+          .half-circle-orbit::before {
+            content: "";
+            position: absolute;
+            inset: 95px;
+            border-radius: 50%;
+            border: 2px solid rgba(133, 151, 255, 0.2);
+          }
+
+          .half-circle-orbit::after {
+            content: "";
+            position: absolute;
+            inset: 190px;
+            border-radius: 50%;
+            border: 2px solid rgba(133, 151, 255, 0.16);
+          }
+
+          .orbit-dot {
+            position: absolute;
+            border-radius: 50%;
+            z-index: 4;
+          }
+
+          .orbit-dot-main {
+            width: 18px;
+            height: 18px;
+            left: calc(50% - 9px);
+            top: calc(50% - 9px);
+            background: #18a8e8;
+            border: 4px solid #dff6ff;
+            box-shadow:
+              0 0 0 8px rgba(24, 168, 232, 0.16),
+              0 0 18px rgba(24, 168, 232, 0.65);
+            animation: mainDotFullCircle 5s linear infinite;
+          }
+
+          .orbit-dot-small {
+            width: 12px;
+            height: 12px;
+            left: calc(50% - 6px);
+            top: calc(50% - 6px);
+            background: #1ca7df;
+            border: 3px solid #e6f9ff;
+            box-shadow:
+              0 0 0 5px rgba(28, 167, 223, 0.14),
+              0 0 14px rgba(28, 167, 223, 0.55);
+            animation: smallDotFullCircle 6s linear infinite;
+          }
+
+          @keyframes mainDotFullCircle {
+            0% {
+              transform: rotate(0deg) translateX(380px) rotate(0deg);
             }
 
             100% {
-              transform: translateX(-18px) translateY(12px) scale(1.06);
-              background-position: right bottom;
+              transform: rotate(360deg) translateX(380px) rotate(-360deg);
+            }
+          }
+
+          @keyframes smallDotFullCircle {
+            0% {
+              transform: rotate(0deg) translateX(285px) rotate(0deg);
+            }
+
+            100% {
+              transform: rotate(360deg) translateX(285px) rotate(-360deg);
             }
           }
 
