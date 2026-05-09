@@ -35,9 +35,9 @@ const AboutPage = () => {
         <div className="about-page-bg-motion absolute inset-0 pointer-events-none" />
 
         <div className="relative z-10 grid w-full grid-cols-[720px_1fr] items-start gap-[40px] px-[24px]">
-          {/* LEFT TEXT CARDS - moved little right */}
+          {/* LEFT TEXT CARDS */}
           <div className="ml-[35px] flex flex-col gap-[28px]">
-            <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#F0FAFF] hover:shadow-[0px_18px_40px_rgba(24,151,216,0.16)]">
+            <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]">
               <p className="font-['Montserrat'] text-[18px] leading-[39px] font-semibold text-[#666666]">
                 SRIRAM&apos;s IAS is one of the premier institutions for
                 Preparation of UPSC Civil Services Examination. Established in
@@ -48,7 +48,7 @@ const AboutPage = () => {
               </p>
             </div>
 
-            <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#FFF8F8] hover:shadow-[0px_18px_40px_rgba(185,93,99,0.16)]">
+            <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]">
               <p className="font-['Montserrat'] text-[18px] leading-[39px] font-semibold text-[#666666]">
                 We believe that preparation for the Civil Services is more than
                 a career choice, it is a journey towards leadership and public
@@ -60,7 +60,7 @@ const AboutPage = () => {
               </p>
             </div>
 
-            <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#F6FFF0] hover:shadow-[0px_18px_40px_rgba(111,142,59,0.16)]">
+            <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]">
               <p className="font-['Montserrat'] text-[18px] leading-[39px] font-semibold text-[#666666]">
                 The distinguished faculty team comprises highly experienced
                 educators, retired bureaucrats, and subject knowledge experts
@@ -78,43 +78,46 @@ const AboutPage = () => {
           </div>
 
           {/* RIGHT IMAGE NETWORK */}
-          <div className="relative mt-[26px] h-[700px] w-[650px]">
+          <div className="relative mt-[20px] h-[720px] w-[680px]">
             {/* Diagonal connector line to bottom left image */}
-            <div className="absolute left-[325px] top-[205px] h-[330px] w-[5px] origin-top rotate-[34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
+            <div className="absolute left-[340px] top-[218px] h-[340px] w-[5px] origin-top rotate-[34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
 
             {/* Diagonal connector line to bottom right image */}
-            <div className="absolute left-[325px] top-[205px] h-[330px] w-[5px] origin-top rotate-[-34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
+            <div className="absolute left-[340px] top-[218px] h-[340px] w-[5px] origin-top rotate-[-34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
 
             {/* Straight gradient line between bottom two images */}
-            <div className="absolute left-[285px] top-[512px] z-[5] h-[5px] w-[110px] rounded-full bg-gradient-to-r from-[#2D9CDB] via-[#B95D63] to-[#2D9CDB]" />
+            <div className="absolute left-[285px] top-[528px] z-[5] h-[5px] w-[130px] rounded-full bg-gradient-to-r from-[#2D9CDB] via-[#B95D63] to-[#2D9CDB]" />
 
             {/* Top girl image */}
-            <div className="absolute left-[202px] top-0 z-10 h-[245px] w-[245px] overflow-hidden rounded-full border-[9px] border-white shadow-[0px_15px_42px_rgba(0,0,0,0.2)] transition-all duration-300 hover:scale-110">
+            <div className="absolute left-[196px] top-0 z-10 h-[285px] w-[285px] overflow-hidden rounded-full shadow-[0px_14px_35px_rgba(0,0,0,0.16)] transition-all duration-300 hover:scale-105">
               <Image
                 src="/assets/about/about-us/Ellipse 56.png"
                 alt="Student"
                 fill
-                className="object-cover"
+                sizes="285px"
+                className="object-cover scale-[1.08]"
               />
             </div>
 
             {/* Bottom left image */}
-            <div className="absolute left-[40px] top-[390px] z-10 h-[245px] w-[245px] overflow-hidden rounded-full border-[9px] border-white shadow-[0px_15px_42px_rgba(0,0,0,0.2)] transition-all duration-300 hover:scale-110">
+            <div className="absolute left-[28px] top-[385px] z-10 h-[285px] w-[285px] overflow-hidden rounded-full shadow-[0px_14px_35px_rgba(0,0,0,0.16)] transition-all duration-300 hover:scale-105">
               <Image
                 src="/assets/about/about-us/Ellipse 57.png"
                 alt="Classroom"
                 fill
-                className="object-cover"
+                sizes="285px"
+                className="object-cover scale-[1.08]"
               />
             </div>
 
             {/* Bottom right image */}
-            <div className="absolute left-[395px] top-[390px] z-10 h-[245px] w-[245px] overflow-hidden rounded-full border-[9px] border-white shadow-[0px_15px_42px_rgba(0,0,0,0.2)] transition-all duration-300 hover:scale-110">
+            <div className="absolute left-[390px] top-[385px] z-10 h-[285px] w-[285px] overflow-hidden rounded-full shadow-[0px_14px_35px_rgba(0,0,0,0.16)] transition-all duration-300 hover:scale-105">
               <Image
                 src="/assets/about/about-us/Ellipse 58.png"
                 alt="Classroom"
                 fill
-                className="object-cover"
+                sizes="285px"
+                className="object-cover scale-[1.08]"
               />
             </div>
           </div>

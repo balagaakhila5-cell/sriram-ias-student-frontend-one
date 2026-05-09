@@ -21,7 +21,14 @@ const FoundersMessagePage = () => {
           className="object-cover object-center"
         />
 
-        <div className="absolute inset-0 bg-black/45" />
+        {/* Left side dark only */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(90deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.62) 18%, rgba(0,0,0,0.32) 34%, rgba(0,0,0,0.10) 50%, rgba(0,0,0,0) 68%)',
+          }}
+        />
 
         <div className="relative z-10 h-full flex items-center px-6 sm:px-10 lg:px-[88px] pt-[80px]">
           <h1 className="founder-hero-heading">FOUNDER&apos;S MESSAGE</h1>
@@ -58,24 +65,29 @@ const FoundersMessagePage = () => {
 
                 <div className="dialog-text-content">
                   <p>
-                    Dear Aspiring Civil Servants, Welcome to SRIRAM&apos;s IAS, a place where dreams of
-                    public service take shape and where your commitments meet our decades of
-                    experience.
+                    Dear Aspiring Civil Servants, Welcome to SRIRAM&apos;s IAS,
+                    a place where dreams of public service take shape and where
+                    your commitments meet our decades of experience.
                   </p>
 
                   <p>
-                    By choosing this path, you&apos;ve already shown courage, clarity, and a deep sense of
-                    purpose to serve the Nation. The journey to becoming a Civil Servant is one of
-                    the most challenging and rewarding which you can undertake in your career. At
-                    SRIRAM&apos;s IAS, we stand by you at every step of your journey towards success.
+                    By choosing this path, you&apos;ve already shown courage,
+                    clarity, and a deep sense of purpose to serve the Nation.
+                    The journey to becoming a Civil Servant is one of the most
+                    challenging and rewarding which you can undertake in your
+                    career. At SRIRAM&apos;s IAS, we stand by you at every step
+                    of your journey towards success.
                   </p>
 
                   <p>
-                    At SRIRAM&apos;s IAS, we believe preparation for the UPSC Civil Services Examinations
-                    (CSE) isn&apos;t just about clearing an exam, it&apos;s about shaping the administrators that
-                    India needs. That&apos;s why our ecosystem is built not just on knowledge, but on
-                    mentorship, innovation and transformation. At SRIRAM&apos;s IAS, we&apos;re not just
-                    preparing you for an exam, but also for a life of leadership and service.
+                    At SRIRAM&apos;s IAS, we believe preparation for the UPSC
+                    Civil Services Examinations (CSE) isn&apos;t just about
+                    clearing an exam, it&apos;s about shaping the administrators
+                    that India needs. That&apos;s why our ecosystem is built not
+                    just on knowledge, but on mentorship, innovation and
+                    transformation. At SRIRAM&apos;s IAS, we&apos;re not just
+                    preparing you for an exam, but also for a life of leadership
+                    and service.
                   </p>
 
                   <p className="welcome-text">
@@ -94,7 +106,7 @@ const FoundersMessagePage = () => {
                     alt="Sriram Srirangam Founder"
                     fill
                     priority
-                    sizes="560px"
+                    sizes="650px"
                     className="founder-main-img"
                   />
                 </div>
@@ -212,8 +224,8 @@ const FoundersMessagePage = () => {
 
         .founder-photo-wrap {
           position: relative;
-          width: 500px;
-          height: 500px;
+          width: 590px;
+          height: 540px;
           overflow: visible;
         }
 
@@ -235,7 +247,7 @@ const FoundersMessagePage = () => {
         .founder-main-img {
           object-fit: contain;
           object-position: center bottom;
-          transform: scale(1.42) translateY(34px);
+          transform: scale(1.62) translateY(38px);
           transform-origin: center bottom;
         }
 
@@ -311,8 +323,8 @@ const FoundersMessagePage = () => {
           }
 
           .founder-photo-wrap {
-            width: 470px;
-            height: 475px;
+            width: 560px;
+            height: 515px;
           }
 
           .founder-circle-mask {
@@ -322,7 +334,7 @@ const FoundersMessagePage = () => {
           }
 
           .founder-main-img {
-            transform: scale(1.4) translateY(32px);
+            transform: scale(1.58) translateY(36px);
           }
 
           .founder-details {
@@ -370,8 +382,8 @@ const FoundersMessagePage = () => {
           }
 
           .founder-photo-wrap {
-            width: 420px;
-            height: 430px;
+            width: 500px;
+            height: 450px;
           }
 
           .founder-circle-mask {
@@ -381,7 +393,7 @@ const FoundersMessagePage = () => {
           }
 
           .founder-main-img {
-            transform: scale(1.36) translateY(28px);
+            transform: scale(1.52) translateY(32px);
           }
 
           .founder-details {
@@ -465,8 +477,8 @@ const FoundersMessagePage = () => {
           }
 
           .founder-photo-wrap {
-            width: 310px;
-            height: 340px;
+            width: 360px;
+            height: 350px;
           }
 
           .founder-circle-mask {
@@ -476,7 +488,7 @@ const FoundersMessagePage = () => {
           }
 
           .founder-main-img {
-            transform: scale(1.3) translateY(22px);
+            transform: scale(1.46) translateY(26px);
           }
 
           .founder-details {
