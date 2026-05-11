@@ -132,8 +132,8 @@ const AboutPage = () => {
             </div>
           </div>
 
-          {/* RIGHT IMAGE NETWORK */}
-          <div className="relative mt-[170px] h-[840px] w-[650px] shrink-0 overflow-visible">
+          {/* RIGHT IMAGE NETWORK - MOVED RIGHT */}
+          <div className="about-circle-network relative mt-[170px] h-[840px] w-[650px] shrink-0 overflow-visible">
             <div className="absolute left-[258px] top-[198px] h-[330px] w-[5px] origin-top rotate-[34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
 
             <div className="absolute left-[258px] top-[198px] h-[330px] w-[5px] origin-top rotate-[-34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
@@ -194,6 +194,11 @@ const AboutPage = () => {
           /* TEXT CARDS MOVED RIGHT */
           .about-left-cards {
             transform: translateX(42px);
+          }
+
+          /* CIRCLE IMAGES MOVED RIGHT */
+          .about-circle-network {
+            transform: translateX(45px);
           }
 
           .side-circle-left {
@@ -352,6 +357,10 @@ const AboutPage = () => {
               transform: translateX(24px);
             }
 
+            .about-circle-network {
+              transform: translateX(28px);
+            }
+
             .clean-orbit-wrap {
               left: 120px;
               top: -640px;
@@ -368,6 +377,10 @@ const AboutPage = () => {
             }
 
             .about-left-cards {
+              transform: translateX(0);
+            }
+
+            .about-circle-network {
               transform: translateX(0);
             }
 
