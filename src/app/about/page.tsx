@@ -22,16 +22,16 @@ const circleImages = [
 
 const imagePositions = [
   {
-    left: "140px",
+    left: "160px",
     top: "0px",
   },
   {
-    left: "0px",
-    top: "385px",
+    left: "20px",
+    top: "360px",
   },
   {
-    left: "345px",
-    top: "385px",
+    left: "325px",
+    top: "360px",
   },
 ];
 
@@ -89,9 +89,9 @@ const AboutPage = () => {
           </div>
         </div>
 
-        <div className="relative z-10 mx-auto grid w-full max-w-[1366px] grid-cols-[700px_650px] items-start justify-center gap-[20px] px-[20px]">
+        <div className="about-main-grid relative z-10 mx-auto grid w-full max-w-[1366px] grid-cols-[700px_650px] items-start justify-center gap-[20px] px-[20px]">
           {/* LEFT TEXT CARDS */}
-          <div className="flex flex-col gap-[28px]">
+          <div className="about-left-cards flex flex-col gap-[28px]">
             <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]">
               <p className="font-['Montserrat'] text-[18px] leading-[39px] font-semibold text-[#666666]">
                 SRIRAM&apos;s IAS is one of the premier institutions for
@@ -134,11 +134,11 @@ const AboutPage = () => {
 
           {/* RIGHT IMAGE NETWORK */}
           <div className="relative mt-[170px] h-[840px] w-[650px] shrink-0 overflow-visible">
-            <div className="absolute left-[282px] top-[218px] h-[340px] w-[5px] origin-top rotate-[34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
+            <div className="absolute left-[258px] top-[198px] h-[330px] w-[5px] origin-top rotate-[34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
 
-            <div className="absolute left-[282px] top-[218px] h-[340px] w-[5px] origin-top rotate-[-34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
+            <div className="absolute left-[258px] top-[198px] h-[330px] w-[5px] origin-top rotate-[-34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
 
-            <div className="absolute left-[285px] top-[528px] z-[5] h-[5px] w-[95px] rounded-full bg-gradient-to-r from-[#2D9CDB] via-[#B95D63] to-[#2D9CDB]" />
+            <div className="absolute left-[260px] top-[500px] z-[5] h-[5px] w-[95px] rounded-full bg-gradient-to-r from-[#2D9CDB] via-[#B95D63] to-[#2D9CDB]" />
 
             {circleImages.map((item, index) => {
               const positionIndex =
@@ -148,7 +148,7 @@ const AboutPage = () => {
               return (
                 <div
                   key={item.src}
-                  className="absolute z-10 h-[285px] w-[285px] overflow-hidden rounded-full shadow-[0px_14px_35px_rgba(0,0,0,0.16)] transition-all duration-[900ms] ease-in-out hover:scale-105"
+                  className="absolute z-10 h-[245px] w-[245px] overflow-hidden rounded-full shadow-[0px_14px_35px_rgba(0,0,0,0.16)] transition-all duration-[900ms] ease-in-out hover:scale-105"
                   style={{
                     left: position.left,
                     top: position.top,
@@ -158,7 +158,7 @@ const AboutPage = () => {
                     src={item.src}
                     alt={item.alt}
                     fill
-                    sizes="285px"
+                    sizes="245px"
                     className="object-cover scale-[1.08]"
                   />
                 </div>
@@ -191,10 +191,15 @@ const AboutPage = () => {
               );
           }
 
+          /* TEXT CARDS MOVED RIGHT */
+          .about-left-cards {
+            transform: translateX(42px);
+          }
+
           .side-circle-left {
             position: absolute;
             left: -150px;
-            top: 38px;
+            top: -28px;
             width: 310px;
             height: 310px;
             border-radius: 50%;
@@ -217,7 +222,7 @@ const AboutPage = () => {
           .side-circle-right {
             position: absolute;
             right: -145px;
-            top: 210px;
+            top: 120px;
             width: 320px;
             height: 320px;
             border-radius: 50%;
@@ -265,10 +270,11 @@ const AboutPage = () => {
             opacity: 1;
           }
 
+          /* HALF CIRCLE ORBITS MOVED UP */
           .clean-orbit-wrap {
             position: absolute;
             left: 235px;
-            top: -510px;
+            top: -650px;
             width: 900px;
             height: 900px;
             z-index: 4;
@@ -342,9 +348,13 @@ const AboutPage = () => {
           }
 
           @media (max-width: 1279px) {
+            .about-left-cards {
+              transform: translateX(24px);
+            }
+
             .clean-orbit-wrap {
               left: 120px;
-              top: -505px;
+              top: -640px;
             }
 
             .bottom-wave-lines {
@@ -353,6 +363,14 @@ const AboutPage = () => {
           }
 
           @media (max-width: 1023px) {
+            .about-main-grid {
+              grid-template-columns: 1fr !important;
+            }
+
+            .about-left-cards {
+              transform: translateX(0);
+            }
+
             .clean-orbit-wrap {
               display: none;
             }

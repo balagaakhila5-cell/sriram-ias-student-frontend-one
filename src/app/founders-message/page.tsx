@@ -48,7 +48,7 @@ const FoundersMessagePage = () => {
           />
         </div>
 
-        <div className="relative z-10 w-full max-w-[1440px] mx-auto px-0 pt-[62px] pb-[90px]">
+        <div className="relative z-10 w-full max-w-[1366px] mx-auto px-0 pt-[62px] pb-[90px]">
           <div className="founder-main-grid">
             {/* LEFT DIALOG BOX */}
             <div className="relative z-20 dialog-left-col">
@@ -58,7 +58,7 @@ const FoundersMessagePage = () => {
                   alt="Founder message dialog box"
                   fill
                   priority
-                  sizes="940px"
+                  sizes="850px"
                   className="object-fill"
                 />
 
@@ -104,7 +104,7 @@ const FoundersMessagePage = () => {
                   alt="Sriram Srirangam Founder"
                   fill
                   priority
-                  sizes="500px"
+                  sizes="465px"
                   className="founder-main-img"
                 />
               </div>
@@ -182,33 +182,34 @@ const FoundersMessagePage = () => {
         .founder-main-grid {
           width: 100%;
           display: grid;
-          grid-template-columns: 940px 420px;
+          grid-template-columns: 850px 465px;
           align-items: start;
           justify-content: center;
-          column-gap: 0;
+          column-gap: 12px;
         }
 
         .dialog-left-col {
           margin-top: 0;
-          transform: translateX(-18px);
+          transform: translateX(-8px);
         }
 
+        /* DIALOG WIDTH DECREASED */
         .dialog-box-wrap {
           position: relative;
-          width: 940px;
+          width: 850px;
           height: 760px;
           overflow: visible;
         }
 
-        /* TEXT MOVED LITTLE ABOVE */
+        /* TEXT WIDTH DECREASED TO FIT INSIDE SMALLER DIALOG */
         .dialog-text-content {
           position: relative;
           z-index: 2;
-          width: 875px;
-          max-width: 875px;
-          padding: 74px 8px 170px 88px;
+          width: 755px;
+          max-width: 755px;
+          padding: 74px 20px 170px 82px;
           color: #4d5961;
-          font-size: 17.2px !important;
+          font-size: 17px !important;
           line-height: 1.85 !important;
           font-weight: 700 !important;
           letter-spacing: 0 !important;
@@ -217,7 +218,7 @@ const FoundersMessagePage = () => {
 
         .dialog-text-content p {
           margin-bottom: 42px !important;
-          font-size: 17.2px !important;
+          font-size: 17px !important;
           line-height: 1.85 !important;
           font-weight: 700 !important;
           letter-spacing: 0 !important;
@@ -237,22 +238,21 @@ const FoundersMessagePage = () => {
           margin-top: 0 !important;
           margin-bottom: 0 !important;
           white-space: nowrap;
-          padding-right: 90px;
+          padding-right: 40px;
         }
 
-        /* FOUNDER IMAGE MOVED LITTLE ABOVE */
         .right-founder-col {
           margin-top: 8px;
           display: flex;
           flex-direction: column;
           align-items: center;
-          transform: translateX(48px);
+          transform: translateX(6px);
         }
 
         .founder-photo-wrap {
           position: relative;
-          width: 500px;
-          height: 500px;
+          width: 465px;
+          height: 465px;
           overflow: visible;
         }
 
@@ -261,7 +261,6 @@ const FoundersMessagePage = () => {
           object-position: center center;
         }
 
-        /* BEST WISHES AND DETAILS LITTLE ABOVE */
         .founder-details {
           margin-top: 28px;
           position: relative;
@@ -314,23 +313,23 @@ const FoundersMessagePage = () => {
 
         @media (min-width: 1280px) and (max-width: 1450px) {
           .founder-main-grid {
-            grid-template-columns: 930px 400px;
-            column-gap: 0;
+            grid-template-columns: 840px 450px;
+            column-gap: 10px;
           }
 
           .dialog-left-col {
-            transform: translateX(-20px);
+            transform: translateX(-6px);
           }
 
           .dialog-box-wrap {
-            width: 930px;
+            width: 840px;
             height: 760px;
           }
 
           .dialog-text-content {
-            width: 865px;
-            max-width: 865px;
-            padding: 72px 8px 170px 88px;
+            width: 745px;
+            max-width: 745px;
+            padding: 72px 20px 170px 82px;
             font-size: 16.8px !important;
             line-height: 1.82 !important;
             box-sizing: border-box;
@@ -352,12 +351,12 @@ const FoundersMessagePage = () => {
 
           .right-founder-col {
             margin-top: 8px;
-            transform: translateX(42px);
+            transform: translateX(4px);
           }
 
           .founder-photo-wrap {
-            width: 470px;
-            height: 470px;
+            width: 450px;
+            height: 450px;
           }
 
           .founder-details {
@@ -394,15 +393,15 @@ const FoundersMessagePage = () => {
 
           .dialog-box-wrap {
             width: 100%;
-            max-width: 930px;
+            max-width: 850px;
             height: 760px;
             margin: 0 auto;
           }
 
           .dialog-text-content {
-            width: 92%;
-            max-width: 865px;
-            padding: 72px 8px 170px 88px;
+            width: 88%;
+            max-width: 755px;
+            padding: 72px 20px 170px 82px;
             font-size: 16.5px !important;
             line-height: 1.78 !important;
             font-weight: 700 !important;
