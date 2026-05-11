@@ -70,14 +70,23 @@ const AboutPage = () => {
       </section>
 
       {/* ABOUT CONTENT SECTION */}
-      <section className="relative -mt-[1px] w-full overflow-hidden bg-[#F6FBFF] pt-[38px] pb-[150px] min-h-[1120px]">
-        {/* STATIC BACKGROUND */}
-        <div className="about-page-bg-motion absolute inset-0 pointer-events-none" />
+      <section className="about-section-bg relative -mt-[1px] w-full overflow-hidden pt-[30px] pb-[35px] min-h-[1120px]">
+        {/* LEFT / RIGHT SOFT BLUE CIRCLES WITH LIGHT EFFECT */}
+        <div className="side-circle-left pointer-events-none" />
+        <div className="side-circle-right pointer-events-none" />
 
-        {/* BLUE MOVING DOTS */}
-        <div className="half-circle-orbit pointer-events-none">
-          <span className="orbit-dot orbit-dot-main" />
-          <span className="orbit-dot orbit-dot-small" />
+        {/* BOTTOM WAVE LINES ONLY */}
+        <div className="bottom-wave-lines pointer-events-none" />
+
+        {/* ONLY 2 ROTATING BLUE DOT CIRCLE LINES */}
+        <div className="clean-orbit-wrap pointer-events-none">
+          <div className="clean-orbit clean-orbit-one">
+            <span className="clean-dot clean-dot-one" />
+          </div>
+
+          <div className="clean-orbit clean-orbit-two">
+            <span className="clean-dot clean-dot-two" />
+          </div>
         </div>
 
         <div className="relative z-10 mx-auto grid w-full max-w-[1366px] grid-cols-[700px_650px] items-start justify-center gap-[20px] px-[20px]">
@@ -125,13 +134,10 @@ const AboutPage = () => {
 
           {/* RIGHT IMAGE NETWORK */}
           <div className="relative mt-[170px] h-[840px] w-[650px] shrink-0 overflow-visible">
-            {/* Diagonal connector line to bottom left image */}
             <div className="absolute left-[282px] top-[218px] h-[340px] w-[5px] origin-top rotate-[34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
 
-            {/* Diagonal connector line to bottom right image */}
             <div className="absolute left-[282px] top-[218px] h-[340px] w-[5px] origin-top rotate-[-34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
 
-            {/* Straight gradient line between bottom two images */}
             <div className="absolute left-[285px] top-[528px] z-[5] h-[5px] w-[95px] rounded-full bg-gradient-to-r from-[#2D9CDB] via-[#B95D63] to-[#2D9CDB]" />
 
             {circleImages.map((item, index) => {
@@ -162,91 +168,172 @@ const AboutPage = () => {
         </div>
 
         <style jsx global>{`
-          .about-page-bg-motion {
-            background-image: url("/assets/about/about-us/about-us-background-animation.png");
-            background-size: 155% 155%;
-            background-repeat: no-repeat;
-            background-position: center -360px;
-            opacity: 1;
-            min-height: 1250px;
+          .about-section-bg {
+            background:
+              radial-gradient(
+                circle at 0% 14%,
+                rgba(209, 237, 253, 0.72) 0%,
+                rgba(234, 247, 255, 0.88) 18%,
+                transparent 34%
+              ),
+              radial-gradient(
+                circle at 100% 39%,
+                rgba(209, 237, 253, 0.72) 0%,
+                rgba(234, 247, 255, 0.88) 18%,
+                transparent 35%
+              ),
+              linear-gradient(
+                180deg,
+                #eaf7ff 0%,
+                #eef8ff 12%,
+                #f8fcff 36%,
+                #eef8ff 100%
+              );
           }
 
-          .half-circle-orbit {
+          .side-circle-left {
             position: absolute;
-            left: 190px;
-            top: -235px;
-            width: 760px;
-            height: 760px;
+            left: -150px;
+            top: 38px;
+            width: 310px;
+            height: 310px;
             border-radius: 50%;
-            border: 2px solid rgba(133, 151, 255, 0.22);
             z-index: 2;
+            background:
+              radial-gradient(
+                circle at 68% 38%,
+                rgba(255, 255, 255, 0.76) 0%,
+                rgba(218, 241, 255, 0.82) 28%,
+                rgba(196, 229, 249, 0.68) 62%,
+                rgba(196, 229, 249, 0.18) 100%
+              );
+            box-shadow:
+              0 0 45px rgba(111, 192, 236, 0.28),
+              inset 20px 18px 45px rgba(255, 255, 255, 0.55),
+              inset -18px -18px 45px rgba(94, 177, 224, 0.18);
+            animation: softCircleGlow 3.8s ease-in-out infinite alternate;
           }
 
-          .half-circle-orbit::before {
-            content: "";
+          .side-circle-right {
             position: absolute;
-            inset: 95px;
+            right: -145px;
+            top: 210px;
+            width: 320px;
+            height: 320px;
             border-radius: 50%;
-            border: 2px solid rgba(133, 151, 255, 0.2);
+            z-index: 2;
+            background:
+              radial-gradient(
+                circle at 32% 36%,
+                rgba(255, 255, 255, 0.76) 0%,
+                rgba(218, 241, 255, 0.82) 30%,
+                rgba(196, 229, 249, 0.68) 64%,
+                rgba(196, 229, 249, 0.18) 100%
+              );
+            box-shadow:
+              0 0 45px rgba(111, 192, 236, 0.28),
+              inset -20px 18px 45px rgba(255, 255, 255, 0.55),
+              inset 18px -18px 45px rgba(94, 177, 224, 0.18);
+            animation: softCircleGlow 4.2s ease-in-out infinite alternate;
           }
 
-          .half-circle-orbit::after {
-            content: "";
-            position: absolute;
-            inset: 190px;
-            border-radius: 50%;
-            border: 2px solid rgba(133, 151, 255, 0.16);
+          @keyframes softCircleGlow {
+            0% {
+              opacity: 0.72;
+              transform: scale(1);
+              filter: brightness(1);
+            }
+
+            100% {
+              opacity: 0.96;
+              transform: scale(1.025);
+              filter: brightness(1.04);
+            }
           }
 
-          .orbit-dot {
+          .bottom-wave-lines {
             position: absolute;
-            border-radius: 50%;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 430px;
+            z-index: 1;
+            background-image: url("/assets/about/about-us/background-anime-2.png");
+            background-size: 100% 1120px;
+            background-repeat: no-repeat;
+            background-position: center bottom;
+            opacity: 1;
+          }
+
+          .clean-orbit-wrap {
+            position: absolute;
+            left: 235px;
+            top: -510px;
+            width: 900px;
+            height: 900px;
             z-index: 4;
           }
 
-          .orbit-dot-main {
-            width: 18px;
-            height: 18px;
-            left: calc(50% - 9px);
-            top: calc(50% - 9px);
+          .clean-orbit {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid rgba(133, 151, 255, 0.26);
+          }
+
+          .clean-orbit-one {
+            inset: 0;
+          }
+
+          .clean-orbit-two {
+            inset: 110px;
+            border-color: rgba(133, 151, 255, 0.2);
+          }
+
+          .clean-dot {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            border-radius: 50%;
             background: #18a8e8;
             border: 4px solid #dff6ff;
             box-shadow:
-              0 0 0 8px rgba(24, 168, 232, 0.16),
-              0 0 18px rgba(24, 168, 232, 0.65);
-            animation: mainDotFullCircle 5s linear infinite;
+              0 0 0 8px rgba(24, 168, 232, 0.15),
+              0 0 18px rgba(24, 168, 232, 0.6);
           }
 
-          .orbit-dot-small {
-            width: 12px;
-            height: 12px;
-            left: calc(50% - 6px);
-            top: calc(50% - 6px);
-            background: #1ca7df;
-            border: 3px solid #e6f9ff;
-            box-shadow:
-              0 0 0 5px rgba(28, 167, 223, 0.14),
-              0 0 14px rgba(28, 167, 223, 0.55);
-            animation: smallDotFullCircle 6s linear infinite;
+          .clean-dot-one {
+            width: 17px;
+            height: 17px;
+            margin-left: -8.5px;
+            margin-top: -8.5px;
+            animation: rotateDotOne 6s linear infinite;
           }
 
-          @keyframes mainDotFullCircle {
+          .clean-dot-two {
+            width: 11px;
+            height: 11px;
+            margin-left: -5.5px;
+            margin-top: -5.5px;
+            animation: rotateDotTwo 7s linear infinite;
+          }
+
+          @keyframes rotateDotOne {
             0% {
-              transform: rotate(0deg) translateX(380px) rotate(0deg);
+              transform: rotate(15deg) translateX(450px) rotate(-15deg);
             }
 
             100% {
-              transform: rotate(360deg) translateX(380px) rotate(-360deg);
+              transform: rotate(375deg) translateX(450px) rotate(-375deg);
             }
           }
 
-          @keyframes smallDotFullCircle {
+          @keyframes rotateDotTwo {
             0% {
-              transform: rotate(0deg) translateX(285px) rotate(0deg);
+              transform: rotate(190deg) translateX(340px) rotate(-190deg);
             }
 
             100% {
-              transform: rotate(360deg) translateX(285px) rotate(-360deg);
+              transform: rotate(550deg) translateX(340px) rotate(-550deg);
             }
           }
 
@@ -255,25 +342,28 @@ const AboutPage = () => {
           }
 
           @media (max-width: 1279px) {
-            .about-page-bg-motion {
-              background-size: cover;
-              background-position: center top;
+            .clean-orbit-wrap {
+              left: 120px;
+              top: -505px;
             }
 
-            .half-circle-orbit {
-              left: 80px;
-              top: -220px;
+            .bottom-wave-lines {
+              background-size: 1440px 1120px;
             }
           }
 
           @media (max-width: 1023px) {
-            .half-circle-orbit {
+            .clean-orbit-wrap {
               display: none;
             }
 
-            .about-page-bg-motion {
+            .bottom-wave-lines {
               background-size: cover;
-              background-position: center top;
+            }
+
+            .side-circle-left,
+            .side-circle-right {
+              display: none;
             }
           }
         `}</style>

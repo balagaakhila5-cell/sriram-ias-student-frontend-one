@@ -29,13 +29,13 @@ const FoundersMessagePage = () => {
           }}
         />
 
-        <div className="relative z-10 h-full flex items-center px-6 sm:px-10 lg:px-[88px] pt-[80px]">
+        <div className="relative z-10 h-full flex items-start px-6 sm:px-10 lg:px-[88px] pt-[210px]">
           <h1 className="founder-hero-heading">FOUNDER&apos;S MESSAGE</h1>
         </div>
       </section>
 
       {/* FOUNDER MESSAGE SECTION */}
-      <section className="relative bg-[#f8fbff] overflow-hidden min-h-[960px]">
+      <section className="relative bg-[#f8fbff] overflow-hidden min-h-[820px]">
         <div className="absolute inset-0 founder-page-bg" />
 
         <div className="founder-moving-bg">
@@ -43,22 +43,22 @@ const FoundersMessagePage = () => {
             src="/assets/about/founder's-message/background-animation-founder.png"
             alt="Founder background animation"
             fill
-            sizes="75vw"
+            sizes="80vw"
             className="object-cover object-right"
           />
         </div>
 
-        <div className="relative z-10 w-full max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-[24px] xl:px-[28px] pt-[42px] pb-[10px]">
+        <div className="relative z-10 w-full max-w-[1440px] mx-auto px-0 pt-[62px] pb-[90px]">
           <div className="founder-main-grid">
             {/* LEFT DIALOG BOX */}
-            <div className="relative z-20 w-full dialog-left-col">
+            <div className="relative z-20 dialog-left-col">
               <div className="dialog-box-wrap">
                 <Image
                   src="/assets/about/founder's-message/dialog-box.png"
                   alt="Founder message dialog box"
                   fill
                   priority
-                  sizes="880px"
+                  sizes="940px"
                   className="object-fill"
                 />
 
@@ -97,14 +97,14 @@ const FoundersMessagePage = () => {
             </div>
 
             {/* RIGHT FOUNDER IMAGE */}
-            <div className="relative z-30 flex flex-col items-center right-founder-col">
+            <div className="relative z-30 right-founder-col">
               <div className="founder-photo-wrap">
                 <Image
                   src="/assets/about/founder's-message/sriram-founder.png"
                   alt="Sriram Srirangam Founder"
                   fill
                   priority
-                  sizes="640px"
+                  sizes="500px"
                   className="founder-main-img"
                 />
               </div>
@@ -145,25 +145,25 @@ const FoundersMessagePage = () => {
           background:
             radial-gradient(
               circle at 0% 18%,
-              rgba(255, 246, 230, 0.95) 0%,
-              rgba(255, 255, 255, 0.82) 34%,
+              rgba(255, 246, 230, 0.96) 0%,
+              rgba(255, 255, 255, 0.86) 34%,
               transparent 58%
             ),
             linear-gradient(
               100deg,
               #fffaf2 0%,
-              #ffffff 36%,
+              #ffffff 35%,
               #e8f6ff 100%
             );
         }
 
         .founder-moving-bg {
           position: absolute;
-          right: -90px;
+          right: -28px;
           top: 0;
           bottom: 0;
-          width: 66%;
-          opacity: 0.9;
+          width: 68%;
+          opacity: 0.95;
           pointer-events: none;
           animation: founderBgMove 5s ease-in-out infinite alternate;
           transform-origin: right center;
@@ -175,67 +175,84 @@ const FoundersMessagePage = () => {
           }
 
           100% {
-            transform: translateX(-22px) translateY(16px) scale(1.045);
+            transform: translateX(-16px) translateY(10px) scale(1.025);
           }
         }
 
         .founder-main-grid {
           width: 100%;
           display: grid;
-          grid-template-columns: minmax(750px, 880px) minmax(430px, 540px);
+          grid-template-columns: 940px 420px;
           align-items: start;
           justify-content: center;
           column-gap: 0;
         }
 
         .dialog-left-col {
-          margin-top: 34px;
+          margin-top: 0;
+          transform: translateX(-18px);
         }
 
         .dialog-box-wrap {
           position: relative;
-          width: 100%;
-          max-width: 880px;
-          height: 780px;
+          width: 940px;
+          height: 760px;
           overflow: visible;
         }
 
+        /* TEXT MOVED LITTLE ABOVE */
         .dialog-text-content {
           position: relative;
           z-index: 2;
-          padding: 66px 96px 82px 92px;
-          color: #4f5b63;
-          font-size: 17.5px !important;
-          line-height: 1.82 !important;
-          font-weight: 600 !important;
+          width: 875px;
+          max-width: 875px;
+          padding: 74px 8px 170px 88px;
+          color: #4d5961;
+          font-size: 17.2px !important;
+          line-height: 1.85 !important;
+          font-weight: 700 !important;
           letter-spacing: 0 !important;
+          box-sizing: border-box;
         }
 
         .dialog-text-content p {
-          margin-bottom: 26px !important;
-          font-size: 17.5px !important;
-          line-height: 1.82 !important;
-          font-weight: 600 !important;
+          margin-bottom: 42px !important;
+          font-size: 17.2px !important;
+          line-height: 1.85 !important;
+          font-weight: 700 !important;
           letter-spacing: 0 !important;
-          color: #4f5b63 !important;
+          color: #4d5961 !important;
+        }
+
+        .dialog-text-content p:nth-child(2) {
+          margin-bottom: 42px !important;
+        }
+
+        .dialog-text-content p:nth-child(3) {
+          margin-bottom: 12px !important;
         }
 
         .welcome-text {
           text-align: center;
-          margin-top: -4px !important;
+          margin-top: 0 !important;
           margin-bottom: 0 !important;
+          white-space: nowrap;
+          padding-right: 90px;
         }
 
+        /* FOUNDER IMAGE MOVED LITTLE ABOVE */
         .right-founder-col {
-          margin-left: 0;
-          margin-top: 34px;
-          transform: translateX(78px);
+          margin-top: 8px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          transform: translateX(48px);
         }
 
         .founder-photo-wrap {
           position: relative;
-          width: 640px;
-          height: 610px;
+          width: 500px;
+          height: 500px;
           overflow: visible;
         }
 
@@ -244,24 +261,24 @@ const FoundersMessagePage = () => {
           object-position: center center;
         }
 
+        /* BEST WISHES AND DETAILS LITTLE ABOVE */
         .founder-details {
           margin-top: 28px;
           position: relative;
           z-index: 12;
           width: 100%;
           text-align: center;
-          transform: translateX(0);
         }
 
         .best-wishes-text {
-          font-size: 36px;
-          line-height: 1.1;
+          font-size: 33px;
+          line-height: 1.05;
           font-weight: 900;
           letter-spacing: -0.02em;
           background: linear-gradient(
             90deg,
             #159fda 0%,
-            #3b98d5 34%,
+            #3b98d5 32%,
             #9383bf 62%,
             #d66f7c 100%
           );
@@ -271,151 +288,146 @@ const FoundersMessagePage = () => {
         }
 
         .founder-name {
-          margin-top: 14px;
-          font-size: 37px;
-          line-height: 1.15;
+          margin-top: 17px;
+          font-size: 34px;
+          line-height: 1.1;
           font-weight: 900;
           letter-spacing: -0.03em;
           color: #4d5660;
         }
 
         .founder-role {
-          margin-top: 16px;
-          font-size: 28px;
-          line-height: 1.2;
+          margin-top: 21px;
+          font-size: 26px;
+          line-height: 1.15;
           font-weight: 800;
           color: #56616b;
         }
 
         .founder-brand {
-          margin-top: 12px;
-          font-size: 27px;
-          line-height: 1.2;
+          margin-top: 22px;
+          font-size: 25px;
+          line-height: 1.15;
           font-weight: 900;
           color: #4f5964;
         }
 
         @media (min-width: 1280px) and (max-width: 1450px) {
           .founder-main-grid {
-            grid-template-columns: minmax(730px, 850px) minmax(390px, 500px);
+            grid-template-columns: 930px 400px;
             column-gap: 0;
           }
 
           .dialog-left-col {
-            margin-top: 32px;
+            transform: translateX(-20px);
           }
 
           .dialog-box-wrap {
-            max-width: 850px;
-            height: 780px;
+            width: 930px;
+            height: 760px;
           }
 
           .dialog-text-content {
-            padding: 64px 92px 80px 88px;
-            font-size: 17px !important;
-            line-height: 1.78 !important;
+            width: 865px;
+            max-width: 865px;
+            padding: 72px 8px 170px 88px;
+            font-size: 16.8px !important;
+            line-height: 1.82 !important;
+            box-sizing: border-box;
           }
 
           .dialog-text-content p {
-            font-size: 17px !important;
-            line-height: 1.78 !important;
-            margin-bottom: 25px !important;
+            font-size: 16.8px !important;
+            line-height: 1.82 !important;
+            margin-bottom: 40px !important;
+          }
+
+          .dialog-text-content p:nth-child(2) {
+            margin-bottom: 40px !important;
+          }
+
+          .dialog-text-content p:nth-child(3) {
+            margin-bottom: 12px !important;
           }
 
           .right-founder-col {
-            margin-top: 32px;
-            transform: translateX(55px);
+            margin-top: 8px;
+            transform: translateX(42px);
           }
 
           .founder-photo-wrap {
-            width: 610px;
-            height: 580px;
+            width: 470px;
+            height: 470px;
           }
 
           .founder-details {
-            margin-top: 24px;
-            width: 100%;
-            text-align: center;
-            transform: translateX(0);
+            margin-top: 26px;
           }
 
           .best-wishes-text {
-            font-size: 35px;
+            font-size: 31px;
           }
 
           .founder-name {
-            font-size: 36px;
+            font-size: 32px;
           }
 
           .founder-role {
-            font-size: 27px;
+            font-size: 25px;
           }
 
           .founder-brand {
-            font-size: 26px;
+            font-size: 24px;
           }
         }
 
         @media (max-width: 1279px) {
           .founder-main-grid {
             grid-template-columns: 1fr;
-            row-gap: 20px;
+            row-gap: 30px;
+            padding: 0 24px;
           }
 
           .dialog-left-col {
-            margin-top: 20px;
+            transform: translateX(0);
           }
 
           .dialog-box-wrap {
-            max-width: 980px;
-            height: 780px;
+            width: 100%;
+            max-width: 930px;
+            height: 760px;
             margin: 0 auto;
           }
 
           .dialog-text-content {
-            padding: 58px 82px 80px 82px;
+            width: 92%;
+            max-width: 865px;
+            padding: 72px 8px 170px 88px;
             font-size: 16.5px !important;
-            line-height: 1.75 !important;
-            font-weight: 600 !important;
+            line-height: 1.78 !important;
+            font-weight: 700 !important;
+            box-sizing: border-box;
           }
 
           .dialog-text-content p {
             font-size: 16.5px !important;
-            line-height: 1.75 !important;
-            font-weight: 600 !important;
-            margin-bottom: 22px !important;
+            line-height: 1.78 !important;
+            font-weight: 700 !important;
+            margin-bottom: 36px !important;
           }
 
           .right-founder-col {
-            padding-top: 16px;
-            margin-left: 0;
-            margin-top: 20px;
+            margin-top: 8px;
             transform: translateX(0);
           }
 
           .founder-photo-wrap {
-            width: 580px;
-            height: 550px;
+            width: 450px;
+            height: 450px;
           }
 
           .founder-details {
-            margin-top: 18px;
-            width: 100%;
-            text-align: center;
-            transform: translateX(0);
-          }
-
-          .best-wishes-text {
-            font-size: 33px;
-          }
-
-          .founder-name {
-            font-size: 34px;
-          }
-
-          .founder-role,
-          .founder-brand {
-            font-size: 24px;
+            margin-top: 26px;
           }
         }
 
@@ -435,7 +447,7 @@ const FoundersMessagePage = () => {
               rgba(202, 238, 252, 0.94) 48%,
               rgba(184, 230, 250, 0.98) 100%
             );
-            border-radius: 70px;
+            border-radius: 64px;
           }
 
           .dialog-box-wrap > :global(img) {
@@ -443,67 +455,33 @@ const FoundersMessagePage = () => {
           }
 
           .dialog-text-content {
-            padding: 42px 40px;
-            font-size: 15px !important;
+            width: 100%;
+            max-width: 100%;
+            padding: 42px 40px 42px;
+            font-size: 14.5px !important;
             line-height: 1.65 !important;
-            font-weight: 500 !important;
+            font-weight: 600 !important;
           }
 
           .dialog-text-content p {
-            font-size: 15px !important;
+            font-size: 14.5px !important;
             line-height: 1.65 !important;
-            font-weight: 500 !important;
+            font-weight: 600 !important;
             margin-bottom: 18px !important;
           }
 
-          .right-founder-col {
-            padding-top: 30px;
-            margin-left: 0;
-            margin-top: 20px;
-            transform: translateX(0);
+          .welcome-text {
+            white-space: normal;
+            padding-right: 0;
           }
 
           .founder-photo-wrap {
-            width: 500px;
-            height: 475px;
+            width: 350px;
+            height: 350px;
           }
 
           .founder-details {
-            margin-top: 12px;
-            width: 100%;
-            text-align: center;
-            transform: translateX(0);
-          }
-        }
-
-        @media (max-width: 640px) {
-          .dialog-box-wrap {
-            border-radius: 38px;
-          }
-
-          .dialog-text-content {
-            padding: 32px 22px;
-            font-size: 13px !important;
-            line-height: 1.6 !important;
-            font-weight: 500 !important;
-          }
-
-          .dialog-text-content p {
-            font-size: 13px !important;
-            line-height: 1.6 !important;
-            font-weight: 500 !important;
-          }
-
-          .founder-photo-wrap {
-            width: 380px;
-            height: 360px;
-          }
-
-          .founder-details {
-            margin-top: 8px;
-            width: 100%;
-            text-align: center;
-            transform: translateX(0);
+            margin-top: 22px;
           }
 
           .best-wishes-text {
@@ -514,9 +492,59 @@ const FoundersMessagePage = () => {
             font-size: 29px;
           }
 
+          .founder-role {
+            font-size: 22px;
+          }
+
+          .founder-brand {
+            font-size: 22px;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .founder-main-grid {
+            row-gap: 16px;
+            padding: 0 16px;
+          }
+
+          .dialog-box-wrap {
+            border-radius: 36px;
+          }
+
+          .dialog-text-content {
+            padding: 30px 22px 30px;
+            font-size: 12.5px !important;
+            line-height: 1.6 !important;
+            font-weight: 600 !important;
+          }
+
+          .dialog-text-content p {
+            font-size: 12.5px !important;
+            line-height: 1.6 !important;
+            font-weight: 600 !important;
+            margin-bottom: 14px !important;
+          }
+
+          .founder-photo-wrap {
+            width: 285px;
+            height: 285px;
+          }
+
+          .founder-details {
+            margin-top: 20px;
+          }
+
+          .best-wishes-text {
+            font-size: 23px;
+          }
+
+          .founder-name {
+            font-size: 24px;
+          }
+
           .founder-role,
           .founder-brand {
-            font-size: 23px;
+            font-size: 18px;
           }
         }
       `}</style>
