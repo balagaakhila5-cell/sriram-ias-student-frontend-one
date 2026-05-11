@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, ArrowUp } from 'lucide-react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import useInViewport from '@/hooks/useInViewport';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
+import { useHomepage } from '@/features/homepage/hooks/useHomepage';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,12 +18,38 @@ const AppAndVideos: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const isInViewport = useInViewport(sectionRef, { threshold: 0.2 });
   const prefersReducedMotion = usePrefersReducedMotion();
+  const { data: homepage } = useHomepage();
+  const section7 = homepage?.section7;
 
- const videos = [
-  { id: 1, title: 'The Hindu Daily Current Affairs', image: '/assets/youtube_video_image.png', author: 'Saurabh Tripathi' },
-  { id: 2, title: 'History NCERT (6-12)', image: '/assets/youtube_video_image.png', author: 'Team Sriram' },
-  { id: 3, title: 'Complete Modern History', image: '/assets/youtube_video_image.png', author: 'Expert Faculty' },
-];
+  const fallbackVideos = [
+    { id: 1, title: 'The Hindu Daily Current Affairs', image: '/assets/youtube_video_image.png', author: 'Saurabh Tripathi', url: undefined },
+    { id: 2, title: 'History NCERT (6-12)', image: '/assets/youtube_video_image.png', author: 'Team Sriram', url: undefined },
+    { id: 3, title: 'Complete Modern History', image: '/assets/youtube_video_image.png', author: 'Expert Faculty', url: undefined },
+  ];
+
+  const videos = useMemo(() => {
+    const apiVideos = section7?.videos ?? [];
+    if (apiVideos.length === 0) return fallbackVideos;
+
+    return apiVideos.map((video, index) => ({
+      id: video._id ?? `video-${index}`,
+      title: `Video ${index + 1}`,
+      image: video.videoThumbnail ?? '/assets/youtube_video_image.png',
+      author: 'Sriram IAS',
+      url: video.videoUrl,
+    }));
+  }, [section7]);
+
+  useEffect(() => {
+    if (activeIndex >= videos.length) {
+      setActiveIndex(0);
+    }
+  }, [activeIndex, videos.length]);
+
+  const openVideo = (url?: string) => {
+    if (!url) return;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
 
   useEffect(() => {
     if (isPaused || prefersReducedMotion || !isInViewport) {
@@ -383,7 +410,15 @@ const AppAndVideos: React.FC = () => {
                     />
 
                     <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-[transform,opacity] duration-500 ${isActive ? 'scale-100 opacity-100 hover:scale-110' : 'scale-50 opacity-0'}`}>
-                      <div className="relative w-20 h-20 flex items-center justify-center">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openVideo(video.url);
+                        }}
+                        className="relative w-20 h-20 flex items-center justify-center"
+                        aria-label="Play video"
+                      >
                         <svg viewBox="0 0 68 48" className="w-full h-full drop-shadow-xl">
                           <path
                             d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z"
@@ -391,7 +426,7 @@ const AppAndVideos: React.FC = () => {
                           />
                           <path d="M27.31 34.33V13.67L45.47 24z" fill="#FFF" />
                         </svg>
-                      </div>
+                      </button>
                     </div>
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -8,24 +8,45 @@ import { useGSAP } from '@gsap/react';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import DiamondLayer from '../DiamondLayer';
 import { heroDiamondConfig } from '../diamondConfigs';
+import { useHomepage } from '@/features/homepage/hooks/useHomepage';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const books = [
-  { id: 1, title: 'UPSC Book sciences - 1', author: 'Atomic Habits by James Clear', price: 'Rs.10,000/-', image: '/assets/books.png' },
-  { id: 2, title: 'UPSC Book sciences - 2', author: 'Deep Work by Cal Newport', price: 'Rs.12,000/-', image: '/assets/books.png' },
-  { id: 3, title: 'UPSC Book sciences - 3', author: 'Thinking Fast and Slow', price: 'Rs.15,000/-', image: '/assets/books.png' },
-  { id: 4, title: 'UPSC Book sciences - 4', author: 'The Lean Startup', price: 'Rs.11,000/-', image: '/assets/books.png' },
-  { id: 5, title: 'UPSC Book sciences - 5', author: 'Zero to One', price: 'Rs.13,000/-', image: '/assets/books.png' },
-  { id: 6, title: 'UPSC Book sciences - 6', author: 'The Four Hour Workweek', price: 'Rs.14,000/-', image: '/assets/books.png' },
+const fallbackBooks = [
+  { id: '1', title: 'UPSC Book sciences - 1', summary: 'Atomic Habits by James Clear', priceLabel: 'Rs.10,000/-', image: '/assets/books.png' },
+  { id: '2', title: 'UPSC Book sciences - 2', summary: 'Deep Work by Cal Newport', priceLabel: 'Rs.12,000/-', image: '/assets/books.png' },
+  { id: '3', title: 'UPSC Book sciences - 3', summary: 'Thinking Fast and Slow', priceLabel: 'Rs.15,000/-', image: '/assets/books.png' },
+  { id: '4', title: 'UPSC Book sciences - 4', summary: 'The Lean Startup', priceLabel: 'Rs.11,000/-', image: '/assets/books.png' },
+  { id: '5', title: 'UPSC Book sciences - 5', summary: 'Zero to One', priceLabel: 'Rs.13,000/-', image: '/assets/books.png' },
+  { id: '6', title: 'UPSC Book sciences - 6', summary: 'The Four Hour Workweek', priceLabel: 'Rs.14,000/-', image: '/assets/books.png' },
 ];
 
-const duplicatedBooks = [...books, ...books];
+const formatPrice = (value?: number) =>
+  typeof value === 'number'
+    ? `Rs. ${value.toLocaleString('en-IN')} /-`
+    : 'Rs. —';
 
 const BuyBooks: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const { data: homepage } = useHomepage();
+  const sectionBooks = homepage?.sectionBooks;
+
+  const books = useMemo(() => {
+    const apiBooks = sectionBooks?.books ?? [];
+    if (apiBooks.length === 0) return fallbackBooks;
+
+    return apiBooks.map((book) => ({
+      id: book._id,
+      title: book.title,
+      summary: book.summary ?? 'Explore this book to level up your preparation.',
+      priceLabel: formatPrice(book.discountedPrice),
+      image: book.image ?? '/assets/books.png',
+    }));
+  }, [sectionBooks]);
+
+  const duplicatedBooks = useMemo(() => [...books, ...books], [books]);
 
   useEffect(() => {
     document.fonts.ready.then(() => {
@@ -98,7 +119,7 @@ const BuyBooks: React.FC = () => {
         {/* HEADING */}
         <div className="buy-books-header text-center">
           <h2 className="global-section-heading">
-            BUY OUR BOOKS
+            {sectionBooks?.title ?? 'BUY OUR BOOKS'}
           </h2>
         </div>
 
@@ -129,7 +150,7 @@ const BuyBooks: React.FC = () => {
                   </h3>
 
                   <p className="text-gray-400 text-xs leading-relaxed line-clamp-2">
-                    {book.author} is a bestselling self-improvement book that explains how small daily habits...
+                    {book.summary}
                   </p>
 
                   <div className="flex justify-between items-center pt-1">
@@ -140,7 +161,7 @@ const BuyBooks: React.FC = () => {
                           'linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)',
                       }}
                     >
-                      {book.price}
+                      {book.priceLabel}
                     </span>
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import EnquiryFormModal from './EnquiryFormModal';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -12,6 +12,14 @@ const FloatingActions: React.FC = () => {
   const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const isScrolledSafe = isMounted ? isScrolled : false;
+  const allowMotion = isMounted && !prefersReducedMotion;
 
   useGSAP(() => {
     if (prefersReducedMotion) {
@@ -51,13 +59,13 @@ const FloatingActions: React.FC = () => {
       {/* Floating Elements (Enquire Now, WhatsApp) */}
       <div 
         className={`floating-enquire fixed right-0 top-1/2 -translate-y-1/2 z-60 transform-gpu transition-[transform] duration-500 ${
-          isScrolled ? 'translate-x-[calc(100%-40px)]' : 'translate-x-[0px]'
+          isScrolledSafe ? 'translate-x-[calc(100%-40px)]' : 'translate-x-[0px]'
         } hover:translate-x-0 group cursor-pointer flex items-center justify-end overflow-visible drop-shadow-2xl`}
         onClick={() => setIsEnquiryModalOpen(true)}
       >
          <div 
            className={`rounded-l-2xl font-black uppercase [writing-mode:vertical-lr] shadow-2xl transition-[padding] duration-500 flex items-center justify-center min-w-[50px] font-['Montserrat'] ${
-             isScrolled ? 'py-3 px-2' : 'py-5 px-4'
+             isScrolledSafe ? 'py-3 px-2' : 'py-5 px-4'
            } group-hover:py-5 group-hover:px-4 group-hover:min-w-[50px] text-white backdrop-blur-md`}
            style={{
              background: 'linear-gradient(90deg, rgba(24, 151, 216, 0.9) 0%, rgba(2, 28, 41, 0.95) 100%)'
@@ -76,7 +84,7 @@ const FloatingActions: React.FC = () => {
           rel="noopener noreferrer"
           className="relative block"
         >
-          {!prefersReducedMotion && (
+          {allowMotion && (
             <div className="absolute inset-0 bg-[#25D366] rounded-full animate-ping opacity-20" />
           )}
           <div className="bg-[#25D366] p-4 rounded-full shadow-[0_8px_32px_rgba(37,211,102,0.4)] relative z-10 flex items-center justify-center">

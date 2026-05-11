@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useMemo, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { MapPin, Calendar, Users, Trophy } from 'lucide-react';
 import gsap from 'gsap';
@@ -8,13 +8,19 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import useInViewport from '@/hooks/useInViewport';
+import { useHomepage } from '@/features/homepage/hooks/useHomepage';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const formatNumber = (num: number) => num.toLocaleString('en-IN');
+
 const NumberCounter = ({ value }: { value: string }) => {
-  const numMatch = value.match(/(\d+)/);
-  const endNum = numMatch ? parseInt(numMatch[1], 10) : 0;
-  const suffix = value.replace(/\d+/g, '').trim();
+  const digits = value.replace(/[^\d]/g, '');
+  const endNum = digits ? parseInt(digits, 10) : 0;
+  const suffix = value.replace(/[\d,]/g, '').trim();
+  const suffixWithSpace = suffix
+    ? (suffix.startsWith('+') ? suffix : ` ${suffix}`)
+    : '';
 
   const nodeRef = useRef<HTMLSpanElement>(null);
   const wrapperRef = useRef<HTMLSpanElement>(null);
@@ -33,15 +39,17 @@ const NumberCounter = ({ value }: { value: string }) => {
       duration: 1.5,
       ease: 'power2.out',
       onUpdate: () => {
-        el.textContent = String(Math.round(counter.val));
+        el.textContent = formatNumber(Math.round(counter.val));
       },
     });
   }, [isInViewport, endNum, prefersReducedMotion]);
 
   return (
     <span ref={wrapperRef}>
-      <span ref={nodeRef}>{prefersReducedMotion ? endNum : 0}</span>
-      {suffix && ` ${suffix}`}
+      <span ref={nodeRef}>
+        {prefersReducedMotion ? formatNumber(endNum) : '0'}
+      </span>
+      {suffixWithSpace}
     </span>
   );
 };
@@ -49,6 +57,42 @@ const NumberCounter = ({ value }: { value: string }) => {
 const OurStory: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const { data: homepage } = useHomepage();
+  const section6 = homepage?.section6;
+
+  const storyTitle = section6?.title ?? 'OUR STORY';
+  const storyDescription =
+    section6?.description
+    ?? 'Serving the nation in civil services like IAS, IPS.';
+  const storySubDescription =
+    section6?.subDescription
+    ?? 'Guiding thousands of aspirants to achieve their IAS dream.';
+
+  const statStyles = [
+    { icon: Calendar, color: 'text-pink-500', bgColor: 'bg-pink-50' },
+    { icon: Users, color: 'text-blue-600', bgColor: 'bg-blue-50' },
+    { icon: Trophy, color: 'text-green-600', bgColor: 'bg-green-50' },
+    { icon: MapPin, color: 'text-green-700', bgColor: 'bg-green-50' },
+  ];
+
+  const fallbackStats = [
+    { value: '300 +', label: 'Selections in UPSC CSE 2026' },
+    { value: '3500 +', label: 'Selections in UPSC' },
+    { value: '40 +', label: 'Years of Excellence' },
+    { value: '3', label: 'Centers Over all India' },
+  ];
+
+  const stats = useMemo(() => {
+    const apiStats = section6?.stats ?? [];
+    const source = apiStats.length > 0
+      ? apiStats.map((stat) => ({ value: stat.number, label: stat.text }))
+      : fallbackStats;
+
+    return source.map((stat, index) => {
+      const style = statStyles[index % statStyles.length];
+      return { ...stat, ...style };
+    });
+  }, [section6]);
 
   useGSAP(() => {
     if (!sectionRef.current) {
@@ -126,7 +170,7 @@ const OurStory: React.FC = () => {
       }
     );
 
-  }, { dependencies: [prefersReducedMotion], scope: sectionRef });
+  }, { dependencies: [prefersReducedMotion, stats.length], scope: sectionRef });
 
   return (
   <section ref={sectionRef} className="relative pt-12 pb-24 px-4 md:px-16">
@@ -140,10 +184,16 @@ const OurStory: React.FC = () => {
             }}
           />
 
-          <div className="our-story-header text-center">
+          <div className="our-story-header text-center space-y-4">
             <h3 className="global-section-heading">
-              OUR STORY
+              {storyTitle}
             </h3>
+            {(storyDescription || storySubDescription) && (
+              <div className="mx-auto max-w-[760px] text-[14px] md:text-[16px] text-gray-600 font-medium">
+                {storyDescription && <p>{storyDescription}</p>}
+                {storySubDescription && <p className="mt-2">{storySubDescription}</p>}
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start relative z-10">
@@ -155,6 +205,7 @@ const OurStory: React.FC = () => {
                   alt="Sriram's IAS Building"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
+                  priority
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
 
@@ -179,26 +230,26 @@ const OurStory: React.FC = () => {
 
               {/* Stats Grid */}
               <div className="our-story-stats-container grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10">
-                {[
-                  { icon: <Calendar size={20} />, value: '300 +', label: 'Selections in UPSC CSE 2026', color: 'text-pink-500', bgColor: 'bg-pink-50' },
-                  { icon: <Users size={20} />, value: '3500 +', label: 'Selections in UPSC', color: 'text-blue-600', bgColor: 'bg-blue-50' },
-                  { icon: <Trophy size={20} />, value: '40 +', label: 'Years of Excellence', color: 'text-green-600', bgColor: 'bg-green-50' },
-                  { icon: <MapPin size={20} />, value: '3', label: 'Centers Over all India', color: 'text-green-700', bgColor: 'bg-green-50' },
-                ].map((stat, i) => (
-                  <div key={i} className="our-story-stat">
-                    <div className="bg-white p-5 shadow-lg border border-gray-50 flex flex-col gap-3 rounded-xl hover:-translate-y-1 hover:shadow-xl transition-all duration-300 h-full">
-                      <div className="flex items-center gap-3">
-                        <div className={`${stat.bgColor} ${stat.color} p-2 rounded-lg`}>
-                          {stat.icon}
+                {stats.map((stat, i) => {
+                  const Icon = stat.icon;
+                  return (
+                    <div key={i} className="our-story-stat">
+                      <div className="bg-white p-5 shadow-lg border border-gray-50 flex flex-col gap-3 rounded-xl hover:-translate-y-1 hover:shadow-xl transition-all duration-300 h-full">
+                        <div className="flex items-center gap-3">
+                          <div className={`${stat.bgColor} ${stat.color} p-2 rounded-lg`}>
+                            <Icon size={20} />
+                          </div>
+                          <h5 className={`text-xl font-bold ${stat.color}`}>
+                            <NumberCounter value={stat.value} />
+                          </h5>
                         </div>
-                        <h5 className={`text-xl font-bold ${stat.color}`}>
-                          <NumberCounter value={stat.value} />
-                        </h5>
+                        <p className="text-gray-500 text-[11px] font-semibold uppercase tracking-wider leading-tight">
+                          {stat.label}
+                        </p>
                       </div>
-                      <p className="text-gray-500 text-[11px] font-semibold uppercase tracking-wider leading-tight">{stat.label}</p>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Quote Box */}
