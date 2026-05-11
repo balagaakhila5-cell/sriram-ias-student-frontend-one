@@ -22,6 +22,7 @@ const FreeCourses: React.FC = () => {
       bg: 'bg-[#000000]',
       backgroundImage: '/assets/daily_quizes_full_bg.png',
       rightImage: '/assets/daily_quizes_right_image.png',
+      floatingImage: '',
       accentColor: 'text-[#C5727A]',
     },
     {
@@ -32,6 +33,7 @@ const FreeCourses: React.FC = () => {
       bg: 'bg-[#5A0A0A]',
       backgroundImage: '/assets/bolgs.png',
       rightImage: '/assets/Group_64.png',
+      floatingImage: '',
       accentColor: 'text-[#FFCE8C]',
     },
     {
@@ -42,6 +44,7 @@ const FreeCourses: React.FC = () => {
       bg: 'bg-[#0d47a1]',
       backgroundImage: '/assets/current_affairs_full_bg.png',
       rightImage: '/assets/current_affairs.png',
+      floatingImage: '',
       accentColor: 'text-[#EDD1AC]',
     },
     {
@@ -52,6 +55,7 @@ const FreeCourses: React.FC = () => {
       bg: 'bg-[#004D40]',
       backgroundImage: '/assets/main_questions_full_bg.png',
       rightImage: '/assets/Group_63.png',
+      floatingImage: '',
       accentColor: 'text-[#EDD1AC]',
     },
   ];
@@ -86,7 +90,7 @@ const FreeCourses: React.FC = () => {
         description: card.description ?? fallback.description,
         backgroundImage: backgroundImage ?? fallback.backgroundImage,
         rightImage: rightImage ?? fallback.rightImage,
-        floatingImage,
+        floatingImage: floatingImage ?? fallback.floatingImage,
         bg: palette.bg,
         accentColor: palette.accentColor,
       };
@@ -130,7 +134,7 @@ const FreeCourses: React.FC = () => {
             repeat: -1,
             yoyo: true,
             force3D: true,
-          }
+          },
         );
       });
 
@@ -154,15 +158,13 @@ const FreeCourses: React.FC = () => {
         });
       });
     },
-    { dependencies: [prefersReducedMotion, sections.length], scope: containerRef }
+    { dependencies: [prefersReducedMotion, sections.length], scope: containerRef },
   );
 
   return (
     <section ref={containerRef} className="bg-white">
       <div className="section-header text-center py-20 px-4 bg-[#EAF7FF]">
-        <h2 className="global-section-heading">
-          {sectionTitle}
-        </h2>
+        <h2 className="global-section-heading">{sectionTitle}</h2>
       </div>
 
       <div className="relative">
@@ -190,9 +192,7 @@ const FreeCourses: React.FC = () => {
               {/* Text */}
               <div className="section-text w-full min-w-0 space-y-8 md:space-y-10 overflow-visible">
                 <h3 className="text-[32px] md:text-[44px] lg:text-[52px] xl:text-[58px] font-extrabold leading-[1.05] whitespace-nowrap">
-                  <span className={section.accentColor}>
-                    {section.title}
-                  </span>
+                  <span className={section.accentColor}>{section.title}</span>
                 </h3>
 
                 <p className="text-gray-100 text-base md:text-[1.1rem] lg:text-[1.2rem] font-medium leading-relaxed max-w-xl opacity-90">
@@ -213,6 +213,7 @@ const FreeCourses: React.FC = () => {
                       alt={section.title}
                       className="section-image h-full w-auto max-w-none object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500 cursor-pointer"
                     />
+
                     {section.floatingImage && (
                       <img
                         src={section.floatingImage}

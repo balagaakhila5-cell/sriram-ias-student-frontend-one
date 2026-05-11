@@ -11,7 +11,7 @@ const FoundersMessagePage = () => {
       <Header />
 
       {/* HERO BANNER */}
-      <section className="relative w-full h-[360px] overflow-hidden">
+      <section className="relative w-full h-[390px] overflow-hidden">
         <Image
           src="/assets/about/about-us/About-banner.png"
           alt="Founder's Message Banner"
