@@ -220,11 +220,11 @@ const Header: React.FC = () => {
     />
   );
 
- const topNavItemClass =
-  'px-2 xl:px-2.5 py-1.5 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer hover:text-white active:bg-transparent focus:bg-transparent';
+  const topNavItemClass =
+    'px-2 xl:px-2.5 py-1.5 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer hover:text-white active:bg-transparent focus:bg-transparent';
 
-const secondNavItemClass =
-  'px-2 xl:px-2.5 py-1.5 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer hover:text-white active:bg-transparent focus:bg-transparent';
+  const secondNavItemClass =
+    'px-2 xl:px-2.5 py-1.5 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer hover:text-white active:bg-transparent focus:bg-transparent';
 
   return (
     <>
@@ -233,26 +233,30 @@ const secondNavItemClass =
         className="absolute top-0 left-0 right-0 z-50 mx-auto w-full bg-transparent py-5 lg:py-4 px-4 md:px-6 lg:px-8 xl:px-12 font-['Montserrat']"
       >
         <div className="w-full max-w-[1440px] mx-auto flex justify-between items-start relative">
-          <div className="flex items-center">
-            <Image
-              src="/assets/40_years_experience.png"
-              alt="40 Years of Excellence"
-              width={66}
-              height={66}
-              className="h-11 md:h-14 lg:h-[66px] w-auto object-contain hidden md:block transition-transform hover:scale-105 mr-[1px]"
-            />
+        <div className="flex items-center">
+            <Link href="/" className="inline-flex cursor-pointer items-center">
+              <Image
+                src="/assets/40_years_experience.png"
+                alt="40 Years of Excellence"
+                width={66}
+                height={66}
+                className="h-11 md:h-14 lg:h-[66px] w-auto object-contain hidden md:block transition-transform hover:scale-105 mr-[1px]"
+              />
+            </Link>
 
-            <Image
-              src="/assets/Logo.png"
-              alt="SRIRAM's IAS"
-              width={70}
-              height={76}
-              className="h-11 md:h-14 lg:h-[76px] w-auto object-contain transition-transform hover:scale-105"
-            />
+            <Link href="/" className="inline-flex cursor-pointer items-center">
+              <Image
+                src="/assets/Logo.png"
+                alt="SRIRAM's IAS"
+                width={70}
+                height={76}
+                className="h-11 md:h-14 lg:h-[76px] w-auto object-contain transition-transform hover:scale-105"
+              />
+            </Link>
           </div>
 
           <div className="flex flex-col items-end lg:items-start gap-0.5 relative">
-           <div className="hidden lg:flex items-center gap-1.5 xl:gap-2 text-[16px] font-medium leading-[100%] tracking-normal uppercase text-white/80">
+            <div className="hidden lg:flex items-center gap-1.5 xl:gap-2 text-[16px] font-medium leading-[100%] tracking-normal uppercase text-white/80">
               <div ref={blogLangRef} className="relative">
                 <button
                   type="button"
@@ -304,14 +308,18 @@ const secondNavItemClass =
 
               <div className="relative" ref={centersButtonRef}>
                 <button
+                  type="button"
                   onClick={(e) => {
+                    e.preventDefault();
                     e.stopPropagation();
-                    setIsCentersOpen((prev) => {
-                      if (!prev) {
-                        closeAllDesktopMenus();
-                      }
-                      return !prev;
-                    });
+
+                    setIsCoursesOpen(false);
+                    setIsFreeResourcesOpen(false);
+                    setIsCurrentAffairsOpen(false);
+                    setIsBlogLangOpen(false);
+                    setIsAboutOpen(false);
+
+                    setIsCentersOpen((prev) => !prev);
                   }}
                   className={`${topNavItemClass} ${isCentersOpen ? 'text-white' : ''}`}
                 >
@@ -319,7 +327,7 @@ const secondNavItemClass =
                 </button>
               </div>
 
-              <Link href="/toppers" className={topNavItemClass}>
+             <Link href="/our-toppers-gallery" className={topNavItemClass}>
                 OUR TOPPERS
               </Link>
 
@@ -434,17 +442,21 @@ const secondNavItemClass =
               </Link>
             </div>
 
-           <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2 text-[16px] uppercase text-white/80 font-medium">
+            <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2 text-[16px] uppercase text-white/80 font-medium">
               <div className="relative group" ref={coursesButtonRef}>
                 <button
+                  type="button"
                   onClick={(e) => {
+                    e.preventDefault();
                     e.stopPropagation();
-                    setIsCoursesOpen((prev) => {
-                      if (!prev) {
-                        closeAllDesktopMenus();
-                      }
-                      return !prev;
-                    });
+
+                    setIsCentersOpen(false);
+                    setIsFreeResourcesOpen(false);
+                    setIsCurrentAffairsOpen(false);
+                    setIsBlogLangOpen(false);
+                    setIsAboutOpen(false);
+
+                    setIsCoursesOpen((prev) => !prev);
                   }}
                   className={`flex items-center gap-1 ${secondNavItemClass} ${isCoursesOpen ? 'text-white' : ''}`}
                 >
@@ -472,12 +484,14 @@ const secondNavItemClass =
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      setIsFreeResourcesOpen((prev) => {
-                        if (!prev) {
-                          closeAllDesktopMenus();
-                        }
-                        return !prev;
-                      });
+
+                      setIsCoursesOpen(false);
+                      setIsCentersOpen(false);
+                      setIsCurrentAffairsOpen(false);
+                      setIsBlogLangOpen(false);
+                      setIsAboutOpen(false);
+
+                      setIsFreeResourcesOpen((prev) => !prev);
                     }}
                     className={`pr-1.5 pl-0.5 py-1.5 flex items-center justify-center cursor-pointer active:bg-transparent focus:bg-transparent ${
                       isFreeResourcesOpen ? 'text-white' : 'text-white/80 hover:text-white'
@@ -507,12 +521,14 @@ const secondNavItemClass =
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      setIsCurrentAffairsOpen((prev) => {
-                        if (!prev) {
-                          closeAllDesktopMenus();
-                        }
-                        return !prev;
-                      });
+
+                      setIsCoursesOpen(false);
+                      setIsCentersOpen(false);
+                      setIsFreeResourcesOpen(false);
+                      setIsBlogLangOpen(false);
+                      setIsAboutOpen(false);
+
+                      setIsCurrentAffairsOpen((prev) => !prev);
                     }}
                     className={`pr-1.5 pl-0.5 py-1.5 flex items-center justify-center cursor-pointer active:bg-transparent focus:bg-transparent ${
                       isCurrentAffairsOpen ? 'text-white' : 'text-white/80 hover:text-white'
@@ -537,16 +553,13 @@ const secondNavItemClass =
                     e.preventDefault();
                     e.stopPropagation();
 
-                    setIsAboutOpen((prev) => {
-                      if (!prev) {
-                        setIsCoursesOpen(false);
-                        setIsCentersOpen(false);
-                        setIsFreeResourcesOpen(false);
-                        setIsCurrentAffairsOpen(false);
-                        setIsBlogLangOpen(false);
-                      }
-                      return !prev;
-                    });
+                    setIsCoursesOpen(false);
+                    setIsCentersOpen(false);
+                    setIsFreeResourcesOpen(false);
+                    setIsCurrentAffairsOpen(false);
+                    setIsBlogLangOpen(false);
+
+                    setIsAboutOpen((prev) => !prev);
                   }}
                   className={`flex items-center gap-1 ${secondNavItemClass} ${
                     isAboutOpen ? 'text-white' : ''
@@ -560,93 +573,88 @@ const secondNavItemClass =
                     }`}
                   />
                 </button>
-               {isAboutOpen && (
-  <div className="absolute top-full right-0 mt-10 w-[602px] h-[274px] rounded-[22px] bg-white shadow-[0px_18px_50px_rgba(0,0,0,0.18)] overflow-hidden z-50">
-    {/* Moving background animation */}
-    <div className="about-bg-motion absolute inset-0 pointer-events-none" />
 
-    {/* Light overlay only for background, not for icons */}
-    <div className="absolute inset-0 bg-white/10 pointer-events-none" />
+                {isAboutOpen && (
+                  <div className="absolute top-full right-0 mt-10 w-[602px] h-[274px] rounded-[22px] bg-white shadow-[0px_18px_50px_rgba(0,0,0,0.18)] overflow-hidden z-50">
+                    <div className="about-bg-motion absolute inset-0 pointer-events-none" />
+                    <div className="absolute inset-0 bg-white/10 pointer-events-none" />
 
-    {/* Cards */}
-    <div className="relative z-20 flex h-full items-center justify-center gap-5 px-16">
-      <Link
-        href="/about"
-        onClick={() => setIsAboutOpen(false)}
-        className="group flex h-[172px] w-[190px] flex-col items-center justify-center rounded-[18px] bg-white shadow-[0px_12px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]"
-      >
-        <div className="mb-5 flex h-[72px] w-[72px] items-center justify-center">
-          <Image
-            src="/assets/about/about-us-icon.svg"
-            alt="About Us"
-            width={72}
-            height={72}
-            priority
-            unoptimized
-            className="h-[72px] w-[72px] object-contain transition-transform duration-300 group-hover:scale-110"
-          />
-        </div>
+                    <div className="relative z-20 flex h-full items-center justify-center gap-5 px-16">
+                      <Link
+                        href="/about"
+                        onClick={() => setIsAboutOpen(false)}
+                        className="group flex h-[172px] w-[190px] flex-col items-center justify-center rounded-[18px] bg-white shadow-[0px_12px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]"
+                      >
+                        <div className="mb-5 flex h-[72px] w-[72px] items-center justify-center">
+                          <Image
+                            src="/assets/about/about-us-icon.svg"
+                            alt="About Us"
+                            width={72}
+                            height={72}
+                            priority
+                            unoptimized
+                            className="h-[72px] w-[72px] object-contain transition-transform duration-300 group-hover:scale-110"
+                          />
+                        </div>
 
-        <span className="text-[18px] font-semibold normal-case text-[#B95D63]">
-          About Us
-        </span>
-      </Link>
+                        <span className="text-[18px] font-semibold normal-case text-[#B95D63]">
+                          About Us
+                        </span>
+                      </Link>
 
-      <Link
-        href="/founders-message"
-        onClick={() => setIsAboutOpen(false)}
-        className="group flex h-[172px] w-[258px] flex-col items-center justify-center rounded-[18px] bg-white shadow-[0px_12px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]"
-      >
-        <div className="mb-5 flex h-[72px] w-[72px] items-center justify-center">
-          <Image
-            src="/assets/about/founder's-message-icon.svg"
-            alt="Founder Message"
-            width={72}
-            height={72}
-            priority
-            unoptimized
-            className="h-[72px] w-[72px] object-contain transition-transform duration-300 group-hover:scale-110"
-          />
-        </div>
+                      <Link
+                        href="/founders-message"
+                        onClick={() => setIsAboutOpen(false)}
+                        className="group flex h-[172px] w-[258px] flex-col items-center justify-center rounded-[18px] bg-white shadow-[0px_12px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]"
+                      >
+                        <div className="mb-5 flex h-[72px] w-[72px] items-center justify-center">
+                          <Image
+                            src="/assets/about/founder's-message-icon.svg"
+                            alt="Founder Message"
+                            width={72}
+                            height={72}
+                            priority
+                            unoptimized
+                            className="h-[72px] w-[72px] object-contain transition-transform duration-300 group-hover:scale-110"
+                          />
+                        </div>
 
-        <span className="text-[18px] font-semibold normal-case text-[#6F8E3B]">
-          Founder&apos;s Message
-        </span>
-      </Link>
-    </div>
+                        <span className="text-[18px] font-semibold normal-case text-[#6F8E3B]">
+                          Founder&apos;s Message
+                        </span>
+                      </Link>
+                    </div>
 
-    <style jsx global>{`
-      .about-bg-motion {
-        background-image: url("/assets/about/background-animation-about.png");
-        background-size: 125% 125%;
-        background-repeat: no-repeat;
-        background-position: left bottom;
-        opacity: 0.9;
-        animation: aboutWaveMove 3s ease-in-out infinite alternate;
-        will-change: transform, background-position;
-      }
+                    <style jsx global>{`
+                      .about-bg-motion {
+                        background-image: url("/assets/about/background-animation-about.png");
+                        background-size: 125% 125%;
+                        background-repeat: no-repeat;
+                        background-position: left bottom;
+                        opacity: 0.9;
+                        animation: aboutWaveMove 3s ease-in-out infinite alternate;
+                        will-change: transform, background-position;
+                      }
 
-      @keyframes aboutWaveMove {
-        0% {
-          background-position: left bottom;
-          transform: translateX(-18px) translateY(10px) scale(1.08);
-        }
+                      @keyframes aboutWaveMove {
+                        0% {
+                          background-position: left bottom;
+                          transform: translateX(-18px) translateY(10px) scale(1.08);
+                        }
 
-        50% {
-          background-position: center bottom;
-          transform: translateX(18px) translateY(-8px) scale(1.14);
-        }
+                        50% {
+                          background-position: center bottom;
+                          transform: translateX(18px) translateY(-8px) scale(1.14);
+                        }
 
-        100% {
-          background-position: right bottom;
-          transform: translateX(-10px) translateY(8px) scale(1.1);
-        }
-      }
-    `}</style>
-  </div>
-)}
-             
-
+                        100% {
+                          background-position: right bottom;
+                          transform: translateX(-10px) translateY(8px) scale(1.1);
+                        }
+                      }
+                    `}</style>
+                  </div>
+                )}
               </div>
             </nav>
           </div>
@@ -903,99 +911,100 @@ const secondNavItemClass =
           </div>
         </div>
 
-        <div
-          ref={centersMenuRef}
-          className={`absolute top-full left-0 right-0 w-full mt-6 bg-[#F2F7F9] rounded-[32px] shadow-2xl border border-white/20 flex flex-col justify-center items-center overflow-hidden text-center cursor-default transform origin-top transition-all duration-300 z-50 min-h-[340px] ${
-            isCentersOpen ? 'scale-100 opacity-100 pointer-events-auto' : 'scale-95 opacity-0 pointer-events-none'
-          }`}
-        >
-          {isCentersOpen && (
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="none"
-              className="absolute inset-0 w-full h-full object-cover z-0 opacity-[0.2] mix-blend-darken pointer-events-none"
-            >
-              <source src="/assets/dropdown-video.mp4" type="video/mp4" />
-            </video>
-          )}
+ <div
+  ref={centersMenuRef}
+  className={`absolute top-full left-1/2 mt-6 w-[700px] h-[265px] -translate-x-1/2 overflow-hidden rounded-[8px] bg-white shadow-[0px_18px_50px_rgba(0,0,0,0.18)] border border-white/40 text-center cursor-default transform origin-top transition-all duration-300 z-50 ${
+    isCentersOpen
+      ? 'scale-100 opacity-100 pointer-events-auto'
+      : 'scale-95 opacity-0 pointer-events-none'
+  }`}
+>
+  {/* Visible moving background */}
+  <div className="our-centers-bg-motion absolute inset-0 z-0 pointer-events-none" />
 
-          <div className="relative z-10 flex flex-col items-center justify-center w-full h-full p-10">
-            <h3
-              className="text-xl font-[900] tracking-widest uppercase mb-10 font-['Montserrat']"
-              style={{
-                background: 'linear-gradient(90deg, #D47B83 0%, #908CAF 45%, #46A1D4 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                color: 'transparent',
-              }}
-            >
-              OUR CENTERS
-            </h3>
+  {/* Very light overlay only */}
+  <div className="absolute inset-0 z-[1] bg-white/10 pointer-events-none" />
 
-            <div className="flex gap-16 w-full justify-center items-center">
-              <Link
-                href="/centers/delhi"
-                onClick={() => setIsCentersOpen(false)}
-                className="flex flex-col items-center gap-5 w-[140px] hover:opacity-90 transition-opacity group"
-              >
-                <div className="w-[120px] h-[120px] bg-[#FDE9E8] rounded-[28px] flex justify-center items-center group-hover:-translate-y-2 transition-transform duration-300 shadow-sm border border-[#AC6269]/10">
-                  <Image
-                    src="/assets/del-footer.png"
-                    alt="New Delhi"
-                    width={52}
-                    height={52}
-                    className="w-[52px] h-[52px] object-contain"
-                  />
-                </div>
-                <span className="font-bold text-[#AC6269] text-[17px] font-['Montserrat'] whitespace-nowrap">
-                  New Delhi
-                </span>
-              </Link>
+  <div className="relative z-10 flex h-full w-full items-center justify-center gap-[28px] px-[34px]">
+    <Link
+      href="/centers/delhi"
+      onClick={() => setIsCentersOpen(false)}
+      className="group flex h-[190px] w-[195px] items-center justify-center transition-all duration-300 hover:-translate-y-1"
+    >
+      <Image
+        src="/assets/new-delhi-icon.svg"
+        alt="New Delhi"
+        width={195}
+        height={190}
+        priority
+        unoptimized
+        className="h-[190px] w-[195px] object-contain transition-transform duration-300 group-hover:scale-[1.04]"
+      />
+    </Link>
 
-              <Link
-                href="/centers/hyderabad"
-                onClick={() => setIsCentersOpen(false)}
-                className="flex flex-col items-center gap-5 w-[140px] hover:opacity-90 transition-opacity group"
-              >
-                <div className="w-[120px] h-[120px] bg-[#EDFBE3] rounded-[28px] flex justify-center items-center group-hover:-translate-y-2 transition-transform duration-300 shadow-sm border border-[#6F923B]/10">
-                  <Image
-                    src="/assets/hyd-footer.png"
-                    alt="Hyderabad"
-                    width={52}
-                    height={52}
-                    className="w-[52px] h-[52px] object-contain"
-                  />
-                </div>
-                <span className="font-bold text-[#6F923B] text-[17px] font-['Montserrat'] whitespace-nowrap">
-                  Hyderabad
-                </span>
-              </Link>
+    <Link
+      href="/centers/hyderabad"
+      onClick={() => setIsCentersOpen(false)}
+      className="group flex h-[190px] w-[195px] items-center justify-center transition-all duration-300 hover:-translate-y-1"
+    >
+      <Image
+        src="/assets/hyderabad-icon.svg"
+        alt="Hyderabad"
+        width={195}
+        height={190}
+        priority
+        unoptimized
+        className="h-[190px] w-[195px] object-contain transition-transform duration-300 group-hover:scale-[1.04]"
+      />
+    </Link>
 
-              <Link
-                href="/centers/pune"
-                onClick={() => setIsCentersOpen(false)}
-                className="flex flex-col items-center gap-5 w-[140px] hover:opacity-90 transition-opacity group"
-              >
-                <div className="w-[120px] h-[120px] bg-[#EFEFFF] rounded-[28px] flex justify-center items-center group-hover:-translate-y-2 transition-transform duration-300 shadow-sm border border-[#69699A]/10">
-                  <Image
-                    src="/assets/pune-footer.png"
-                    alt="Pune"
-                    width={52}
-                    height={52}
-                    className="w-[52px] h-[52px] object-contain"
-                  />
-                </div>
-                <span className="font-bold text-[#69699A] text-[17px] font-['Montserrat'] whitespace-nowrap">
-                  Pune
-                </span>
-              </Link>
-            </div>
-          </div>
-        </div>
+    <Link
+      href="/centers/pune"
+      onClick={() => setIsCentersOpen(false)}
+      className="group flex h-[190px] w-[195px] items-center justify-center transition-all duration-300 hover:-translate-y-1"
+    >
+      <Image
+        src="/assets/pune-icon.svg"
+        alt="Pune"
+        width={195}
+        height={190}
+        priority
+        unoptimized
+        className="h-[190px] w-[195px] object-contain transition-transform duration-300 group-hover:scale-[1.04]"
+      />
+    </Link>
+  </div>
+
+  <style jsx global>{`
+    .our-centers-bg-motion {
+      background-image: url('/assets/background-animation-our-centers.png');
+      background-size: 135% 135%;
+      background-repeat: no-repeat;
+      background-position: left center;
+      opacity: 0.9;
+      animation: ourCentersBgMove 2.8s ease-in-out infinite alternate;
+      transform-origin: center center;
+      will-change: transform, background-position;
+    }
+
+    @keyframes ourCentersBgMove {
+      0% {
+        background-position: left center;
+        transform: translateX(-24px) translateY(8px) scale(1.12);
+      }
+
+      50% {
+        background-position: center center;
+        transform: translateX(22px) translateY(-8px) scale(1.18);
+      }
+
+      100% {
+        background-position: right center;
+        transform: translateX(-18px) translateY(7px) scale(1.14);
+      }
+    }
+  `}</style>
+</div>
 
         <BookFreeDemoModal
           isOpen={isBookDemoOpen}

@@ -16,39 +16,46 @@ const studentSchema = z.object({
   name: z.string().min(2, "Enter your full name"),
   email: z.string().email("Enter a valid email"),
   mobile: z.string().regex(mobileRegex, "Enter a valid 10-digit mobile"),
-  parentName: z.string().min(2, "Enter parent name"),
-  parentEmail: z.string().email("Enter a valid parent email"),
-  parentMobile: z.string().regex(mobileRegex, "Enter a valid 10-digit mobile"),
 });
+
+type StudentSignupForm = z.infer<typeof studentSchema>;
 
 const SignupPortal: React.FC = () => {
   const router = useRouter();
+
   const [role, setRole] = useState<UserRole>("student");
   const [otpEmail, setOtpEmail] = useState<string | null>(null);
 
   const signup = useStudentSignup();
   const sendOtp = useSendOtp();
 
-  const form = useForm({
+  const form = useForm<StudentSignupForm>({
     resolver: zodResolver(studentSchema),
     defaultValues: {
       name: "",
       email: "",
       mobile: "",
-      parentName: "",
-      parentEmail: "",
-      parentMobile: "",
     },
   });
 
   const onSubmit = form.handleSubmit((values) => {
     if (role !== "student") return;
-    signup.mutate(values, {
+
+    const payload = {
+      name: values.name,
+      email: values.email,
+      mobile: values.mobile,
+    };
+
+    signup.mutate(payload, {
       onSuccess: () => {
-        // Auto-trigger OTP for seamless verification -> login
         sendOtp.mutate(
           { email: values.email },
-          { onSuccess: () => setOtpEmail(values.email) },
+          {
+            onSuccess: () => {
+              setOtpEmail(values.email);
+            },
+          }
         );
       },
     });
@@ -65,9 +72,10 @@ const SignupPortal: React.FC = () => {
         <div className="flex w-full flex-col items-center gap-4 text-center">
           <p className="text-sm text-gray-600">
             {role === "parent"
-              ? "Parent accounts are created automatically when a student signs up with parent details."
+              ? "Parent signup is currently not required."
               : "Faculty accounts are provisioned by the center admin."}
           </p>
+
           <Link
             href="/login"
             className="font-semibold text-[#0A73B7] hover:underline"
@@ -93,35 +101,19 @@ const SignupPortal: React.FC = () => {
           error={form.formState.errors.name?.message}
           {...form.register("name")}
         />
+
         <Field
           label="Email ID"
           type="email"
           error={form.formState.errors.email?.message}
           {...form.register("email")}
         />
+
         <Field
           label="Mobile Number"
           type="tel"
           error={form.formState.errors.mobile?.message}
           {...form.register("mobile")}
-        />
-        <Field
-          label="Parent Name"
-          type="text"
-          error={form.formState.errors.parentName?.message}
-          {...form.register("parentName")}
-        />
-        <Field
-          label="Parent Email"
-          type="email"
-          error={form.formState.errors.parentEmail?.message}
-          {...form.register("parentEmail")}
-        />
-        <Field
-          label="Parent Mobile"
-          type="tel"
-          error={form.formState.errors.parentMobile?.message}
-          {...form.register("parentMobile")}
         />
 
         {(signup.error || sendOtp.error) && (
@@ -139,9 +131,7 @@ const SignupPortal: React.FC = () => {
               "linear-gradient(90deg, rgba(24,151,216,0.85) 0%, #021C29 100%)",
           }}
         >
-          {signup.isPending || sendOtp.isPending
-            ? "Please wait..."
-            : "Sign Up"}
+          {signup.isPending || sendOtp.isPending ? "Please wait..." : "Sign Up"}
         </button>
 
         <p className="mt-2 text-center text-[13px] text-gray-600">
@@ -175,15 +165,18 @@ const Field = React.forwardRef<HTMLInputElement, FieldProps>(
   ({ label, error, ...rest }, ref) => (
     <label className="flex w-full flex-col gap-2">
       <span className="text-[14px] font-medium text-black/50">{label}</span>
+
       <input
         ref={ref}
         {...rest}
         className="h-[48px] w-full rounded-[24px] bg-[#CDE7F1] px-5 text-[15px] text-black outline-none transition-shadow focus:shadow-[0_0_0_2px_rgba(24,151,216,0.4)]"
       />
+
       {error && <span className="text-xs text-red-600">{error}</span>}
     </label>
-  ),
+  )
 );
+
 Field.displayName = "Field";
 
 export default SignupPortal;

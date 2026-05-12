@@ -2,7 +2,11 @@
 
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { useCenters, useCourses, useSubmitEnquiry } from '@/features/course/hooks/useCourses';
+import {
+  useCenters,
+  useCourses,
+  useSubmitEnquiry,
+} from '@/features/course/hooks/useCourses';
 
 interface EnquiryFormModalProps {
   isOpen: boolean;
@@ -27,15 +31,39 @@ const initialState: FormState = {
   centerId: '',
 };
 
+/* Added course options */
+const fallbackCourses = [
+  { _id: 'gs-foundation', title: 'GS Foundation' },
+  { _id: 'mentorship', title: 'Mentorship' },
+  { _id: 'optional-foundation', title: 'Optional Foundation' },
+  { _id: 'test-series', title: 'Test Series' },
+  { _id: 'csat', title: 'CSAT' },
+  { _id: 'enrichment-course', title: 'Enrichment Course' },
+];
+
+/* Added center options */
+const fallbackCenters = [
+  { _id: 'new-delhi', name: 'New Delhi' },
+  { _id: 'hyderabad', name: 'Hyderabad' },
+  { _id: 'pune', name: 'Pune' },
+];
+
 const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
   isOpen,
   onClose,
   defaultCourseTitle,
   defaultCenterName,
 }) => {
-  const { data: centers } = useCenters();
-  const { data: courses } = useCourses();
+  const { data: centersData } = useCenters();
+  const { data: coursesData } = useCourses();
   const { mutateAsync: submitEnquiry, isPending } = useSubmitEnquiry();
+
+  /*
+    If backend courses/centers are available, it uses backend data.
+    If backend data is empty, it shows fallback static options.
+  */
+  const courses = coursesData?.length ? coursesData : fallbackCourses;
+  const centers = centersData?.length ? centersData : fallbackCenters;
 
   const [form, setForm] = useState<FormState>(initialState);
   const [error, setError] = useState<string | null>(null);
@@ -43,13 +71,15 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleChange = (field: keyof FormState) =>
+  const handleChange =
+    (field: keyof FormState) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       setForm((f) => ({ ...f, [field]: e.target.value }));
     };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     setError(null);
     setSuccess(null);
 
@@ -58,23 +88,35 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
       return;
     }
 
-    const selectedCourse = courses?.find((c) => c._id === form.courseId);
-    const selectedCenter = centers?.find((c) => c._id === form.centerId);
+    if (!form.courseId) {
+      setError('Please choose a course.');
+      return;
+    }
+
+    if (!form.centerId) {
+      setError('Please choose a center.');
+      return;
+    }
+
+    const selectedCourse = courses.find((c) => c._id === form.courseId);
+    const selectedCenter = centers.find((c) => c._id === form.centerId);
 
     try {
       const res = await submitEnquiry({
         name: form.name.trim(),
         phone: form.phone.trim(),
         email: form.email.trim(),
-        course: form.courseId || undefined,
-        center: form.centerId || undefined,
+        course: form.courseId,
+        center: form.centerId,
         courseTitle: selectedCourse?.title ?? defaultCourseTitle,
         centerName: selectedCenter?.name ?? defaultCenterName,
       });
+
       setSuccess(res.message ?? 'Enquiry submitted. We will reach out soon.');
       setForm(initialState);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to submit enquiry.';
+      const message =
+        err instanceof Error ? err.message : 'Failed to submit enquiry.';
       setError(message);
     }
   };
@@ -86,104 +128,144 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-4xl bg-white rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-300 flex flex-col md:flex-row min-h-[500px]">
-        <div className="hidden md:block md:w-[45%] relative">
+      <div className="relative flex min-h-[500px] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl duration-300 animate-in fade-in zoom-in-95 md:flex-row">
+        <div className="relative hidden md:block md:w-[45%]">
           <img
             src="/assets/modal-img-1.png"
             alt="Sriram's IAS"
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover"
           />
         </div>
 
-        <div className="flex-1 p-6 md:p-10 flex flex-col justify-center bg-white relative">
+        <div className="relative flex flex-1 flex-col justify-center bg-white p-6 md:p-10">
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-4 right-4 p-1.5 hover:bg-gray-100 rounded-full text-gray-400 transition-colors z-20"
+            className="absolute right-4 top-4 z-20 rounded-full p-1.5 text-gray-400 transition-colors hover:bg-gray-100"
           >
             <X size={20} />
           </button>
 
-          <div className="flex items-center justify-center gap-2 mb-6 md:mb-8">
-            <h2 className="text-2xl md:text-3xl font-semibold text-gray-900">Enquiry Form</h2>
+          <div className="mb-6 flex items-center justify-center gap-2 md:mb-8">
+            <h2 className="text-2xl font-semibold text-gray-900 md:text-3xl">
+              Enquiry Form
+            </h2>
             <span className="text-2xl">📋</span>
           </div>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="space-y-1">
-              <label className="text-sm text-gray-400 font-normal ml-1">Full Name</label>
+              <label className="ml-1 text-sm font-normal text-gray-400">
+                Full Name
+              </label>
               <input
                 type="text"
                 value={form.name}
                 onChange={handleChange('name')}
                 required
-                className="w-full bg-[#E0F2F9] border-none rounded-lg px-4 py-2.5 focus:ring-1 focus:ring-[#20A0E0] outline-none transition-all"
+                className="w-full rounded-lg border-none bg-[#E0F2F9] px-4 py-2.5 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm text-gray-400 font-normal ml-1">Mobile Number</label>
+              <label className="ml-1 text-sm font-normal text-gray-400">
+                Mobile Number
+              </label>
               <input
                 type="tel"
                 value={form.phone}
                 onChange={handleChange('phone')}
                 required
-                className="w-full bg-[#E0F2F9] border-none rounded-lg px-4 py-2.5 focus:ring-1 focus:ring-[#20A0E0] outline-none transition-all"
+                className="w-full rounded-lg border-none bg-[#E0F2F9] px-4 py-2.5 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm text-gray-400 font-normal ml-1">Email ID</label>
+              <label className="ml-1 text-sm font-normal text-gray-400">
+                Email ID
+              </label>
               <input
                 type="email"
                 value={form.email}
                 onChange={handleChange('email')}
                 required
-                className="w-full bg-[#E0F2F9] border-none rounded-lg px-4 py-2.5 focus:ring-1 focus:ring-[#20A0E0] outline-none transition-all"
+                className="w-full rounded-lg border-none bg-[#E0F2F9] px-4 py-2.5 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
               />
             </div>
 
+            {/* Course Dropdown */}
             <div className="space-y-1">
-              <label className="text-sm text-gray-400 font-normal ml-1">Course</label>
+              <label className="ml-1 text-sm font-normal text-gray-400">
+                Course
+              </label>
+
               <div className="relative">
                 <select
                   value={form.courseId}
                   onChange={handleChange('courseId')}
-                  className="w-full bg-[#E0F2F9] border-none rounded-lg px-4 py-2.5 focus:ring-1 focus:ring-[#20A0E0] outline-none appearance-none transition-all cursor-pointer text-gray-600"
+                  required
+                  className="w-full cursor-pointer appearance-none rounded-lg border-none bg-[#E0F2F9] px-4 py-2.5 text-gray-600 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
                 >
                   <option value="">Choose course</option>
-                  {courses?.map((c) => (
-                    <option key={c._id} value={c._id}>
-                      {c.title}
+
+                  {courses.map((course) => (
+                    <option key={course._id} value={course._id}>
+                      {course.title}
                     </option>
                   ))}
                 </select>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="6 9 12 15 18 9"></polyline>
+
+                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
                   </svg>
                 </div>
               </div>
             </div>
 
+            {/* Center Dropdown */}
             <div className="space-y-1">
-              <label className="text-sm text-gray-400 font-normal ml-1">Center</label>
+              <label className="ml-1 text-sm font-normal text-gray-400">
+                Center
+              </label>
+
               <div className="relative">
                 <select
                   value={form.centerId}
                   onChange={handleChange('centerId')}
-                  className="w-full bg-[#E0F2F9] border-none rounded-lg px-4 py-2.5 focus:ring-1 focus:ring-[#20A0E0] outline-none appearance-none transition-all cursor-pointer text-gray-600"
+                  required
+                  className="w-full cursor-pointer appearance-none rounded-lg border-none bg-[#E0F2F9] px-4 py-2.5 text-gray-600 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
                 >
                   <option value="">Choose center</option>
-                  {centers?.map((c) => (
-                    <option key={c._id} value={c._id}>
-                      {c.name}
+
+                  {centers.map((center) => (
+                    <option key={center._id} value={center._id}>
+                      {center.name}
                     </option>
                   ))}
                 </select>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="6 9 12 15 18 9"></polyline>
+
+                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
                   </svg>
                 </div>
               </div>
@@ -196,8 +278,11 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
               <button
                 type="submit"
                 disabled={isPending}
-                className="w-full text-white font-medium py-3 rounded-xl shadow-md hover:brightness-105 active:scale-[0.99] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-                style={{ background: 'linear-gradient(90deg, #37B6E9 0%, #0077B6 100%)' }}
+                className="w-full rounded-xl py-3 font-medium text-white shadow-md transition-all hover:brightness-105 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                style={{
+                  background:
+                    'linear-gradient(90deg, #37B6E9 0%, #0077B6 100%)',
+                }}
               >
                 {isPending ? 'Submitting...' : 'Submit'}
               </button>

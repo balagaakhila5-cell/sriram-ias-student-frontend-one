@@ -51,23 +51,28 @@ const AboutPage = () => {
       <Header />
 
       {/* HERO SECTION */}
-      <section className="relative h-[390px] w-full overflow-hidden">
-        <Image
-          src="/assets/about/about-us/About-banner.png"
-          alt="About Us Banner"
-          fill
-          priority
-          className="object-cover object-center"
-        />
+      {/* HERO SECTION */}
+<section className="relative h-[390px] w-full overflow-hidden">
+  <Image
+    src="/assets/about/about-us/About-banner.png"
+    alt="About Us Banner"
+    fill
+    priority
+    sizes="100vw"
+    className="object-cover object-center"
+  />
 
-        <div className="absolute inset-0 bg-black/45" />
+  {/* Figma-like banner dark effect */}
+  <div className="absolute inset-0 bg-black/20" />
+  <div className="absolute inset-y-0 left-0 w-[52%] bg-gradient-to-r from-black/95 via-black/75 to-transparent" />
+  <div className="absolute inset-y-0 right-0 w-[38%] bg-gradient-to-l from-black/20 to-transparent" />
 
-        <div className="relative z-10 flex h-full w-full items-center px-[90px] pt-[90px]">
-          <h1 className="font-['Montserrat'] text-[58px] font-extrabold uppercase tracking-[1px] text-white">
-            ABOUT <span className="text-[#B8B2FF]">US</span>
-          </h1>
-        </div>
-      </section>
+  <div className="relative z-10 flex h-full w-full items-center px-[82px] pt-[90px]">
+    <h1 className="font-['Montserrat'] text-[58px] font-extrabold uppercase tracking-[1px] text-white">
+      ABOUT <span className="text-[#B8B2FF]">US</span>
+    </h1>
+  </div>
+</section>
 
       {/* ABOUT CONTENT SECTION */}
       <section className="about-section-bg relative -mt-[1px] w-full overflow-hidden pt-[30px] pb-[35px] min-h-[1120px]">

@@ -65,7 +65,7 @@ const Hero: React.FC<Props> = ({ city }) => {
       {/* Hero Content */}
       <div className="relative z-10 max-w-[1000px]">
         <h1 className="center-hero-title text-white text-[42px] md:text-[46px] lg:text-[48px] font-[900] leading-tight mb-12 font-['Montserrat']">
-          Welcome to <span className="text-[#A2A4FB]">Sri Ram's IAS</span>
+          Welcome to <span className="text-[#A2A4FB]">SRIRAM's IAS</span>
           <br />
           {cityName}
         </h1>

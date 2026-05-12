@@ -31,9 +31,6 @@ export interface StudentSignupPayload {
   name: string;
   mobile: string;
   email: string;
-  parentName: string;
-  parentMobile: string;
-  parentEmail: string;
 }
 
 export interface SendOtpPayload {
@@ -55,6 +52,5 @@ export interface ParentLoginRequestPayload {
 
 export interface OtpRequestResponse {
   message: string;
-  // Some backends return a reference id; keep optional.
   otpRef?: string;
 }

@@ -202,7 +202,7 @@ const OurStory: React.FC = () => {
               <div className="aspect-square overflow-hidden shadow-2xl rounded-none relative">
                 <Image
                   src="/assets/our_story.png"
-                  alt="Sriram's IAS Building"
+                  alt="SRIRAM's IAS Building"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   priority
@@ -255,7 +255,7 @@ const OurStory: React.FC = () => {
               {/* Quote Box */}
               <div className="our-story-quote p-10 shadow-xl bg-white rounded-2xl relative z-10 border border-gray-100">
                 <p className="text-gray-700 text-sm md:text-base leading-relaxed font-medium">
-                  Founded in 1985 in New Delhi, Sriram&apos;s IAS Academy was born from a singular belief: that India&apos;s civil services demand not just knowledge, but character., that India&apos;s civil services demand not just knowledge, but character.
+                  Founded in 1985 in New Delhi, SRIRAM&apos;s IAS Academy was born from a singular belief: that India&apos;s civil services demand not just knowledge, but character., that India&apos;s civil services demand not just knowledge, but character.
                 </p>
                 <div className="mt-8 pt-6 border-l-4 border-[#20A0E0] pl-6 transition-all duration-300 hover:border-l-8">
                   <p className="text-gray-700 font-medium italic text-sm md:text-base leading-relaxed">

@@ -31,6 +31,44 @@ const defaultBooks = [
   { _id: "5", title: "History - NCERT Book", fileUrl: "#" },
 ];
 
+const toppers = [
+  {
+    image: "/assets/free-resources/NCERT-BOOKS/ABHI-JAIN(AIR-34).png",
+    name: "Abhi Jain",
+    rank: "AIR 34",
+  },
+  {
+    image: "/assets/free-resources/NCERT-BOOKS/ABHISHEK-SHARMA-(AIR-38) .png",
+    name: "Abhishek Sharma",
+    rank: "AIR 38",
+  },
+  {
+    image: "/assets/free-resources/NCERT-BOOKS/DIKSHA-RAI(AIR-40).png",
+    name: "Diksha Rai",
+    rank: "AIR 40",
+  },
+  {
+    image: "/assets/free-resources/NCERT-BOOKS/NABIYA-PARVEZ(AIR-29).png",
+    name: "Nabiya Parvez",
+    rank: "AIR 29",
+  },
+  {
+    image: "/assets/free-resources/NCERT-BOOKS/RAGHAV-JHUNJWALA(AIR-4).png",
+    name: "Raghav Jhunjwala",
+    rank: "AIR 4",
+  },
+  {
+    image: "/assets/free-resources/NCERT-BOOKS/RAJ-KRISHNA JHA(AIR-8).png",
+    name: "Raj Krishna Jha",
+    rank: "AIR 8",
+  },
+  {
+    image: "/assets/free-resources/NCERT-BOOKS/ROHIN-KUMAR(AIR-39).png",
+    name: "Rohin Kumar",
+    rank: "AIR 39",
+  },
+];
+
 export default function NcertBooksPage() {
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -194,7 +232,7 @@ export default function NcertBooksPage() {
                 </div>
 
                 {showResults && (
-                  <div className="animate-cards-container grid grid-cols-1 gap-5 md:grid-cols-2">
+                  <div className="animate-cards-container grid grid-cols-1 gap-8 overflow-visible md:grid-cols-2">
                     {isFetching && (
                       <p className="col-span-full text-center text-[16px] text-[#555]">
                         Loading...
@@ -205,13 +243,13 @@ export default function NcertBooksPage() {
                       (files.length > 5 ? files : defaultBooks).map((book) => (
                         <div
                           key={book._id}
-                          className="animate-card group origin-bottom-left rounded-[18px] bg-[#FAF8F3] px-4 py-6 shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:bg-[#FEF2E5] hover:shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
+                          className="animate-card group relative z-0 origin-left rounded-[18px] bg-[#FAF8F3] px-4 py-6 shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all duration-300 ease-out hover:z-30 hover:translate-x-8 hover:-translate-y-3 hover:scale-[1.12] hover:bg-[#FEF2E5] hover:shadow-[0_24px_55px_rgba(0,0,0,0.20)]"
                         >
-                          <h3 className="mb-6 text-center font-bold text-[#000000] text-[18px] leading-[100%]">
+                          <h3 className="mb-6 text-center text-[18px] font-bold leading-[100%] text-[#000000] transition-all duration-300 group-hover:text-[20px]">
                             {book.title}
                           </h3>
 
-                          <div className="flex items-center justify-center gap-3">
+                          <div className="flex items-center justify-center gap-3 transition-all duration-300 group-hover:translate-x-3">
                             <Link
                               href={book.fileUrl ?? "#"}
                               target="_blank"
@@ -235,46 +273,52 @@ export default function NcertBooksPage() {
                 )}
               </div>
 
-              <aside className="animate-sidebar mx-auto w-full max-w-[330px] space-y-8 xl:ml-auto xl:mt-[40px] self-start sticky top-[120px]">
-            <Courses />
+              <aside className="animate-sidebar sticky top-[120px] mx-auto w-full max-w-[330px] self-start space-y-8 xl:ml-auto xl:mt-[40px]">
+                <Courses />
 
-            <div className="rounded-[22px] bg-[#dfe9f8] px-4 py-8 shadow-[0px_10px_30px_rgba(0,0,0,0.05)]">
-              <h2 className="mb-6 text-center text-[34px] font-extrabold leading-none">
-                <span className="bg-[linear-gradient(90deg,#4D90D2_0%,#B57B95_100%)] bg-clip-text text-transparent">
-                  Our Toppers
-                </span>
-              </h2>
-              <div className="flex flex-col items-center justify-center -mt-3">
+                {/* OUR TOPPERS */}
+                <div className="toppers-card">
+                  <h2 className="toppers-title">
+                    <span>Our Toppers</span>
+                  </h2>
 
-              {/* Image */}
-              <div className="relative flex h-[220px] w-[220px] items-center justify-center">
-                <Image
-                  src="/assets/free-resources/NCERT/ourtoppers.png"
-                  alt="Kotla Darshan"
-                  width={700}
-                  height={700}
-                  className="w-full h-full object-cover scale-[1.8]"
-                />
-              </div>
+                  <div className="toppers-image-area">
+                    {toppers.map((topper, index) => (
+                      <div
+                        key={`${topper.name}-${index}`}
+                        className={`topper-slide topper-slide-${index + 1}`}
+                      >
+                        <div className="topper-inner-card">
+                          <div className="topper-image-wrap">
+                            <Image
+                              src={topper.image}
+                              alt={topper.name}
+                              fill
+                              sizes="330px"
+                              className="topper-img"
+                            />
+                          </div>
 
-              {/* Text */}
-             <div className="flex flex-col items-center gap-2 -mt-2">
-                <h3 className="text-[18px] font-bold text-[#333]">
-                  Kotla Darshan
-                </h3>
+                          <div className="topper-info">
+                            <span className="topper-rank">{topper.rank}</span>
+                            <h3>{topper.name}</h3>
+                            <p>GS Foundation Course</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
 
-                <span className="rounded-full bg-[#FF9800] px-3 py-[3px] text-[12px] font-bold text-white">
-                  AIR 08
-                </span>
-
-                <span className="text-[14px] text-[#555]">
-                  GS Foundation Course
-                </span>
-              </div>
-
-            </div> 
-            </div>
-          </aside>
+                    <div className="toppers-dots">
+                      {toppers.map((_, index) => (
+                        <span
+                          key={index}
+                          className={`topper-dot-${index + 1}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </aside>
             </div>
           </div>
         </section>
@@ -282,6 +326,506 @@ export default function NcertBooksPage() {
 
       <Footer />
       <FloatingActions />
+
+      <style jsx>{`
+        .toppers-card {
+          width: 100%;
+          overflow: hidden;
+          border-radius: 22px;
+          background: #dfe9f8;
+          padding: 22px 14px 24px;
+          box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.05);
+          cursor: pointer;
+        }
+
+        .toppers-title {
+          margin-bottom: 12px;
+          text-align: center;
+          font-size: 34px;
+          font-weight: 900;
+          line-height: 1;
+        }
+
+        .toppers-title span {
+          background: linear-gradient(90deg, #4d90d2 0%, #b57b95 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+
+        .toppers-image-area {
+          position: relative;
+          height: 410px;
+          width: 100%;
+          overflow: hidden;
+          border-radius: 18px;
+        }
+
+        .topper-slide {
+          position: absolute;
+          inset: 0;
+          opacity: 0;
+          transform: translateX(100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          will-change: transform, opacity;
+        }
+
+        .topper-slide-1 {
+          opacity: 1;
+          transform: translateX(0);
+        }
+
+        .topper-inner-card {
+          width: 285px;
+          height: 390px;
+          border-radius: 22px;
+          background: linear-gradient(
+            180deg,
+            rgba(233, 243, 255, 0.98) 0%,
+            rgba(223, 233, 248, 0.96) 48%,
+            rgba(213, 228, 247, 0.98) 100%
+          );
+          overflow: hidden;
+          box-shadow:
+            inset 0px 0px 18px rgba(255, 255, 255, 0.55),
+            0px 10px 26px rgba(60, 100, 150, 0.14);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        /* IMAGE SIZE INCREASED, MAIN CARD SAME */
+        .topper-image-wrap {
+          position: relative;
+          width: 100%;
+          height: 322px;
+          overflow: hidden;
+          background: linear-gradient(
+            180deg,
+            rgba(232, 243, 255, 0.65) 0%,
+            rgba(223, 233, 248, 0.2) 100%
+          );
+        }
+
+        .topper-img {
+          object-fit: contain;
+          object-position: center bottom;
+          transform: scale(1.16);
+        }
+
+        .topper-info {
+          padding: 5px 8px 8px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 4px;
+          text-align: center;
+        }
+
+        .topper-rank {
+          border-radius: 999px;
+          background: #ff9800;
+          padding: 4px 14px;
+          font-size: 12px;
+          font-weight: 900;
+          line-height: 1;
+          color: #ffffff;
+        }
+
+        .topper-info h3 {
+          font-size: 17px;
+          font-weight: 900;
+          line-height: 1.1;
+          color: #333333;
+        }
+
+        .topper-info p {
+          font-size: 12px;
+          font-weight: 500;
+          color: #555555;
+        }
+
+        .toppers-card:hover .topper-slide-1 {
+          animation: topperMove1 28s infinite ease-in-out;
+        }
+
+        .toppers-card:hover .topper-slide-2 {
+          animation: topperMove2 28s infinite ease-in-out;
+        }
+
+        .toppers-card:hover .topper-slide-3 {
+          animation: topperMove3 28s infinite ease-in-out;
+        }
+
+        .toppers-card:hover .topper-slide-4 {
+          animation: topperMove4 28s infinite ease-in-out;
+        }
+
+        .toppers-card:hover .topper-slide-5 {
+          animation: topperMove5 28s infinite ease-in-out;
+        }
+
+        .toppers-card:hover .topper-slide-6 {
+          animation: topperMove6 28s infinite ease-in-out;
+        }
+
+        .toppers-card:hover .topper-slide-7 {
+          animation: topperMove7 28s infinite ease-in-out;
+        }
+
+        @keyframes topperMove1 {
+          0%,
+          11% {
+            opacity: 1;
+            transform: translateX(0);
+          }
+
+          14.28%,
+          100% {
+            opacity: 1;
+            transform: translateX(-100%);
+          }
+        }
+
+        @keyframes topperMove2 {
+          0%,
+          11% {
+            opacity: 1;
+            transform: translateX(100%);
+          }
+
+          14.28%,
+          25% {
+            opacity: 1;
+            transform: translateX(0);
+          }
+
+          28.56%,
+          100% {
+            opacity: 1;
+            transform: translateX(-100%);
+          }
+        }
+
+        @keyframes topperMove3 {
+          0%,
+          25% {
+            opacity: 1;
+            transform: translateX(100%);
+          }
+
+          28.56%,
+          39% {
+            opacity: 1;
+            transform: translateX(0);
+          }
+
+          42.84%,
+          100% {
+            opacity: 1;
+            transform: translateX(-100%);
+          }
+        }
+
+        @keyframes topperMove4 {
+          0%,
+          39% {
+            opacity: 1;
+            transform: translateX(100%);
+          }
+
+          42.84%,
+          53% {
+            opacity: 1;
+            transform: translateX(0);
+          }
+
+          57.12%,
+          100% {
+            opacity: 1;
+            transform: translateX(-100%);
+          }
+        }
+
+        @keyframes topperMove5 {
+          0%,
+          53% {
+            opacity: 1;
+            transform: translateX(100%);
+          }
+
+          57.12%,
+          67% {
+            opacity: 1;
+            transform: translateX(0);
+          }
+
+          71.4%,
+          100% {
+            opacity: 1;
+            transform: translateX(-100%);
+          }
+        }
+
+        @keyframes topperMove6 {
+          0%,
+          67% {
+            opacity: 1;
+            transform: translateX(100%);
+          }
+
+          71.4%,
+          81% {
+            opacity: 1;
+            transform: translateX(0);
+          }
+
+          85.68%,
+          100% {
+            opacity: 1;
+            transform: translateX(-100%);
+          }
+        }
+
+        @keyframes topperMove7 {
+          0%,
+          81% {
+            opacity: 1;
+            transform: translateX(100%);
+          }
+
+          85.68%,
+          96% {
+            opacity: 1;
+            transform: translateX(0);
+          }
+
+          100% {
+            opacity: 1;
+            transform: translateX(-100%);
+          }
+        }
+
+        .toppers-dots {
+          position: absolute;
+          left: 50%;
+          bottom: 8px;
+          z-index: 10;
+          display: flex;
+          gap: 7px;
+          transform: translateX(-50%);
+        }
+
+        .toppers-dots span {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.85);
+        }
+
+        .toppers-card:hover .topper-dot-1 {
+          animation: activeTopperDot1 28s infinite;
+        }
+
+        .toppers-card:hover .topper-dot-2 {
+          animation: activeTopperDot2 28s infinite;
+        }
+
+        .toppers-card:hover .topper-dot-3 {
+          animation: activeTopperDot3 28s infinite;
+        }
+
+        .toppers-card:hover .topper-dot-4 {
+          animation: activeTopperDot4 28s infinite;
+        }
+
+        .toppers-card:hover .topper-dot-5 {
+          animation: activeTopperDot5 28s infinite;
+        }
+
+        .toppers-card:hover .topper-dot-6 {
+          animation: activeTopperDot6 28s infinite;
+        }
+
+        .toppers-card:hover .topper-dot-7 {
+          animation: activeTopperDot7 28s infinite;
+        }
+
+        @keyframes activeTopperDot1 {
+          0%,
+          11% {
+            background: #ff3f6c;
+            transform: scale(1.35);
+          }
+
+          14.28%,
+          100% {
+            background: rgba(255, 255, 255, 0.85);
+            transform: scale(1);
+          }
+        }
+
+        @keyframes activeTopperDot2 {
+          0%,
+          11% {
+            background: rgba(255, 255, 255, 0.85);
+            transform: scale(1);
+          }
+
+          14.28%,
+          25% {
+            background: #ff3f6c;
+            transform: scale(1.35);
+          }
+
+          28.56%,
+          100% {
+            background: rgba(255, 255, 255, 0.85);
+            transform: scale(1);
+          }
+        }
+
+        @keyframes activeTopperDot3 {
+          0%,
+          25% {
+            background: rgba(255, 255, 255, 0.85);
+            transform: scale(1);
+          }
+
+          28.56%,
+          39% {
+            background: #ff3f6c;
+            transform: scale(1.35);
+          }
+
+          42.84%,
+          100% {
+            background: rgba(255, 255, 255, 0.85);
+            transform: scale(1);
+          }
+        }
+
+        @keyframes activeTopperDot4 {
+          0%,
+          39% {
+            background: rgba(255, 255, 255, 0.85);
+            transform: scale(1);
+          }
+
+          42.84%,
+          53% {
+            background: #ff3f6c;
+            transform: scale(1.35);
+          }
+
+          57.12%,
+          100% {
+            background: rgba(255, 255, 255, 0.85);
+            transform: scale(1);
+          }
+        }
+
+        @keyframes activeTopperDot5 {
+          0%,
+          53% {
+            background: rgba(255, 255, 255, 0.85);
+            transform: scale(1);
+          }
+
+          57.12%,
+          67% {
+            background: #ff3f6c;
+            transform: scale(1.35);
+          }
+
+          71.4%,
+          100% {
+            background: rgba(255, 255, 255, 0.85);
+            transform: scale(1);
+          }
+        }
+
+        @keyframes activeTopperDot6 {
+          0%,
+          67% {
+            background: rgba(255, 255, 255, 0.85);
+            transform: scale(1);
+          }
+
+          71.4%,
+          81% {
+            background: #ff3f6c;
+            transform: scale(1.35);
+          }
+
+          85.68%,
+          100% {
+            background: rgba(255, 255, 255, 0.85);
+            transform: scale(1);
+          }
+        }
+
+        @keyframes activeTopperDot7 {
+          0%,
+          81% {
+            background: rgba(255, 255, 255, 0.85);
+            transform: scale(1);
+          }
+
+          85.68%,
+          96% {
+            background: #ff3f6c;
+            transform: scale(1.35);
+          }
+
+          100% {
+            background: rgba(255, 255, 255, 0.85);
+            transform: scale(1);
+          }
+        }
+
+        @media (max-width: 1023px) {
+          .toppers-card {
+            padding: 20px 12px 22px;
+          }
+
+          .toppers-title {
+            font-size: 28px;
+          }
+
+          .toppers-image-area {
+            height: 360px;
+          }
+
+          .topper-inner-card {
+            width: 260px;
+            height: 342px;
+          }
+
+          .topper-image-wrap {
+            height: 278px;
+          }
+
+          .topper-img {
+            transform: scale(1.14);
+          }
+
+          .topper-info {
+            padding-top: 4px;
+            gap: 3px;
+          }
+
+          .topper-info h3 {
+            font-size: 16px;
+          }
+
+          .topper-info p {
+            font-size: 12px;
+          }
+        }
+      `}</style>
     </>
   );
 }

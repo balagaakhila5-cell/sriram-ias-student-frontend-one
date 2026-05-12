@@ -21,21 +21,18 @@ const FoundersMessagePage = () => {
           className="object-cover object-center"
         />
 
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(90deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.62) 18%, rgba(0,0,0,0.32) 34%, rgba(0,0,0,0.10) 50%, rgba(0,0,0,0) 68%)',
-          }}
-        />
+        {/* Figma-like left black shade */}
+        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-y-0 left-0 w-[55%] bg-gradient-to-r from-black/95 via-black/78 to-transparent" />
+        <div className="absolute inset-y-0 right-0 w-[38%] bg-gradient-to-l from-black/20 to-transparent" />
 
-        <div className="relative z-10 h-full flex items-start px-6 sm:px-10 lg:px-[88px] pt-[210px]">
-          <h1 className="founder-hero-heading">FOUNDER&apos;S MESSAGE</h1>
-        </div>
+      <div className="relative z-10 h-full flex items-start px-6 sm:px-10 lg:px-[88px] pt-[270px]">
+        <h1 className="founder-hero-heading">FOUNDER&apos;S MESSAGE</h1>
+      </div>
       </section>
 
       {/* FOUNDER MESSAGE SECTION */}
-      <section className="relative bg-[#f8fbff] overflow-hidden min-h-[820px]">
+      <section className="relative bg-[#f8fbff] overflow-hidden min-h-[850px]">
         <div className="absolute inset-0 founder-page-bg" />
 
         <div className="founder-moving-bg">
@@ -48,7 +45,7 @@ const FoundersMessagePage = () => {
           />
         </div>
 
-        <div className="relative z-10 w-full max-w-[1366px] mx-auto px-0 pt-[62px] pb-[90px]">
+        <div className="relative z-10 w-full max-w-[1366px] mx-auto px-0 pt-[62px] pb-[110px]">
           <div className="founder-main-grid">
             {/* LEFT DIALOG BOX */}
             <div className="relative z-20 dialog-left-col">
@@ -58,7 +55,7 @@ const FoundersMessagePage = () => {
                   alt="Founder message dialog box"
                   fill
                   priority
-                  sizes="850px"
+                  sizes="860px"
                   className="object-fill"
                 />
 
@@ -104,7 +101,7 @@ const FoundersMessagePage = () => {
                   alt="Sriram Srirangam Founder"
                   fill
                   priority
-                  sizes="465px"
+                  sizes="475px"
                   className="founder-main-img"
                 />
               </div>
@@ -182,36 +179,34 @@ const FoundersMessagePage = () => {
         .founder-main-grid {
           width: 100%;
           display: grid;
-          grid-template-columns: 850px 465px;
+          grid-template-columns: 860px 470px;
           align-items: start;
           justify-content: center;
-          column-gap: 12px;
+          column-gap: 0px;
         }
 
         .dialog-left-col {
           margin-top: 0;
-          transform: translateX(-8px);
+          transform: translateX(-20px);
         }
 
-        /* DIALOG WIDTH DECREASED */
         .dialog-box-wrap {
           position: relative;
-          width: 850px;
+          width: 860px;
           height: 760px;
           overflow: visible;
         }
 
-        /* TEXT WIDTH DECREASED TO FIT INSIDE SMALLER DIALOG */
         .dialog-text-content {
           position: relative;
           z-index: 2;
-          width: 755px;
-          max-width: 755px;
+          width: 760px;
+          max-width: 760px;
           padding: 74px 20px 170px 82px;
           color: #4d5961;
           font-size: 17px !important;
           line-height: 1.85 !important;
-          font-weight: 700 !important;
+          font-weight: 500 !important;
           letter-spacing: 0 !important;
           box-sizing: border-box;
         }
@@ -220,7 +215,7 @@ const FoundersMessagePage = () => {
           margin-bottom: 42px !important;
           font-size: 17px !important;
           line-height: 1.85 !important;
-          font-weight: 700 !important;
+          font-weight: 500 !important;
           letter-spacing: 0 !important;
           color: #4d5961 !important;
         }
@@ -239,40 +234,42 @@ const FoundersMessagePage = () => {
           margin-bottom: 0 !important;
           white-space: nowrap;
           padding-right: 40px;
+          font-weight: 600 !important;
         }
 
-        .right-founder-col {
-          margin-top: 8px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          transform: translateX(6px);
-        }
+       .right-founder-col {
+  margin-top: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateX(28px);
+}
 
-        .founder-photo-wrap {
-          position: relative;
-          width: 465px;
-          height: 465px;
-          overflow: visible;
-        }
-
+.founder-photo-wrap {
+  position: relative;
+  width: 475px;
+  height: 475px;
+  overflow: visible;
+  transform: translateY(-12px);
+}
         .founder-main-img {
           object-fit: contain;
           object-position: center center;
         }
 
         .founder-details {
-          margin-top: 28px;
-          position: relative;
-          z-index: 12;
-          width: 100%;
-          text-align: center;
-        }
+  margin-top: 28px;
+  position: relative;
+  z-index: 12;
+  width: 100%;
+  text-align: center;
+  transform: translateY(-10px);
+}
 
         .best-wishes-text {
           font-size: 33px;
           line-height: 1.05;
-          font-weight: 900;
+          font-weight: 800;
           letter-spacing: -0.02em;
           background: linear-gradient(
             90deg,
@@ -290,7 +287,7 @@ const FoundersMessagePage = () => {
           margin-top: 17px;
           font-size: 34px;
           line-height: 1.1;
-          font-weight: 900;
+          font-weight: 700;
           letter-spacing: -0.03em;
           color: #4d5660;
         }
@@ -299,7 +296,7 @@ const FoundersMessagePage = () => {
           margin-top: 21px;
           font-size: 26px;
           line-height: 1.15;
-          font-weight: 800;
+          font-weight: 600;
           color: #56616b;
         }
 
@@ -307,37 +304,39 @@ const FoundersMessagePage = () => {
           margin-top: 22px;
           font-size: 25px;
           line-height: 1.15;
-          font-weight: 900;
+          font-weight: 700;
           color: #4f5964;
         }
 
         @media (min-width: 1280px) and (max-width: 1450px) {
           .founder-main-grid {
-            grid-template-columns: 840px 450px;
-            column-gap: 10px;
+            grid-template-columns: 850px 455px;
+            column-gap: 0px;
           }
 
           .dialog-left-col {
-            transform: translateX(-6px);
+            transform: translateX(-18px);
           }
 
           .dialog-box-wrap {
-            width: 840px;
+            width: 850px;
             height: 760px;
           }
 
           .dialog-text-content {
-            width: 745px;
-            max-width: 745px;
+            width: 750px;
+            max-width: 750px;
             padding: 72px 20px 170px 82px;
             font-size: 16.8px !important;
             line-height: 1.82 !important;
+            font-weight: 500 !important;
             box-sizing: border-box;
           }
 
           .dialog-text-content p {
             font-size: 16.8px !important;
             line-height: 1.82 !important;
+            font-weight: 500 !important;
             margin-bottom: 40px !important;
           }
 
@@ -349,19 +348,21 @@ const FoundersMessagePage = () => {
             margin-bottom: 12px !important;
           }
 
-          .right-founder-col {
-            margin-top: 8px;
-            transform: translateX(4px);
-          }
+         .right-founder-col {
+  margin-top: 0px;
+  transform: translateX(24px);
+}
 
-          .founder-photo-wrap {
-            width: 450px;
-            height: 450px;
-          }
+.founder-photo-wrap {
+  width: 455px;
+  height: 455px;
+  transform: translateY(-12px);
+}
 
-          .founder-details {
-            margin-top: 26px;
-          }
+.founder-details {
+  margin-top: 28px;
+  transform: translateY(-10px);
+}
 
           .best-wishes-text {
             font-size: 31px;
@@ -404,29 +405,30 @@ const FoundersMessagePage = () => {
             padding: 72px 20px 170px 82px;
             font-size: 16.5px !important;
             line-height: 1.78 !important;
-            font-weight: 700 !important;
+            font-weight: 500 !important;
             box-sizing: border-box;
           }
 
           .dialog-text-content p {
             font-size: 16.5px !important;
             line-height: 1.78 !important;
-            font-weight: 700 !important;
+            font-weight: 500 !important;
             margin-bottom: 36px !important;
           }
 
           .right-founder-col {
-            margin-top: 8px;
+            margin-top: 32px;
             transform: translateX(0);
           }
 
           .founder-photo-wrap {
             width: 450px;
             height: 450px;
+            transform: translateY(18px);
           }
 
           .founder-details {
-            margin-top: 26px;
+            margin-top: 56px;
           }
         }
 
@@ -459,28 +461,30 @@ const FoundersMessagePage = () => {
             padding: 42px 40px 42px;
             font-size: 14.5px !important;
             line-height: 1.65 !important;
-            font-weight: 600 !important;
+            font-weight: 500 !important;
           }
 
           .dialog-text-content p {
             font-size: 14.5px !important;
             line-height: 1.65 !important;
-            font-weight: 600 !important;
+            font-weight: 500 !important;
             margin-bottom: 18px !important;
           }
 
           .welcome-text {
             white-space: normal;
             padding-right: 0;
+            font-weight: 600 !important;
           }
 
           .founder-photo-wrap {
             width: 350px;
             height: 350px;
+            transform: translateY(14px);
           }
 
           .founder-details {
-            margin-top: 22px;
+            margin-top: 46px;
           }
 
           .best-wishes-text {
@@ -514,23 +518,24 @@ const FoundersMessagePage = () => {
             padding: 30px 22px 30px;
             font-size: 12.5px !important;
             line-height: 1.6 !important;
-            font-weight: 600 !important;
+            font-weight: 500 !important;
           }
 
           .dialog-text-content p {
             font-size: 12.5px !important;
             line-height: 1.6 !important;
-            font-weight: 600 !important;
+            font-weight: 500 !important;
             margin-bottom: 14px !important;
           }
 
           .founder-photo-wrap {
             width: 285px;
             height: 285px;
+            transform: translateY(12px);
           }
 
           .founder-details {
-            margin-top: 20px;
+            margin-top: 40px;
           }
 
           .best-wishes-text {

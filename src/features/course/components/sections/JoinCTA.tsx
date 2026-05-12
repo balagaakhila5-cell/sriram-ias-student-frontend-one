@@ -242,7 +242,7 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
                 className="mt-1 w-[18px] h-[18px] shrink-0 rounded-sm border-none bg-white/80 checked:bg-blue-500 cursor-pointer"
               />
               <span className={`text-[12px] ${checkboxColor} leading-[1.6] font-medium`}>
-                I authorize SRI RAM&apos;s IAS and its associates to contact me with updates notifications via email, SMS, WhatsApp, and voice call. This consent will override any registration for DNC / NDNC.
+                I authorize SRIRAM&apos;s IAS and its associates to contact me with updates notifications via email, SMS, WhatsApp, and voice call. This consent will override any registration for DNC / NDNC.
               </span>
             </label>
 
