@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import React, { useState, useRef } from 'react';
@@ -28,79 +26,88 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
-  useGSAP(() => {
-    if (prefersReducedMotion) return;
+  useGSAP(
+    () => {
+      if (prefersReducedMotion) return;
 
-    // Animate ribbon shapes with left-to-right wipe fill effect
-    const bgShapes = gsap.utils.toArray<Element>('.cta-bg-shape');
-    bgShapes.forEach((shape, i) => {
-      gsap.fromTo(shape,
-        { clipPath: 'inset(0 100% 0 0)', opacity: 0 },
+      // Animate ribbon shapes with left-to-right wipe fill effect
+      const bgShapes = gsap.utils.toArray<Element>('.cta-bg-shape');
+      bgShapes.forEach((shape, i) => {
+        gsap.fromTo(
+          shape,
+          { clipPath: 'inset(0 100% 0 0)', opacity: 0 },
+          {
+            clipPath: 'inset(0 0% 0 0)',
+            opacity: 1,
+            duration: 1.6,
+            delay: i * 0.18,
+            ease: 'power2.inOut',
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: 'top 88%',
+              once: true,
+            },
+          }
+        );
+      });
+
+      gsap.fromTo(
+        '.join-cta-heading',
+        { y: 30, opacity: 0 },
         {
-          clipPath: 'inset(0 0% 0 0)',
+          y: 0,
           opacity: 1,
-          duration: 1.6,
-          delay: i * 0.18,
-          ease: 'power2.inOut',
+          duration: 0.8,
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: 'top 88%',
+            start: 'top 85%',
             once: true,
-          }
+          },
         }
       );
-    });
 
-    gsap.fromTo('.join-cta-heading',
-      { y: 30, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top 85%',
-          once: true,
+      gsap.fromTo(
+        '.join-cta-form',
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          delay: 0.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top 85%',
+            once: true,
+          },
         }
-      }
-    );
+      );
 
-    gsap.fromTo('.join-cta-form',
-      { y: 40, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        delay: 0.2,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top 85%',
-          once: true,
+      gsap.fromTo(
+        '.join-cta-image',
+        { x: 100, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 1.5,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top 30%',
+            once: true,
+          },
         }
-      }
-    );
-
-    gsap.fromTo('.join-cta-image',
-      { x: 100, opacity: 0 },
-      {
-        x: 0,
-        opacity: 1,
-        duration: 1.5,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top 30%',
-          once: true,
-        }
-      }
-    );
-  }, { dependencies: [prefersReducedMotion], scope: containerRef });
+      );
+    },
+    { dependencies: [prefersReducedMotion], scope: containerRef }
+  );
 
   const city = propCity?.toLowerCase() || course?.city?.toLowerCase() || 'delhi';
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -131,13 +138,13 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
   return (
     <section
       ref={containerRef}
-      className="w-full relative overflow-hidden font-['Montserrat',sans-serif]"
+      className="relative w-full overflow-hidden font-['Montserrat',sans-serif]"
       style={{ background: sectionBg }}
     >
       {/* Animated background shapes - Matches the thick sweeps of Image 1 */}
-      <div className="absolute inset-0 pointer-events-none z-0">
+      <div className="pointer-events-none absolute inset-0 z-0">
         <svg
-          className="absolute inset-0 w-full h-full"
+          className="absolute inset-0 h-full w-full"
           viewBox="0 0 1440 600"
           preserveAspectRatio="xMidYMid slice"
           fill="none"
@@ -150,6 +157,7 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
             fill="#B8B850"
             fillOpacity="0.3"
           />
+
           {/* Bottom right curved blob */}
           <path
             className="cta-bg-shape"
@@ -161,25 +169,26 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 max-w-[1300px] mx-auto flex flex-col lg:flex-row items-stretch justify-between px-6 md:px-12 lg:px-20 pt-12 md:pt-16 gap-8 lg:gap-12">
-
+      <div className="relative z-10 mx-auto flex max-w-[1300px] flex-col items-stretch justify-between gap-8 px-6 pt-12 md:px-12 md:pt-16 lg:flex-row lg:gap-12 lg:px-20">
         {/* Left Side: Heading + Form */}
-        <div className="w-full flex flex-col justify-center pb-12 md:pb-16 z-10">
-
+        <div className="z-10 flex w-full flex-col justify-center pb-12 md:pb-16">
           {/* Heading */}
-          <h2 className={`join-cta-heading text-[28px] md:text-[34px] lg:text-[30px] font-bold ${headingColor} leading-tight mb-3 tracking-wide`}>
+          <h2
+            className={`join-cta-heading mb-3 text-[28px] font-bold leading-tight tracking-wide md:text-[34px] lg:text-[30px] ${headingColor}`}
+          >
             {title || 'Want to Become an IAS/IPS?'}
           </h2>
 
           {/* Subtitle */}
-          <p className={`join-cta-heading text-[15px] md:text-[18px] font-medium ${subtitleColor} mb-8`}>
+          <p
+            className={`join-cta-heading mb-8 text-[15px] font-medium md:text-[18px] ${subtitleColor}`}
+          >
             Get Your One to One Personalised Session with Our Expert Mentors
           </p>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="join-cta-form w-full max-w-[600px]">
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {/* Full Name */}
               <input
                 type="text"
@@ -187,8 +196,9 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
                 placeholder="Full Name"
                 value={formData.fullName}
                 onChange={handleChange}
-                className="w-full px-4 py-3.5 rounded-3xl bg-white border-none text-[16px] text-gray-800 placeholder-gray-400 font-medium outline-none focus:ring-2 focus:ring-blue-300 transition-all shadow-sm"
+                className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
               />
+
               {/* Mobile Number */}
               <input
                 type="tel"
@@ -196,7 +206,7 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
                 placeholder="Mobile Number"
                 value={formData.mobile}
                 onChange={handleChange}
-                className="w-full px-4 py-3.5 rounded-3xl bg-white border-none text-[16px] text-gray-800 placeholder-gray-400 font-medium outline-none focus:ring-2 focus:ring-blue-300 transition-all shadow-sm"
+                className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
               />
 
               {/* Email Id */}
@@ -206,27 +216,38 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
                 placeholder="Email Id"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3.5 rounded-3xl bg-white border-none text-[16px] text-gray-800 placeholder-gray-400 font-medium outline-none focus:ring-2 focus:ring-blue-300 transition-all shadow-sm"
+                className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
               />
+
               {/* Target Year Select */}
               <div className="relative w-full">
                 <select
                   name="targetYear"
                   value={formData.targetYear}
                   onChange={handleChange}
-                  className="w-full px-4 py-3.5 rounded-3xl bg-white border-none text-[16px] text-gray-500 font-medium outline-none focus:ring-2 focus:ring-blue-300 transition-all shadow-sm appearance-none cursor-pointer"
+                  className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300"
                 >
-                  <option value="" disabled>Target UPSC Attempt Year</option>
+                  <option value="" disabled>
+                    Target UPSC Attempt Year
+                  </option>
                   <option value="2025">2025</option>
                   <option value="2026">2026</option>
                   <option value="2027">2027</option>
                   <option value="2028">2028</option>
                   <option value="2029">2029</option>
                 </select>
+
                 {/* Dropdown arrow */}
                 <svg
-                  className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"
-                  width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+                  className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#999"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
                   <polyline points="6 9 12 15 18 9" />
                 </svg>
@@ -234,54 +255,62 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
             </div>
 
             {/* Authorization Checkbox */}
-            <label className="flex items-start gap-3 mb-8 cursor-pointer group mt-2">
+            <label className="group mb-8 mt-2 flex cursor-pointer items-start gap-3">
               <input
                 type="checkbox"
                 checked={authorized}
                 onChange={(e) => setAuthorized(e.target.checked)}
-                className="mt-1 w-[18px] h-[18px] shrink-0 rounded-sm border-none bg-white/80 checked:bg-blue-500 cursor-pointer"
+                className="mt-1 h-[18px] w-[18px] shrink-0 cursor-pointer rounded-sm border-none bg-white/80 checked:bg-blue-500"
               />
-              <span className={`text-[12px] ${checkboxColor} leading-[1.6] font-medium`}>
-                I authorize SRIRAM&apos;s IAS and its associates to contact me with updates notifications via email, SMS, WhatsApp, and voice call. This consent will override any registration for DNC / NDNC.
+
+              <span className={`text-[12px] font-medium leading-[1.6] ${checkboxColor}`}>
+                I authorize SRIRAM&apos;s IAS and its associates to contact me
+                with updates notifications via email, SMS, WhatsApp, and voice
+                call. This consent will override any registration for DNC / NDNC.
               </span>
             </label>
 
             {/* Dynamic Submit Button */}
-            <div className="flex justify-center mt-4">
+            <div className="mt-4 flex justify-center">
               <button
                 type="submit"
-                className="px-8 py-3.5 rounded-3xl text-white text-[18px] font-semibold shadow-md hover:shadow-lg hover:opacity-95 transition-all"
-                style={{ background: 'linear-gradient(90deg, rgba(24, 151, 216, 0.8) 0%, #021C29 100%)' }}
+                className="rounded-3xl px-8 py-3.5 text-[18px] font-semibold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg"
+                style={{
+                  background:
+                    'linear-gradient(90deg, rgba(24, 151, 216, 0.8) 0%, #021C29 100%)',
+                }}
               >
                 Book your session now
               </button>
             </div>
-
           </form>
         </div>
 
         {/* Right Side: Standing Figure — scaled up & anchored to the bottom */}
-        <div className="join-cta-image w-full flex justify-center lg:justify-end self-end relative z-10">
-          <div className="relative flex items-end justify-center origin-bottom transform scale-[1.15] md:scale-[1.25] lg:scale-[1.35] -mb-1">
-
+        <div className="join-cta-image relative z-10 flex w-full justify-center self-end lg:justify-end">
+          <div className="relative -mb-1 flex origin-bottom scale-[1.15] transform items-end justify-center md:scale-[1.25] lg:scale-[1.35]">
             {/* First Image: Man (Left / Back) */}
             <img
               src="/assets/course/cta-img.png"
               alt="Professional man"
-              className="w-[280px] sm:w-[320px] md:w-[380px] lg:w-[650px] object-contain object-bottom drop-shadow-xl relative z-10 -ml-[30%] lg:-ml-[-30%]"
+              className="relative z-10 -ml-[30%] w-[280px] object-contain object-bottom drop-shadow-xl sm:w-[320px] md:w-[380px] lg:-ml-[-30%] lg:w-[650px]"
             />
 
             {/* Second Image: Woman (Right / Front) */}
             <img
               src="/assets/course/cta-img-1.png"
               alt="Professional woman"
-              className="w-[220px] sm:w-[260px] md:w-[300px] lg:w-[360px] object-contain object-bottom drop-shadow-2xl relative z-20 -ml-[30%] lg:-ml-[60%]"
+              className="relative z-20 -ml-[30%] w-[220px] object-contain object-bottom drop-shadow-2xl sm:w-[260px] md:w-[300px] lg:-ml-[60%] lg:w-[360px]"
             />
-
           </div>
         </div>
-
       </div>
+
+      <style jsx>{`
+        .text-center-last {
+          text-align-last: center;
+        }
+      `}</style>
     </section>
   );
 };
