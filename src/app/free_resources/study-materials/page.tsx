@@ -109,7 +109,7 @@ export default function StudyMaterialsPage() {
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-14">
               <div>
                 <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold leading-none md:text-[58px] lg:text-[56px]">
-                  <span className="bg-gradient-to-r from-[#b57ea5] via-[#8e8fb7] to-[#5f8fcb] bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-[#5f8fcb] via-[#8e8fb7] to-[#b57ea5] bg-clip-text text-transparent">
                     Study Materials
                   </span>
                 </h1>

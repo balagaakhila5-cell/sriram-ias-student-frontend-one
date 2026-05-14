@@ -357,12 +357,11 @@ export default function MonthlyRecapPage() {
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-14">
               {/* Left */}
               <div>
-                <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
-                  <span className="bg-gradient-to-r from-[#D97D8D] via-[#8B7AC9] to-[#2C9FE8] bg-clip-text text-transparent">
-                    Monthly Recap
-                  </span>
-                </h1>
-
+               <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
+                <span className="bg-gradient-to-r from-[#2C9FE8] via-[#8B7AC9] to-[#D97D8D] bg-clip-text text-transparent">
+                  Monthly Recap
+                </span>
+              </h1>
                 <div className="animate-filter mb-10 flex flex-col items-center justify-center gap-5 md:flex-row">
                   <CustomDropdown
                     options={["2026", "2025", "2024", "2023"]}

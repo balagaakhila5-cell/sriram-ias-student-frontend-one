@@ -332,7 +332,7 @@ export default function InfographicsPage() {
               {/* Left */}
               <div>
                 <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
-                  <span className="bg-gradient-to-r from-[rgba(225,97,101,0.9)] via-[#9a6db5] to-[#20a0e0] bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-[#20a0e0] via-[#9a6db5] to-[rgba(225,97,101,0.9)] bg-clip-text text-transparent">
                     Infographics
                   </span>
                 </h1>

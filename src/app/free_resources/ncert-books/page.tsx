@@ -90,42 +90,45 @@ export default function NcertBooksPage() {
     <>
       <Header />
 
-      <main ref={containerRef} className="min-h-screen bg-[#F6F6F6]">
-        <section className="relative h-[400px] w-full overflow-hidden">
+      <main ref={containerRef} className="min-h-screen bg-[#F6F6F6] overflow-hidden">
+        {/* Banner */}
+        <section className="relative h-[260px] w-full overflow-hidden sm:h-[320px] md:h-[360px] lg:h-[400px]">
           <Image
             src="/assets/free-resources/NCERT/free-resources-banner.png"
             alt="Free Resources Banner"
             fill
             priority
-            className="object-cover"
+            className="object-cover object-center"
           />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,#000000_15.33%,rgba(0,0,0,0.1)_50.97%)]" />
         </section>
 
-        <section className="bg-[url('/assets/image-91.png')] bg-[position:center_35%] bg-cover bg-no-repeat px-6 py-12 md:px-10 lg:px-14">
+        <section className="bg-[url('/assets/image-91.png')] bg-[position:center_35%] bg-cover bg-no-repeat px-4 py-10 sm:px-6 sm:py-12 md:px-8 lg:px-14">
           <div className="mx-auto max-w-[1600px]">
-            <h1 className="animate-heading mb-10 text-[36px] font-extrabold uppercase leading-none md:text-[58px] lg:text-[56px]">
+            <h1 className="animate-heading mb-8 text-center text-[32px] font-extrabold uppercase leading-none sm:text-[40px] md:mb-10 md:text-[52px] lg:text-left lg:text-[56px]">
               <span className="bg-[linear-gradient(90deg,#459BE4_0%,#8D7DBA_45%,#E37B8A_100%)] bg-clip-text text-transparent">
                 FREE RESOURCES
               </span>
             </h1>
 
-            <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_340px] items-start">
-              <div>
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-2">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-10 xl:gap-12 items-start">
+              {/* Cards */}
+              <div className="w-full">
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   {resourceCards.map((card) => (
                     <HoverCard
                       key={card.title}
                       title={card.title}
                       image={card.image}
                       href={card.href}
-                      className="h-[260px]"
+                      className="h-[210px] sm:h-[230px] md:h-[250px] lg:h-[260px]"
                     />
                   ))}
                 </div>
               </div>
 
-              <aside className="animate-sidebar space-y-5 lg:pt-[2px] lg:ml-auto">
+              {/* Sidebar */}
+              <aside className="animate-sidebar w-full max-w-full space-y-5 lg:ml-auto lg:max-w-[340px] lg:pt-[2px]">
                 <QuickLinks />
 
                 <a href="/books" className="our-books-card">
@@ -141,7 +144,7 @@ export default function NcertBooksPage() {
                           src={image}
                           alt="Our Books"
                           fill
-                          sizes="340px"
+                          sizes="(max-width: 640px) 100vw, 340px"
                           className="our-books-img"
                         />
                       </div>
@@ -172,7 +175,7 @@ export default function NcertBooksPage() {
           width: 100%;
           border-radius: 18px;
           background: #dcecff;
-          padding: 18px 18px 20px;
+          padding: 16px;
           text-decoration: none;
           overflow: hidden;
           box-shadow: 0px 12px 32px rgba(0, 0, 0, 0.12);
@@ -182,7 +185,7 @@ export default function NcertBooksPage() {
           margin-bottom: 12px;
           text-align: center;
           font-family: Montserrat, sans-serif;
-          font-size: 32px;
+          font-size: 28px;
           line-height: 1;
           font-weight: 900;
           background: linear-gradient(
@@ -198,7 +201,7 @@ export default function NcertBooksPage() {
 
         .our-books-image-area {
           position: relative;
-          height: 305px;
+          height: 245px;
           width: 100%;
           overflow: hidden;
           border-radius: 16px;
@@ -223,7 +226,6 @@ export default function NcertBooksPage() {
           object-position: center;
         }
 
-        /* RIGHT TO LEFT EFFECT: current card goes left, next comes from right */
         .our-books-card:hover .our-books-slide-1 {
           animation: bookMove1 24s infinite ease-in-out;
         }
@@ -591,13 +593,27 @@ export default function NcertBooksPage() {
           background: rgba(26, 116, 170, 0.94);
         }
 
-        @media (max-width: 1023px) {
-          .our-books-image-area {
-            height: 285px;
+        @media (min-width: 640px) {
+          .our-books-card {
+            padding: 18px 18px 20px;
           }
 
           .our-books-title {
-            font-size: 28px;
+            font-size: 30px;
+          }
+
+          .our-books-image-area {
+            height: 275px;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .our-books-title {
+            font-size: 32px;
+          }
+
+          .our-books-image-area {
+            height: 305px;
           }
         }
       `}</style>

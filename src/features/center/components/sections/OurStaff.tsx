@@ -69,14 +69,17 @@ const OurStaff: React.FC<Props> = ({ city }) => {
 
                 {/* Header */}
                 <div className="our-staff-heading w-full text-center mb-16 max-w-4xl mx-auto">
-                    <h2 className="text-[36px] md:text-[50px] font-[900] uppercase tracking-wider mb-6 relative z-10 font-['Montserrat']">
-                        <span className="bg-gradient-to-r from-[rgba(225,97,101,0.8)] to-[#20A0E0] bg-clip-text text-transparent">
-                            OUR STAFF
-                        </span>
-                    </h2>
-                    <p className="text-gray-700 text-lg md:text-xl font-medium">
-                        Backed by a team of committed professionals, we provide continuous support, expert guidance, and personalized attention to help you excel in every stage of the UPSC process.
-                    </p>
+                <h2 className="text-[36px] md:text-[50px] font-[900] uppercase tracking-wider mb-6 relative z-10 font-['Montserrat']">
+                    <span className="bg-gradient-to-r from-[#20A0E0] to-[rgba(225,97,101,0.8)] bg-clip-text text-transparent">
+                    OUR STAFF
+                    </span>
+                </h2>
+
+                <p className="text-gray-700 text-lg md:text-xl font-medium">
+                    Backed by a team of committed professionals, we provide continuous support,
+                    expert guidance, and personalized attention to help you excel in every stage
+                    of the UPSC process.
+                </p>
                 </div>
 
                 {/* Staff Content Layout */}

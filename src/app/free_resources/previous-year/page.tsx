@@ -195,11 +195,11 @@ export default function PreviousYearPage() {
             {activeSection === "LIST" ? (
               <>
                 <h1 className="animate-heading mb-14 text-center text-[36px] font-extrabold uppercase leading-[1.05] md:text-[46px] lg:text-[56px]">
-                  <span className="-ml-95 drop-shadow-sm bg-[linear-gradient(90deg,#D57E89_0%,#759AB7_60%,#3E9CDB_100%)] bg-clip-text text-transparent">
+                  <span className="-ml-95 drop-shadow-sm bg-[linear-gradient(90deg,#3E9CDB_0%,#759AB7_60%,#D57E89_100%)] bg-clip-text text-transparent">
                     PREVIOUS YEAR QUESTION
                   </span>
                   <br />
-                  <span className="-ml-95 drop-shadow-sm bg-[linear-gradient(90deg,#9A8FB6_0%,#7287B8_50%,#5A91CF_100%)] bg-clip-text text-transparent">
+                  <span className="-ml-95 drop-shadow-sm bg-[linear-gradient(90deg,#5A91CF_0%,#7287B8_50%,#9A8FB6_100%)] bg-clip-text text-transparent">
                     PAPERS
                   </span>
                 </h1>
@@ -209,7 +209,7 @@ export default function PreviousYearPage() {
                     <div className="animate-card group relative flex min-h-[250px] w-full overflow-hidden rounded-[24px] bg-[#FDF6EA] p-8 shadow-[0_4px_20px_rgba(0,0,0,0.04)] transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.03] hover:shadow-xl">
                       <div className="relative z-20 flex w-[55%] flex-col justify-center transition-all duration-300 group-hover:translate-x-2">
                         <h2 className="mb-3 text-[26px] font-extrabold uppercase tracking-wide xl:text-[28px]">
-                          <span className="bg-[linear-gradient(90deg,#E18A98_0%,#5AAEE2_100%)] bg-clip-text text-transparent">
+                          <span className="bg-[linear-gradient(90deg,#5AAEE2_0%,#E18A98_100%)] bg-clip-text text-transparent">
                             PRELIMS
                           </span>
                         </h2>
@@ -252,9 +252,11 @@ export default function PreviousYearPage() {
                     <div className="animate-card group relative flex min-h-[250px] w-full overflow-hidden rounded-[24px] bg-[linear-gradient(135deg,#DCEAFC_0%,#C0DDF6_100%)] p-8 shadow-[0_4px_20px_rgba(0,0,0,0.04)] transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.03] hover:shadow-xl">
                       <div className="relative z-20 flex w-[55%] flex-col justify-center transition-all duration-300 group-hover:translate-x-2">
                         <h2 className="mb-3 text-[26px] font-extrabold uppercase tracking-wide xl:text-[28px]">
-                          <span className="bg-[linear-gradient(90deg,#E18A98_0%,#5AAEE2_100%)] bg-clip-text text-transparent">
+                          <h2 className="mb-3 text-[26px] font-extrabold uppercase tracking-wide xl:text-[28px]">
+                          <span className="bg-[linear-gradient(90deg,#5AAEE2_0%,#E18A98_100%)] bg-clip-text text-transparent">
                             MAINS
                           </span>
+                        </h2>
                         </h2>
                         <p className="mb-6 text-[15px] font-medium leading-snug text-[#555] xl:text-[16px]">
                           Check all MAINS previous year question paper

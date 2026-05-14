@@ -21,7 +21,7 @@ const MottoSection: React.FC = () => {
 
   const gradientStyle = {
     backgroundImage:
-      'linear-gradient(90deg, rgba(225, 97, 101, 0.8) 0%, #20A0E0 100%)',
+      'linear-gradient(90deg, #20A0E0 0%, rgba(225, 97, 101, 0.8) 100%)',
   };
 
   useGSAP(
@@ -106,24 +106,25 @@ const MottoSection: React.FC = () => {
                 {tagline}
               </p>
             )}
-            
-            {/* LINE 1: LOGO + IN SHAPING */}
-<div className="motto-text-line flex items-start gap-0 sm:gap-1 md:gap-2 mb-3">
-  <div className="relative shrink-0 w-[135px] h-[115px] sm:w-[155px] sm:h-[125px] md:w-[185px] md:h-[145px] lg:w-[225px] lg:h-[170px] xl:w-[255px] xl:h-[190px]">
-    <Image
-      src="/assets/40_years_experience.png"
-      alt="40 Years Logo"
-      fill
-      sizes="255px"
-      className="object-contain"
-      priority
-    />
-  </div>
 
-  <span className="text-[#00000099] whitespace-nowrap mt-[54px] sm:mt-[68px] md:mt-[84px] lg:mt-[100px] xl:mt-[112px] -ml-8">
-  In shaping
-</span>
-</div>
+            {/* LINE 1: LOGO + IN SHAPING */}
+            <div className="motto-text-line flex items-start gap-0 sm:gap-1 md:gap-2 mb-3">
+              <div className="relative shrink-0 w-[135px] h-[115px] sm:w-[155px] sm:h-[125px] md:w-[185px] md:h-[145px] lg:w-[225px] lg:h-[170px] xl:w-[255px] xl:h-[190px]">
+                <Image
+                  src="/assets/40_years_experience.png"
+                  alt="40 Years Logo"
+                  fill
+                  sizes="255px"
+                  className="object-contain"
+                  priority
+                />
+              </div>
+
+              <span className="text-[#00000099] whitespace-nowrap mt-[54px] sm:mt-[68px] md:mt-[84px] lg:mt-[100px] xl:mt-[112px] -ml-8">
+                In shaping
+              </span>
+            </div>
+
             {/* LINE 2: OFFICERS + NOW IT'S */}
             <div className="motto-text-line flex items-center gap-4 mb-2">
               <span

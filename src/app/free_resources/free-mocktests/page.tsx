@@ -136,10 +136,10 @@ export default function FreeMockTestsPage() {
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-14">
               <div>
                 <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold leading-none md:text-[56px] lg:text-[56px]">
-                  <span className="bg-gradient-to-r from-[#b57ea5] via-[#8e8fb7] to-[#5f8fcb] bg-clip-text text-transparent">
-                    Free Mock Tests
-                  </span>
-                </h1>
+                <span className="bg-gradient-to-r from-[#5f8fcb] via-[#8e8fb7] to-[#b57ea5] bg-clip-text text-transparent">
+                  Free Mock Tests
+                </span>
+              </h1>
 
                 <div className="animate-tabs mx-auto mb-8 max-w-[800px] rounded-[24px] bg-[#F4F4F4] p-4 shadow-sm">
                   <div className="flex w-full overflow-hidden">

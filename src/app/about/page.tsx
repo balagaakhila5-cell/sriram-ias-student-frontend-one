@@ -47,35 +47,35 @@ const AboutPage = () => {
   }, []);
 
   return (
-    <main className="min-h-screen bg-white overflow-hidden">
+    <main className="min-h-screen overflow-hidden bg-white">
       <Header />
 
       {/* HERO SECTION */}
-      {/* HERO SECTION */}
-<section className="relative h-[390px] w-full overflow-hidden">
-  <Image
-    src="/assets/about/about-us/About-banner.png"
-    alt="About Us Banner"
-    fill
-    priority
-    sizes="100vw"
-    className="object-cover object-center"
-  />
+      <section className="relative h-[300px] w-full overflow-hidden sm:h-[340px] md:h-[390px]">
+        <Image
+          src="/assets/about/about-us/About-banner.png"
+          alt="About Us Banner"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
 
-  {/* Figma-like banner dark effect */}
-  <div className="absolute inset-0 bg-black/20" />
-  <div className="absolute inset-y-0 left-0 w-[52%] bg-gradient-to-r from-black/95 via-black/75 to-transparent" />
-  <div className="absolute inset-y-0 right-0 w-[38%] bg-gradient-to-l from-black/20 to-transparent" />
+        {/* Figma-like banner dark effect */}
+        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-y-0 left-0 w-[78%] bg-gradient-to-r from-black/95 via-black/75 to-transparent md:w-[52%]" />
+        <div className="absolute inset-y-0 right-0 w-[38%] bg-gradient-to-l from-black/20 to-transparent" />
 
-  <div className="relative z-10 flex h-full w-full items-center px-[82px] pt-[90px]">
-    <h1 className="font-['Montserrat'] text-[58px] font-extrabold uppercase tracking-[1px] text-white">
-      ABOUT <span className="text-[#B8B2FF]">US</span>
-    </h1>
-  </div>
-</section>
+        <div className="relative z-10 flex h-full w-full items-center px-6 pt-[70px] sm:px-10 md:px-[72px] md:pt-[90px] lg:px-[82px]">
+          <h1 className="font-['Montserrat'] text-[52px] font-extrabold uppercase leading-[1.15] tracking-[1px] text-white sm:text-[56px] md:text-[58px]">
+            ABOUT <br className="block sm:hidden" />
+            <span className="text-[#B8B2FF]">US</span>
+          </h1>
+        </div>
+      </section>
 
       {/* ABOUT CONTENT SECTION */}
-      <section className="about-section-bg relative -mt-[1px] w-full overflow-hidden pt-[30px] pb-[35px] min-h-[1120px]">
+      <section className="about-section-bg relative -mt-[1px] w-full overflow-hidden px-4 pb-[45px] pt-[28px] sm:px-6 md:px-8 lg:px-0 lg:pb-[35px] lg:pt-[30px] lg:min-h-[1120px]">
         {/* LEFT / RIGHT SOFT BLUE CIRCLES WITH LIGHT EFFECT */}
         <div className="side-circle-left pointer-events-none" />
         <div className="side-circle-right pointer-events-none" />
@@ -94,11 +94,11 @@ const AboutPage = () => {
           </div>
         </div>
 
-        <div className="about-main-grid relative z-10 mx-auto grid w-full max-w-[1366px] grid-cols-[700px_650px] items-start justify-center gap-[20px] px-[20px]">
+        <div className="about-main-grid relative z-10 mx-auto grid w-full max-w-[1366px] grid-cols-1 items-start justify-center gap-8 lg:grid-cols-[700px_650px] lg:gap-[20px] lg:px-[20px]">
           {/* LEFT TEXT CARDS */}
-          <div className="about-left-cards flex flex-col gap-[28px]">
-            <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]">
-              <p className="font-['Montserrat'] text-[18px] leading-[39px] font-semibold text-[#666666]">
+          <div className="about-left-cards flex w-full flex-col gap-5 md:gap-[28px]">
+            <div className="about-text-card rounded-[10px] bg-white px-4 py-5 shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.015] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)] sm:px-5 sm:py-6 md:px-[30px] md:py-[26px] lg:hover:scale-[1.025]">
+              <p className="font-['Montserrat'] text-[14px] font-semibold leading-[28px] text-[#666666] sm:text-[15px] sm:leading-[30px] md:text-[17px] md:leading-[36px] lg:text-[18px] lg:leading-[39px]">
                 SRIRAM&apos;s IAS is one of the premier institutions for
                 Preparation of UPSC Civil Services Examination. Established in
                 1985 by Sriram Sir, a visionary mentor and academician, the
@@ -108,42 +108,41 @@ const AboutPage = () => {
               </p>
             </div>
 
-            <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]">
-              <p className="font-['Montserrat'] text-[18px] leading-[39px] font-semibold text-[#666666]">
+            <div className="about-text-card rounded-[10px] bg-white px-4 py-5 shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.015] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)] sm:px-5 sm:py-6 md:px-[30px] md:py-[26px] lg:hover:scale-[1.025]">
+              <p className="font-['Montserrat'] text-[14px] font-semibold leading-[28px] text-[#666666] sm:text-[15px] sm:leading-[30px] md:text-[17px] md:leading-[36px] lg:text-[18px] lg:leading-[39px]">
                 We believe that preparation for the Civil Services is more than
                 a career choice, it is a journey towards leadership and public
                 service. The hallmark of SRIRAM&apos;s IAS lies in its
                 student-first approach. Every aspect of the program is designed
-                to benefit the aspirants i.e. from meticulously planned
-                lectures and updated study materials to a dynamic assessment
-                methodology that keeps preparation on track.
+                to benefit the aspirants i.e. from meticulously planned lectures
+                and updated study materials to a dynamic assessment methodology
+                that keeps preparation on track.
               </p>
             </div>
 
-            <div className="about-text-card rounded-[10px] bg-white px-[30px] py-[26px] shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.025] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]">
-              <p className="font-['Montserrat'] text-[18px] leading-[39px] font-semibold text-[#666666]">
+            <div className="about-text-card rounded-[10px] bg-white px-4 py-5 shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.015] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)] sm:px-5 sm:py-6 md:px-[30px] md:py-[26px] lg:hover:scale-[1.025]">
+              <p className="font-['Montserrat'] text-[14px] font-semibold leading-[28px] text-[#666666] sm:text-[15px] sm:leading-[30px] md:text-[17px] md:leading-[36px] lg:text-[18px] lg:leading-[39px]">
                 The distinguished faculty team comprises highly experienced
                 educators, retired bureaucrats, and subject knowledge experts
-                who ensure conceptual clarity and exam-oriented focus across
-                all stages i.e. Prelims, Mains and Interview. With Centers in
-                New Delhi, Hyderabad and Pune, we make sure to provide
-                accessible guidance to students across the country. With 40
-                years of Excellence, and a proven track record, we remain
-                dedicated to guiding aspirants with the clarity, conviction and
-                care they deserve. Our legacy is built on a foundation of
-                rigorous academic standards combined with personalized
-                mentorship.
+                who ensure conceptual clarity and exam-oriented focus across all
+                stages i.e. Prelims, Mains and Interview. With Centers in New
+                Delhi, Hyderabad and Pune, we make sure to provide accessible
+                guidance to students across the country. With 40 years of
+                Excellence, and a proven track record, we remain dedicated to
+                guiding aspirants with the clarity, conviction and care they
+                deserve. Our legacy is built on a foundation of rigorous
+                academic standards combined with personalized mentorship.
               </p>
             </div>
           </div>
 
-          {/* RIGHT IMAGE NETWORK - MOVED RIGHT */}
-          <div className="about-circle-network relative mt-[170px] h-[840px] w-[650px] shrink-0 overflow-visible">
-            <div className="absolute left-[258px] top-[198px] h-[330px] w-[5px] origin-top rotate-[34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
+          {/* RIGHT IMAGE NETWORK */}
+          <div className="about-circle-network relative mx-auto mt-8 h-[560px] w-full max-w-[360px] shrink-0 overflow-visible sm:h-[650px] sm:max-w-[520px] md:h-[760px] md:max-w-[650px] lg:mt-[170px] lg:h-[840px] lg:w-[650px] lg:max-w-none">
+            <div className="about-line about-line-left absolute left-[50%] top-[135px] hidden h-[260px] w-[4px] origin-top rotate-[34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB] sm:block lg:left-[258px] lg:top-[198px] lg:h-[330px] lg:w-[5px]" />
 
-            <div className="absolute left-[258px] top-[198px] h-[330px] w-[5px] origin-top rotate-[-34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB]" />
+            <div className="about-line about-line-right absolute left-[50%] top-[135px] hidden h-[260px] w-[4px] origin-top rotate-[-34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB] sm:block lg:left-[258px] lg:top-[198px] lg:h-[330px] lg:w-[5px]" />
 
-            <div className="absolute left-[260px] top-[500px] z-[5] h-[5px] w-[95px] rounded-full bg-gradient-to-r from-[#2D9CDB] via-[#B95D63] to-[#2D9CDB]" />
+            <div className="about-line about-line-middle absolute left-[50%] top-[380px] z-[5] hidden h-[4px] w-[72px] rounded-full bg-gradient-to-r from-[#2D9CDB] via-[#B95D63] to-[#2D9CDB] sm:block lg:left-[260px] lg:top-[500px] lg:h-[5px] lg:w-[95px]" />
 
             {circleImages.map((item, index) => {
               const positionIndex =
@@ -153,7 +152,7 @@ const AboutPage = () => {
               return (
                 <div
                   key={item.src}
-                  className="absolute z-10 h-[245px] w-[245px] overflow-hidden rounded-full shadow-[0px_14px_35px_rgba(0,0,0,0.16)] transition-all duration-[900ms] ease-in-out hover:scale-105"
+                  className={`about-floating-circle about-floating-circle-${index} absolute z-10 h-[155px] w-[155px] overflow-hidden rounded-full shadow-[0px_14px_35px_rgba(0,0,0,0.16)] transition-all duration-[900ms] ease-in-out hover:scale-105 sm:h-[205px] sm:w-[205px] md:h-[230px] md:w-[230px] lg:h-[245px] lg:w-[245px]`}
                   style={{
                     left: position.left,
                     top: position.top,
@@ -163,8 +162,8 @@ const AboutPage = () => {
                     src={item.src}
                     alt={item.alt}
                     fill
-                    sizes="245px"
-                    className="object-cover scale-[1.08]"
+                    sizes="(max-width: 640px) 155px, (max-width: 768px) 205px, 245px"
+                    className="object-cover object-center scale-[1.04] lg:scale-[1.08]"
                   />
                 </div>
               );
@@ -196,12 +195,10 @@ const AboutPage = () => {
               );
           }
 
-          /* TEXT CARDS MOVED RIGHT */
           .about-left-cards {
             transform: translateX(42px);
           }
 
-          /* CIRCLE IMAGES MOVED RIGHT */
           .about-circle-network {
             transform: translateX(45px);
           }
@@ -280,7 +277,6 @@ const AboutPage = () => {
             opacity: 1;
           }
 
-          /* HALF CIRCLE ORBITS MOVED UP */
           .clean-orbit-wrap {
             position: absolute;
             left: 235px;
@@ -377,10 +373,6 @@ const AboutPage = () => {
           }
 
           @media (max-width: 1023px) {
-            .about-main-grid {
-              grid-template-columns: 1fr !important;
-            }
-
             .about-left-cards {
               transform: translateX(0);
             }
@@ -400,6 +392,101 @@ const AboutPage = () => {
             .side-circle-left,
             .side-circle-right {
               display: none;
+            }
+          }
+
+          @media (max-width: 767px) {
+            .about-section-bg {
+              min-height: auto;
+            }
+
+            .about-main-grid {
+              max-width: 100% !important;
+            }
+
+            .about-text-card {
+              width: 100%;
+            }
+
+            .bottom-wave-lines {
+              height: 360px;
+              opacity: 0.55;
+              background-size: 1200px auto;
+            }
+
+            .about-line-left,
+            .about-line-right,
+            .about-line-middle {
+              display: block;
+            }
+
+            .about-line-left {
+              left: 50% !important;
+              top: 105px !important;
+              height: 230px !important;
+              transform: rotate(28deg);
+            }
+
+            .about-line-right {
+              left: 50% !important;
+              top: 105px !important;
+              height: 230px !important;
+              transform: rotate(-28deg);
+            }
+
+            .about-line-middle {
+              left: 50% !important;
+              top: 325px !important;
+              width: 58px !important;
+              transform: translateX(-8px);
+            }
+
+            .about-floating-circle-0 {
+              left: 50% !important;
+              top: 0px !important;
+              transform: translateX(-50%);
+            }
+
+            .about-floating-circle-1 {
+              left: 8px !important;
+              top: 330px !important;
+            }
+
+            .about-floating-circle-2 {
+              right: 8px !important;
+              left: auto !important;
+              top: 330px !important;
+            }
+          }
+
+          @media (max-width: 420px) {
+            .about-floating-circle {
+              height: 145px !important;
+              width: 145px !important;
+            }
+
+            .about-circle-network {
+              height: 520px !important;
+            }
+
+            .about-floating-circle-1 {
+              left: 0px !important;
+              top: 315px !important;
+            }
+
+            .about-floating-circle-2 {
+              right: 0px !important;
+              top: 315px !important;
+            }
+
+            .about-line-left,
+            .about-line-right {
+              top: 98px !important;
+              height: 220px !important;
+            }
+
+            .about-line-middle {
+              top: 300px !important;
             }
           }
         `}</style>

@@ -330,11 +330,11 @@ export default function DailyCurrentAffairsPage() {
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-14">
               {/* Left */}
               <div>
-                <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
-                  <span className="bg-gradient-to-r from-[rgba(225,97,101,0.9)] via-[#9a6db5] to-[#20a0e0] bg-clip-text text-transparent">
-                    Daily Current Affairs
-                  </span>
-                </h1>
+               <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
+                <span className="bg-gradient-to-r from-[#20a0e0] via-[#9a6db5] to-[rgba(225,97,101,0.9)] bg-clip-text text-transparent">
+                  Daily Current Affairs
+                </span>
+              </h1>
 
                 <div className="animate-filters relative z-20 mb-12 flex flex-col items-center justify-center gap-5 md:flex-row md:gap-6">
                   <CustomDropdown

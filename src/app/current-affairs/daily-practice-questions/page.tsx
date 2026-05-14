@@ -222,10 +222,10 @@ export default function DailyPracticeQuestionsPage() {
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-14">
               <div>
                 <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
-                  <span className="bg-gradient-to-r from-[#F07F7F] via-[#B68DB2] to-[#1E9CE7] bg-clip-text text-transparent">
-                    Daily Practice Questions
-                  </span>
-                </h1>
+                <span className="bg-gradient-to-r from-[#1E9CE7] via-[#B68DB2] to-[#F07F7F] bg-clip-text text-transparent">
+                  Daily Practice Questions
+                </span>
+              </h1>
 
                 {/* Tab Switcher */}
                 <div className="animate-filter mx-auto mb-10 flex max-w-[620px] overflow-hidden rounded-[26px] bg-[#F1F1F1] p-3 shadow-[0px_10px_30px_rgba(0,0,0,0.08)]">

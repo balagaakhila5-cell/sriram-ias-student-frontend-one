@@ -194,11 +194,11 @@ export default function MonthlyMagazinePage() {
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-14">
               {/* Left Content */}
               <div>
-                <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
-                  <span className="bg-gradient-to-r from-[#d97b8d] via-[#8b7ac9] to-[#2aa3ea] bg-clip-text text-transparent">
-                    Monthly Magazine
-                  </span>
-                </h1>
+              <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
+                <span className="bg-gradient-to-r from-[#2aa3ea] via-[#8b7ac9] to-[#d97b8d] bg-clip-text text-transparent">
+                  Monthly Magazine
+                </span>
+              </h1>
 
                 {/* Fixed Dropdowns */}
                 <div className="animate-filters mb-12 flex flex-col items-center justify-center gap-5 md:flex-row md:gap-6">

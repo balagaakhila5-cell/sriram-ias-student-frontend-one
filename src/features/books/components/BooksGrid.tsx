@@ -48,7 +48,7 @@ const BooksGrid: React.FC<BooksGridProps> = ({ books }) => {
         <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 md:px-12">
           <div className="text-center mb-16 flex justify-center">
             <h2 className="font-[Montserrat] font-black text-[56px] leading-none text-center uppercase tracking-normal">
-              <span className="text-transparent bg-clip-text bg-[linear-gradient(90deg,rgba(225,97,101,0.8)_0%,#20A0E0_100%)]">
+              <span className="text-transparent bg-clip-text bg-[linear-gradient(90deg,#20A0E0_0%,rgba(225,97,101,0.8)_100%)]">
                 OUR BEST SELLERS
               </span>
             </h2>

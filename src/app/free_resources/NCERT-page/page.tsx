@@ -199,10 +199,10 @@ export default function NcertBooksPage() {
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_320px]">
               <div>
                 <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
-                  <span className="bg-[linear-gradient(90deg,#D57E89_0%,#9A8FB6_42%,#3E9CDB_100%)] bg-clip-text text-transparent">
-                    NCERT BOOKS
-                  </span>
-                </h1>
+                <span className="bg-[linear-gradient(90deg,#3E9CDB_0%,#9A8FB6_42%,#D57E89_100%)] bg-clip-text text-transparent">
+                  NCERT BOOKS
+                </span>
+              </h1>
 
                 <div className="animate-tabs relative z-[60] mb-12">
                   <div className="flex flex-col items-center justify-center gap-6 md:flex-row">

@@ -66,13 +66,15 @@ const CenterGallery: React.FC<Props> = ({ city }) => {
         <path fill="#FCEDD0" d="M43.3,-74.4C56.6,-70.6,68.2,-59.5,75.9,-46.3C83.7,-33,87.6,-17.5,88.4,-1.8C89.3,13.9,87.1,29.9,79.5,43.4C71.8,56.9,58.8,67.8,44.2,75.1C29.6,82.4,13.5,86,-2.2,89.5C-17.9,93,-33.1,96.3,-47.1,91.3C-61.1,86.3,-73.9,72.9,-81.9,57.7C-89.9,42.5,-93,25.4,-92.4,8.8C-91.8,-7.8,-87.5,-23.9,-79.7,-38.3C-71.9,-52.7,-60.7,-65.4,-47.4,-69.3C-34.1,-73.1,-18.8,-68.2,-2.3,-64.5C14.2,-60.8,30,-64,43.3,-74.4Z" transform="translate(100 100)" />
       </svg>
 
-      <h2 className="gallery-heading text-[32px] md:text-[50px] font-black uppercase tracking-wider mb-20 relative z-10 font-['Montserrat']"
+      <h2
+        className="gallery-heading text-[32px] md:text-[50px] font-black uppercase tracking-wider mb-20 relative z-10 font-['Montserrat']"
         style={{
-          background: 'linear-gradient(90deg, #D47B83 0%, #908CAF 45%, #46A1D4 100%)',
+          background:
+            'linear-gradient(90deg, #46A1D4 0%, #908CAF 45%, #D47B83 100%)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
-          color: 'transparent'
+          color: 'transparent',
         }}
       >
         OUR {cityName} GALLERY

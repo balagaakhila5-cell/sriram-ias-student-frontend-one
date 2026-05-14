@@ -119,11 +119,20 @@ export default function PrelimsPaperPage() {
 
         <section className="bg-[#f7f7f7] px-6 py-12 lg:px-16 lg:py-14">
           <div className="mx-auto max-w-[1500px]">
-            <h1 className="mb-10 text-center text-[52px] font-extrabold uppercase leading-[0.95] md:text-[62px] lg:text-[74px]">
-              <span className="bg-[linear-gradient(90deg,#D57E89_0%,#9A8FB6_40%,#3E9CDB_100%)] bg-clip-text text-transparent">
-                PRELIMS QUESTION PAPERS
-              </span>
-            </h1>
+<h1 className="mb-10 text-center text-[52px] font-extrabold uppercase leading-[0.95] md:text-[62px] lg:text-[74px]">
+  <span
+    className="inline-block"
+    style={{
+      background: "linear-gradient(90deg, #159FE3 0%, #8E91B5 45%, #D96F7D 100%)",
+      WebkitBackgroundClip: "text",
+      backgroundClip: "text",
+      WebkitTextFillColor: "transparent",
+      color: "transparent",
+    }}
+  >
+    PRELIMS QUESTION PAPERS
+  </span>
+</h1>
 
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[1fr_340px]">
               <div>

@@ -78,17 +78,19 @@ const OurToppers: React.FC<Props> = ({ city }) => {
 
 
       {/* Header */}
-      <h2 className="our-toppers-heading text-[36px] md:text-[50px] font-[900] uppercase tracking-wider mb-6 relative z-10 font-['Montserrat']"
-        style={{
-          background: 'linear-gradient(90deg, #CE6A73 0%, #8788A5 45%, #3C9ED5 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          color: 'transparent'
-        }}
-      >
-        OUR TOPPERS
-      </h2>
+<h2
+  className="our-toppers-heading text-[36px] md:text-[50px] font-[900] uppercase tracking-wider mb-6 relative z-10 font-['Montserrat']"
+  style={{
+    background:
+      'linear-gradient(90deg, #3C9ED5 0%, #8788A5 45%, #CE6A73 100%)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text',
+    color: 'transparent',
+  }}
+>
+  OUR TOPPERS
+</h2>
 
       <p className="our-toppers-heading text-center text-[#2A3742] font-medium max-w-[900px] mx-auto text-[15px] md:text-[18px] leading-relaxed mb-20 relative z-10 font-['Montserrat']">
         Driven by a commitment to success, we stand behind our toppers with constant support, expert mentorship, and personalized attention to help them lead the way in every phase of the UPSC process.

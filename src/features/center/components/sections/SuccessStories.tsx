@@ -101,9 +101,9 @@ const SuccessStories = ({ city }: { city: string }) => {
                 {/* Header Section */}
                 <div className="success-stories-heading w-full text-left md:text-left mb-20">
                     <h2 className="text-[28px] md:text-[40px] font-bold mb-4 tracking-tight">
-                        <span className="text-[#C0778B]">50 + Success Stories </span>
-                        <span className="text-[#968EB3]">From </span>
-                        <span className="text-[#519DC8]">{city}</span>
+                    <span className="text-[#519DC8]">50 + Success Stories </span>
+                    <span className="text-[#968EB3]">From </span>
+                    <span className="text-[#C0778B]">{city}</span>
                     </h2>
                     <p className="text-gray-500 text-lg md:text-xl font-medium">Watch what our students have to say</p>
                 </div>
