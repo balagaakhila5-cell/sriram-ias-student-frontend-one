@@ -125,11 +125,11 @@ const Header: React.FC = () => {
       name: 'New Delhi',
       icon: (
         <Image
-          src="/assets/del-footer.png"
+          src="/assets/new-delhi-only-icon.svg"
           alt="New Delhi"
-          width={28}
-          height={28}
-          className="w-[28px] h-[28px] object-contain"
+          width={35}
+          height={35}
+          className="w-[35px] h-[35px] object-contain"
         />
       ),
     },
@@ -137,11 +137,11 @@ const Header: React.FC = () => {
       name: 'Hyderabad',
       icon: (
         <Image
-          src="/assets/hyd-footer.png"
+          src="/assets/hyderabad-only-icon.svg"
           alt="Hyderabad"
-          width={28}
-          height={28}
-          className="w-[28px] h-[28px] object-contain"
+          width={32}
+          height={32}
+          className="w-[32px] h-[32px] object-contain"
         />
       ),
     },
@@ -149,11 +149,11 @@ const Header: React.FC = () => {
       name: 'Pune',
       icon: (
         <Image
-          src="/assets/pune-footer.png"
+          src="/assets/pune-only-icon.svg"
           alt="Pune"
-          width={28}
-          height={28}
-          className="w-[28px] h-[28px] object-contain"
+          width={36}
+          height={36}
+          className="w-[36px] h-[36px] object-contain"
         />
       ),
     },
