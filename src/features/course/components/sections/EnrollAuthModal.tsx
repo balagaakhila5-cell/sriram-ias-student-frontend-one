@@ -9,6 +9,7 @@ type Screen =
   | 'otp'
   | 'loginSuccess'
   | 'signupSuccess'
+  | 'deliveryMode'
   | 'payment'
   | 'receipt';
 
@@ -194,7 +195,7 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
     setScreen('loginSuccess');
 
     setTimeout(() => {
-      setScreen('payment');
+      setScreen('deliveryMode');
     }, 1200);
   };
 
@@ -510,7 +511,9 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
         className={`relative overflow-hidden bg-white shadow-[0_20px_60px_rgba(0,0,0,0.25)] ${
           screen === 'payment' || screen === 'receipt'
             ? 'h-screen w-screen rounded-none'
-            : 'w-full max-w-[760px] rounded-[8px]'
+            : screen === 'deliveryMode'
+              ? 'h-[88vh] w-full max-w-[920px] rounded-[6px]'
+              : 'w-full max-w-[760px] rounded-[8px]'
         }`}
       >
         <button
@@ -736,6 +739,65 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
                   ? 'LOG IN SUCCESSFUL'
                   : 'SIGN UP SUCCESSFUL'}
               </h2>
+            </div>
+          </div>
+        )}
+
+        {screen === 'deliveryMode' && (
+          <div className="h-full w-full overflow-y-auto bg-white">
+            <div className="flex h-[66px] items-center border-b border-[#cfd7e3] bg-[#eef4ff] px-7">
+              <h2 className="text-[24px] font-extrabold text-[#082b52]">
+                Select Course Delivery Mode
+              </h2>
+            </div>
+
+            <div className="px-7 py-7">
+              <div className="mb-7 text-center">
+                <h3 className="text-[25px] font-extrabold text-[#082b52]">
+                  Advanced Financial Management Certification
+                </h3>
+                <p className="mt-2 text-[16px] font-medium text-[#4b5563]">
+                  Choose the learning experience that fits your professional
+                  schedule
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <DeliveryModeCard
+                  title="Offline Mode"
+                  subtitle="Classroom-based Learning"
+                  icon="building"
+                  price="₹74,999"
+                  oldPrice="₹99,999"
+                  saving="25% SAVINGS"
+                  highlights={[
+                    'Complete Set of 19 Books',
+                    'Senior Faculty Expert Guidance',
+                    'Personalized Dedicated Mentorship Support',
+                    'Recorded Classes with 3-Year Access',
+                    'All India Test Series & Essay Writing Scheme Sessions',
+                  ]}
+                  onEnroll={() => setScreen('payment')}
+                />
+
+                <DeliveryModeCard
+                  title="Online Mode"
+                  subtitle="Live Interactive Sessions"
+                  icon="laptop"
+                  popular
+                  price="₹54,999"
+                  oldPrice="₹79,999"
+                  saving="31% SAVINGS"
+                  highlights={[
+                    'Digital E-Book Library Access',
+                    'Senior Faculty Expert Guidance',
+                    'Personalized Dedicated Mentorship Support',
+                    'Recorded Classes with 3-Year Access',
+                    'All India Test Series & Essay Writing Scheme Sessions',
+                  ]}
+                  onEnroll={() => setScreen('payment')}
+                />
+              </div>
             </div>
           </div>
         )}
@@ -1188,6 +1250,164 @@ const AuthInput: React.FC<AuthInputProps> = ({ label, value, onChange }) => {
         onChange={(e) => onChange(e.target.value)}
         className="h-[42px] w-full rounded-full bg-[#cde8f2] px-5 text-center text-[14px] font-medium text-black outline-none focus:shadow-[0_0_0_2px_rgba(42,157,216,0.35)]"
       />
+    </div>
+  );
+};
+
+interface DeliveryModeCardProps {
+  title: string;
+  subtitle: string;
+  icon: 'building' | 'laptop';
+  price: string;
+  oldPrice: string;
+  saving: string;
+  popular?: boolean;
+  highlights: string[];
+  onEnroll: () => void;
+}
+
+const DeliveryModeCard: React.FC<DeliveryModeCardProps> = ({
+  title,
+  subtitle,
+  icon,
+  price,
+  oldPrice,
+  saving,
+  popular = false,
+  highlights,
+  onEnroll,
+}) => {
+  return (
+    <div
+      className={`relative min-h-[385px] rounded-[6px] border px-7 py-7 ${
+        popular
+          ? 'border-[#096bbb] bg-[#eef5ff] shadow-[0_6px_18px_rgba(9,107,187,0.18)]'
+          : 'border-[#c2c9d4] bg-white'
+      }`}
+    >
+      {popular && (
+        <div className="absolute right-0 top-0 rounded-bl-[14px] rounded-tr-[5px] bg-gradient-to-r from-[#42a9db] to-[#003247] px-7 py-1.5 text-[15px] font-extrabold uppercase text-white">
+          Popular
+        </div>
+      )}
+
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <h3 className="text-[24px] font-extrabold text-[#082b52]">
+            {title}
+          </h3>
+          <p className="mt-1 text-[14px] font-medium text-[#4b5563]">
+            {subtitle}
+          </p>
+        </div>
+
+        {icon === 'building' ? (
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#1268aa"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="mt-1"
+          >
+            <path d="M3 21h18" />
+            <path d="M5 21V5h8v16" />
+            <path d="M13 9h6v12" />
+            <path d="M8 8h2" />
+            <path d="M8 12h2" />
+            <path d="M8 16h2" />
+            <path d="M16 13h1" />
+            <path d="M16 17h1" />
+          </svg>
+        ) : (
+          <svg
+            width="30"
+            height="30"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#1268aa"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="mt-1"
+          >
+            <rect x="4" y="5" width="16" height="11" rx="1" />
+            <path d="M2 20h20" />
+            <path d="M9 16v2" />
+            <path d="M15 16v2" />
+          </svg>
+        )}
+      </div>
+
+      <p className="mb-3 text-[14px] font-extrabold uppercase tracking-[1.2px] text-[#444b56]">
+        Key Highlights Of Course
+      </p>
+
+      <div className="space-y-3">
+        {highlights.map((item) => (
+          <div key={item} className="flex items-start gap-2">
+            <span className="mt-[2px] flex h-[17px] w-[17px] shrink-0 items-center justify-center rounded-full border-2 border-[#00b98b] text-[11px] font-bold text-[#00b98b]">
+              ✓
+            </span>
+            <p className="text-[14px] font-medium leading-[1.35] text-[#102033]">
+              {item}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <div className="my-6 h-[1px] w-full bg-[#d5dce6]" />
+
+      <div className="mb-6 flex items-end gap-3">
+        <span className="text-[48px] font-extrabold leading-none text-[#082b52]">
+          {price}
+        </span>
+        <span className="pb-2 text-[16px] font-medium text-[#555] line-through">
+          {oldPrice}
+        </span>
+      </div>
+
+      <span className="inline-block rounded-[3px] bg-[#d7fff3] px-2 py-1 text-[14px] font-extrabold uppercase tracking-[1px] text-[#00a77a]">
+        {saving}
+      </span>
+
+      <div className="mt-7">
+        <p className="mb-2 text-[14px] font-extrabold tracking-[0.7px] text-[#444]">
+          Latest Coupons
+        </p>
+
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <input
+              type="text"
+              placeholder="Enter coupon code"
+              className="h-[36px] w-full rounded-[3px] border border-[#cfd7e3] bg-[#f7f8fb] px-3 pr-8 text-[12px] font-medium outline-none"
+            />
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] text-[#1d67a8]">
+              ¤
+            </span>
+          </div>
+
+          <button
+            type="button"
+            className="h-[36px] cursor-pointer rounded-[4px] bg-gradient-to-r from-[#42a9db] to-[#003247] px-4 text-[12px] font-bold text-white"
+          >
+            Apply
+          </button>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={onEnroll}
+        className="mx-auto mt-5 flex h-[38px] w-full max-w-[220px] cursor-pointer items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#42a9db] to-[#003247] text-[13px] font-extrabold text-white transition hover:scale-[1.02]"
+      >
+        <span className="text-[15px]">▣</span>
+        Enroll Now
+      </button>
     </div>
   );
 };
