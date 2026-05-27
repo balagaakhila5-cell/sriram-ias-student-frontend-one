@@ -38,45 +38,43 @@ export default function NextClassCard({
           }}
         />
 
-        {/* Center Button */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          {ended ? (
-            <Link
-              href={`/student/session/${session.id}`}
-              className="inline-flex items-center justify-center text-white shadow-[0_8px_20px_rgba(0,91,136,0.35)] transition-transform hover:-translate-y-0.5"
-              style={{
-                width: 147,
-                height: 48,
-                borderRadius: 28.8,
-                paddingTop: 8.1,
-                paddingBottom: 8.1,
-                paddingLeft: 21.6,
-                paddingRight: 21.6,
-                gap: 11.34,
-                background:
-                  "linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)",
-                fontFamily: "Montserrat, sans-serif",
-                fontWeight: 600,
-                fontSize: 14,
-                lineHeight: "100%",
-              }}
-            >
-              Join Class
-            </Link>
-          ) : (
-            <button
-              type="button"
-              onClick={viewOnly ? undefined : () => setEnded(true)}
-              className={`flex items-center gap-2 rounded-full bg-[#000000]/50 px-5 py-2 text-[15px] font-medium text-white shadow-lg backdrop-blur-sm ${
-                viewOnly
-                  ? "cursor-default"
-                  : "transition-transform hover:-translate-y-0.5"
-              }`}
-            >
-              Starts in {formatHMS(session.startsInSeconds)} Hrs
-            </button>
-          )}
-        </div>
+        {/* Center Button — hidden entirely in viewOnly mode (parent portal) */}
+        {!viewOnly && (
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            {ended ? (
+              <Link
+                href={`/student/session/${session.id}`}
+                className="inline-flex items-center justify-center text-white shadow-[0_8px_20px_rgba(0,91,136,0.35)] transition-transform hover:-translate-y-0.5"
+                style={{
+                  width: 147,
+                  height: 48,
+                  borderRadius: 28.8,
+                  paddingTop: 8.1,
+                  paddingBottom: 8.1,
+                  paddingLeft: 21.6,
+                  paddingRight: 21.6,
+                  gap: 11.34,
+                  background:
+                    "linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)",
+                  fontFamily: "Montserrat, sans-serif",
+                  fontWeight: 600,
+                  fontSize: 14,
+                  lineHeight: "100%",
+                }}
+              >
+                Join Class
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setEnded(true)}
+                className="flex items-center gap-2 rounded-full bg-[#000000]/50 px-5 py-2 text-[15px] font-medium text-white shadow-lg backdrop-blur-sm transition-transform hover:-translate-y-0.5"
+              >
+                Starts in {formatHMS(session.startsInSeconds)} Hrs
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Content Section with Background Design Image */}
