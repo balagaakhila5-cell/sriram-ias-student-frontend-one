@@ -20,7 +20,7 @@ export default function EmptyLiveClass() {
       </div>
 
       <h3 className="text-[20px] font-semibold text-[#000000]">
-        No Session available for the Selected date
+        No Session available 
       </h3>
       <p className="mt-2 max-w-[300px] text-[16px] leading-relaxed text-[#000000]/60 font-medium">
         Select a different date in the calender to see the sessions for that day
