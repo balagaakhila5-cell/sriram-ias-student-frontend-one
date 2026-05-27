@@ -64,9 +64,17 @@ apiClient.interceptors.response.use(
     const status = error.response?.status;
 
     if (typeof window !== "undefined" && status === 401) {
-      setStoredToken(null);
-      // Avoid redirect loops from login itself
-      if (!window.location.pathname.startsWith("/login")) {
+      const path = window.location.pathname;
+      const isProtectedRoute =
+        path.startsWith("/student") ||
+        path.startsWith("/parent") ||
+        path.startsWith("/employee");
+
+      // Only force a logout + redirect on portal routes. Public pages
+      // (homepage, books, courses, etc.) may hit unauthenticated endpoints
+      // and shouldn't kick the user to /login.
+      if (isProtectedRoute && !path.startsWith("/login")) {
+        setStoredToken(null);
         window.location.href = "/login";
       }
     }
