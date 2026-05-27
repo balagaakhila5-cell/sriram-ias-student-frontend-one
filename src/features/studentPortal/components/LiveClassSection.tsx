@@ -11,10 +11,13 @@ import { nextClass, upcomingSessions } from "../data/liveClass";
 interface LiveClassSectionProps {
   /** Pass-through to NextClassCard — used by parent portal. */
   viewOnly?: boolean;
+  /** Override the "UPCOMING CLASSES" section title. */
+  upcomingTitle?: { first: string; second: string };
 }
 
 export default function LiveClassSection({
   viewOnly = false,
+  upcomingTitle,
 }: LiveClassSectionProps = {}) {
   const [hasSession, setHasSession] = useState(true);
 
@@ -36,7 +39,10 @@ export default function LiveClassSection({
         </section>
 
         <section>
-          <SectionTitle first="UPCOMING" second="CLASSES" />
+          <SectionTitle
+            first={upcomingTitle?.first ?? "UPCOMING"}
+            second={upcomingTitle?.second ?? "CLASSES"}
+          />
           <div className="mt-5 space-y-3">
             {upcomingSessions.map((s) => (
               <UpcomingClassCard key={s.id} session={s} />
