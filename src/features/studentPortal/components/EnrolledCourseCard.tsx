@@ -25,10 +25,9 @@ export default function EnrolledCourseCard({
     >
       <div className="relative">
         <div
-          className="h-[210px] w-full"
+          className="h-[210px] w-full bg-cover bg-center"
           style={{
-            background:
-              "linear-gradient(135deg, #F4F4F4 0%, #E2EEF5 60%, #CDE7F1 100%)",
+            backgroundImage: "url('/assets/student/Course-card-hero.png')",
           }}
         />
         <span

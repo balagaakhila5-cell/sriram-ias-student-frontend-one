@@ -14,7 +14,7 @@ export default function PdfCard({
   downloadHref = "#",
 }: PdfCardProps) {
   return (
-    <article className="flex items-center gap-4 rounded-[14px] bg-[#FAF8F3] p-4 shadow-[0_4px_14px_rgba(0,0,0,0.04)]">
+    <article className="flex items-center gap-4 rounded-[14px] bg-[#FAF8F3] p-4 shadow-[0_4px_14px_rgba(0,0,0,0.04)] transition-all duration-300 hover:translate-x-2 hover:bg-[#F2F8FC] hover:shadow-[0_8px_24px_rgba(31,122,184,0.12)]">
       <PdfIcon />
 
       <div className="min-w-0 flex-1">
