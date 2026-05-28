@@ -7,7 +7,7 @@ export default function EnrollmentsPage() {
   return (
     <div>
       <div className="flex items-center justify-between gap-4">
-        <SectionTitle first="ENROLLED" second="COURSES" />
+        <SectionTitle first="MY" second="COURSES" />
 
         <Link
           href="#"

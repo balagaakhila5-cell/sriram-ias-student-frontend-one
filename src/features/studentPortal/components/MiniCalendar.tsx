@@ -21,19 +21,22 @@ const MONTHS = [
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 interface MiniCalendarProps {
+  selectedDate: string | null;
+  setSelectedDate: (date: string) => void;
+
   initialYear?: number;
   initialMonth?: number;
-  onSelect?: (date: Date) => void;
 }
 
 export default function MiniCalendar({
+  selectedDate,
+  setSelectedDate,
   initialYear = 2026,
   initialMonth = 3,
-  onSelect,
 }: MiniCalendarProps) {
+
   const [year, setYear] = useState(initialYear);
   const [month, setMonth] = useState(initialMonth);
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
   const years = useMemo(() => {
     const base = initialYear;
@@ -44,11 +47,19 @@ export default function MiniCalendar({
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   const cells: (number | null)[] = [];
-  for (let i = 0; i < firstWeekday; i++) cells.push(null);
-  for (let d = 1; d <= daysInMonth; d++) cells.push(d);
+
+  for (let i = 0; i < firstWeekday; i++) {
+    cells.push(null);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    cells.push(d);
+  }
 
   return (
     <div className="w-[340px] rounded-[20px] bg-white p-4 shadow-[0_10px_30px_rgba(0,0,0,0.06)]">
+
+      {/* Dropdowns */}
       <div className="mb-5 flex items-center gap-3">
         <CompactDropdown
           className="flex-1"
@@ -56,6 +67,7 @@ export default function MiniCalendar({
           value={String(year)}
           onChange={(v) => setYear(Number(v))}
         />
+
         <CompactDropdown
           className="flex-1"
           options={MONTHS}
@@ -64,33 +76,40 @@ export default function MiniCalendar({
         />
       </div>
 
+      {/* Days */}
       <div className="grid grid-cols-7 gap-y-3 text-center">
+
         {DAY_LABELS.map((d) => (
           <div
             key={d}
             className="text-[12px] font-medium text-[#A6AEB5]"
-            style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             {d}
           </div>
         ))}
+
         {cells.map((day, i) => {
-          if (day === null) return <div key={`empty-${i}`} />;
-          const isSelected = selectedDay === day;
+
+          if (day === null) {
+            return <div key={`empty-${i}`} />;
+          }
+
+          const formattedDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+          const isSelected = selectedDate === formattedDate;
+
           return (
             <button
               key={day}
               type="button"
               onClick={() => {
-                setSelectedDay(day);
-                onSelect?.(new Date(year, month, day));
+                setSelectedDate(formattedDate);
               }}
               className={`mx-auto flex h-9 w-9 items-center justify-center rounded-full text-[14px] font-bold transition-colors ${
                 isSelected
                   ? "bg-[#1897D8] text-white shadow-[0_4px_12px_rgba(24,151,216,0.35)]"
                   : "text-[#1F2A37] hover:bg-[#F1F7FB]"
               }`}
-              style={{ fontFamily: "Montserrat, sans-serif" }}
             >
               {String(day).padStart(2, "0")}
             </button>

@@ -78,13 +78,16 @@ export default function NextClassCard({
       </div>
 
       {/* Content Section with Background Design Image */}
-      <div
-        className="relative overflow-hidden p-5 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('/assets/student/design-image.png')",
-        }}
-      >
+<div
+  className="relative overflow-hidden p-5 bg-no-repeat"
+  style={{
+    backgroundImage:
+      "linear-gradient(rgba(255,255,255,0.05), rgba(255,255,255,0.05)), url('/assets/student/design-image1.png')",
+    backgroundPosition: "right bottom",
+    backgroundSize: "320px",
+    backgroundBlendMode: "screen",
+  }}
+>
         {/* White Overlay */}
         <div className="absolute inset-0 bg-white/85" />
 
