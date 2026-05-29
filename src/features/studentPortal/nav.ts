@@ -17,11 +17,7 @@ export const studentNavItems: PortalNavItem[] = [
   { label: "Test Series - Prelims", href: `${STUDENT_BASE}/test-series-prelims` },
   { label: "Answer Writing  - Mains", href: `${STUDENT_BASE}/answer-writing-mains` },
   { label: "Free Resources", href: `${STUDENT_BASE}/free-resources` },
-<<<<<<< HEAD
-    { label: "My Bookmarks", href: `${STUDENT_BASE}/bookmarks` },
-=======
-  { label: "My BookMarks", href: `${STUDENT_BASE}/bookmarks` },
->>>>>>> updates
+  { label: "My Bookmarks", href: `${STUDENT_BASE}/bookmarks` },
   { label: "Attendance", href: `${STUDENT_BASE}/attendance` },
   { label: "My Profile", href: `${STUDENT_BASE}/profile` },
   { label: "Important Contacts", href: `${STUDENT_BASE}/important-contacts` },

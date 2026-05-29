@@ -35,7 +35,7 @@ const NotFoundPage: React.FC = () => {
             <h1 
               className="text-8xl md:text-[150px] font-black tracking-tighter leading-none text-transparent bg-clip-text drop-shadow-sm"
               style={{
-                backgroundImage: 'linear-gradient(90deg, rgba(225, 97, 101, 0.8) 0%, #20A0E0 100%)'
+                backgroundImage: 'linear-gradient(90deg, #20A0E0 0%, rgba(225, 97, 101, 0.8) 100%)'
               }}
             >
               {errorCode}

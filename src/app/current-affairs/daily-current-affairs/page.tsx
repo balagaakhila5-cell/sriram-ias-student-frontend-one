@@ -9,6 +9,7 @@ import { useMemo, useState } from "react";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 import { listCurrentAffairsDocuments } from "@/features/resources/catalog/currentAffairs";
 import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
+import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
@@ -243,10 +244,12 @@ export default function DailyCurrentAffairsPage() {
                   />
                 </div>
 
-                <div className="animate-cards-container grid grid-cols-1 gap-5 md:grid-cols-2">
-                  {documents.map((item) => (
-                    <ResourceDocumentCard key={item.id} item={item} />
-                  ))}
+                <div className="animate-cards-container">
+                  <ResourceCardGrid>
+                    {documents.map((item) => (
+                      <ResourceDocumentCard key={item.id} item={item} />
+                    ))}
+                  </ResourceCardGrid>
                 </div>
               </div>
 

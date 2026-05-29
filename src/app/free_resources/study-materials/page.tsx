@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { listFreeResourceDocuments } from "@/features/resources/catalog/freeResources";
-import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
+import StudyMaterialsGrid from "@/features/resources/components/StudyMaterialsGrid";
 import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -64,7 +64,12 @@ export default function StudyMaterialsPage() {
   );
 
   const catalogItems = useMemo(
-    () => mapApiFilesToCatalog(files, "study-materials", fallback, 6),
+    () =>
+      mapApiFilesToCatalog(files, "study-materials", fallback, 6).map((item) => ({
+        ...item,
+        hideImage: true,
+        image: "",
+      })),
     [files, fallback],
   );
 
@@ -193,20 +198,16 @@ export default function StudyMaterialsPage() {
                   })}
                 </div>
 
-                <div className="animate-cards-container grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div className="animate-cards-container">
                   {isFetching && (
-                    <p className="col-span-full text-center text-[16px] text-[#555]">
+                    <p className="mb-4 text-center text-[16px] text-[#555]">
                       Loading...
                     </p>
                   )}
-                  {!isFetching && catalogItems.length === 0 && (
-                    <p className="col-span-full text-center text-[16px] text-[#555]">
-                      No study material available for {activeTab}.
-                    </p>
-                  )}
-                  {catalogItems.map((item) => (
-                    <ResourceDocumentCard key={item.id} item={item} />
-                  ))}
+                  <StudyMaterialsGrid
+                    items={catalogItems}
+                    emptyMessage={`No study material available for ${activeTab}.`}
+                  />
                 </div>
               </div>
 

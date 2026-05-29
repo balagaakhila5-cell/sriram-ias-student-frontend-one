@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import SubNavToggle from "@/features/studentPortal/components/SubNavToggle";
 import MockTestCard from "@/features/resources/components/MockTestCard";
+import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 import { listDemoMockTestCards } from "@/features/resources/catalog/demoMockTests";
 import {
   findCategoryByKey,
@@ -54,11 +55,11 @@ export default function MockTestsPanel() {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+      <ResourceCardGrid>
         {displayTests.map((test) => (
-          <MockTestCard key={test._id} test={test} />
+          <MockTestCard key={test._id} test={test} variant="portal" />
         ))}
-      </div>
+      </ResourceCardGrid>
     </div>
   );
 }

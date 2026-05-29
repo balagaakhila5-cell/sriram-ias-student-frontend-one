@@ -2,7 +2,9 @@
 
 import { useMemo } from "react";
 import { listFreeResourceDocuments } from "@/features/resources/catalog/freeResources";
+import { RESOURCE_ASSETS } from "@/features/resources/catalog/assets";
 import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
+import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 import {
   findCategoryByKey,
@@ -30,7 +32,11 @@ export default function PreviousYearPanel() {
   );
 
   const items: CatalogDocument[] = useMemo(
-    () => mapApiFilesToCatalog(files, "previous-year", fallback, 6),
+    () =>
+      mapApiFilesToCatalog(files, "previous-year", fallback, 6).map((item) => ({
+        ...item,
+        image: RESOURCE_ASSETS.PDF_ICON,
+      })),
     [files, fallback],
   );
 
@@ -41,11 +47,16 @@ export default function PreviousYearPanel() {
           Updating results…
         </p>
       ) : null}
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+      <ResourceCardGrid>
         {items.map((item) => (
-          <ResourceDocumentCard key={item.id} item={item} variant="portal" />
+          <ResourceDocumentCard
+            key={item.id}
+            item={item}
+            variant="portal"
+            singleRowActions
+          />
         ))}
-      </div>
+      </ResourceCardGrid>
     </div>
   );
 }

@@ -2,7 +2,6 @@
 
 import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import gsap from "gsap";
@@ -15,12 +14,11 @@ import Courses from "@/components/common/Courses";
 import CustomDropdown from "@/components/common/CustomDropdown";
 import FloatingActions from "@/components/common/FloatingActions";
 
+import { RESOURCE_ASSETS } from "@/features/resources/catalog/assets";
 import { listFreeResourceDocuments } from "@/features/resources/catalog/freeResources";
-import {
-  resourceDownloadPath,
-  resourceViewPath,
-} from "@/features/resources/catalog/routes";
 import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
+import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
+import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 import {
   findCategoryByKey,
   findSubCategoryByName,
@@ -133,8 +131,13 @@ export default function PreviousYearPage() {
 
   const catalogItems = useMemo(() => {
     const fallback = listFreeResourceDocuments("previous-year");
-    if (!showResults) return fallback.slice(0, 6);
-    return mapApiFilesToCatalog(files, "previous-year", fallback, 6);
+    const items = !showResults
+      ? fallback.slice(0, 6)
+      : mapApiFilesToCatalog(files, "previous-year", fallback, 6);
+    return items.map((item) => ({
+      ...item,
+      image: RESOURCE_ASSETS.PDF_ICON,
+    }));
   }, [files, showResults]);
 
   useGSAP(
@@ -326,7 +329,7 @@ export default function PreviousYearPage() {
                 <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_380px]">
                   <div>
                     <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
-                      <span className="bg-[linear-gradient(90deg,#D57E89_0%,#9A8FB6_42%,#3E9CDB_100%)] bg-clip-text text-transparent">
+                      <span className="bg-[linear-gradient(90deg,#3E9CDB_0%,#9A8FB6_42%,#D57E89_100%)] bg-clip-text text-transparent">
                         {activeSection} QUESTION PAPERS
                       </span>
                     </h1>
@@ -359,52 +362,23 @@ export default function PreviousYearPage() {
                     </div>
 
                     {showResults && (
-                      <div className="animate-cards-container grid grid-cols-1 gap-5 md:grid-cols-2">
+                      <div className="animate-cards-container">
                         {isFetching && (
-                          <p className="col-span-full text-center text-[16px] text-[#555]">
+                          <p className="mb-4 text-center text-[16px] text-[#555]">
                             Loading...
                           </p>
                         )}
-                       {!isFetching &&
-                         catalogItems.map((item) => (
-                          <div
-                            key={item.id}
-                            className="animate-card group origin-bottom-left rounded-[18px] bg-[#FAF8F3] px-5 py-4 shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:bg-[#FEF2E5] hover:shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
-                          >
-                            <div className="flex items-center gap-4">
-                              <div className="flex h-[82px] w-[82px] shrink-0 items-center justify-center transition-all duration-300 group-hover:scale-110">
-                                <Image
-                                  src={item.image}
-                                  alt="PDF"
-                                  width={82}
-                                  height={82}
-                                  className="h-auto w-full object-contain"
-                                />
-                              </div>
-                              <div className="flex-1 transition-all duration-300 group-hover:translate-x-1">
-                                <h3 className="text-[18px] font-bold leading-[1.3] text-[#161616]">
-                                  {item.title}
-                                </h3>
-                                <div className="mt-4 flex flex-wrap gap-3">
-                                  <Link
-                                    href={resourceViewPath(item)}
-                                    className="inline-flex min-w-[88px] items-center justify-center rounded-[10px] border border-[#58b7ea] bg-white px-5 py-2 text-[15px] font-bold text-[#2a9cda] transition-all duration-300 hover:bg-[linear-gradient(90deg,#2aa7df_0%,#03283b_100%)] hover:text-white"
-                                  >
-                                    Read
-                                  </Link>
-                                  <a
-                                    href={resourceDownloadPath(item)}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex min-w-[140px] items-center justify-center rounded-[10px] border border-[#58b7ea] bg-white px-5 py-2 text-[15px] font-bold text-[#2a9cda] transition-all duration-300 hover:bg-[linear-gradient(90deg,#2aa7df_0%,#03283b_100%)] hover:text-white"
-                                  >
-                                    Download PDF
-                                  </a>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
+                        {!isFetching && (
+                          <ResourceCardGrid>
+                            {catalogItems.map((item) => (
+                              <ResourceDocumentCard
+                                key={item.id}
+                                item={item}
+                                singleRowActions
+                              />
+                            ))}
+                          </ResourceCardGrid>
+                        )}
                       </div>
                     )}
                   </div>

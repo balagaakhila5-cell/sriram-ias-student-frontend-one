@@ -79,7 +79,7 @@
     line-height: 100%;
     text-transform: uppercase;
 
-    background: linear-gradient(90deg, #E16165 0%, #20A0E0 100%);
+    background: linear-gradient(90deg, #20A0E0 0%, rgba(225, 97, 101, 0.8) 100%);
 
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

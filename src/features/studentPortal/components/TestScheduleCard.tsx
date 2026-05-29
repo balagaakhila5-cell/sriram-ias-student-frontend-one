@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-import { Calendar, ClipboardCheck } from "lucide-react";
-import Image from "next/image";
-=======
 import { Calendar } from "lucide-react";
->>>>>>> updates
 
 interface TestScheduleCardProps {
   title: string;
@@ -15,35 +10,11 @@ export default function TestScheduleCard({
   dateLabel,
 }: TestScheduleCardProps) {
   return (
-<<<<<<< HEAD
-    <article className="flex items-center gap-4 rounded-[14px] bg-[#FAF8F3] p-4 shadow-[0_4px_14px_rgba(0,0,0,0.04)]">
-
-      {/* IMAGE CONTAINER */}
-      <div className="relative h-[108px] w-[108px] shrink-0 overflow-hidden rounded-[14px]">
-
-        {/* Background image */}
-        <Image
-          src="/assets/student/test-image.png"
-          alt="Test"
-          fill
-          className="object-cover"
-        />
-
-        {/* Optional icon overlay */}
-       
-
-      </div>
-
-      {/* TEXT CONTENT */}
-=======
     <article className="flex items-center gap-4 rounded-[14px] bg-[#FAF8F3] p-4 shadow-[0_4px_14px_rgba(0,0,0,0.04)] transition-all duration-300 hover:translate-x-2 hover:bg-[#F2F8FC] hover:shadow-[0_8px_24px_rgba(31,122,184,0.12)]">
-      
-      {/* Image Section */}
       <div
         className="flex h-[108px] w-[108px] shrink-0 items-center justify-center rounded-[14px]"
         style={{
-          background:
-            "linear-gradient(135deg, #DCEEF7 0%, #B5DAEE 100%)",
+          background: "linear-gradient(135deg, #DCEEF7 0%, #B5DAEE 100%)",
         }}
       >
         <img
@@ -53,8 +24,6 @@ export default function TestScheduleCard({
         />
       </div>
 
-      {/* Content */}
->>>>>>> updates
       <div className="min-w-0 flex-1">
         <h4
           className="text-[15px] font-semibold leading-snug text-black"
@@ -63,16 +32,11 @@ export default function TestScheduleCard({
           {title}
         </h4>
 
-<<<<<<< HEAD
-        <div className="mt-3 flex items-center gap-2 text-[14px] font-semibold text-black/50">
-=======
         <div className="mt-3 flex items-center gap-2 text-[14px] font-semibold text-[#00000080]">
->>>>>>> updates
           <Calendar size={14} />
           {dateLabel}
         </div>
       </div>
-
     </article>
   );
 }

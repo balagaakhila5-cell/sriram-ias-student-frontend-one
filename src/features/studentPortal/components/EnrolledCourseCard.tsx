@@ -24,21 +24,12 @@ export default function EnrolledCourseCard({
       className="block w-[330px] overflow-hidden rounded-[18px] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.07)] transition-transform hover:-translate-y-0.5"
     >
       <div className="relative">
-<<<<<<< HEAD
-       <div
-  className="h-[210px] w-full bg-cover bg-center"
-  style={{
-    backgroundImage: "url('/assets/student/course-card.png')",
-  }}
-/>
-=======
         <div
           className="h-[210px] w-full bg-cover bg-center"
           style={{
-            backgroundImage: "url('/assets/student/Course-card-hero.png')",
+            backgroundImage: "url('/assets/student/course-card.png')",
           }}
         />
->>>>>>> updates
         <span
           className="absolute right-3 top-3 inline-flex items-center rounded-full bg-[#1FA546] px-3 py-1 text-[12px] font-semibold text-white"
           style={{ fontFamily: "Montserrat, sans-serif" }}

@@ -9,12 +9,10 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 
-import {
-  FileText,
-  ClipboardList,
-  ChevronRight,
-  Trophy,
-} from "lucide-react";
+import { FileText, ClipboardList, Trophy } from "lucide-react";
+import { listPracticeTests } from "@/features/resources/catalog/currentAffairs";
+import PracticeTestCard from "@/features/resources/components/PracticeTestCard";
+import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
@@ -101,30 +99,6 @@ const TopPerformance = () => {
 
 type ExamType = "prelims" | "mains";
 
-type PracticeCard = {
-  id: number;
-  title: string;
-  type: ExamType;
-  image: string;
-  link: string;
-};
-
-const prelimsCards: PracticeCard[] = Array.from({ length: 10 }, (_, i) => ({
-  id: i + 1,
-  title: `Prelims practice test ${i + 1} - April 2026`,
-  type: "prelims",
-  image: "/assets/current-affairs/daily-practice-questions/prelims-practice-test.png",
-  link: `/current-affairs/daily-practice-questions/prelims-test-${i + 1}`,
-}));
-
-const mainsCards: PracticeCard[] = Array.from({ length: 10 }, (_, i) => ({
-  id: i + 1,
-  title: `Mains practice test ${i + 1} - April 2026`,
-  type: "mains",
-  image: "/assets/current-affairs/daily-practice-questions/prelims-practice-test.png",
-  link: `/current-affairs/daily-practice-questions/mains-test-${i + 1}`,
-}));
-
 export default function DailyPracticeQuestionsPage() {
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -134,9 +108,10 @@ export default function DailyPracticeQuestionsPage() {
   const [selectedMonth, setSelectedMonth] = useState<string>("April");
   const [selectedDate, setSelectedDate] = useState<string>("Day");
 
-  const cards = useMemo(() => {
-    return activeTab === "prelims" ? prelimsCards : mainsCards;
-  }, [activeTab]);
+  const practiceTests = useMemo(
+    () => listPracticeTests(selectedYear, selectedMonth, activeTab),
+    [selectedYear, selectedMonth, activeTab],
+  );
 
   useGSAP(
     () => {
@@ -287,35 +262,12 @@ export default function DailyPracticeQuestionsPage() {
                 </div>
 
                 {/* Cards Grid */}
-                <div className="cards-grid grid grid-cols-1 gap-5 md:grid-cols-2">
-                  {cards.map((card) => (
-                    <Link
-                      key={`${card.type}-${card.id}`}
-                      href={card.link}
-                      className="animate-card group flex min-h-[128px] items-center gap-4 rounded-[18px] border border-[#ECECEC] bg-[#F8F6F2] px-5 py-5 shadow-[0_8px_24px_rgba(0,0,0,0.06)] origin-bottom-left transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:bg-[#FEF2E5] hover:shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
-                    >
-                      <div className="flex h-[88px] w-[88px] shrink-0 items-center justify-center overflow-hidden ">
-                        <img
-                          src={card.image}
-                          alt={card.title}
-                          className="h-full w-full object-contain p-2 transition-transform duration-300 group-hover:scale-110"
-                        />
-                      </div>
-
-                      <div className="flex min-w-0 flex-1 flex-col justify-center">
-                        <h3 className="line-clamp-2 text-[18px] font-semibold leading-[1.4] text-[#111111] md:text-[19px]">
-                          {card.title}
-                        </h3>
-
-                        <div className="mt-4">
-                          <span className="inline-flex h-[40px] items-center rounded-[10px] border border-[#47B1F0] bg-white px-4 text-[16px] font-semibold text-[#3AA8EC] transition-all duration-300 group-hover:border-transparent group-hover:bg-gradient-to-r group-hover:from-[#50C0FF] group-hover:to-[#0A587E] group-hover:text-white">
-                            Attempt Test
-                            <ChevronRight className="ml-1 h-4 w-4" />
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
+                <div className="cards-grid">
+                  <ResourceCardGrid>
+                    {practiceTests.map((card) => (
+                      <PracticeTestCard key={card.id} test={card} variant="public" />
+                    ))}
+                  </ResourceCardGrid>
                 </div>
               </div>
 

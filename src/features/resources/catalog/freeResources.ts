@@ -16,8 +16,17 @@ function freeDoc(
   subtopic: FreeResourcesSubtopicId,
   index: number,
   title: string,
-  options?: { hasSample?: boolean },
+  options?: { hasSample?: boolean; hideImage?: boolean; image?: string },
 ): CatalogDocument {
+  const hideImage = options?.hideImage ?? subtopic === "ncert-books";
+  const image =
+    options?.image ??
+    (hideImage
+      ? ""
+      : subtopic === "previous-year"
+        ? RESOURCE_ASSETS.PDF_ICON
+        : pdfThumbnailSrc());
+
   return {
     id: `free-${subtopic}-${index + 1}`,
     module: "free-resources",
@@ -25,9 +34,10 @@ function freeDoc(
     year: "2026",
     month: MONTHS[index % MONTHS.length],
     title,
-    image: pdfThumbnailSrc(),
+    image,
     pdfUrl: RESOURCE_ASSETS.DEFAULT_PDF,
     hasSample: options?.hasSample ?? subtopic === "study-materials",
+    hideImage,
   };
 }
 

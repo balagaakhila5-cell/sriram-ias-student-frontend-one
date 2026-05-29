@@ -141,7 +141,7 @@ const BooksGrid: React.FC<BooksGridProps> = ({ books }) => {
           <div className="relative w-full max-w-[860px] rounded-[20px] bg-[#F5F5F5] shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
             <div className="px-8 pt-6 pb-4 relative">
               <h2 className="text-[34px] md:text-[42px] font-extrabold uppercase leading-none tracking-[0.5px]">
-                <span className="bg-[linear-gradient(90deg,#C88EA0_0%,#6AA9D8_100%)] bg-clip-text text-transparent">
+                <span className="bg-[linear-gradient(90deg,#6AA9D8_0%,#C88EA0_100%)] bg-clip-text text-transparent">
                   {popupType === 'sample' ? 'SAMPLE' : 'SAMPLE'}
                 </span>
               </h2>

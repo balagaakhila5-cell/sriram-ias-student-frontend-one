@@ -29,6 +29,12 @@ const MONTHS = [
 export const PORTAL_FILTER_YEARS = ["2026", "2025", "2024", "2023"] as const;
 export const PORTAL_FILTER_MONTHS = [...MONTHS];
 
+const PDF_ICON_SUBTOPICS = new Set<CurrentAffairsSubtopicId>([
+  "daily-current-affairs",
+  "infographics",
+  "monthly-recap",
+]);
+
 function doc(
   subtopic: CurrentAffairsSubtopicId,
   index: number,
@@ -37,6 +43,9 @@ function doc(
 ): CatalogDocument {
   const year = options?.year ?? PORTAL_FILTER_YEARS[index % PORTAL_FILTER_YEARS.length];
   const month = options?.month ?? MONTHS[index % MONTHS.length];
+  const defaultImage = PDF_ICON_SUBTOPICS.has(subtopic)
+    ? RESOURCE_ASSETS.PDF_ICON
+    : RESOURCE_ASSETS.PDF_FALLBACK;
 
   return {
     id: `${subtopic}-${index + 1}`,
@@ -45,7 +54,7 @@ function doc(
     year,
     month,
     title,
-    image: options?.image ?? RESOURCE_ASSETS.PDF_FALLBACK,
+    image: options?.image ?? defaultImage,
     pdfUrl: RESOURCE_ASSETS.DEFAULT_PDF,
     hasSample: options?.hasSample,
   };

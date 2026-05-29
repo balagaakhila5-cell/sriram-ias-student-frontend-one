@@ -138,11 +138,11 @@ const AboutPage = () => {
 
           {/* RIGHT IMAGE NETWORK */}
           <div className="about-circle-network relative mx-auto mt-8 h-[560px] w-full max-w-[360px] shrink-0 overflow-visible sm:h-[650px] sm:max-w-[520px] md:h-[760px] md:max-w-[650px] lg:mt-[170px] lg:h-[840px] lg:w-[650px] lg:max-w-none">
-            <div className="about-line about-line-left absolute left-[50%] top-[135px] hidden h-[260px] w-[4px] origin-top rotate-[34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB] sm:block lg:left-[258px] lg:top-[198px] lg:h-[330px] lg:w-[5px]" />
+            <div className="about-line about-line-left absolute left-[50%] top-[135px] hidden h-[260px] w-[4px] origin-top rotate-[34deg] rounded-full bg-gradient-to-b from-[#2D9CDB] via-[#8C87B7] to-[#D86D7B] sm:block lg:left-[258px] lg:top-[198px] lg:h-[330px] lg:w-[5px]" />
 
-            <div className="about-line about-line-right absolute left-[50%] top-[135px] hidden h-[260px] w-[4px] origin-top rotate-[-34deg] rounded-full bg-gradient-to-b from-[#D86D7B] via-[#8C87B7] to-[#2D9CDB] sm:block lg:left-[258px] lg:top-[198px] lg:h-[330px] lg:w-[5px]" />
+            <div className="about-line about-line-right absolute left-[50%] top-[135px] hidden h-[260px] w-[4px] origin-top rotate-[-34deg] rounded-full bg-gradient-to-b from-[#2D9CDB] via-[#8C87B7] to-[#D86D7B] sm:block lg:left-[258px] lg:top-[198px] lg:h-[330px] lg:w-[5px]" />
 
-            <div className="about-line about-line-middle absolute left-[50%] top-[380px] z-[5] hidden h-[4px] w-[72px] rounded-full bg-gradient-to-r from-[#2D9CDB] via-[#B95D63] to-[#2D9CDB] sm:block lg:left-[260px] lg:top-[500px] lg:h-[5px] lg:w-[95px]" />
+            <div className="about-line about-line-middle absolute left-[50%] top-[380px] z-[5] hidden h-[4px] w-[72px] rounded-full bg-gradient-to-r from-[#2D9CDB] via-[#8C87B7] to-[#D86D7B] sm:block lg:left-[260px] lg:top-[500px] lg:h-[5px] lg:w-[95px]" />
 
             {circleImages.map((item, index) => {
               const positionIndex =

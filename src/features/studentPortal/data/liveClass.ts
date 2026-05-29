@@ -10,17 +10,10 @@ export interface LiveSession {
 }
 
 export interface UpcomingSession {
-<<<<<<< HEAD
   id: number;
   topic: string;
   timeLabel: string;
   date: string;
-=======
-    id: number;
-  topic: string;
-  timeLabel: string;
-   date: string;
->>>>>>> updates
 }
 
 export const nextClass: LiveSession = {

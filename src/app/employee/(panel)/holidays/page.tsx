@@ -14,7 +14,7 @@ export default function EmployeeHolidaysPage() {
           }
           label="Causal Leaves"
           remaining={`${leaveBalance.casualLeavesLeft} Days Left`}
-          color="#E16165"
+          color="#20A0E0"
         />
         <LeaveCard
           icon={

@@ -16,6 +16,7 @@ import CustomDropdown from "@/components/common/CustomDropdown";
 import FloatingActions from "@/components/common/FloatingActions";
 
 import MockTestCard from "@/features/resources/components/MockTestCard";
+import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 import { listDemoMockTestCards } from "@/features/resources/catalog/demoMockTests";
 import {
   findCategoryByKey,
@@ -216,20 +217,24 @@ export default function FreeMockTestsPage() {
                 </div>
 
                 {showResults && (
-                  <div className="animate-cards-container grid grid-cols-1 gap-5 md:grid-cols-2">
+                  <div className="animate-cards-container">
                     {isFetching && (
-                      <p className="col-span-full text-center text-[16px] text-[#555]">
+                      <p className="mb-4 text-center text-[16px] text-[#555]">
                         Loading...
                       </p>
                     )}
                     {!isFetching && displayTests.length === 0 && (
-                      <p className="col-span-full text-center text-[16px] text-[#555]">
+                      <p className="mb-4 text-center text-[16px] text-[#555]">
                         No mock tests available.
                       </p>
                     )}
-                    {displayTests.map((test) => (
-                      <MockTestCard key={test._id} test={test} />
-                    ))}
+                    {!isFetching && displayTests.length > 0 && (
+                      <ResourceCardGrid>
+                        {displayTests.map((test) => (
+                          <MockTestCard key={test._id} test={test} variant="public" />
+                        ))}
+                      </ResourceCardGrid>
+                    )}
                   </div>
                 )}
               </div>

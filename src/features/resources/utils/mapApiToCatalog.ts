@@ -13,13 +13,21 @@ export function mapApiFilesToCatalog(
     files.length > 0
       ? files.slice(0, limit).map((file, index) => {
           const base = fallback[index % fallback.length];
+          const image = base.hideImage
+            ? ""
+            : base.image ||
+              (subtopic === "previous-year"
+                ? RESOURCE_ASSETS.PDF_ICON
+                : RESOURCE_ASSETS.PDF_THUMBNAIL);
+
           return {
             ...base,
             id: file._id,
             subtopic,
             title: file.title,
             pdfUrl: file.fileUrl || base.pdfUrl || RESOURCE_ASSETS.DEFAULT_PDF,
-            image: base.image || RESOURCE_ASSETS.PDF_THUMBNAIL,
+            image,
+            hideImage: base.hideImage,
           };
         })
       : fallback.slice(0, limit);

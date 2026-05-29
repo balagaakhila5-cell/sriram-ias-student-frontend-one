@@ -26,6 +26,8 @@ export interface CatalogDocument {
   pdfUrl: string;
   description?: string;
   hasSample?: boolean;
+  /** Text-only cards (e.g. NCERT) — no thumbnail in the UI */
+  hideImage?: boolean;
 }
 
 export interface CatalogPracticeTest {

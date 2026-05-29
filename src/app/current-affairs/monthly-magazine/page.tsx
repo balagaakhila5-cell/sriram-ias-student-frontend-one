@@ -10,6 +10,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 import { listCurrentAffairsDocuments } from "@/features/resources/catalog/currentAffairs";
 import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
+import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
@@ -225,10 +226,12 @@ export default function MonthlyMagazinePage() {
                 </div>
 
                 {/* Cards */}
-                <div className="cards-grid grid grid-cols-1 gap-5 md:grid-cols-2">
-                  {documents.map((item) => (
-                    <ResourceDocumentCard key={item.id} item={item} />
-                  ))}
+                <div className="cards-grid">
+                  <ResourceCardGrid>
+                    {documents.map((item) => (
+                      <ResourceDocumentCard key={item.id} item={item} />
+                    ))}
+                  </ResourceCardGrid>
                 </div>
               </div>
 

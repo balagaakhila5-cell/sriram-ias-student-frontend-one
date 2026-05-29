@@ -69,7 +69,7 @@ const AnimatedGeometricBackground: React.FC = () => {
     <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 bg-[#f8fafc]">
       
       {/* Static brand-color gradient layer instead of animated mix-blend */}
-      <div className="absolute inset-0 opacity-[0.05] bg-gradient-to-br from-[#E16165] to-[#20A0E0]" />
+      <div className="absolute inset-0 opacity-[0.05] bg-gradient-to-br from-[#20A0E0] to-[#E16165]" />
 
       {/* Crisp intersecting geometric planes forming visible lines */}
       <CrispGeometricPlane 
@@ -97,7 +97,7 @@ const AnimatedGeometricBackground: React.FC = () => {
       />
       
       <CrispGeometricPlane 
-        className="top-[10%] left-[10%] w-[150%] h-[250px] bg-gradient-to-b from-[#E16165]/10 to-[#E16165]/5 border-y-[#E16165]/30 -rotate-[20deg]"
+        className="top-[10%] left-[10%] w-[150%] h-[250px] bg-gradient-to-b from-[#20A0E0]/10 to-[#E16165]/5 border-y-[#20A0E0]/30 -rotate-[20deg]"
         fromVals={{ y: -50, opacity: 0.4 }}
         toVals={{ y: 50, opacity: 0.9 }}
         duration={16} delay={4}

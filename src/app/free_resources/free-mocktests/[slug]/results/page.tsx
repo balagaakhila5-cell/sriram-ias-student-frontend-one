@@ -129,7 +129,7 @@ export default function ResultsPage({ params }: PageProps) {
         <div className="mx-auto max-w-[1050px]">
           <div className="mb-6 flex items-center justify-center relative">
             <h1 className="text-center text-[24px] font-black uppercase md:text-[28px]">
-              <span className="bg-gradient-to-r from-[#E16165] to-[#20A0E0] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#20A0E0] to-[#E16165] bg-clip-text text-transparent">
                 OVER ALL RESULTS
               </span>
             </h1>

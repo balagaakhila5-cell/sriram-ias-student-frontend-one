@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { listFreeResourceDocuments } from "@/features/resources/catalog/freeResources";
-import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
+import StudyMaterialsGrid from "@/features/resources/components/StudyMaterialsGrid";
 import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 import SubNavToggle from "@/features/studentPortal/components/SubNavToggle";
 import {
@@ -65,7 +65,7 @@ export default function StudyMaterialsPanel() {
   const items: CatalogDocument[] = useMemo(
     () =>
       mapApiFilesToCatalog(files, "study-materials", catalogFallback, 6).map(
-        (item) => ({ ...item, hasSample: true }),
+        (item) => ({ ...item, hideImage: true, image: "" }),
       ),
     [files, catalogFallback],
   );
@@ -86,11 +86,7 @@ export default function StudyMaterialsPanel() {
             Updating results…
           </p>
         ) : null}
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-          {items.map((item) => (
-            <ResourceDocumentCard key={item.id} item={item} variant="portal" />
-          ))}
-        </div>
+        <StudyMaterialsGrid items={items} variant="portal" />
       </div>
     </div>
   );

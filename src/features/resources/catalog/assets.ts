@@ -1,9 +1,8 @@
 /** Shared asset paths for resource cards */
 export const RESOURCE_ASSETS = {
-  /** Use assets that exist under public/ to avoid dev-server 404 storms */
-  PDF_THUMBNAIL: "/assets/free-resources/free-mocktests/mocktest-card-image.png",
-  PDF_ICON: "/assets/free-resources/free-mocktests/mocktest-card-image.png",
-  PDF_FALLBACK: "/assets/Search-Icon.svg",
+  PDF_ICON: "/assets/current-affairs/daily-current-affairs/pdf-icon.png",
+  PDF_THUMBNAIL: "/assets/current-affairs/daily-current-affairs/pdf-icon.png",
+  PDF_FALLBACK: "/assets/current-affairs/daily-current-affairs/pdf-icon.png",
   MOCK_TEST_CARD: "/assets/free-resources/free-mocktests/mocktest-card-image.png",
   MAGAZINE: "/assets/current-affairs/monthly-magazine/magazine.png",
   PRACTICE_TEST:
@@ -12,5 +11,5 @@ export const RESOURCE_ASSETS = {
 } as const;
 
 export function pdfThumbnailSrc(): string {
-  return RESOURCE_ASSETS.PDF_THUMBNAIL;
+  return RESOURCE_ASSETS.PDF_ICON;
 }

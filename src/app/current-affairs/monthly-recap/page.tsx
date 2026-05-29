@@ -136,7 +136,7 @@
 //               {/* Left */}
 //               <div>
 //                 <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
-//                   <span className="bg-gradient-to-r from-[#D97D8D] via-[#8B7AC9] to-[#2C9FE8] bg-clip-text text-transparent">
+//                   <span className="bg-gradient-to-r from-[#2C9FE8] via-[#8B7AC9] to-[#D97D8D] bg-clip-text text-transparent">
 //                     Monthly Recap
 //                   </span>
 //                 </h1>
@@ -233,6 +233,7 @@ import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 import { useMemo, useState } from "react";
 import { listCurrentAffairsDocuments } from "@/features/resources/catalog/currentAffairs";
 import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
+import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import FloatingActions from "@/components/common/FloatingActions";
@@ -386,10 +387,12 @@ export default function MonthlyRecapPage() {
                 </div>
 
                 {/* 10 cards */}
-                <div className="cards-grid grid grid-cols-1 gap-5 md:grid-cols-2">
-                  {documents.map((item) => (
-                    <ResourceDocumentCard key={item.id} item={item} />
-                  ))}
+                <div className="cards-grid">
+                  <ResourceCardGrid>
+                    {documents.map((item) => (
+                      <ResourceDocumentCard key={item.id} item={item} />
+                    ))}
+                  </ResourceCardGrid>
                 </div>
               </div>
 

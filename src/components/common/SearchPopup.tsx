@@ -66,7 +66,7 @@ export default function SearchPopup({ isOpen, onClose }: SearchPopupProps) {
           {/* Left */}
           <div>
             <h2 className="mb-8 font-['Montserrat'] text-[32px] font-[900] uppercase leading-none">
-              <span className="bg-[linear-gradient(90deg,rgba(225,97,101,0.8)_0%,#20A0E0_100%)] bg-clip-text text-transparent">
+              <span className="bg-[linear-gradient(90deg,#20A0E0_0%,rgba(225,97,101,0.8)_100%)] bg-clip-text text-transparent">
                 Trending Courses
               </span>
             </h2>

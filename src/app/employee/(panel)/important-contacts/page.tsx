@@ -12,7 +12,7 @@ export default function EmployeeImportantContactsPage() {
         actionHref="tel:9898989898"
         actionIcon={<Phone size={18} />}
         bg="linear-gradient(135deg, #FCE7D0 0%, #F8D4B5 100%)"
-        titleColor="#E16165"
+        titleColor="#20A0E0"
         illustration={
           <span className="flex h-[200px] w-[200px] items-center justify-center ">
             <Image
@@ -32,7 +32,7 @@ export default function EmployeeImportantContactsPage() {
         actionHref="mailto:sriramias@gmail.com"
         actionIcon={<Mail size={18} />}
         bg="linear-gradient(135deg, #DDEAF7 0%, #BFD7EE 100%)"
-        titleColor="#E16165"
+        titleColor="#20A0E0"
         illustration={
           <span className="absolute right-[-35]  flex h-[200px] w-[200px] -translate-y-1/2 items-center justify-center ">
             <Image

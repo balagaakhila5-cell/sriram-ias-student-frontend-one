@@ -14,6 +14,8 @@ import {
   useResourceFilters,
   useResourceSubCategories,
 } from '@/features/resources/hooks/useResources';
+import PyqPaperCard from '@/features/resources/components/PyqPaperCard';
+import ResourceCardGrid from '@/features/resources/components/ResourceCardGrid';
 
 function CustomDropdown({
   placeholder, options, value, onChange,
@@ -150,37 +152,23 @@ export default function PrelimsPaperPage() {
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                  {isFetching && (
-                    <p className="col-span-full text-center text-[16px] text-[#555]">Loading...</p>
-                  )}
-                  {!isFetching && files.length === 0 && (appliedFilters.paperId || appliedFilters.yearId) && (
-                    <p className="col-span-full text-center text-[16px] text-[#555]">No papers found.</p>
-                  )}
-                  {files.map((paper) => (
-                    <div
-                      key={paper._id}
-                      className="rounded-[16px] bg-[#F3EFE8] px-5 py-5 shadow-[0_8px_20px_rgba(0,0,0,0.08)] transition-all duration-300 origin-bottom-left hover:-translate-y-2 hover:scale-[1.02] hover:bg-[#FEF2E5] hover:shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="flex h-[82px] w-[82px] shrink-0 items-center justify-center">
-                          <img
-                            src="/assets/free-resources/previous-year/Pdf-img.png"
-                            alt="PDF"
-                            style={{ width: '82px', height: '82px', objectFit: 'contain', transition: 'transform 0.3s ease' }}
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="text-[18px] font-bold leading-[1.3] text-[#161616]">{paper.title}</h3>
-                          <div className="mt-4 flex flex-wrap gap-3">
-                            <a href={paper.fileUrl ?? '#'} target="_blank" rel="noopener noreferrer" className="rounded-[8px] border border-[#63B8ED] px-5 py-2 font-semibold text-[#56ADE9] transition-all duration-300 hover:bg-linear-to-r hover:from-[#6CC0ED] hover:to-[#2B5872] hover:text-white">View</a>
-                            <a href={paper.fileUrl ?? '#'} download className="rounded-[8px] border border-[#63B8ED] px-5 py-2 font-semibold text-[#56ADE9] transition-all duration-300 hover:bg-linear-to-r hover:from-[#6CC0ED] hover:to-[#2B5872] hover:text-white">Download PDF</a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                {isFetching && (
+                  <p className="mb-4 text-center text-[16px] text-[#555]">Loading...</p>
+                )}
+                {!isFetching && files.length === 0 && (appliedFilters.paperId || appliedFilters.yearId) && (
+                  <p className="mb-4 text-center text-[16px] text-[#555]">No papers found.</p>
+                )}
+                {!isFetching && files.length > 0 && (
+                  <ResourceCardGrid>
+                    {files.map((paper) => (
+                      <PyqPaperCard
+                        key={paper._id}
+                        title={paper.title}
+                        fileUrl={paper.fileUrl}
+                      />
+                    ))}
+                  </ResourceCardGrid>
+                )}
               </div>
 
               <aside className="ml-auto flex w-full max-w-[340px] flex-col items-end gap-6">

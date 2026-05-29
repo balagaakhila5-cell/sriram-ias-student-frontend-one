@@ -85,7 +85,7 @@ export default function CheckAnswersPage({ params }: PageProps) {
         </h2>
 
         <h1 className="text-center text-[34px] font-black leading-none md:text-[54px]">
-          <span className="bg-gradient-to-r from-[#E16165] to-[#20A0E0] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-[#20A0E0] to-[#E16165] bg-clip-text text-transparent">
             Your Answers
           </span>
         </h1>
