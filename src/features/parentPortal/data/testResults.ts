@@ -1,5 +1,12 @@
 import type { TestItem } from "@/features/studentPortal/data/tests";
 
+export interface MainsResultRow {
+  paper: string;
+  attempted: number;
+  unattempted: number;
+  score: number;
+}
+
 export interface TestResultDetail {
   id: string;
   paper: string;
@@ -7,6 +14,7 @@ export interface TestResultDetail {
   incorrect: number;
   blank: number;
   score: number;
+  mainsAttempts: MainsResultRow[];
   currentScore: number;
   previousScore: number;
   maxScore: number;
@@ -42,6 +50,20 @@ export const testResultDetails: Record<string, TestResultDetail> = {
     incorrect: 42,
     blank: 3,
     score: 82.28,
+    mainsAttempts: [
+      {
+        paper: "Answer writing Mains Test 1 - (current)",
+        attempted: 15,
+        unattempted: 5,
+        score: 82.28,
+      },
+      {
+        paper: "Answer writing Mains Test 1 - (previous)",
+        attempted: 15,
+        unattempted: 5,
+        score: 82.28,
+      },
+    ],
     currentScore: 470,
     previousScore: 340,
     maxScore: 720,

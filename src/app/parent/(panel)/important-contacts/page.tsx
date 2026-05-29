@@ -59,7 +59,11 @@ export default function ParentImportantContactsPage() {
     bg="linear-gradient(135deg, #C9DDBA 0%, #A6C68C 100%)"
     titleColor="#FFFFFF"
     illustration={
+<<<<<<< HEAD
       <div className="relative h-[320px] w-[370px] bg-transparent">
+=======
+      <div className="relative h-[320px] w-[350px] bg-transparent">
+>>>>>>> updates
         <Image
           src="/assets/student/parent-phone2.png"
           alt="Parent Phone"

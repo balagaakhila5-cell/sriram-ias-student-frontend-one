@@ -13,6 +13,12 @@ import Footer from "@/components/common/Footer";
 import CustomDropdown from "@/components/common/CustomDropdown";
 import FloatingActions from "@/components/common/FloatingActions";
 
+import { listFreeResourceDocuments } from "@/features/resources/catalog/freeResources";
+import {
+  resourceDownloadPath,
+  resourceViewPath,
+} from "@/features/resources/catalog/routes";
+import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 import {
   useResourceCategories,
   useResourceFiles,
@@ -136,6 +142,12 @@ export default function NcertBooksPage() {
   const showResults =
     "subjectId" in appliedFilters || "classId" in appliedFilters;
 
+  const catalogItems = useMemo(() => {
+    const fallback = listFreeResourceDocuments("ncert-books");
+    if (!showResults) return fallback.slice(0, 6);
+    return mapApiFilesToCatalog(files, "ncert-books", fallback, 6);
+  }, [files, showResults]);
+
   useGSAP(
     () => {
       if (prefersReducedMotion) return;
@@ -246,8 +258,7 @@ export default function NcertBooksPage() {
                   </div>
                 </div>
 
-                {showResults && (
-                  <div className="animate-cards-container grid grid-cols-1 gap-8 overflow-visible md:grid-cols-2">
+                <div className="animate-cards-container grid grid-cols-1 gap-8 overflow-visible md:grid-cols-2">
                     {isFetching && (
                       <p className="col-span-full text-center text-[16px] text-[#555]">
                         Loading...
@@ -255,28 +266,27 @@ export default function NcertBooksPage() {
                     )}
 
                     {!isFetching &&
-                      (files.length > 5 ? files : defaultBooks).map((book) => (
+                      catalogItems.map((item) => (
                         <div
-                          key={book._id}
+                          key={item.id}
                           className="animate-card group relative z-0 origin-left rounded-[18px] bg-[#FAF8F3] px-4 py-6 shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all duration-300 ease-out hover:z-30 hover:translate-x-8 hover:-translate-y-3 hover:scale-[1.12] hover:bg-[#FEF2E5] hover:shadow-[0_24px_55px_rgba(0,0,0,0.20)]"
                         >
                           <h3 className="mb-6 text-center text-[18px] font-bold leading-[100%] text-[#000000] transition-all duration-300 group-hover:text-[20px]">
-                            {book.title}
+                            {item.title}
                           </h3>
 
                           <div className="flex items-center justify-center gap-3 transition-all duration-300 group-hover:translate-x-3">
                             <Link
-                              href={book.fileUrl ?? "#"}
-                              target="_blank"
-                              rel="noopener noreferrer"
+                              href={resourceViewPath(item)}
                               className="inline-flex min-w-[88px] items-center justify-center rounded-[10px] border border-[#58b7ea] bg-white px-5 py-2.5 text-[16px] font-bold text-[#2a9cda] transition-all duration-300 hover:bg-[linear-gradient(90deg,#2aa7df_0%,#03283b_100%)] hover:text-white"
                             >
-                              View
+                              Read
                             </Link>
 
                             <a
-                              href={book.fileUrl ?? "#"}
-                              download
+                              href={resourceDownloadPath(item)}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="inline-flex min-w-[160px] items-center justify-center rounded-[10px] border border-[#58b7ea] bg-white px-5 py-2.5 text-[16px] font-bold text-[#2a9cda] transition-all duration-300 hover:bg-[linear-gradient(90deg,#2aa7df_0%,#03283b_100%)] hover:text-white"
                             >
                               Download PDF
@@ -284,8 +294,7 @@ export default function NcertBooksPage() {
                           </div>
                         </div>
                       ))}
-                  </div>
-                )}
+                </div>
               </div>
 
               <aside className="animate-sidebar sticky top-[120px] mx-auto w-full max-w-[310px] self-start space-y-7 xl:ml-auto xl:mt-[40px]">

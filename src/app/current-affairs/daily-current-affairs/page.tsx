@@ -5,8 +5,10 @@ import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
+import { listCurrentAffairsDocuments } from "@/features/resources/catalog/currentAffairs";
+import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
 
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
@@ -16,79 +18,6 @@ import TrendingVideosCard from "@/components/common/TrendingVideosCard";
 import CustomDropdown from "@/components/common/CustomDropdown";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const dummyResults = [
-  {
-    id: 1,
-    title: "Apr 10 News today from Jammu Kashmir",
-    image: "/assets/current-affairs/pdf-icon.png",
-    viewLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 2,
-    title: "Apr 10 News today from Jammu Kashmir",
-    image: "/assets/current-affairs/pdf-icon.png",
-    viewLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 3,
-    title: "Apr 10 News today from Jammu Kashmir",
-    image: "/assets/current-affairs/pdf-icon.png",
-    viewLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 4,
-    title: "Apr 10 News today from Jammu Kashmir",
-    image: "/assets/current-affairs/pdf-icon.png",
-    viewLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 5,
-    title: "Apr 10 News today from Jammu Kashmir",
-    image: "/assets/current-affairs/pdf-icon.png",
-    viewLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 6,
-    title: "Apr 10 News today from Jammu Kashmir",
-    image: "/assets/current-affairs/pdf-icon.png",
-    viewLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 7,
-    title: "Apr 10 News today from Jammu Kashmir",
-    image: "/assets/current-affairs/pdf-icon.png",
-    viewLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 8,
-    title: "Apr 10 News today from Jammu Kashmir",
-    image: "/assets/current-affairs/pdf-icon.png",
-    viewLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 9,
-    title: "Apr 10 News today from Jammu Kashmir",
-    image: "/assets/current-affairs/pdf-icon.png",
-    viewLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 10,
-    title: "Apr 10 News today from Jammu Kashmir",
-    image: "/assets/current-affairs/pdf-icon.png",
-    viewLink: "#",
-    downloadLink: "#",
-  },
-];
 
 const quickLinks = [
   {
@@ -163,53 +92,6 @@ const quickLinks = [
 
 
 
-function DocumentCard({
-  title,
-  image,
-  viewLink,
-  downloadLink,
-}: {
-  title: string;
-  image: string;
-  viewLink: string;
-  downloadLink: string;
-}) {
-  return (
-    <div className="animate-card group flex min-h-[122px] items-center gap-5 rounded-[14px] bg-[#F5F2EE] px-6 py-4 shadow-[0px_6px_18px_rgba(0,0,0,0.08)] origin-bottom-left transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:bg-[#FEF2E5] hover:shadow-[0_12px_30px_rgba(0,0,0,0.12)]">
-      <div className="relative h-[90px] w-[84px] shrink-0 overflow-hidden rounded-[16px]">
-
-
-        <div className="relative h-[100px] w-[84px] shrink-0 overflow-hidden rounded-[16px] bg-transparent">
-
-          <Image src="/assets/image_89.svg" alt="PDF" fill className="object-contain p-0 group-hover:scale-110" />
-        </div>
-
-      </div>
-
-      <div className="min-w-0 flex-1">
-        <h3 className="mb-4 max-w-[260px] text-[16px] font-semibold leading-[1.45] text-[#111]">
-          {title}
-        </h3>
-
-        <div className="flex flex-wrap gap-3">
-          <a
-            href={viewLink}
-            className="rounded-[8px] border border-[#57B0F2] px-4 py-2 text-[14px] font-semibold text-[#46A7ED] transition-colors hover:bg-[#F2FAFF]"
-          >
-            Read
-          </a>
-          <a
-            href={downloadLink}
-            className="rounded-[8px] border border-[#57B0F2] px-4 py-2 text-[14px] font-semibold text-[#46A7ED] transition-colors hover:bg-[#F2FAFF]"
-          >
-            Download PDF
-          </a>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function QuickLinksCard() {
   return (
     <div className="rounded-[26px] bg-white/95 p-6 shadow-[0px_12px_30px_rgba(0,0,0,0.06)]">
@@ -242,6 +124,16 @@ export default function DailyCurrentAffairsPage() {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [selectedYear, setSelectedYear] = useState<string>("2026");
   const [selectedMonth, setSelectedMonth] = useState<string>("April");
+
+  const documents = useMemo(
+    () =>
+      listCurrentAffairsDocuments(
+        "daily-current-affairs",
+        selectedYear,
+        selectedMonth,
+      ),
+    [selectedYear, selectedMonth],
+  );
 
   useGSAP(
     () => {
@@ -352,14 +244,8 @@ export default function DailyCurrentAffairsPage() {
                 </div>
 
                 <div className="animate-cards-container grid grid-cols-1 gap-5 md:grid-cols-2">
-                  {dummyResults.map((item) => (
-                    <DocumentCard
-                      key={item.id}
-                      title={item.title}
-                      image={item.image}
-                      viewLink={item.viewLink}
-                      downloadLink={item.downloadLink}
-                    />
+                  {documents.map((item) => (
+                    <ResourceDocumentCard key={item.id} item={item} />
                   ))}
                 </div>
               </div>

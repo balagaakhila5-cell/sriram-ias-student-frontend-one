@@ -230,7 +230,9 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { listCurrentAffairsDocuments } from "@/features/resources/catalog/currentAffairs";
+import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import FloatingActions from "@/components/common/FloatingActions";
@@ -260,6 +262,12 @@ export default function MonthlyRecapPage() {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [selectedYear, setSelectedYear] = useState<string>("2026");
   const [selectedMonth, setSelectedMonth] = useState<string>("April");
+
+  const documents = useMemo(
+    () =>
+      listCurrentAffairsDocuments("monthly-recap", selectedYear, selectedMonth),
+    [selectedYear, selectedMonth],
+  );
 
   useGSAP(
     () => {
@@ -379,43 +387,8 @@ export default function MonthlyRecapPage() {
 
                 {/* 10 cards */}
                 <div className="cards-grid grid grid-cols-1 gap-5 md:grid-cols-2">
-                  {recapCards.map((card) => (
-                    <div
-                      key={card.id}
-                      className="animate-card group flex min-h-[122px] items-center gap-5 rounded-[14px] bg-[#F5F2EE] px-6 py-4 shadow-[0px_6px_18px_rgba(0,0,0,0.08)] origin-bottom-left transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:bg-[#FEF2E5] hover:shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
-                    >
-                      {/* Removed bg-[#FF1E00] to match the white background of the new icon */}
-                      <div className="relative h-[84px] w-[84px] shrink-0 overflow-hidden rounded-[16px]">
-                        <Image
-                          src="/assets/image_89.svg" // Replaced adobe.png with image_89.svg
-                          alt="PDF Icon"
-                          fill
-                          className="object-contain transition-transform duration-300 group-hover:scale-110"
-                        />
-                      </div>
-
-                      <div className="min-w-0 flex-1">
-                        <h3 className="mb-4 max-w-[260px] text-[16px] font-semibold leading-[1.45] text-[#111]">
-                          {card.title}
-                        </h3>
-
-                        <div className="flex flex-wrap gap-3">
-                          <Link
-                            href={card.readLink}
-                            className="rounded-[8px] border border-[#57B0F2] px-4 py-2 text-[14px] font-semibold text-[#46A7ED] transition-colors hover:bg-[#F2FAFF]"
-                          >
-                            Read
-                          </Link>
-
-                          <Link
-                            href={card.downloadLink}
-                            className="rounded-[8px] border border-[#57B0F2] px-4 py-2 text-[14px] font-semibold text-[#46A7ED] transition-colors hover:bg-[#F2FAFF]"
-                          >
-                            Download PDF
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
+                  {documents.map((item) => (
+                    <ResourceDocumentCard key={item.id} item={item} />
                   ))}
                 </div>
               </div>

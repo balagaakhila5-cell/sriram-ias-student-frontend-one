@@ -28,7 +28,7 @@ export default function StudentPanelLayout({
         </div>
       </div>
 
-      <Footer />
+      <Footer lightweight />
     </div>
   );
 }

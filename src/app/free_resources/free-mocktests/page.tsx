@@ -15,6 +15,8 @@ import Courses from "@/components/common/Courses";
 import CustomDropdown from "@/components/common/CustomDropdown";
 import FloatingActions from "@/components/common/FloatingActions";
 
+import MockTestCard from "@/features/resources/components/MockTestCard";
+import { listDemoMockTestCards } from "@/features/resources/catalog/demoMockTests";
 import {
   findCategoryByKey,
   findSubCategoryByName,
@@ -33,7 +35,7 @@ export default function FreeMockTestsPage() {
   const [selectedPaper, setSelectedPaper] = useState("");
   const [activeTab, setActiveTab] = useState<"prelims" | "mains">("prelims");
   const [appliedPaperId, setAppliedPaperId] = useState<string | undefined>();
-  const [showResults, setShowResults] = useState(false);
+  const [showResults, setShowResults] = useState(true);
 
   const { data: categories } = useResourceCategories();
   const mockCategory = useMemo(
@@ -70,8 +72,12 @@ export default function FreeMockTestsPage() {
 
   const { data: mockTests = [], isFetching } = useMockTests(
     { categoryId, subCategoryId, paperId: appliedPaperId },
-    showResults && !!categoryId && !!subCategoryId,
+    showResults,
+    activeTab,
   );
+
+  const displayTests =
+    mockTests.length > 0 ? mockTests : listDemoMockTestCards(activeTab);
 
   useGSAP(
     () => {
@@ -216,52 +222,13 @@ export default function FreeMockTestsPage() {
                         Loading...
                       </p>
                     )}
-                    {!isFetching && mockTests.length === 0 && (
+                    {!isFetching && displayTests.length === 0 && (
                       <p className="col-span-full text-center text-[16px] text-[#555]">
                         No mock tests available.
                       </p>
                     )}
-                    {mockTests.map((test) => (
-                      <div
-                        key={test._id}
-                        className="animate-card group origin-bottom-left rounded-[18px] bg-[#FAF8F3] px-5 py-4 shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:bg-[#FEF2E5] hover:shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className="overflow-hidden rounded-[10px] shrink-0">
-                            <Image
-                              src="/assets/free-resources/free-mocktests/prelims-exam-paper.png"
-                              alt={test.title}
-                              width={100}
-                              height={90}
-                              className="h-[88px] w-[100px] object-cover transition-transform duration-300 group-hover:scale-110"
-                            />
-                          </div>
-
-                          <div className="flex-1">
-                            <h3 className="mb-3 text-[16px] font-extrabold leading-[1.25] text-[#111]">
-                              {test.title}
-                              {test.duration && (
-                                <>
-                                  <br />
-                                  <span className="font-semibold text-[#444]">
-                                    {test.duration} min
-                                    {test.totalQuestions
-                                      ? ` • ${test.totalQuestions} Qs`
-                                      : ""}
-                                  </span>
-                                </>
-                              )}
-                            </h3>
-
-                            <Link
-                              href={`/free_resources/free-mocktests/${test._id}`}
-                              className="inline-flex min-w-[118px] items-center justify-center rounded-[8px] border-[1.5px] border-[#58b7ea] bg-white px-4 py-1.5 text-[14px] font-bold text-[#2a9cda] transition-all duration-300 hover:border-transparent hover:bg-[linear-gradient(90deg,#2aa7df_0%,#03283b_100%)] hover:text-white"
-                            >
-                              Attempt Test
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
+                    {displayTests.map((test) => (
+                      <MockTestCard key={test._id} test={test} />
                     ))}
                   </div>
                 )}

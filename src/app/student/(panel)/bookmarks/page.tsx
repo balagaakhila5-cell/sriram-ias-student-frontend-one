@@ -21,6 +21,7 @@ export default function BookmarksPage() {
 
   }, []);
 
+<<<<<<< HEAD
   const removeBookmark = (
   id: TestItem["id"]
 ) => {
@@ -36,6 +37,21 @@ export default function BookmarksPage() {
     JSON.stringify(updated)
   );
 };
+=======
+  const removeBookmark = (id: string) => {
+
+    const updated = bookmarks.filter(
+      (item) => item.id !== id
+    );
+
+    setBookmarks(updated);
+
+    localStorage.setItem(
+      "bookmarkedTests",
+      JSON.stringify(updated)
+    );
+  };
+>>>>>>> updates
 
   return (
     <div className="space-y-6">

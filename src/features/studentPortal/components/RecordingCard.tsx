@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Bookmark, Video } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { Recording } from "../data/recordings";
 import Image from "next/image";
 
@@ -15,38 +14,22 @@ export default function RecordingCard({
   recording,
   viewClassHref,
 }: RecordingCardProps) {
-  const [bookmarked, setBookmarked] = useState(!!recording.bookmarked);
-
   return (
-    <article className="relative flex items-center gap-4 rounded-[14px] bg-[#FAF8F3] p-4 shadow-[0_4px_14px_rgba(0,0,0,0.04)]">
-      <button
-        type="button"
-        aria-label={bookmarked ? "Remove bookmark" : "Add bookmark"}
-        onClick={(e) => {
-          e.preventDefault();
-          setBookmarked((v) => !v);
-        }}
-        className="absolute right-3 top-3 text-[#1F2A37]"
-      >
-        <Bookmark
-          size={18}
-          className={bookmarked ? "fill-current" : ""}
-        />
-      </button>
+    <article className="relative flex items-center gap-4 rounded-[14px] bg-[#FAF8F3] p-4 shadow-[0_4px_14px_rgba(0,0,0,0.04)] transition-all duration-300 hover:translate-x-2 hover:bg-[#F2F8FC] hover:shadow-[0_8px_24px_rgba(31,122,184,0.12)]">
 
-      <div
-        className="flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-full text-white shadow-[0_6px_18px_rgba(31,122,184,0.35)]"
-      >
-        <Image 
-          src={"/assets/student/Recording.png"} 
-          alt="rec" 
-          width={78} 
-          height={78} 
-          className="rounded-full object-cover" 
+      {/* Image Section */}
+      <div className="flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-full text-white shadow-[0_6px_18px_rgba(31,122,184,0.35)]">
+        <Image
+          src={"/assets/student/Recording.png"}
+          alt="rec"
+          width={78}
+          height={78}
+          className="rounded-full object-cover"
         />
       </div>
 
-      <div className="min-w-0 flex-1 pr-6">
+      {/* Content */}
+      <div className="min-w-0 flex-1">
         <h4
           className="text-[15px] font-semibold leading-snug text-[#000000]"
           style={{ fontFamily: "Montserrat, sans-serif" }}
