@@ -9,7 +9,12 @@ import { useGSAP } from '@gsap/react';
 import useInViewport from '@/hooks/useInViewport';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 
-const Footer: React.FC = () => {
+interface FooterProps {
+  /** Skip GSAP animations and parallax — use on portal layouts for faster loads. */
+  lightweight?: boolean;
+}
+
+const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
   const footerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const isInViewport = useInViewport(footerRef, {
@@ -19,7 +24,7 @@ const Footer: React.FC = () => {
 
   useGSAP(
     () => {
-      if (prefersReducedMotion || !isInViewport) return;
+      if (lightweight || prefersReducedMotion || !isInViewport) return;
 
       const zone = footerRef.current;
       if (!zone) return;
@@ -73,10 +78,11 @@ const Footer: React.FC = () => {
         timeline.kill();
       };
     },
-    { dependencies: [isInViewport, prefersReducedMotion], scope: footerRef }
+    { dependencies: [isInViewport, prefersReducedMotion, lightweight], scope: footerRef }
   );
 
   useEffect(() => {
+    if (lightweight) return;
     const zone = footerRef.current;
     if (!zone) return;
 
@@ -108,7 +114,7 @@ const Footer: React.FC = () => {
       zone.removeEventListener('mousemove', handleMouseMove);
       zone.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, []);
+  }, [lightweight]);
 
   return (
     <footer

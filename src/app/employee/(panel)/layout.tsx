@@ -29,7 +29,7 @@ export default function EmployeePanelLayout({
         </div>
       </div>
 
-      <Footer />
+      <Footer lightweight />
     </div>
   );
 }

@@ -10,11 +10,12 @@ import {
   mentorReviews,
   prelimsResults,
 } from "@/features/parentPortal/data/testResults";
+import {
+  PERFORMANCE_TAB_TO_VIEW,
+  type PerformanceListTab,
+} from "@/features/parentPortal/performance/types";
 
-type PerformanceTab =
-  | "test-series-prelims"
-  | "answer-writing-mains"
-  | "mentors-review";
+type PerformanceTab = PerformanceListTab;
 
 const PERFORMANCE_TABS: DetailTab<PerformanceTab>[] = [
   { id: "test-series-prelims", label: "Test Series - Prelims" },
@@ -42,7 +43,7 @@ export default function PerformanceAnalyticsPage() {
             key={t.id}
             test={t}
             actionLabel="View Results"
-            attemptHref={`/parent/performance/${t.id}`}
+            attemptHref={`/parent/performance/${t.id}?view=${PERFORMANCE_TAB_TO_VIEW[tab]}`}
           />
         ))}
       </div>

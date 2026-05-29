@@ -29,7 +29,7 @@ export default function ParentPanelLayout({
         </div>
       </div>
 
-      <Footer />
+      <Footer lightweight />
     </div>
   );
 }

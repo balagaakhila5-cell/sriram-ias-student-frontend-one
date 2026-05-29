@@ -2,10 +2,17 @@
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  getDemoMockTestDetail,
+  isDemoMockTestId,
+  listDemoMockTestCards,
+} from "../catalog/demoMockTests";
+import { isResourcesApiConfigured } from "../services/resourcesApiClient";
+import {
   resourcesService,
   type FilesQuery,
   type FilterQuery,
   type MockTestAttemptPayload,
+  type MockTestSummary,
   type MockTestsQuery,
 } from "../services/resourcesService";
 
@@ -28,7 +35,10 @@ export function useResourceCategories() {
   return useQuery({
     queryKey: resourcesKeys.categories,
     queryFn: resourcesService.listCategories,
+    enabled: isResourcesApiConfigured(),
     staleTime: 10 * 60 * 1000,
+    retry: 0,
+    placeholderData: [],
   });
 }
 
@@ -36,8 +46,10 @@ export function useResourceSubCategories(categoryId?: string) {
   return useQuery({
     queryKey: resourcesKeys.subcategories(categoryId),
     queryFn: () => resourcesService.listSubCategories(categoryId),
-    enabled: !!categoryId,
+    enabled: isResourcesApiConfigured() && !!categoryId,
     staleTime: 10 * 60 * 1000,
+    retry: 0,
+    placeholderData: [],
   });
 }
 
@@ -48,8 +60,10 @@ export function useResourceFilters(
   return useQuery({
     queryKey: resourcesKeys.filters(query),
     queryFn: () => resourcesService.listFilters(query),
-    enabled: enabled && !!query.categoryId,
+    enabled: isResourcesApiConfigured() && enabled && !!query.categoryId,
     staleTime: 10 * 60 * 1000,
+    retry: 0,
+    placeholderData: [],
   });
 }
 
@@ -57,30 +71,99 @@ export function useResourceFiles(query: FilesQuery, enabled = true) {
   return useQuery({
     queryKey: resourcesKeys.files(query),
     queryFn: () => resourcesService.listFiles(query),
-    enabled: enabled && !!query.categoryId,
+    enabled: isResourcesApiConfigured() && enabled && !!query.categoryId,
+    retry: 0,
+    placeholderData: [],
   });
 }
 
-export function useMockTests(query: MockTestsQuery, enabled = true) {
+function demoMockSummaries(examType: "prelims" | "mains"): MockTestSummary[] {
+  return listDemoMockTestCards(examType).map((card) => ({
+    _id: card._id,
+    title: `${card.title} — ${card.subtitle}`,
+    duration: card.duration,
+    totalQuestions: card.totalQuestions,
+  }));
+}
+
+export function useMockTests(
+  query: MockTestsQuery,
+  enabled = true,
+  examType: "prelims" | "mains" = "prelims",
+) {
   return useQuery({
-    queryKey: resourcesKeys.mockTests(query),
-    queryFn: () => resourcesService.listMockTests(query),
-    enabled: enabled && !!query.categoryId,
+    queryKey: [...resourcesKeys.mockTests(query), examType],
+    queryFn: async (): Promise<MockTestSummary[]> => {
+      if (!isResourcesApiConfigured() || !query.categoryId) {
+        return demoMockSummaries(examType);
+      }
+      try {
+        const apiTests = await resourcesService.listMockTests(query);
+        if (apiTests.length >= 6) return apiTests.slice(0, 6);
+        const merged = [...apiTests];
+        for (const card of listDemoMockTestCards(examType)) {
+          if (merged.length >= 6) break;
+          if (!merged.some((t) => t._id === card._id)) {
+            merged.push({
+              _id: card._id,
+              title: `${card.title} — ${card.subtitle}`,
+              duration: card.duration,
+              totalQuestions: card.totalQuestions,
+            });
+          }
+        }
+        return merged.slice(0, 6);
+      } catch {
+        return demoMockSummaries(examType);
+      }
+    },
+    enabled,
+    retry: 0,
+    placeholderData: demoMockSummaries(examType),
+    staleTime: 5 * 60 * 1000,
   });
 }
 
 export function useMockTest(id: string | undefined) {
   return useQuery({
     queryKey: resourcesKeys.mockTest(id ?? ""),
-    queryFn: () => resourcesService.getMockTest(id as string),
+    queryFn: async () => {
+      if (id && isDemoMockTestId(id)) {
+        const demo = getDemoMockTestDetail(id);
+        if (demo) return demo;
+      }
+      return resourcesService.getMockTest(id as string);
+    },
     enabled: !!id,
   });
 }
 
 export function useSubmitMockTest(testId: string | undefined) {
   return useMutation({
-    mutationFn: (payload: MockTestAttemptPayload) =>
-      resourcesService.submitMockTest(testId as string, payload),
+    mutationFn: async (payload: MockTestAttemptPayload) => {
+      if (testId && isDemoMockTestId(testId)) {
+        const test = getDemoMockTestDetail(testId);
+        if (!test) throw new Error("Demo test not found");
+        let correctCount = 0;
+        for (const q of test.questions) {
+          if (payload.answers[q._id] === q.correctAnswer) correctCount += 1;
+        }
+        const total = test.questions.length;
+        return {
+          _id: `demo-result-${testId}-${Date.now()}`,
+          score: correctCount * 2,
+          totalMarks: total * 2,
+          correctCount,
+          incorrectCount: total - correctCount,
+          unattemptedCount: 0,
+          totalQuestions: total,
+          passed: correctCount >= Math.ceil(total * 0.4),
+          percentage: Math.round((correctCount / total) * 100),
+          timeTaken: payload.timeTaken,
+        };
+      }
+      return resourcesService.submitMockTest(testId as string, payload);
+    },
   });
 }
 

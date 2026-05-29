@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
@@ -8,6 +8,8 @@ import { useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
+import { listCurrentAffairsDocuments } from "@/features/resources/catalog/currentAffairs";
+import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
 
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
@@ -97,6 +99,12 @@ export default function MonthlyMagazinePage() {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [selectedYear, setSelectedYear] = useState<string>("2026");
   const [selectedMonth, setSelectedMonth] = useState<string>("April");
+
+  const documents = useMemo(
+    () =>
+      listCurrentAffairsDocuments("monthly-magazine", selectedYear, selectedMonth),
+    [selectedYear, selectedMonth],
+  );
 
   useGSAP(
     () => {
@@ -218,46 +226,8 @@ export default function MonthlyMagazinePage() {
 
                 {/* Cards */}
                 <div className="cards-grid grid grid-cols-1 gap-5 md:grid-cols-2">
-                  {magazineCards.map((card) => (
-                    <div
-                      key={card.id}
-                      className="animate-card group flex min-h-[155px] items-center gap-4 rounded-[18px] bg-[#f4efe7] px-5 py-5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] origin-bottom-left transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:bg-[#FEF2E5] hover:shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
-                    >
-                      {/* Image Container */}
-                      <div className="relative flex h-[92px] w-[92px] shrink-0 items-center justify-center overflow-hidden rounded-[14px] ">
-                        <Image
-                          src={card.image}
-                          alt={card.title}
-                          fill
-                          className="object-contain p-2 transition-transform duration-300 group-hover:scale-110"
-                        />
-                      </div>
-
-                      {/* Content */}
-                      <div className="flex flex-1 flex-col justify-center">
-                        <h3 className="mb-4 max-w-[240px] text-[19px] font-semibold leading-[1.35] text-[#111111]">
-                          April Month Magazine
-                          <br />
-                          2026
-                        </h3>
-
-                        <div className="flex flex-wrap items-center gap-3">
-                          <Link
-                            href={card.sampleLink}
-                            className="rounded-[10px] border border-[#55b7f3] bg-white px-4 py-2 text-[15px] font-semibold text-[#4aaee8] transition-all duration-300 hover:bg-[#eef8ff]"
-                          >
-                            Sample
-                          </Link>
-
-                          <Link
-                            href={card.downloadLink}
-                            className="rounded-[10px] border border-[#55b7f3] bg-white px-4 py-2 text-[15px] font-semibold text-[#4aaee8] transition-all duration-300 hover:bg-[#eef8ff]"
-                          >
-                            Download PDF
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
+                  {documents.map((item) => (
+                    <ResourceDocumentCard key={item.id} item={item} />
                   ))}
                 </div>
               </div>

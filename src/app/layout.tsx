@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "@/styles/theme.css";
-import { AppProviders } from "./providers";
 import GsapSetup from "./gsap-setup";
+import { AppProviders } from "./providers";
 
 export const metadata: Metadata = {
   title: "Sriram's IAS - Penacea",

@@ -3,6 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
+import { listFreeResourceDocuments } from "@/features/resources/catalog/freeResources";
+import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
+import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -49,6 +52,20 @@ export default function StudyMaterialsPage() {
   const { data: files = [], isFetching } = useResourceFiles(
     { categoryId, subCategoryId },
     !!categoryId && !!subCategoryId,
+  );
+
+  const tabLabel = activeTab.toUpperCase();
+  const fallback = useMemo(
+    () =>
+      listFreeResourceDocuments("study-materials").filter((item) =>
+        item.title.toUpperCase().includes(tabLabel),
+      ),
+    [tabLabel],
+  );
+
+  const catalogItems = useMemo(
+    () => mapApiFilesToCatalog(files, "study-materials", fallback, 6),
+    [files, fallback],
   );
 
   useGSAP(
@@ -182,50 +199,13 @@ export default function StudyMaterialsPage() {
                       Loading...
                     </p>
                   )}
-                  {!isFetching && files.length === 0 && (
+                  {!isFetching && catalogItems.length === 0 && (
                     <p className="col-span-full text-center text-[16px] text-[#555]">
                       No study material available for {activeTab}.
                     </p>
                   )}
-                  {files.map((item) => (
-                    <div
-                      key={item._id}
-                      className="animate-card group rounded-[18px] px-7 py-8"
-                      style={{
-                        backgroundColor: "#FAF8F3",
-                        boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
-                        transition:
-                          "transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease",
-                        transformOrigin: "bottom left",
-                      }}
-                      onMouseEnter={(e) => {
-                        const el = e.currentTarget;
-                        el.style.transform = "translateY(-8px) scale(1.02)";
-                        el.style.backgroundColor = "#FEF2E5";
-                        el.style.boxShadow = "0 12px 30px rgba(0,0,0,0.12)";
-                      }}
-                      onMouseLeave={(e) => {
-                        const el = e.currentTarget;
-                        el.style.transform = "";
-                        el.style.backgroundColor = "#FAF8F3";
-                        el.style.boxShadow = "0 8px 24px rgba(0,0,0,0.06)";
-                      }}
-                    >
-                      <h3 className="mb-6 text-center text-[17px] font-extrabold text-[#111] md:text-[18px]">
-                        {item.title}
-                      </h3>
-
-                      <div className="flex justify-center">
-                        <Link
-                          href={item.fileUrl ?? "#"}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex min-w-[130px] items-center justify-center rounded-[8px] border-[1.5px] border-[#58b7ea] bg-white px-5 py-2 text-[15px] font-bold text-[#2a9cda] transition-all duration-300 hover:border-transparent hover:bg-[linear-gradient(90deg,#2aa7df_0%,#03283b_100%)] hover:text-white"
-                        >
-                          View PDF
-                        </Link>
-                      </div>
-                    </div>
+                  {catalogItems.map((item) => (
+                    <ResourceDocumentCard key={item.id} item={item} />
                   ))}
                 </div>
               </div>

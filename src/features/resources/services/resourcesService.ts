@@ -1,4 +1,4 @@
-import apiClient from "@/services/apiClient";
+import resourcesApiClient from "./resourcesApiClient";
 
 /* ------------------------------------------------------------------ */
 /*  Shared / raw shapes                                                */
@@ -204,7 +204,7 @@ export interface MockTestsQuery {
 
 export const resourcesService = {
   listCategories: async (): Promise<ResourceCategory[]> => {
-    const { data } = await apiClient.get("/api/resources/categories");
+    const { data } = await resourcesApiClient.get("/api/resources/categories");
     return unwrapList<RawCategoryEnvelope>(data, ["categories"]).map(
       normaliseCategory,
     );
@@ -213,21 +213,21 @@ export const resourcesService = {
   listSubCategories: async (
     categoryId?: string,
   ): Promise<ResourceSubCategory[]> => {
-    const { data } = await apiClient.get("/api/resources/subcategories", {
+    const { data } = await resourcesApiClient.get("/api/resources/subcategories", {
       params: categoryId ? { categoryId } : {},
     });
     return unwrapList<ResourceSubCategory>(data, ["subcategories", "subCategories"]);
   },
 
   listFilters: async (query: FilterQuery): Promise<ResourceFilter[]> => {
-    const { data } = await apiClient.get("/api/resources/filters", {
+    const { data } = await resourcesApiClient.get("/api/resources/filters", {
       params: query,
     });
     return unwrapList<ResourceFilter>(data, ["filters"]);
   },
 
   listFiles: async (query: FilesQuery = {}): Promise<ResourceFile[]> => {
-    const { data } = await apiClient.get("/api/resources/files", {
+    const { data } = await resourcesApiClient.get("/api/resources/files", {
       params: query,
     });
     return unwrapList<RawFileEnvelope>(data, ["files", "resources"]).map(
@@ -236,7 +236,7 @@ export const resourcesService = {
   },
 
   getFile: async (id: string): Promise<ResourceFile | null> => {
-    const { data } = await apiClient.get(`/api/resources/files/${id}`);
+    const { data } = await resourcesApiClient.get(`/api/resources/files/${id}`);
     const raw = unwrapOne<RawFileEnvelope>(data, ["file", "resource"]);
     return raw ? normaliseFile(raw) : null;
   },
@@ -246,14 +246,14 @@ export const resourcesService = {
   listMockTests: async (
     query: MockTestsQuery = {},
   ): Promise<MockTestSummary[]> => {
-    const { data } = await apiClient.get("/api/resources/mock-tests", {
+    const { data } = await resourcesApiClient.get("/api/resources/mock-tests", {
       params: query,
     });
     return unwrapList<MockTestSummary>(data, ["mockTests", "tests"]);
   },
 
   getMockTest: async (id: string): Promise<MockTestDetail | null> => {
-    const { data } = await apiClient.get(`/api/resources/mock-tests/${id}`);
+    const { data } = await resourcesApiClient.get(`/api/resources/mock-tests/${id}`);
     return unwrapOne<MockTestDetail>(data, ["mockTest", "test"]);
   },
 
@@ -261,7 +261,7 @@ export const resourcesService = {
     id: string,
     payload: MockTestAttemptPayload,
   ): Promise<MockTestResult> => {
-    const { data } = await apiClient.post(
+    const { data } = await resourcesApiClient.post(
       `/api/resources/mock-tests/${id}/attempt`,
       payload,
     );
@@ -270,14 +270,14 @@ export const resourcesService = {
   },
 
   getMockTestResult: async (resultId: string): Promise<MockTestResult | null> => {
-    const { data } = await apiClient.get(
+    const { data } = await resourcesApiClient.get(
       `/api/resources/mock-tests/results/${resultId}`,
     );
     return unwrapOne<MockTestResult>(data, ["result", "attempt"]);
   },
 
   listMockTestResults: async (): Promise<MockTestResult[]> => {
-    const { data } = await apiClient.get("/api/resources/mock-tests/results");
+    const { data } = await resourcesApiClient.get("/api/resources/mock-tests/results");
     return unwrapList<MockTestResult>(data, ["results", "attempts"]);
   },
 };
