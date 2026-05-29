@@ -23,6 +23,15 @@ export function resourceSamplePath(item: ResourceLinkFields) {
 }
 
 export function resourceDownloadPath(item: ResourceLinkFields) {
+  const url = item.pdfUrl?.trim();
+  if (
+    url &&
+    (url.startsWith("http://") ||
+      url.startsWith("https://") ||
+      url.startsWith("/"))
+  ) {
+    return url;
+  }
   return `/api/resources/download?id=${encodeURIComponent(item.id)}&${buildResourceQuery(item)}`;
 }
 
