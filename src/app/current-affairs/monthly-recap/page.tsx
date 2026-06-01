@@ -373,7 +373,7 @@ export default function MonthlyRecapPage() {
               </h1>
                 <div className="animate-filter mb-10 flex flex-col items-center justify-center gap-5 md:flex-row">
                   <CustomDropdown
-                    options={["2026", "2025", "2024", "2023"]}
+                    options={["2026", "2025", "2024"]}
                     value={selectedYear}
                     onChange={setSelectedYear}
                     placeholder="Year"

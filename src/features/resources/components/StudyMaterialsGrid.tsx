@@ -2,11 +2,9 @@
 
 import Link from "next/link";
 import type { CatalogDocument } from "@/features/resources/catalog/types";
-import { RESOURCE_ASSETS } from "@/features/resources/catalog/assets";
 import { resourceViewPath } from "@/features/resources/catalog/routes";
 import { catalogDocumentDescription } from "@/features/resources/utils/cardDescription";
 import ResourceCardGrid from "./ResourceCardGrid";
-import PremiumCardBanner from "./PremiumCardBanner";
 import {
   PREMIUM_CARD,
   RESOURCE_EMPTY,
@@ -34,29 +32,16 @@ export default function StudyMaterialsGrid({
   return (
     <ResourceCardGrid className={gridClassName}>
       {items.map((item) => {
-        const showImage = !item.hideImage && Boolean(item.image);
+        const description = catalogDocumentDescription(item);
 
         return (
           <article key={item.id} className={STUDY_MATERIAL_CARD.shell}>
-            {showImage ? (
-              <PremiumCardBanner
-                src={item.image || RESOURCE_ASSETS.FR_STUDY}
-                alt={item.title}
-                fit="cover"
-              />
-            ) : null}
-            <div
-              className={
-                showImage ? PREMIUM_CARD.body : PREMIUM_CARD.bodyCentered
-              }
-            >
+            <div className={STUDY_MATERIAL_CARD.bodyCentered}>
               <h3 className={STUDY_MATERIAL_CARD.title}>{item.title}</h3>
-              {!showImage ? (
-                <p className={PREMIUM_CARD.description}>
-                  {catalogDocumentDescription(item)}
-                </p>
+              {description ? (
+                <p className={PREMIUM_CARD.description}>{description}</p>
               ) : null}
-              <div className={PREMIUM_CARD.actionsCentered}>
+              <div className={STUDY_MATERIAL_CARD.actionsCentered}>
                 <Link
                   href={resourceViewPath(item)}
                   className={RESOURCE_BUTTON.base}

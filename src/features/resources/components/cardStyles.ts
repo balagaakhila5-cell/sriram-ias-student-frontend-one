@@ -1,7 +1,7 @@
 /** Shared layout tokens for resource cards (CA, Free Resources, Student Portal). */
 
 /** Max cards shown per section */
-export const RESOURCE_CARD_LIMIT = 6;
+export const RESOURCE_CARD_LIMIT = 10;
 
 /** Responsive grid — matches Monthly Magazine reference (2 columns) */
 export const RESOURCE_CARD_GRID =
@@ -10,9 +10,9 @@ export const RESOURCE_CARD_GRID =
 /** @deprecated use RESOURCE_CARD_GRID — kept for free-resources imports */
 export const FREE_RESOURCE_CARD_GRID = RESOURCE_CARD_GRID;
 
-/** Warm card surface — visible cream default with slightly brighter hover */
+/** Light card default with soft red-tinted hover */
 const CARD_SURFACE =
-  "rounded-[14px] border border-[#F0E4D4] bg-[#FFF3E4] shadow-[0_3px_12px_rgba(0,0,0,0.06)] transition-all duration-300 ease-in-out hover:translate-x-[10px] hover:scale-[1.03] hover:border-[#E8D8C4] hover:bg-[#FFEAD0] hover:shadow-[0_10px_24px_rgba(0,0,0,0.1)]";
+  "rounded-[14px] border border-[#EFEFEB] bg-[#FEFEFC] shadow-[0_3px_12px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out hover:translate-x-[10px] hover:scale-[1.03] hover:border-[#FFD4C8] hover:bg-[#FFF5F2] hover:shadow-[0_10px_22px_rgba(255,115,100,0.12)]";
 
 /** Card title — shared sizing */
 const CARD_TITLE =
@@ -75,13 +75,16 @@ export const RESOURCE_BUTTON = {
 } as const;
 
 export const STUDY_MATERIAL_CARD = {
-  shell: PREMIUM_CARD.shell,
-  title: PREMIUM_CARD.title,
+  shell: `group animate-card flex h-[112px] min-h-[112px] w-full flex-col overflow-hidden ${CARD_SURFACE}`,
+  bodyCentered:
+    "flex h-full w-full flex-col items-center justify-center gap-1.5 px-4 py-2.5 text-center",
+  title: CARD_TITLE,
+  actionsCentered: "flex flex-nowrap items-center justify-center gap-2",
   button: RESOURCE_BUTTON.base,
 } as const;
 
 export const RESOURCE_EMPTY =
-  "rounded-[14px] border border-[#F0E4D4] bg-[#FFF3E4] px-6 py-8 text-center text-[14px] font-semibold text-[#5A6573]";
+  "rounded-[14px] border border-[#EFEFEB] bg-[#FEFEFC] px-6 py-8 text-center text-[14px] font-semibold text-[#5A6573]";
 
 export const NCERT_BOOK_CARD = {
   shell: `group animate-card flex h-[118px] min-h-[118px] w-full flex-col overflow-hidden ${CARD_SURFACE}`,

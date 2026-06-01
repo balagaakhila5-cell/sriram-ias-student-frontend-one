@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import {
   listCurrentAffairsDocuments,
-  listPracticeTests,
+  listPortalPracticeTests,
 } from "@/features/resources/catalog/currentAffairs";
 import type { CurrentAffairsSubtopicId } from "@/features/resources/catalog/types";
 import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
@@ -15,12 +15,16 @@ interface CurrentAffairsResourceGridProps {
   subtopic: CurrentAffairsSubtopicId;
   year: string;
   month: string;
+  date?: string;
+  examType?: "prelims" | "mains";
 }
 
 export default function CurrentAffairsResourceGrid({
   subtopic,
   year,
   month,
+  date,
+  examType = "prelims",
 }: CurrentAffairsResourceGridProps) {
   const documents = useMemo(
     () => listCurrentAffairsDocuments(subtopic, year, month),
@@ -28,9 +32,8 @@ export default function CurrentAffairsResourceGrid({
   );
 
   const practiceCards = useMemo(
-    () =>
-      listPracticeTests(year, month).filter((item) => item.subtopic === subtopic),
-    [subtopic, year, month],
+    () => listPortalPracticeTests(examType),
+    [examType],
   );
 
   if (subtopic === "daily-practice-questions") {
@@ -62,5 +65,7 @@ export default function CurrentAffairsResourceGrid({
 }
 
 function EmptyState() {
-  return <p className={RESOURCE_EMPTY}>No resources found for the selected filters.</p>;
+  return (
+    <p className={RESOURCE_EMPTY}>No resources found for the selected filters.</p>
+  );
 }

@@ -17,7 +17,7 @@ export function catalogDocumentDescription(item: CatalogDocument): string {
     case "ncert-books":
       return "";
     case "study-materials":
-      return "Structured notes for exam preparation.";
+      return "";
     case "daily-practice-questions":
       return "";
     default:

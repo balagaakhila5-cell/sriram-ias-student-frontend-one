@@ -13,7 +13,13 @@ import {
 } from "@/features/resources/hooks/useResources";
 import type { CatalogDocument } from "@/features/resources/catalog/types";
 
-export default function NcertBooksPanel() {
+interface NcertBooksPanelProps {
+  ncertClass: string;
+}
+
+export default function NcertBooksPanel({
+  ncertClass: _ncertClass,
+}: NcertBooksPanelProps) {
   const fallback = useMemo(
     () => listFreeResourceDocuments("ncert-books"),
     [],
@@ -32,7 +38,7 @@ export default function NcertBooksPanel() {
   );
 
   const items: CatalogDocument[] = useMemo(
-    () => mapApiFilesToCatalog(files, "ncert-books", fallback, 6),
+    () => mapApiFilesToCatalog(files, "ncert-books", fallback),
     [files, fallback],
   );
 

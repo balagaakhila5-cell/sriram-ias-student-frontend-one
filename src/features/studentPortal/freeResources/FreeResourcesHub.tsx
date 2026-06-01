@@ -4,20 +4,30 @@ import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
 import ExamTypeTabs from "@/components/common/ExamTypeTabs";
 import StudyMaterialsExamTabs from "@/components/common/StudyMaterialsExamTabs";
+import { buildDateFilterOptions } from "@/features/resources/catalog/currentAffairs";
+import { PORTAL_DPQ_DATE_OPTIONS } from "./resourceFilters";
 import FilterBar from "@/features/studentPortal/components/FilterBar";
 import SubNavToggle from "@/features/studentPortal/components/SubNavToggle";
 import type { CurrentAffairsSubtopicId } from "@/features/currentAffairs/data/portalResources";
 import ResourcesGridSkeleton from "./components/ResourcesGridSkeleton";
 import {
   DEFAULT_SUBTOPIC_BY_TAB,
-  FILTER_MONTHS,
-  FILTER_YEARS,
   RESOURCE_TABS,
-  freeResourcesUsesExamType,
   freeResourcesUsesStudyMaterialsTabs,
   getSubtopicsForTab,
-  type FreeResourcesPanelExamType,
+  type StudyMaterialsExamType,
 } from "./config";
+import {
+  buildResourceFilters,
+  CA_FILTER_YEARS,
+  currentAffairsUsesExamTabs,
+  MOCK_EXAM_OPTIONS,
+  NCERT_CLASS_OPTIONS,
+  PYQ_PAPER_OPTIONS,
+  PYQ_YEAR_OPTIONS,
+  type MockExamFilter,
+  type PyqPaperFilter,
+} from "./resourceFilters";
 import type {
   FreeResourcesSubtopicId,
   StudentResourceTab,
@@ -36,10 +46,16 @@ const FreeResourcesSubtopicPanel = dynamic(
 
 export default function FreeResourcesHub() {
   const [tab, setTab] = useState<StudentResourceTab>("current-affairs");
-  const [year, setYear] = useState<string>(FILTER_YEARS[0]);
+  const [year, setYear] = useState<string>(CA_FILTER_YEARS[0]);
   const [month, setMonth] = useState<string>("April");
-  const [examType, setExamType] =
-    useState<FreeResourcesPanelExamType>("prelims");
+  const [date, setDate] = useState<string>(PORTAL_DPQ_DATE_OPTIONS[0]);
+  const [paper, setPaper] = useState<PyqPaperFilter>(PYQ_PAPER_OPTIONS[0]);
+  const [pyqYear, setPyqYear] = useState<string>(PYQ_YEAR_OPTIONS[0]);
+  const [mockExam, setMockExam] = useState<MockExamFilter>(MOCK_EXAM_OPTIONS[0]);
+  const [ncertClass, setNcertClass] = useState<string>(NCERT_CLASS_OPTIONS[0]);
+  const [dpqExamType, setDpqExamType] = useState<"prelims" | "mains">("prelims");
+  const [studyExamType, setStudyExamType] =
+    useState<StudyMaterialsExamType>("prelims");
   const [subtopic, setSubtopic] = useState<StudentSubtopicId>(
     DEFAULT_SUBTOPIC_BY_TAB["current-affairs"],
   );
@@ -54,51 +70,52 @@ export default function FreeResourcesHub() {
   }, [tab, subtopic, subtopicOptions]);
 
   useEffect(() => {
-    if (examType === "interview" && subtopic !== "study-materials") {
-      setExamType("prelims");
-    }
-  }, [subtopic, examType]);
+    if (subtopic === "daily-practice-questions") return;
+    const options = buildDateFilterOptions(month, year);
+    setDate((current) =>
+      options.includes(current) ? current : options[0] ?? current,
+    );
+  }, [month, year, subtopic]);
 
   const handleTabChange = (nextTab: StudentResourceTab) => {
     setTab(nextTab);
     setSubtopic(DEFAULT_SUBTOPIC_BY_TAB[nextTab]);
   };
 
-  const filters = useMemo(() => {
-    const base = [
-      {
-        id: "year",
-        value: year,
-        onChange: setYear,
-        options: [...FILTER_YEARS],
-      },
-      {
-        id: "month",
-        value: month,
-        onChange: setMonth,
-        options: [...FILTER_MONTHS],
-      },
-      {
-        id: "subtopic",
-        value:
-          subtopicOptions.find((option) => option.id === subtopic)?.label ??
-          subtopicOptions[0]?.label ??
-          "",
-        onChange: (label: string) => {
-          const match = subtopicOptions.find((option) => option.label === label);
-          if (match) setSubtopic(match.id);
+  const filters = useMemo(
+    () =>
+      buildResourceFilters(
+        tab,
+        subtopic,
+        {
+          year,
+          month,
+          date,
+          paper,
+          pyqYear,
+          mockExam,
+          ncertClass,
         },
-        options: subtopicOptions.map((option) => option.label),
-      },
-    ];
+        {
+          setYear,
+          setMonth,
+          setDate,
+          setPaper,
+          setPyqYear,
+          setMockExam,
+          setNcertClass,
+          setSubtopic,
+        },
+      ),
+    [tab, subtopic, year, month, date, paper, pyqYear, mockExam, ncertClass],
+  );
 
-    return base;
-  }, [year, month, subtopic, subtopicOptions]);
-
-  const showExamTypeTabs =
-    tab === "free-resources" && freeResourcesUsesExamType(subtopic);
+  const showDpqExamTabs = currentAffairsUsesExamTabs(subtopic);
   const showStudyMaterialsTabs =
     tab === "free-resources" && freeResourcesUsesStudyMaterialsTabs(subtopic);
+
+  const mockExamType =
+    mockExam.toLowerCase() as "prelims" | "mains";
 
   return (
     <div className="space-y-8">
@@ -114,17 +131,19 @@ export default function FreeResourcesHub() {
         <FilterBar filters={filters} />
       </div>
 
+      {showDpqExamTabs ? (
+        <ExamTypeTabs
+          activeTab={dpqExamType}
+          onChange={setDpqExamType}
+          className="mx-auto w-full max-w-[720px]"
+        />
+      ) : null}
+
       {showStudyMaterialsTabs ? (
         <StudyMaterialsExamTabs
-          activeTab={examType as "prelims" | "mains" | "interview"}
-          onChange={setExamType}
+          activeTab={studyExamType}
+          onChange={setStudyExamType}
           className="mx-auto w-full max-w-[900px]"
-        />
-      ) : showExamTypeTabs ? (
-        <ExamTypeTabs
-          activeTab={examType === "interview" ? "prelims" : examType}
-          onChange={setExamType}
-          className="mx-auto w-full max-w-[720px]"
         />
       ) : null}
 
@@ -133,11 +152,17 @@ export default function FreeResourcesHub() {
           subtopic={subtopic as CurrentAffairsSubtopicId}
           year={year}
           month={month}
+          date={date}
+          examType={dpqExamType}
         />
       ) : (
         <FreeResourcesSubtopicPanel
           subtopic={subtopic as FreeResourcesSubtopicId}
-          examType={examType}
+          studyExamType={studyExamType}
+          mockExamType={mockExamType}
+          paper={paper}
+          pyqYear={pyqYear}
+          ncertClass={ncertClass}
         />
       )}
     </div>

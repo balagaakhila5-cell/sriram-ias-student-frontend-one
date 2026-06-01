@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useMemo, useState, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
@@ -10,7 +10,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 
 import { FileText, ClipboardList, Trophy } from "lucide-react";
-import { listPracticeTests } from "@/features/resources/catalog/currentAffairs";
+import {
+  listPracticeTests,
+  PORTAL_FILTER_MONTHS,
+  PORTAL_FILTER_YEARS,
+  buildDateFilterOptions,
+} from "@/features/resources/catalog/currentAffairs";
 import PracticeTestCard from "@/features/resources/components/PracticeTestCard";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 
@@ -18,8 +23,7 @@ import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import FloatingActions from "@/components/common/FloatingActions";
 import TrendingArticles from "@/components/common/TrendingArticles";
-import QuickLinks from "@/components/common/QuickLinks";
-import CustomDropdown from "@/components/common/CustomDropdown";
+import DateIconDropdown from "@/components/common/DateIconDropdown";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -104,12 +108,19 @@ export default function DailyPracticeQuestionsPage() {
   const prefersReducedMotion = usePrefersReducedMotion();
 
   const [activeTab, setActiveTab] = useState<ExamType>("prelims");
-  const [selectedYear, setSelectedYear] = useState<string>("2026");
-  const [selectedMonth, setSelectedMonth] = useState<string>("April");
+  const filterYear = PORTAL_FILTER_YEARS[0];
+  const filterMonth = PORTAL_FILTER_MONTHS[3];
+  const dateOptions = useMemo(
+    () => buildDateFilterOptions(filterMonth, filterYear),
+    [filterMonth, filterYear],
+  );
+  const [selectedDate, setSelectedDate] = useState<string>(
+    () => buildDateFilterOptions(filterMonth, filterYear)[0],
+  );
 
   const practiceTests = useMemo(
-    () => listPracticeTests(selectedYear, selectedMonth, activeTab),
-    [selectedYear, selectedMonth, activeTab],
+    () => listPracticeTests(filterYear, filterMonth, activeTab, selectedDate),
+    [filterYear, filterMonth, activeTab, selectedDate],
   );
 
   useGSAP(
@@ -238,19 +249,11 @@ export default function DailyPracticeQuestionsPage() {
                   </button>
                 </div>
 
-                {/* Dropdowns */}
-                <div className="animate-filter mx-auto mb-10 grid max-w-[620px] grid-cols-1 gap-5 sm:grid-cols-2">
-                  <CustomDropdown
-                    options={["2026", "2025", "2024", "2023"]}
-                    value={selectedYear}
-                    onChange={setSelectedYear}
-                    placeholder="Year"
-                  />
-                  <CustomDropdown
-                    options={["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]}
-                    value={selectedMonth}
-                    onChange={setSelectedMonth}
-                    placeholder="Month"
+                <div className="animate-filter mb-10 flex justify-center">
+                  <DateIconDropdown
+                    options={dateOptions}
+                    value={selectedDate}
+                    onChange={setSelectedDate}
                   />
                 </div>
 

@@ -15,22 +15,27 @@ import {
   useResourceSubCategories,
 } from "@/features/resources/hooks/useResources";
 import type { CatalogDocument } from "@/features/resources/catalog/types";
-import type { FreeResourcesExamType } from "../config";
+import type { PyqPaperFilter } from "../resourceFilters";
 
 interface PreviousYearPanelProps {
-  examType: FreeResourcesExamType;
+  paper: PyqPaperFilter;
+  pyqYear: string;
 }
 
-export default function PreviousYearPanel({ examType }: PreviousYearPanelProps) {
+export default function PreviousYearPanel({
+  paper,
+  pyqYear,
+}: PreviousYearPanelProps) {
   const fallback = useMemo(
     () =>
       listFreeResourceDocuments(
         "previous-year",
+        pyqYear,
         undefined,
         undefined,
-        examType,
+        paper,
       ),
-    [examType],
+    [paper, pyqYear],
   );
 
   const { data: categories } = useResourceCategories();
@@ -42,8 +47,8 @@ export default function PreviousYearPanel({ examType }: PreviousYearPanelProps) 
 
   const { data: subCategories } = useResourceSubCategories(categoryId);
   const subCategory = useMemo(
-    () => findSubCategoryByName(subCategories, examType),
-    [subCategories, examType],
+    () => findSubCategoryByName(subCategories, paper.toLowerCase()),
+    [subCategories, paper],
   );
   const subCategoryId = subCategory?._id;
 
@@ -54,11 +59,12 @@ export default function PreviousYearPanel({ examType }: PreviousYearPanelProps) 
 
   const items: CatalogDocument[] = useMemo(
     () =>
-      mapApiFilesToCatalog(files, "previous-year", fallback, 6).map((item) => ({
+      mapApiFilesToCatalog(files, "previous-year", fallback).map((item) => ({
         ...item,
         image: RESOURCE_ASSETS.PDF_ICON,
+        year: pyqYear,
       })),
-    [files, fallback],
+    [files, fallback, pyqYear],
   );
 
   return (

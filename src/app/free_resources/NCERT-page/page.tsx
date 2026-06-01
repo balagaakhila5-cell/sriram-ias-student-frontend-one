@@ -115,6 +115,7 @@ export default function NcertBooksPage() {
 
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<{
     subjectId?: string;
     classId?: string;
@@ -136,17 +137,15 @@ export default function NcertBooksPage() {
       subjectId: appliedFilters.subjectId,
       classId: appliedFilters.classId,
     },
-    !!categoryId &&
-      (!!appliedFilters.subjectId || !!appliedFilters.classId),
+    !!categoryId && hasSearched,
   );
 
-  const showResults =
-    !!appliedFilters.subjectId || !!appliedFilters.classId;
+  const showResults = hasSearched;
 
   const catalogItems = useMemo(() => {
     if (!showResults) return [];
     const fallback = listFreeResourceDocuments("ncert-books");
-    return mapApiFilesToCatalog(files, "ncert-books", fallback, 6);
+    return mapApiFilesToCatalog(files, "ncert-books", fallback);
   }, [files, showResults]);
 
   useGSAP(
@@ -197,6 +196,7 @@ export default function NcertBooksPage() {
   );
 
   const handleSearch = () => {
+    setHasSearched(true);
     setAppliedFilters({ subjectId, classId });
   };
 
@@ -249,11 +249,7 @@ export default function NcertBooksPage() {
                     />
                   </div>
 
-                  <PremiumSearchButton
-                    onClick={handleSearch}
-                    disabled={!subjectId && !classId}
-                    className="mt-8"
-                  />
+                  <PremiumSearchButton onClick={handleSearch} className="mt-8" />
                 </div>
 
                 <div className="animate-cards-container overflow-visible">

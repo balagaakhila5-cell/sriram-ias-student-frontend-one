@@ -81,7 +81,7 @@ export default function StudyMaterialsPage() {
 
   const catalogItems = useMemo(
     () =>
-      mapApiFilesToCatalog(files, "study-materials", fallback, 6).map((item) => ({
+      mapApiFilesToCatalog(files, "study-materials", fallback).map((item) => ({
         ...item,
         hideImage: true,
         image: "",

@@ -53,7 +53,7 @@ export default function StudyMaterialsPanel({
   );
 
   const items: CatalogDocument[] = useMemo(
-    () => mapApiFilesToCatalog(files, "study-materials", fallback, 6),
+    () => mapApiFilesToCatalog(files, "study-materials", fallback),
     [files, fallback],
   );
 

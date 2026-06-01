@@ -32,6 +32,29 @@ export function mapApiFilesToCatalog(
     return mapped;
   }
 
+  if (subtopic === "study-materials") {
+    const mapped = (files.length > 0
+      ? files.slice(0, limit).map((file, index) => {
+          const base = fallback[index % fallback.length];
+          return {
+            ...base,
+            id: file._id,
+            subtopic,
+            title: file.title,
+            pdfUrl: String(
+              file.fileUrl || base.pdfUrl || RESOURCE_ASSETS.DEFAULT_PDF,
+            ),
+            image: "",
+            hideImage: true,
+          };
+        })
+      : fallback.slice(0, limit)
+    ).map((item) => ({ ...item, image: "", hideImage: true }));
+
+    registerDocuments(mapped);
+    return mapped;
+  }
+
   const mapped =
     files.length > 0
       ? files.slice(0, limit).map((file, index) => {

@@ -76,12 +76,12 @@ function buildDemoTest(
 }
 
 export const DEMO_MOCK_TEST_CARDS: DemoMockTestCard[] = [
-  ...Array.from({ length: 6 }, (_, i) => buildDemoTest("prelims", i)),
-  ...Array.from({ length: 6 }, (_, i) => buildDemoTest("mains", i)),
+  ...Array.from({ length: 10 }, (_, i) => buildDemoTest("prelims", i)),
+  ...Array.from({ length: 10 }, (_, i) => buildDemoTest("mains", i)),
 ];
 
 export function listDemoMockTestCards(examType: "prelims" | "mains") {
-  return DEMO_MOCK_TEST_CARDS.filter((t) => t.examType === examType).slice(0, 6);
+  return DEMO_MOCK_TEST_CARDS.filter((t) => t.examType === examType).slice(0, 10);
 }
 
 export function getDemoMockTestDetail(id: string): MockTestDetail | null {

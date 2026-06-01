@@ -32,6 +32,9 @@ export const SUBTOPIC_OPTIONS: SubtopicOption[] = [
 export const FILTER_YEARS = PORTAL_FILTER_YEARS;
 export const FILTER_MONTHS = PORTAL_FILTER_MONTHS;
 
+export type StudyMaterialsExamType = "prelims" | "mains" | "interview";
+export type FreeResourcesExamType = "prelims" | "mains";
+
 export const DEFAULT_SUBTOPIC_BY_TAB: Record<StudentResourceTab, SubtopicOption["id"]> =
   {
     "current-affairs": "daily-current-affairs",
@@ -46,29 +49,7 @@ export function getSubtopicLabel(id: SubtopicOption["id"]) {
   return SUBTOPIC_OPTIONS.find((option) => option.id === id)?.label ?? id;
 }
 
-/** Free Resources subtopics that split content by Prelims / Mains */
-export const FREE_RESOURCES_EXAM_SUBTOPICS = new Set([
-  "free-mocktests",
-  "previous-year",
-  "study-materials",
-] as const);
-
-export type FreeResourcesExamType = "prelims" | "mains";
-
-export type StudyMaterialsExamType = "prelims" | "mains" | "interview";
-
-export type FreeResourcesPanelExamType =
-  | FreeResourcesExamType
-  | StudyMaterialsExamType;
-
-export function freeResourcesUsesExamType(
-  subtopic: SubtopicOption["id"],
-): subtopic is "free-mocktests" | "previous-year" | "study-materials" {
-  return FREE_RESOURCES_EXAM_SUBTOPICS.has(
-    subtopic as "free-mocktests" | "previous-year" | "study-materials",
-  );
-}
-
+/** Free Resources — study materials uses Prelims/Mains/Interview tabs only */
 export function freeResourcesUsesStudyMaterialsTabs(
   subtopic: SubtopicOption["id"],
 ): subtopic is "study-materials" {

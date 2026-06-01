@@ -35,6 +35,7 @@ export interface CatalogPracticeTest {
   subtopic: "daily-practice-questions";
   year: string;
   month: string;
+  day?: string;
   examType: "prelims" | "mains";
   title: string;
   image: string;

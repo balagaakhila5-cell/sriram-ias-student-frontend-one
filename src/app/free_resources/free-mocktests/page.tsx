@@ -13,7 +13,7 @@ import QuickLinks from "@/components/common/QuickLinks";
 import Courses from "@/components/common/Courses";
 import CustomDropdown from "@/components/common/CustomDropdown";
 import FloatingActions from "@/components/common/FloatingActions";
-import ExamTypeTabs from "@/components/common/ExamTypeTabs";
+import { FileText } from "lucide-react";
 import { PremiumAttemptNowButton } from "@/components/common/ResourceFilterButtons";
 
 import MockTestCard from "@/features/resources/components/MockTestCard";
@@ -186,16 +186,41 @@ export default function FreeMockTestsPage() {
                   </span>
                 </h1>
 
-                <div className="animate-tabs mx-auto mb-12 max-w-[800px] rounded-[24px] bg-[#F4F4F4] p-5 shadow-sm">
-                  <ExamTypeTabs
-                    activeTab={activeTab}
-                    onChange={handleTabChange}
-                    variant="lite"
-                    embedded
-                    className="mb-6"
-                  />
+                <div className="animate-tabs mx-auto mb-12 max-w-[800px]">
+                  <div className="mb-8 flex flex-col items-stretch justify-center gap-5 sm:flex-row sm:gap-8">
+                    {(
+                      [
+                        { id: "prelims" as const, label: "Prelims" },
+                        { id: "mains" as const, label: "Mains" },
+                      ] as const
+                    ).map((tab) => {
+                      const isActive = activeTab === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          type="button"
+                          onClick={() => handleTabChange(tab.id)}
+                          className={`flex flex-1 flex-col items-center justify-center gap-3 rounded-[24px] border-2 px-6 py-8 transition-all duration-300 ${
+                            isActive
+                              ? "border-[#2FA3E8] bg-white shadow-[0_12px_28px_rgba(42,163,232,0.18)]"
+                              : "border-[#E8E8E8] bg-[#FAFAFA] hover:border-[#C5DFF0]"
+                          }`}
+                        >
+                          <FileText
+                            className={`h-10 w-10 ${isActive ? "text-[#2FA3E8]" : "text-[#666]"}`}
+                            strokeWidth={1.75}
+                          />
+                          <span
+                            className={`text-[18px] font-semibold ${isActive ? "text-[#111]" : "text-[#666]"}`}
+                          >
+                            {tab.label}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
 
-                  <div className="relative z-[60] mb-6 flex justify-center">
+                  <div className="relative z-[60] mb-8 flex justify-center">
                     <CustomDropdown
                       options={papers.map((p) => p.value)}
                       value={selectedPaper}

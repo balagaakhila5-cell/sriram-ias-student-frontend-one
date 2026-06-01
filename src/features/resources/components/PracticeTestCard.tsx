@@ -25,7 +25,7 @@ export default function PracticeTestCard({
       />
       <div className={PREMIUM_CARD.body}>
         <h3 className={PREMIUM_CARD.title}>{test.title}</h3>
-        <div className={PREMIUM_CARD.actionsCentered}>
+        <div className={PREMIUM_CARD.actions}>
           <Link
             href={test.attemptPath}
             className={RESOURCE_BUTTON.attempt}

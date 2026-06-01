@@ -30,7 +30,7 @@ export default function MockTestCard({
       <PremiumCardBanner src={image} alt={test.title} fit="cover" />
       <div className={PREMIUM_CARD.body}>
         <h3 className={PREMIUM_CARD.title}>{test.title}</h3>
-        <div className={PREMIUM_CARD.actionsCentered}>
+        <div className={PREMIUM_CARD.actions}>
           <Link href={attemptHref} className={RESOURCE_BUTTON.attempt}>
             Attempt Test
           </Link>

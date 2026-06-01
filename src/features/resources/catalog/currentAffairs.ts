@@ -27,8 +27,37 @@ const MONTHS = [
   "December",
 ] as const;
 
-export const PORTAL_FILTER_YEARS = ["2026", "2025", "2024", "2023"] as const;
+export const PORTAL_FILTER_YEARS = ["2026", "2025", "2024"] as const;
 export const PORTAL_FILTER_MONTHS = [...MONTHS];
+
+const DAYS_IN_MONTH: Record<string, number> = {
+  January: 31,
+  February: 29,
+  March: 31,
+  April: 30,
+  May: 31,
+  June: 30,
+  July: 31,
+  August: 31,
+  September: 30,
+  October: 31,
+  November: 30,
+  December: 31,
+};
+
+/** Date dropdown labels — e.g. "1 April 2026" (not bare numbers) */
+export function buildDateFilterOptions(month: string, year: string): string[] {
+  const count = DAYS_IN_MONTH[month] ?? 30;
+  return Array.from({ length: count }, (_, i) => {
+    const day = i + 1;
+    return `${day} ${month} ${year}`;
+  });
+}
+
+export function dayFromDateLabel(dateLabel: string): string {
+  const match = dateLabel.match(/^(\d{1,2})\b/);
+  return match ? match[1] : dateLabel;
+}
 
 const PDF_ICON_SUBTOPICS = new Set<CurrentAffairsSubtopicId>([
   "daily-current-affairs",
@@ -102,8 +131,9 @@ export const dailyPracticeItems: CatalogPracticeTest[] = [
     subtopic: "daily-practice-questions" as const,
     year: "2026",
     month: "April",
+    day: String((i % 10) + 1),
     examType: "prelims" as const,
-    title: `Prelims practice test ${i + 1}`,
+    title: `Prelims practice test ${i + 1} - April 2026`,
     image: RESOURCE_ASSETS.PRACTICE_TEST,
     attemptPath: `/current-affairs/daily-practice-questions/prelims-test-${i + 1}`,
   })),
@@ -112,8 +142,9 @@ export const dailyPracticeItems: CatalogPracticeTest[] = [
     subtopic: "daily-practice-questions" as const,
     year: "2026",
     month: "April",
+    day: String((i % 10) + 1),
     examType: "mains" as const,
-    title: `Mains practice test ${i + 1}`,
+    title: `Mains practice test ${i + 1} - April 2026`,
     image: RESOURCE_ASSETS.PRACTICE_TEST,
     attemptPath: `/current-affairs/daily-practice-questions/mains-test-${i + 1}`,
   })),
@@ -138,14 +169,27 @@ export function listPracticeTests(
   year?: string,
   month?: string,
   examType?: "prelims" | "mains",
+  dateLabel?: string,
 ): CatalogPracticeTest[] {
+  const day = dateLabel ? dayFromDateLabel(dateLabel) : undefined;
+
   return dailyPracticeItems
     .filter(
       (item) =>
         (!year || item.year === year) &&
         (!month || item.month === month) &&
-        (!examType || item.examType === examType),
+        (!examType || item.examType === examType) &&
+        (!day || item.day === day),
     )
+    .slice(0, RESOURCE_CARD_LIMIT);
+}
+
+/** Student portal: 10 cards per exam type (date dropdown is display-only for now) */
+export function listPortalPracticeTests(
+  examType: "prelims" | "mains",
+): CatalogPracticeTest[] {
+  return dailyPracticeItems
+    .filter((item) => item.examType === examType)
     .slice(0, RESOURCE_CARD_LIMIT);
 }
 

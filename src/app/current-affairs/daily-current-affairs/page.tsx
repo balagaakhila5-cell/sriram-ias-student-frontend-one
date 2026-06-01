@@ -231,7 +231,7 @@ export default function DailyCurrentAffairsPage() {
 
                 <div className="animate-filters relative z-20 mb-12 flex flex-col items-center justify-center gap-5 md:flex-row md:gap-6">
                   <CustomDropdown
-                    options={["2026", "2025", "2024", "2023"]}
+                    options={["2026", "2025", "2024"]}
                     value={selectedYear}
                     onChange={setSelectedYear}
                     placeholder="Year"

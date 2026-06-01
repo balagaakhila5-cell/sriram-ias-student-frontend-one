@@ -4,22 +4,24 @@ import { registerDocuments } from "./registry";
 import { RESOURCE_CARD_LIMIT } from "../components/cardStyles";
 import type { CatalogDocument, FreeResourcesSubtopicId } from "./types";
 
-const MONTHS = [
-  "April",
-  "March",
-  "February",
-  "January",
-  "May",
-  "June",
-] as const;
+const PYQ_YEARS = ["2026", "2025", "2024"] as const;
+const PYQ_PAPERS = ["CSAT", "General Studies"] as const;
 
 function freeDoc(
   subtopic: FreeResourcesSubtopicId,
   index: number,
   title: string,
-  options?: { hasSample?: boolean; hideImage?: boolean; image?: string },
+  options?: {
+    hasSample?: boolean;
+    hideImage?: boolean;
+    image?: string;
+    year?: string;
+    month?: string;
+  },
 ): CatalogDocument {
-  const hideImage = options?.hideImage ?? subtopic === "ncert-books";
+  const hideImage =
+    options?.hideImage ??
+    (subtopic === "ncert-books" || subtopic === "study-materials");
   const image =
     options?.image ??
     (hideImage
@@ -32,8 +34,8 @@ function freeDoc(
     id: `free-${subtopic}-${index + 1}`,
     module: "free-resources",
     subtopic,
-    year: "2026",
-    month: MONTHS[index % MONTHS.length],
+    year: options?.year ?? "2026",
+    month: options?.month ?? "April",
     title,
     image,
     pdfUrl: RESOURCE_ASSETS.DEFAULT_PDF,
@@ -43,35 +45,33 @@ function freeDoc(
 }
 
 const freeResourceDocs: CatalogDocument[] = [
-  ...Array.from({ length: 6 }, (_, i) =>
+  ...Array.from({ length: 10 }, (_, i) =>
     freeDoc("ncert-books", i, `HISTORY-NCERT book${i + 1}`),
   ),
-  ...Array.from({ length: 6 }, (_, i) =>
-    freeDoc(
-      "previous-year",
-      i,
-      "Prelims Exam Paper-2 Question Paper .",
+  ...PYQ_YEARS.flatMap((year, yearIndex) =>
+    PYQ_PAPERS.flatMap((paper, paperIndex) =>
+      Array.from({ length: 10 }, (_, i) =>
+        freeDoc(
+          "previous-year",
+          yearIndex * 20 + paperIndex * 10 + i,
+          `${paper} Exam Paper-${i + 1} Question Paper`,
+          { year },
+        ),
+      ),
     ),
   ),
-  ...Array.from({ length: 6 }, (_, i) =>
-    freeDoc(
-      "previous-year",
-      i + 6,
-      "Mains Exam Paper-2 Question Paper .",
-    ),
-  ),
-  ...Array.from({ length: 6 }, (_, i) =>
+  ...Array.from({ length: 10 }, (_, i) =>
     freeDoc("study-materials", i, `PRELIMS - Study Material ${i + 1}`, {
       hasSample: true,
     }),
   ),
-  ...Array.from({ length: 6 }, (_, i) =>
-    freeDoc("study-materials", i + 6, `MAINS - Study Material ${i + 1}`, {
+  ...Array.from({ length: 10 }, (_, i) =>
+    freeDoc("study-materials", i + 10, `MAINS - Study Material ${i + 1}`, {
       hasSample: true,
     }),
   ),
-  ...Array.from({ length: 6 }, (_, i) =>
-    freeDoc("study-materials", i + 12, `INTERVIEW - Study Material ${i + 1}`, {
+  ...Array.from({ length: 10 }, (_, i) =>
+    freeDoc("study-materials", i + 20, `INTERVIEW - Study Material ${i + 1}`, {
       hasSample: true,
     }),
   ),
@@ -84,15 +84,18 @@ export function listFreeResourceDocuments(
   year?: string,
   month?: string,
   examType?: "prelims" | "mains" | "interview",
+  paper?: string,
 ): CatalogDocument[] {
   return freeResourceDocs
     .filter((item) => {
       if (item.subtopic !== subtopic) return false;
       if (year && item.year !== year) return false;
       if (month && item.month !== month) return false;
-      if (subtopic === "previous-year" && examType) {
-        const isPrelims = item.title.toLowerCase().startsWith("prelims");
-        return examType === "prelims" ? isPrelims : !isPrelims;
+      if (subtopic === "previous-year" && paper) {
+        if (paper === "CSAT") return item.title.includes("CSAT");
+        if (paper === "General Studies") {
+          return item.title.includes("General Studies");
+        }
       }
       if (subtopic === "study-materials" && examType) {
         const title = item.title.toUpperCase();

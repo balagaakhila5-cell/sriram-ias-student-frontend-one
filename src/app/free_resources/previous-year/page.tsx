@@ -1,123 +1,43 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useRef } from "react";
 import Image from "next/image";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 
-import Courses from "@/components/common/Courses";
-import CustomDropdown from "@/components/common/CustomDropdown";
+import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
+import QuickLinks from "@/components/common/QuickLinks";
 import FloatingActions from "@/components/common/FloatingActions";
-import ExamTypeTabs from "@/components/common/ExamTypeTabs";
-import { PremiumSearchButton } from "@/components/common/ResourceFilterButtons";
-
-import { RESOURCE_ASSETS } from "@/features/resources/catalog/assets";
-import { listFreeResourceDocuments } from "@/features/resources/catalog/freeResources";
-import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
-import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
-import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
-import { FREE_RESOURCE_CARD_GRID } from "@/features/resources/components/cardStyles";
-import {
-  findCategoryByKey,
-  findSubCategoryByName,
-  useResourceCategories,
-  useResourceFiles,
-  useResourceFilters,
-  useResourceSubCategories,
-} from "@/features/resources/hooks/useResources";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type Section = "PRELIMS" | "MAINS";
+const sections = [
+  {
+    id: "prelims",
+    title: "PRELIMS",
+    description: "Check all PRELIMS previous year question paper",
+    href: "/free_resources/previous-year/prelims-paper",
+    image: "/assets/our-toppers-gallery/want-to-become-boy.png",
+    cardBg: "bg-[#F5F0E8]",
+  },
+  {
+    id: "mains",
+    title: "MAINS",
+    description: "Check all MAINS previous year question paper",
+    href: "/free_resources/previous-year/mains-paper",
+    image: "/assets/our-toppers-gallery/want-to-become-girl.png",
+    cardBg: "bg-gradient-to-br from-[#E8F4FC] to-[#D4E8F8]",
+  },
+] as const;
 
 export default function PreviousYearPage() {
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
-
-  const [activeSection, setActiveSection] = useState<Section>("PRELIMS");
-  const [selectedPaper, setSelectedPaper] = useState("");
-  const [selectedYear, setSelectedYear] = useState("");
-  const [appliedFilters, setAppliedFilters] = useState<{
-    paperId?: string;
-    yearId?: string;
-  }>({});
-
-  const activeTab: "prelims" | "mains" =
-    activeSection === "MAINS" ? "mains" : "prelims";
-
-  const { data: categories } = useResourceCategories();
-  const pyqCategory = useMemo(
-    () => findCategoryByKey(categories, "PYQ"),
-    [categories],
-  );
-  const categoryId = pyqCategory?._id;
-
-  const { data: subCategories } = useResourceSubCategories(categoryId);
-  const subCategory = useMemo(
-    () => findSubCategoryByName(subCategories, activeSection.toLowerCase()),
-    [subCategories, activeSection],
-  );
-  const subCategoryId = subCategory?._id;
-
-  const { data: allPapers = [] } = useResourceFilters(
-    { type: "PAPER", categoryId },
-    !!categoryId,
-  );
-  const papers = useMemo(() => {
-    if (!subCategoryId) return [];
-    const filtered = allPapers.filter((p) => {
-      const sub = p.subCategory;
-      const subId = typeof sub === "string" ? sub : (sub as { _id?: string } | undefined)?._id;
-      return !subId || subId === subCategoryId;
-    });
-    return filtered.filter((p, i, arr) => arr.findIndex((x) => x.value === p.value) === i);
-  }, [allPapers, subCategoryId]);
-  const { data: years = [] } = useResourceFilters(
-    { type: "YEAR", categoryId },
-    !!categoryId,
-  );
-
-  const paperId = useMemo(
-    () => papers.find((p) => p.value === selectedPaper)?._id,
-    [papers, selectedPaper],
-  );
-  const yearId = useMemo(
-    () => years.find((y) => y.value === selectedYear)?._id,
-    [years, selectedYear],
-  );
-
-  const showResults =
-    !!appliedFilters.paperId || !!appliedFilters.yearId;
-
-  const { data: files = [], isFetching } = useResourceFiles(
-    {
-      categoryId,
-      subCategoryId,
-      paperId: appliedFilters.paperId,
-      yearId: appliedFilters.yearId,
-    },
-    !!categoryId && !!subCategoryId && showResults,
-  );
-
-  const catalogItems = useMemo(() => {
-    if (!showResults) return [];
-    const fallback = listFreeResourceDocuments(
-      "previous-year",
-      undefined,
-      undefined,
-      activeTab,
-    );
-    return mapApiFilesToCatalog(files, "previous-year", fallback, 6).map(
-      (item) => ({
-        ...item,
-        image: RESOURCE_ASSETS.PDF_ICON,
-      }),
-    );
-  }, [files, showResults, activeTab]);
 
   useGSAP(
     () => {
@@ -128,21 +48,15 @@ export default function PreviousYearPage() {
         { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
       );
       gsap.fromTo(
-        ".animate-tabs",
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out", delay: 0.2 },
-      );
-      gsap.fromTo(
         ".animate-card",
         { y: 40, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          stagger: 0.1,
+          stagger: 0.12,
           duration: 0.8,
           ease: "power3.out",
-          clearProps: "transform",
-          scrollTrigger: { trigger: ".animate-cards-container", start: "top 85%" },
+          scrollTrigger: { trigger: ".animate-cards-row", start: "top 85%" },
         },
       );
       gsap.fromTo(
@@ -151,22 +65,8 @@ export default function PreviousYearPage() {
         { x: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
       );
     },
-    {
-      scope: containerRef,
-      dependencies: [prefersReducedMotion, activeSection, showResults],
-    },
+    { scope: containerRef, dependencies: [prefersReducedMotion] },
   );
-
-  const handleTabChange = (tab: "prelims" | "mains") => {
-    setActiveSection(tab === "prelims" ? "PRELIMS" : "MAINS");
-    setSelectedPaper("");
-    setSelectedYear("");
-    setAppliedFilters({});
-  };
-
-  const handleSearch = () => {
-    setAppliedFilters({ paperId, yearId });
-  };
 
   return (
     <>
@@ -189,104 +89,49 @@ export default function PreviousYearPage() {
 
         <section className="relative bg-[#fcfcfc] bg-[url('/assets/bg-wave.png')] bg-cover bg-center bg-no-repeat px-6 py-16 lg:px-12 xl:px-16">
           <div className="mx-auto max-w-[1400px]">
-            <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_380px]">
-              <div>
-                <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
-                  <span className="bg-[linear-gradient(90deg,#3E9CDB_0%,#9A8FB6_42%,#D57E89_100%)] bg-clip-text text-transparent">
-                    {activeSection} QUESTION PAPERS
-                  </span>
-                </h1>
+            <h1 className="animate-heading mb-12 text-center text-[32px] font-extrabold uppercase leading-none md:text-[44px] lg:text-[52px]">
+              <span className="bg-[linear-gradient(90deg,#D57E89_0%,#9A8FB6_50%,#3E9CDB_100%)] bg-clip-text text-transparent">
+                Previous Year Question Papers
+              </span>
+            </h1>
 
-                <ExamTypeTabs
-                  activeTab={activeTab}
-                  onChange={handleTabChange}
-                  className="animate-tabs mb-8"
-                />
-
-                <div className="animate-tabs relative z-[60] mb-8">
-                  <div className="flex flex-col items-center justify-center gap-6 md:flex-row">
-                    <CustomDropdown
-                      options={papers.map((p) => p.value)}
-                      value={selectedPaper}
-                      onChange={setSelectedPaper}
-                      placeholder="Select Paper"
-                    />
-                    <CustomDropdown
-                      options={years.map((y) => y.value)}
-                      value={selectedYear}
-                      onChange={setSelectedYear}
-                      placeholder="Year"
-                    />
-                  </div>
-
-                  <PremiumSearchButton
-                    onClick={handleSearch}
-                    disabled={!paperId && !yearId}
-                    className="mt-8"
-                  />
-                </div>
-
-                <div className="animate-cards-container">
-                  {showResults && isFetching && (
-                    <p className="mb-4 text-center text-[16px] text-[#555]">
-                      Loading...
+            <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_340px]">
+              <div className="animate-cards-row grid grid-cols-1 gap-8 md:grid-cols-2">
+                {sections.map((section) => (
+                  <article
+                    key={section.id}
+                    className={`animate-card relative flex min-h-[320px] flex-col overflow-hidden rounded-[28px] p-8 shadow-[0_12px_40px_rgba(0,0,0,0.08)] ${section.cardBg}`}
+                  >
+                    <h2 className="text-[28px] font-extrabold uppercase md:text-[32px]">
+                      <span className="bg-[linear-gradient(90deg,#D57E89_0%,#9A8FB6_50%,#3E9CDB_100%)] bg-clip-text text-transparent">
+                        {section.title}
+                      </span>
+                    </h2>
+                    <p className="mt-3 max-w-[220px] text-[15px] font-medium leading-snug text-[#444]">
+                      {section.description}
                     </p>
-                  )}
-                  {showResults && !isFetching && catalogItems.length === 0 && (
-                    <p className="mb-4 text-center text-[16px] text-[#555]">
-                      No question papers found for the selected filters.
-                    </p>
-                  )}
-                  {showResults && !isFetching && catalogItems.length > 0 && (
-                    <ResourceCardGrid className={FREE_RESOURCE_CARD_GRID}>
-                      {catalogItems.map((item) => (
-                        <ResourceDocumentCard
-                          key={item.id}
-                          item={item}
-                          singleRowActions
-                        />
-                      ))}
-                    </ResourceCardGrid>
-                  )}
-                </div>
+                    <Link
+                      href={section.href}
+                      className="mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-[#0B1628] px-6 py-3 text-[15px] font-bold text-white transition-transform hover:scale-[1.03]"
+                    >
+                      View
+                      <ArrowRight size={18} aria-hidden />
+                    </Link>
+                    <div className="pointer-events-none absolute bottom-0 right-0 h-[240px] w-[200px]">
+                      <Image
+                        src={section.image}
+                        alt=""
+                        fill
+                        className="object-contain object-bottom"
+                        sizes="200px"
+                      />
+                    </div>
+                  </article>
+                ))}
               </div>
 
-              <aside className="animate-sidebar mx-auto w-full max-w-[380px] space-y-8 xl:ml-auto xl:mt-[90px]">
-                <Courses />
-
-                <div className="rounded-[22px] bg-[#E2EDFE] px-3 py-8 shadow-[0px_10px_30px_rgba(0,0,0,0.05)]">
-                  <h2 className="mb-6 ml-1.5 text-center text-[18px] font-extrabold leading-tight bg-[linear-gradient(90deg,#20A0E0_0%,rgba(246,58,65,0.8)_99.99%)] bg-clip-text text-transparent">
-                    <span className="-ml-2.5">UPSC</span> Prelims 2026 Examination<br />
-                    <span>Countdown</span>
-                  </h2>
-
-                  <div className="flex justify-center gap-2.5">
-                    {[
-                      { label: "DAYS", value: "360" },
-                      { label: "HOURS", value: "24" },
-                      { label: "MINUTES", value: "60" },
-                      { label: "SECONDS", value: "60" },
-                    ].map((item, idx) => (
-                      <div
-                        key={idx}
-                        className="flex h-[78px] w-[72px] flex-col items-center justify-center rounded-[12px] bg-[#0B1628] shadow-lg"
-                      >
-                        <div className="text-[22px] font-extrabold leading-none text-white">
-                          {item.value}
-                        </div>
-                        <span className="mt-2 text-[10px] font-extrabold uppercase tracking-wide text-[#A5DEFF]">
-                          {item.label}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-8 flex justify-center">
-                    <button className="rounded-full bg-[linear-gradient(90deg,#0C4A6E_0%,#032B3F_100%)] px-6 py-3 text-[14px] font-bold text-white shadow-md transition-transform hover:scale-105">
-                      View Complete Schedule
-                    </button>
-                  </div>
-                </div>
+              <aside className="animate-sidebar w-full xl:mt-[20px]">
+                <QuickLinks />
               </aside>
             </div>
           </div>
