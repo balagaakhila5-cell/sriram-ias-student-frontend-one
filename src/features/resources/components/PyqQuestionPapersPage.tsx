@@ -139,7 +139,7 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
         <section className="relative bg-[#f7f7f7] bg-[url('/assets/bg-wave.png')] bg-cover bg-center bg-no-repeat px-6 py-12 lg:px-16 lg:py-14">
           <div className="mx-auto max-w-[1500px]">
             <h1 className="mb-10 text-center text-[36px] font-extrabold uppercase leading-[0.95] md:text-[48px] lg:text-[56px]">
-              <span className="bg-[linear-gradient(90deg,#159FE3_0%,#8E91B5_45%,#D96F7D_100%)] bg-clip-text text-transparent">
+              <span className="bg-[linear-gradient(90deg,#3E9CDB_0%,#9A8FB6_45%,#D57E89_75%,#E53935_100%)] bg-clip-text text-transparent">
                 {title}
               </span>
             </h1>

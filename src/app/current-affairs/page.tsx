@@ -159,7 +159,7 @@ export default function CurrentAffairsPage() {
             <div>
               <h1 className="animate-heading mb-10 text-left text-[36px] font-extrabold uppercase leading-none md:text-[46px] lg:text-[56px]">
                 <span className="bg-[linear-gradient(90deg,#4B97DD_0%,#8E7CB8_45%,#E07B8B_100%)] bg-clip-text text-transparent">
-                  Daily Current Affairs
+                  Current Affairs
                 </span>
               </h1>
 
