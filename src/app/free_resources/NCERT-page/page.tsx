@@ -12,11 +12,13 @@ import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import CustomDropdown from "@/components/common/CustomDropdown";
 import FloatingActions from "@/components/common/FloatingActions";
+import { PremiumSearchButton } from "@/components/common/ResourceFilterButtons";
 
 import { listFreeResourceDocuments } from "@/features/resources/catalog/freeResources";
 import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 import NcertBookCard from "@/features/resources/components/NcertBookCard";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
+import { FREE_RESOURCE_CARD_GRID } from "@/features/resources/components/cardStyles";
 import {
   useResourceCategories,
   useResourceFiles,
@@ -27,11 +29,12 @@ import {
 gsap.registerPlugin(ScrollTrigger);
 
 const defaultBooks = [
-  { _id: "1", title: "History - NCERT Book", fileUrl: "#" },
-  { _id: "2", title: "History - NCERT Book", fileUrl: "#" },
-  { _id: "3", title: "History - NCERT Book", fileUrl: "#" },
-  { _id: "4", title: "History - NCERT Book", fileUrl: "#" },
-  { _id: "5", title: "History - NCERT Book", fileUrl: "#" },
+  { _id: "1", title: "HISTORY-NCERT book1", fileUrl: "#" },
+  { _id: "2", title: "HISTORY-NCERT book2", fileUrl: "#" },
+  { _id: "3", title: "HISTORY-NCERT book3", fileUrl: "#" },
+  { _id: "4", title: "HISTORY-NCERT book4", fileUrl: "#" },
+  { _id: "5", title: "HISTORY-NCERT book5", fileUrl: "#" },
+  { _id: "6", title: "HISTORY-NCERT book6", fileUrl: "#" },
 ];
 
 const toppers = [
@@ -112,7 +115,6 @@ export default function NcertBooksPage() {
 
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
-
   const [appliedFilters, setAppliedFilters] = useState<{
     subjectId?: string;
     classId?: string;
@@ -134,18 +136,17 @@ export default function NcertBooksPage() {
       subjectId: appliedFilters.subjectId,
       classId: appliedFilters.classId,
     },
-    !!categoryId
+    !!categoryId &&
+      (!!appliedFilters.subjectId || !!appliedFilters.classId),
   );
 
   const showResults =
-    "subjectId" in appliedFilters || "classId" in appliedFilters;
+    !!appliedFilters.subjectId || !!appliedFilters.classId;
 
   const catalogItems = useMemo(() => {
+    if (!showResults) return [];
     const fallback = listFreeResourceDocuments("ncert-books");
-    const items = !showResults
-      ? fallback.slice(0, 6)
-      : mapApiFilesToCatalog(files, "ncert-books", fallback, 6);
-    return items.map((item) => ({ ...item, hideImage: true, image: "" }));
+    return mapApiFilesToCatalog(files, "ncert-books", fallback, 6);
   }, [files, showResults]);
 
   useGSAP(
@@ -192,7 +193,7 @@ export default function NcertBooksPage() {
         { x: 0, opacity: 1, duration: 0.8, ease: "power3.out" }
       );
     },
-    { scope: containerRef, dependencies: [prefersReducedMotion, showResults] }
+    { scope: containerRef, dependencies: [prefersReducedMotion, showResults] },
   );
 
   const handleSearch = () => {
@@ -248,30 +249,33 @@ export default function NcertBooksPage() {
                     />
                   </div>
 
-                  <div className="mt-12 flex justify-center">
-                    <button
-                      onClick={handleSearch}
-                      className="rounded-full bg-[linear-gradient(90deg,#167fbd_0%,#03283b_100%)] px-14 py-3 text-[18px] font-bold text-white shadow-[0_8px_20px_rgba(0,0,0,0.1)] transition-all duration-300 hover:scale-[1.03]"
-                    >
-                      Search
-                    </button>
-                  </div>
+                  <PremiumSearchButton
+                    onClick={handleSearch}
+                    disabled={!subjectId && !classId}
+                    className="mt-8"
+                  />
                 </div>
 
                 <div className="animate-cards-container overflow-visible">
-                    {isFetching && (
-                      <p className="mb-4 text-center text-[16px] text-[#555]">
-                        Loading...
-                      </p>
-                    )}
+                  {showResults && isFetching && (
+                    <p className="mb-4 text-center text-[16px] text-[#555]">
+                      Loading...
+                    </p>
+                  )}
 
-                    {!isFetching && (
-                      <ResourceCardGrid>
-                        {catalogItems.map((item) => (
-                          <NcertBookCard key={item.id} item={item} />
-                        ))}
-                      </ResourceCardGrid>
-                    )}
+                  {showResults && !isFetching && catalogItems.length === 0 && (
+                    <p className="mb-4 text-center text-[16px] text-[#555]">
+                      No books found for the selected filters.
+                    </p>
+                  )}
+
+                  {showResults && !isFetching && catalogItems.length > 0 && (
+                    <ResourceCardGrid className={FREE_RESOURCE_CARD_GRID}>
+                      {catalogItems.map((item) => (
+                        <NcertBookCard key={item.id} item={item} />
+                      ))}
+                    </ResourceCardGrid>
+                  )}
                 </div>
               </div>
 

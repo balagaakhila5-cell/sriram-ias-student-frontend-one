@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { listFreeResourceDocuments } from "@/features/resources/catalog/freeResources";
 import StudyMaterialsGrid from "@/features/resources/components/StudyMaterialsGrid";
+import { FREE_RESOURCE_CARD_GRID } from "@/features/resources/components/cardStyles";
 import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -54,14 +55,29 @@ export default function StudyMaterialsPage() {
     !!categoryId && !!subCategoryId,
   );
 
+  const examType =
+    activeTab === "MAINS"
+      ? "mains"
+      : activeTab === "PRELIMS"
+        ? "prelims"
+        : activeTab === "INTERVIEW"
+          ? "interview"
+          : undefined;
+
   const tabLabel = activeTab.toUpperCase();
-  const fallback = useMemo(
-    () =>
-      listFreeResourceDocuments("study-materials").filter((item) =>
-        item.title.toUpperCase().includes(tabLabel),
-      ),
-    [tabLabel],
-  );
+  const fallback = useMemo(() => {
+    if (examType) {
+      return listFreeResourceDocuments(
+        "study-materials",
+        undefined,
+        undefined,
+        examType,
+      );
+    }
+    return listFreeResourceDocuments("study-materials").filter((item) =>
+      item.title.toUpperCase().includes(tabLabel),
+    );
+  }, [examType, tabLabel]);
 
   const catalogItems = useMemo(
     () =>
@@ -207,6 +223,7 @@ export default function StudyMaterialsPage() {
                   <StudyMaterialsGrid
                     items={catalogItems}
                     emptyMessage={`No study material available for ${activeTab}.`}
+                    gridClassName={FREE_RESOURCE_CARD_GRID}
                   />
                 </div>
               </div>

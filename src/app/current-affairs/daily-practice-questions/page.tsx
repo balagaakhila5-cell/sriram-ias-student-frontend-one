@@ -106,7 +106,6 @@ export default function DailyPracticeQuestionsPage() {
   const [activeTab, setActiveTab] = useState<ExamType>("prelims");
   const [selectedYear, setSelectedYear] = useState<string>("2026");
   const [selectedMonth, setSelectedMonth] = useState<string>("April");
-  const [selectedDate, setSelectedDate] = useState<string>("Day");
 
   const practiceTests = useMemo(
     () => listPracticeTests(selectedYear, selectedMonth, activeTab),
@@ -240,7 +239,7 @@ export default function DailyPracticeQuestionsPage() {
                 </div>
 
                 {/* Dropdowns */}
-                <div className="animate-filter mx-auto mb-10 grid max-w-[620px] grid-cols-1 gap-5 sm:grid-cols-3">
+                <div className="animate-filter mx-auto mb-10 grid max-w-[620px] grid-cols-1 gap-5 sm:grid-cols-2">
                   <CustomDropdown
                     options={["2026", "2025", "2024", "2023"]}
                     value={selectedYear}
@@ -252,12 +251,6 @@ export default function DailyPracticeQuestionsPage() {
                     value={selectedMonth}
                     onChange={setSelectedMonth}
                     placeholder="Month"
-                  />
-                  <CustomDropdown
-                    options={Array.from({ length: 31 }, (_, i) => (i + 1).toString())}
-                    value={selectedDate}
-                    onChange={setSelectedDate}
-                    placeholder="Date"
                   />
                 </div>
 

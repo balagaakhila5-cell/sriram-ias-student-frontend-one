@@ -10,6 +10,7 @@ import type {
   CatalogPracticeTest,
   CurrentAffairsSubtopicId,
 } from "./types";
+import { RESOURCE_CARD_LIMIT } from "../components/cardStyles";
 
 const MONTHS = [
   "January",
@@ -60,6 +61,10 @@ function doc(
   };
 }
 
+function magazineTitle(month: string, year: string) {
+  return `${month} Month Magazine ${year}`;
+}
+
 const currentAffairsDocs: CatalogDocument[] = [
   ...Array.from({ length: 10 }, (_, i) =>
     doc("daily-current-affairs", i, "Apr 10 News today from Jammu Kashmir", {
@@ -74,7 +79,7 @@ const currentAffairsDocs: CatalogDocument[] = [
     }),
   ),
   ...Array.from({ length: 10 }, (_, i) =>
-    doc("monthly-magazine", i, "April Month Magazine 2026", {
+    doc("monthly-magazine", i, magazineTitle("April", "2026"), {
       image: RESOURCE_ASSETS.MAGAZINE,
       hasSample: true,
       year: "2026",
@@ -98,7 +103,7 @@ export const dailyPracticeItems: CatalogPracticeTest[] = [
     year: "2026",
     month: "April",
     examType: "prelims" as const,
-    title: `Prelims practice test ${i + 1} - April 2026`,
+    title: `Prelims practice test ${i + 1}`,
     image: RESOURCE_ASSETS.PRACTICE_TEST,
     attemptPath: `/current-affairs/daily-practice-questions/prelims-test-${i + 1}`,
   })),
@@ -108,7 +113,7 @@ export const dailyPracticeItems: CatalogPracticeTest[] = [
     year: "2026",
     month: "April",
     examType: "mains" as const,
-    title: `Mains practice test ${i + 1} - April 2026`,
+    title: `Mains practice test ${i + 1}`,
     image: RESOURCE_ASSETS.PRACTICE_TEST,
     attemptPath: `/current-affairs/daily-practice-questions/mains-test-${i + 1}`,
   })),
@@ -119,12 +124,14 @@ export function listCurrentAffairsDocuments(
   year?: string,
   month?: string,
 ): CatalogDocument[] {
-  return currentAffairsDocs.filter(
-    (item) =>
-      item.subtopic === subtopic &&
-      (!year || item.year === year) &&
-      (!month || item.month === month),
-  );
+  return currentAffairsDocs
+    .filter(
+      (item) =>
+        item.subtopic === subtopic &&
+        (!year || item.year === year) &&
+        (!month || item.month === month),
+    )
+    .slice(0, RESOURCE_CARD_LIMIT);
 }
 
 export function listPracticeTests(
@@ -132,12 +139,14 @@ export function listPracticeTests(
   month?: string,
   examType?: "prelims" | "mains",
 ): CatalogPracticeTest[] {
-  return dailyPracticeItems.filter(
-    (item) =>
-      (!year || item.year === year) &&
-      (!month || item.month === month) &&
-      (!examType || item.examType === examType),
-  );
+  return dailyPracticeItems
+    .filter(
+      (item) =>
+        (!year || item.year === year) &&
+        (!month || item.month === month) &&
+        (!examType || item.examType === examType),
+    )
+    .slice(0, RESOURCE_CARD_LIMIT);
 }
 
 /** @deprecated Use listCurrentAffairsDocuments — kept for student portal types */

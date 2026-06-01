@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import type { CatalogPracticeTest } from "@/features/resources/catalog/types";
-import ResourceCardThumbnail from "./ResourceCardThumbnail";
-import { RESOURCE_BUTTON, RESOURCE_CARD } from "./cardStyles";
+import { RESOURCE_ASSETS } from "@/features/resources/catalog/assets";
+import PremiumCardBanner from "./PremiumCardBanner";
+import { PREMIUM_CARD, RESOURCE_BUTTON } from "./cardStyles";
 
 interface PracticeTestCardProps {
   test: CatalogPracticeTest;
@@ -13,22 +14,27 @@ interface PracticeTestCardProps {
 
 export default function PracticeTestCard({
   test,
-  variant = "public",
   className = "",
 }: PracticeTestCardProps) {
-  const shellHover =
-    variant === "portal" ? RESOURCE_CARD.shellPortal : RESOURCE_CARD.shellPublic;
-
   return (
-    <Link
-      href={test.attemptPath}
-      className={`group animate-card ${RESOURCE_CARD.shell} ${shellHover} ${className}`}
-    >
-      <ResourceCardThumbnail src={test.image} alt={test.title} fit="contain" />
-      <div className={RESOURCE_CARD.body}>
-        <h3 className={RESOURCE_CARD.titleOnDark}>{test.title}</h3>
-        <span className={`${RESOURCE_BUTTON.attempt} mt-3`}>Attempt Test</span>
+    <div className={`${PREMIUM_CARD.shell} ${className}`}>
+      <PremiumCardBanner
+        src={test.image || RESOURCE_ASSETS.PRACTICE_TEST}
+        alt={test.title}
+        fit="cover"
+      />
+      <div className={PREMIUM_CARD.body}>
+        <h3 className={PREMIUM_CARD.title}>{test.title}</h3>
+        <div className={PREMIUM_CARD.actionsCentered}>
+          <Link
+            href={test.attemptPath}
+            className={RESOURCE_BUTTON.attempt}
+            prefetch={false}
+          >
+            Attempt Test
+          </Link>
+        </div>
       </div>
-    </Link>
+    </div>
   );
 }

@@ -9,16 +9,18 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 
-import QuickLinks from "@/components/common/QuickLinks";
 import Courses from "@/components/common/Courses";
 import CustomDropdown from "@/components/common/CustomDropdown";
 import FloatingActions from "@/components/common/FloatingActions";
+import ExamTypeTabs from "@/components/common/ExamTypeTabs";
+import { PremiumSearchButton } from "@/components/common/ResourceFilterButtons";
 
 import { RESOURCE_ASSETS } from "@/features/resources/catalog/assets";
 import { listFreeResourceDocuments } from "@/features/resources/catalog/freeResources";
 import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
+import { FREE_RESOURCE_CARD_GRID } from "@/features/resources/components/cardStyles";
 import {
   findCategoryByKey,
   findSubCategoryByName,
@@ -30,46 +32,22 @@ import {
 
 gsap.registerPlugin(ScrollTrigger);
 
-type Section = "LIST" | "PRELIMS" | "MAINS";
-const defaultQuestionPapers = (section: Section) => [
-  {
-    _id: "1",
-    title: `${section === "PRELIMS" ? "Prelims" : "Mains"} Exam Paper-2 Question Paper .`,
-    fileUrl: "#",
-  },
-  {
-    _id: "2",
-    title: `${section === "PRELIMS" ? "Prelims" : "Mains"} Exam Paper-2 Question Paper .`,
-    fileUrl: "#",
-  },
-  {
-    _id: "3",
-    title: `${section === "PRELIMS" ? "Prelims" : "Mains"} Exam Paper-2 Question Paper .`,
-    fileUrl: "#",
-  },
-  {
-    _id: "4",
-    title: `${section === "PRELIMS" ? "Prelims" : "Mains"} Exam Paper-2 Question Paper .`,
-    fileUrl: "#",
-  },
-  {
-    _id: "5",
-    title: `${section === "PRELIMS" ? "Prelims" : "Mains"} Exam Paper-2 Question Paper .`,
-    fileUrl: "#",
-  },
-];
+type Section = "PRELIMS" | "MAINS";
 
 export default function PreviousYearPage() {
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
-  const [activeSection, setActiveSection] = useState<Section>("LIST");
+  const [activeSection, setActiveSection] = useState<Section>("PRELIMS");
   const [selectedPaper, setSelectedPaper] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
   const [appliedFilters, setAppliedFilters] = useState<{
     paperId?: string;
     yearId?: string;
   }>({});
+
+  const activeTab: "prelims" | "mains" =
+    activeSection === "MAINS" ? "mains" : "prelims";
 
   const { data: categories } = useResourceCategories();
   const pyqCategory = useMemo(
@@ -80,10 +58,7 @@ export default function PreviousYearPage() {
 
   const { data: subCategories } = useResourceSubCategories(categoryId);
   const subCategory = useMemo(
-    () =>
-      activeSection === "LIST"
-        ? undefined
-        : findSubCategoryByName(subCategories, activeSection.toLowerCase()),
+    () => findSubCategoryByName(subCategories, activeSection.toLowerCase()),
     [subCategories, activeSection],
   );
   const subCategoryId = subCategory?._id;
@@ -115,6 +90,9 @@ export default function PreviousYearPage() {
     [years, selectedYear],
   );
 
+  const showResults =
+    !!appliedFilters.paperId || !!appliedFilters.yearId;
+
   const { data: files = [], isFetching } = useResourceFiles(
     {
       categoryId,
@@ -122,23 +100,24 @@ export default function PreviousYearPage() {
       paperId: appliedFilters.paperId,
       yearId: appliedFilters.yearId,
     },
-    !!categoryId &&
-      !!subCategoryId &&
-      (!!appliedFilters.paperId || !!appliedFilters.yearId),
+    !!categoryId && !!subCategoryId && showResults,
   );
-  const showResults =
-    "paperId" in appliedFilters || "yearId" in appliedFilters;
 
   const catalogItems = useMemo(() => {
-    const fallback = listFreeResourceDocuments("previous-year");
-    const items = !showResults
-      ? fallback.slice(0, 6)
-      : mapApiFilesToCatalog(files, "previous-year", fallback, 6);
-    return items.map((item) => ({
-      ...item,
-      image: RESOURCE_ASSETS.PDF_ICON,
-    }));
-  }, [files, showResults]);
+    if (!showResults) return [];
+    const fallback = listFreeResourceDocuments(
+      "previous-year",
+      undefined,
+      undefined,
+      activeTab,
+    );
+    return mapApiFilesToCatalog(files, "previous-year", fallback, 6).map(
+      (item) => ({
+        ...item,
+        image: RESOURCE_ASSETS.PDF_ICON,
+      }),
+    );
+  }, [files, showResults, activeTab]);
 
   useGSAP(
     () => {
@@ -178,12 +157,15 @@ export default function PreviousYearPage() {
     },
   );
 
-  const handleSearch = () => setAppliedFilters({ paperId, yearId });
-  const handleBack = () => {
-    setActiveSection("LIST");
-    setAppliedFilters({});
+  const handleTabChange = (tab: "prelims" | "mains") => {
+    setActiveSection(tab === "prelims" ? "PRELIMS" : "MAINS");
     setSelectedPaper("");
     setSelectedYear("");
+    setAppliedFilters({});
+  };
+
+  const handleSearch = () => {
+    setAppliedFilters({ paperId, yearId });
   };
 
   return (
@@ -207,222 +189,106 @@ export default function PreviousYearPage() {
 
         <section className="relative bg-[#fcfcfc] bg-[url('/assets/bg-wave.png')] bg-cover bg-center bg-no-repeat px-6 py-16 lg:px-12 xl:px-16">
           <div className="mx-auto max-w-[1400px]">
-            {activeSection === "LIST" ? (
-              <>
-                <h1 className="animate-heading mb-14 text-center text-[36px] font-extrabold uppercase leading-[1.05] md:text-[46px] lg:text-[56px]">
-                  <span className="-ml-95 drop-shadow-sm bg-[linear-gradient(90deg,#3E9CDB_0%,#759AB7_60%,#D57E89_100%)] bg-clip-text text-transparent">
-                    PREVIOUS YEAR QUESTION
-                  </span>
-                  <br />
-                  <span className="-ml-95 drop-shadow-sm bg-[linear-gradient(90deg,#5A91CF_0%,#7287B8_50%,#9A8FB6_100%)] bg-clip-text text-transparent">
-                    PAPERS
+            <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_380px]">
+              <div>
+                <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
+                  <span className="bg-[linear-gradient(90deg,#3E9CDB_0%,#9A8FB6_42%,#D57E89_100%)] bg-clip-text text-transparent">
+                    {activeSection} QUESTION PAPERS
                   </span>
                 </h1>
 
-                <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_380px] xl:gap-10">
-                  <div className="animate-cards-container grid grid-cols-1 gap-6 md:grid-cols-2 xl:gap-8">
-                    <div className="animate-card group relative flex min-h-[250px] w-full overflow-hidden rounded-[24px] bg-[#FDF6EA] p-8 shadow-[0_4px_20px_rgba(0,0,0,0.04)] transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.03] hover:shadow-xl">
-                      <div className="relative z-20 flex w-[55%] flex-col justify-center transition-all duration-300 group-hover:translate-x-2">
-                        <h2 className="mb-3 text-[26px] font-extrabold uppercase tracking-wide xl:text-[28px]">
-                          <span className="bg-[linear-gradient(90deg,#5AAEE2_0%,#E18A98_100%)] bg-clip-text text-transparent">
-                            PRELIMS
-                          </span>
-                        </h2>
-                        <p className="mb-6 text-[15px] font-medium leading-snug text-[#555] xl:text-[16px]">
-                          Check all PRELIMS previous year question paper
-                        </p>
-                        <div>
-                          <button
-                            onClick={() => setActiveSection("PRELIMS")}
-                            className="inline-flex items-center gap-1.5 rounded-full bg-[linear-gradient(90deg,#2BA9E0,#032B3F)] px-6 py-2.5 text-[14px] font-semibold text-white shadow-md transition-all duration-300 hover:scale-105"
-                          >
-                            View &rarr;
-                          </button>
-                        </div>
-                      </div>
+                <ExamTypeTabs
+                  activeTab={activeTab}
+                  onChange={handleTabChange}
+                  className="animate-tabs mb-8"
+                />
 
-                      <div className="absolute right-[-5%] top-0 flex h-full w-[50%] origin-right scale-125 items-center justify-center pointer-events-none md:scale-110 lg:scale-[1.3]">
-                        <svg viewBox="-40 -20 280 260" className="relative z-0 h-full w-full drop-shadow-xl transition-all duration-500 group-hover:scale-105">
-                          <defs>
-                            <clipPath id="popOutClipPrelims">
-                              <path d="M 100 0 C 120 0 125 25 143.3 35 C 161.6 45 186.6 40 195 58.3 C 203.4 76.6 185 91.6 185 110 C 185 128.4 203.4 143.4 195 161.7 C 186.6 180 161.6 175 143.3 185 C 125 195 120 220 100 220 C 80 220 75 195 56.7 185 C 38.4 175 13.4 180 5 161.7 C -3.4 143.4 15 128.4 15 110 C 15 91.6 -3.4 76.6 5 58.3 C 13.4 40 38.4 45 56.7 35 C 75 25 80 0 100 0 Z" />
-                              <rect x="-100" y="-100" width="400" height="270" />
-                            </clipPath>
-                          </defs>
-                          <path fill="#D8CEF6" d="M 100 0 C 120 0 125 25 143.3 35 C 161.6 45 186.6 40 195 58.3 C 203.4 76.6 185 91.6 185 110 C 185 128.4 203.4 143.4 195 161.7 C 186.6 180 161.6 175 143.3 185 C 125 195 120 220 100 220 C 80 220 75 195 56.7 185 C 38.4 175 13.4 180 5 161.7 C -3.4 143.4 15 128.4 15 110 C 15 91.6 -3.4 76.6 5 58.3 C 13.4 40 38.4 45 56.7 35 C 75 25 80 0 100 0 Z" />
-                          <image
-                            href="/assets/course/course-details-person.png"
-                            clipPath="url(#popOutClipPrelims)"
-                            x="-35"
-                            y="10"
-                            width="270"
-                            height="250"
-                            preserveAspectRatio="xMidYMid slice"
-                            className="origin-bottom transition-all duration-500 group-hover:scale-[1.08]"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-
-                    <div className="animate-card group relative flex min-h-[250px] w-full overflow-hidden rounded-[24px] bg-[linear-gradient(135deg,#DCEAFC_0%,#C0DDF6_100%)] p-8 shadow-[0_4px_20px_rgba(0,0,0,0.04)] transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.03] hover:shadow-xl">
-                      <div className="relative z-20 flex w-[55%] flex-col justify-center transition-all duration-300 group-hover:translate-x-2">
-                        <h2 className="mb-3 text-[26px] font-extrabold uppercase tracking-wide xl:text-[28px]">
-                          <h2 className="mb-3 text-[26px] font-extrabold uppercase tracking-wide xl:text-[28px]">
-                          <span className="bg-[linear-gradient(90deg,#5AAEE2_0%,#E18A98_100%)] bg-clip-text text-transparent">
-                            MAINS
-                          </span>
-                        </h2>
-                        </h2>
-                        <p className="mb-6 text-[15px] font-medium leading-snug text-[#555] xl:text-[16px]">
-                          Check all MAINS previous year question paper
-                        </p>
-                        <div>
-                          <button
-                            onClick={() => setActiveSection("MAINS")}
-                            className="inline-flex items-center gap-1.5 rounded-full bg-[linear-gradient(90deg,#2BA9E0,#032B3F)] px-6 py-2.5 text-[14px] font-semibold text-white shadow-md transition-all duration-300 hover:scale-105"
-                          >
-                            View &rarr;
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="absolute right-[-5%] top-0 flex h-full w-[50%] origin-right scale-125 items-center justify-center pointer-events-none md:scale-110 lg:scale-[1.3]">
-                        <svg viewBox="-40 -20 280 260" className="relative z-0 h-full w-full drop-shadow-xl transition-all duration-500 group-hover:scale-105">
-                          <defs>
-                            <clipPath id="popOutClipMains">
-                              <path d="M 100 0 C 120 0 125 25 143.3 35 C 161.6 45 186.6 40 195 58.3 C 203.4 76.6 185 91.6 185 110 C 185 128.4 203.4 143.4 195 161.7 C 186.6 180 161.6 175 143.3 185 C 125 195 120 220 100 220 C 80 220 75 195 56.7 185 C 38.4 175 13.4 180 5 161.7 C -3.4 143.4 15 128.4 15 110 C 15 91.6 -3.4 76.6 5 58.3 C 13.4 40 38.4 45 56.7 35 C 75 25 80 0 100 0 Z" />
-                              <rect x="-100" y="-100" width="400" height="270" />
-                            </clipPath>
-                          </defs>
-                          <path fill="#D8CEF6" d="M 100 0 C 120 0 125 25 143.3 35 C 161.6 45 186.6 40 195 58.3 C 203.4 76.6 185 91.6 185 110 C 185 128.4 203.4 143.4 195 161.7 C 186.6 180 161.6 175 143.3 185 C 125 195 120 220 100 220 C 80 220 75 195 56.7 185 C 38.4 175 13.4 180 5 161.7 C -3.4 143.4 15 128.4 15 110 C 15 91.6 -3.4 76.6 5 58.3 C 13.4 40 38.4 45 56.7 35 C 75 25 80 0 100 0 Z" />
-                          <image
-                            href="/assets/free-resources/previous-year-person.png"
-                            clipPath="url(#popOutClipMains)"
-                            x="-35"
-                            y="10"
-                            width="250"
-                            height="250"
-                            preserveAspectRatio="xMidYMid slice"
-                            className="origin-bottom transition-all duration-500 group-hover:scale-[1.08]"
-                          />
-                        </svg>
-                      </div>
-                    </div>
+                <div className="animate-tabs relative z-[60] mb-8">
+                  <div className="flex flex-col items-center justify-center gap-6 md:flex-row">
+                    <CustomDropdown
+                      options={papers.map((p) => p.value)}
+                      value={selectedPaper}
+                      onChange={setSelectedPaper}
+                      placeholder="Select Paper"
+                    />
+                    <CustomDropdown
+                      options={years.map((y) => y.value)}
+                      value={selectedYear}
+                      onChange={setSelectedYear}
+                      placeholder="Year"
+                    />
                   </div>
 
-                  <aside className="animate-sidebar w-full">
-                    <QuickLinks />
-                  </aside>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="mb-6 flex justify-center md:justify-start">
-                  <button
-                    onClick={handleBack}
-                    className="inline-flex items-center gap-2 rounded-full border border-[#e7ebf3] bg-[#edf0fb] px-5 py-2.5 text-[14px] font-bold text-[#111] shadow-sm transition-all hover:bg-[#e2e6f4]"
-                  >
-                    &larr; Back
-                  </button>
+                  <PremiumSearchButton
+                    onClick={handleSearch}
+                    disabled={!paperId && !yearId}
+                    className="mt-8"
+                  />
                 </div>
 
-                <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_380px]">
-                  <div>
-                    <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
-                      <span className="bg-[linear-gradient(90deg,#3E9CDB_0%,#9A8FB6_42%,#D57E89_100%)] bg-clip-text text-transparent">
-                        {activeSection} QUESTION PAPERS
-                      </span>
-                    </h1>
-
-                    <div className="animate-tabs relative z-[60] mb-12">
-                      <div className="flex flex-col items-center justify-center gap-6 md:flex-row">
-                        <CustomDropdown
-                          options={papers.map((p) => p.value)}
-                          value={selectedPaper}
-                          onChange={setSelectedPaper}
-                          placeholder="Select Paper"
+                <div className="animate-cards-container">
+                  {showResults && isFetching && (
+                    <p className="mb-4 text-center text-[16px] text-[#555]">
+                      Loading...
+                    </p>
+                  )}
+                  {showResults && !isFetching && catalogItems.length === 0 && (
+                    <p className="mb-4 text-center text-[16px] text-[#555]">
+                      No question papers found for the selected filters.
+                    </p>
+                  )}
+                  {showResults && !isFetching && catalogItems.length > 0 && (
+                    <ResourceCardGrid className={FREE_RESOURCE_CARD_GRID}>
+                      {catalogItems.map((item) => (
+                        <ResourceDocumentCard
+                          key={item.id}
+                          item={item}
+                          singleRowActions
                         />
-                        <CustomDropdown
-                          options={years.map((y) => y.value)}
-                          value={selectedYear}
-                          onChange={setSelectedYear}
-                          placeholder="Year"
-                        />
-                      </div>
+                      ))}
+                    </ResourceCardGrid>
+                  )}
+                </div>
+              </div>
 
-                      <div className="mt-12 flex justify-center">
-                       
-                          <button
-                             onClick={handleSearch}
-                          className="rounded-full bg-[linear-gradient(90deg,#167fbd_0%,#03283b_100%)] px-14 py-3 text-[18px] font-bold text-white shadow-[0_8px_20px_rgba(0,0,0,0.1)] transition-all duration-300 hover:scale-[1.03] "
-                        >
-                          Search
-                        </button>
-                      </div>
-                    </div>
+              <aside className="animate-sidebar mx-auto w-full max-w-[380px] space-y-8 xl:ml-auto xl:mt-[90px]">
+                <Courses />
 
-                    {showResults && (
-                      <div className="animate-cards-container">
-                        {isFetching && (
-                          <p className="mb-4 text-center text-[16px] text-[#555]">
-                            Loading...
-                          </p>
-                        )}
-                        {!isFetching && (
-                          <ResourceCardGrid>
-                            {catalogItems.map((item) => (
-                              <ResourceDocumentCard
-                                key={item.id}
-                                item={item}
-                                singleRowActions
-                              />
-                            ))}
-                          </ResourceCardGrid>
-                        )}
+                <div className="rounded-[22px] bg-[#E2EDFE] px-3 py-8 shadow-[0px_10px_30px_rgba(0,0,0,0.05)]">
+                  <h2 className="mb-6 ml-1.5 text-center text-[18px] font-extrabold leading-tight bg-[linear-gradient(90deg,#20A0E0_0%,rgba(246,58,65,0.8)_99.99%)] bg-clip-text text-transparent">
+                    <span className="-ml-2.5">UPSC</span> Prelims 2026 Examination<br />
+                    <span>Countdown</span>
+                  </h2>
+
+                  <div className="flex justify-center gap-2.5">
+                    {[
+                      { label: "DAYS", value: "360" },
+                      { label: "HOURS", value: "24" },
+                      { label: "MINUTES", value: "60" },
+                      { label: "SECONDS", value: "60" },
+                    ].map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="flex h-[78px] w-[72px] flex-col items-center justify-center rounded-[12px] bg-[#0B1628] shadow-lg"
+                      >
+                        <div className="text-[22px] font-extrabold leading-none text-white">
+                          {item.value}
+                        </div>
+                        <span className="mt-2 text-[10px] font-extrabold uppercase tracking-wide text-[#A5DEFF]">
+                          {item.label}
+                        </span>
                       </div>
-                    )}
+                    ))}
                   </div>
 
-                  <aside className="animate-sidebar mx-auto w-full max-w-[380px] space-y-8 xl:ml-auto xl:mt-[90px]">
-                    <Courses />
-
-                    <div className="rounded-[22px] bg-[#E2EDFE] px-3 py-8 shadow-[0px_10px_30px_rgba(0,0,0,0.05)]">
-                      <h2 className="mb-6 ml-1.5 text-center text-[18px] font-extrabold leading-tight bg-[linear-gradient(90deg,#20A0E0_0%,rgba(246,58,65,0.8)_99.99%)] bg-clip-text text-transparent">
-                        <span className="-ml-2.5">UPSC</span> Prelims 2026 Examination<br />
-                        <span>Countdown</span>
-                      </h2>
-
-                      <div className="flex justify-center gap-2.5">
-                        {[
-                          { label: "DAYS", value: "360" },
-                          { label: "HOURS", value: "24" },
-                          { label: "MINUTES", value: "60" },
-                          { label: "SECONDS", value: "60" },
-                        ].map((item, idx) => (
-                          <div
-                            key={idx}
-                            className="flex h-[78px] w-[72px] flex-col items-center justify-center rounded-[12px] bg-[#0B1628] shadow-lg"
-                          >
-                            <div className="text-[22px] font-extrabold leading-none text-white">
-                              {item.value}
-                            </div>
-                            <span className="mt-2 text-[10px] font-extrabold uppercase tracking-wide text-[#A5DEFF]">
-                              {item.label}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="mt-8 flex justify-center">
-                        <button className="rounded-full bg-[linear-gradient(90deg,#0C4A6E_0%,#032B3F_100%)] px-6 py-3 text-[14px] font-bold text-white shadow-md transition-transform hover:scale-105">
-                          View Complete Schedule
-                        </button>
-                      </div>
-                    </div>
-                  </aside>
+                  <div className="mt-8 flex justify-center">
+                    <button className="rounded-full bg-[linear-gradient(90deg,#0C4A6E_0%,#032B3F_100%)] px-6 py-3 text-[14px] font-bold text-white shadow-md transition-transform hover:scale-105">
+                      View Complete Schedule
+                    </button>
+                  </div>
                 </div>
-              </>
-            )}
+              </aside>
+            </div>
           </div>
         </section>
       </main>

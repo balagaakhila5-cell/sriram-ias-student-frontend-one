@@ -6,7 +6,7 @@ export default function ResourcesGridSkeleton() {
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
-          className="h-[132px] animate-pulse rounded-[14px] bg-[#EDEEF2]"
+          className="h-[112px] animate-pulse rounded-[14px] bg-[#EDEEF2]"
         />
       ))}
     </ResourceCardGrid>

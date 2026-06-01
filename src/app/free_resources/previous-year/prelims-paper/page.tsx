@@ -60,7 +60,6 @@ function CustomDropdown({
 export default function PrelimsPaperPage() {
   const [selectedPaper, setSelectedPaper] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
-  const [appliedFilters, setAppliedFilters] = useState<{ paperId?: string; yearId?: string }>({});
 
   const { data: categories } = useResourceCategories();
   const pyqCategory = useMemo(() => findCategoryByKey(categories, 'PYQ'), [categories]);
@@ -104,10 +103,10 @@ export default function PrelimsPaperPage() {
     {
       categoryId,
       subCategoryId,
-      paperId: appliedFilters.paperId,
-      yearId: appliedFilters.yearId,
+      paperId: paperId || undefined,
+      yearId: yearId || undefined,
     },
-    !!categoryId && !!subCategoryId && (!!appliedFilters.paperId || !!appliedFilters.yearId),
+    !!categoryId && !!subCategoryId,
   );
 
   return (
@@ -143,19 +142,12 @@ export default function PrelimsPaperPage() {
                     <CustomDropdown placeholder="Select Paper" options={papers.map(p => p.value)} value={selectedPaper} onChange={setSelectedPaper} />
                     <CustomDropdown placeholder="Year" options={years.map(y => y.value)} value={selectedYear} onChange={setSelectedYear} />
                   </div>
-                  <button
-                    onClick={() => setAppliedFilters({ paperId, yearId })}
-                    disabled={!paperId && !yearId}
-                    className="h-[50px] min-w-[185px] rounded-full px-10 text-[18px] font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
-                    style={{ background: 'linear-gradient(90deg, #1699E0 0%, #032B3F 100%)' }}>
-                    Search
-                  </button>
                 </div>
 
                 {isFetching && (
                   <p className="mb-4 text-center text-[16px] text-[#555]">Loading...</p>
                 )}
-                {!isFetching && files.length === 0 && (appliedFilters.paperId || appliedFilters.yearId) && (
+                {!isFetching && files.length === 0 && (paperId || yearId) && (
                   <p className="mb-4 text-center text-[16px] text-[#555]">No papers found.</p>
                 )}
                 {!isFetching && files.length > 0 && (

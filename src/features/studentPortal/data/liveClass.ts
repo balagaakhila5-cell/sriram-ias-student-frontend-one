@@ -12,6 +12,7 @@ export interface LiveSession {
 export interface UpcomingSession {
   id: number;
   topic: string;
+  /** e.g. "1:00 PM - 2:00 PM | Today" */
   timeLabel: string;
   date: string;
 }
@@ -29,14 +30,14 @@ export const nextClass: LiveSession = {
 export const upcomingSessions: UpcomingSession[] = [
   {
     id: 1,
-    topic: "React Hooks",
-    timeLabel: "10:00 AM",
-    date: "2026-05-28",
+    topic: "Indian Constitution Features & Sources",
+    timeLabel: "1:00 PM - 2:00 PM | Today",
+    date: "2026-05-30",
   },
   {
     id: 2,
-    topic: "Next JS",
-    timeLabel: "2:00 PM",
-    date: "2026-05-29",
+    topic: "Indian Constitution Features & Sources",
+    timeLabel: "1:00 PM - 2:00 PM | Today",
+    date: "2026-05-30",
   },
 ];

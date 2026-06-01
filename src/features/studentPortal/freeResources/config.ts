@@ -45,3 +45,32 @@ export function getSubtopicsForTab(tab: StudentResourceTab) {
 export function getSubtopicLabel(id: SubtopicOption["id"]) {
   return SUBTOPIC_OPTIONS.find((option) => option.id === id)?.label ?? id;
 }
+
+/** Free Resources subtopics that split content by Prelims / Mains */
+export const FREE_RESOURCES_EXAM_SUBTOPICS = new Set([
+  "free-mocktests",
+  "previous-year",
+  "study-materials",
+] as const);
+
+export type FreeResourcesExamType = "prelims" | "mains";
+
+export type StudyMaterialsExamType = "prelims" | "mains" | "interview";
+
+export type FreeResourcesPanelExamType =
+  | FreeResourcesExamType
+  | StudyMaterialsExamType;
+
+export function freeResourcesUsesExamType(
+  subtopic: SubtopicOption["id"],
+): subtopic is "free-mocktests" | "previous-year" | "study-materials" {
+  return FREE_RESOURCES_EXAM_SUBTOPICS.has(
+    subtopic as "free-mocktests" | "previous-year" | "study-materials",
+  );
+}
+
+export function freeResourcesUsesStudyMaterialsTabs(
+  subtopic: SubtopicOption["id"],
+): subtopic is "study-materials" {
+  return subtopic === "study-materials";
+}

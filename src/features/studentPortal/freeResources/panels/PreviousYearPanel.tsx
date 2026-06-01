@@ -5,18 +5,32 @@ import { listFreeResourceDocuments } from "@/features/resources/catalog/freeReso
 import { RESOURCE_ASSETS } from "@/features/resources/catalog/assets";
 import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
+import { FREE_RESOURCE_CARD_GRID } from "@/features/resources/components/cardStyles";
 import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 import {
   findCategoryByKey,
+  findSubCategoryByName,
   useResourceCategories,
   useResourceFiles,
+  useResourceSubCategories,
 } from "@/features/resources/hooks/useResources";
 import type { CatalogDocument } from "@/features/resources/catalog/types";
+import type { FreeResourcesExamType } from "../config";
 
-export default function PreviousYearPanel() {
+interface PreviousYearPanelProps {
+  examType: FreeResourcesExamType;
+}
+
+export default function PreviousYearPanel({ examType }: PreviousYearPanelProps) {
   const fallback = useMemo(
-    () => listFreeResourceDocuments("previous-year"),
-    [],
+    () =>
+      listFreeResourceDocuments(
+        "previous-year",
+        undefined,
+        undefined,
+        examType,
+      ),
+    [examType],
   );
 
   const { data: categories } = useResourceCategories();
@@ -26,9 +40,16 @@ export default function PreviousYearPanel() {
   );
   const categoryId = pyqCategory?._id;
 
+  const { data: subCategories } = useResourceSubCategories(categoryId);
+  const subCategory = useMemo(
+    () => findSubCategoryByName(subCategories, examType),
+    [subCategories, examType],
+  );
+  const subCategoryId = subCategory?._id;
+
   const { data: files = [], isFetching } = useResourceFiles(
-    { categoryId },
-    !!categoryId,
+    { categoryId, subCategoryId },
+    !!categoryId && !!subCategoryId,
   );
 
   const items: CatalogDocument[] = useMemo(
@@ -47,7 +68,7 @@ export default function PreviousYearPanel() {
           Updating results…
         </p>
       ) : null}
-      <ResourceCardGrid>
+      <ResourceCardGrid className={FREE_RESOURCE_CARD_GRID}>
         {items.map((item) => (
           <ResourceDocumentCard
             key={item.id}

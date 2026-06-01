@@ -5,9 +5,15 @@ type ResourceLinkFields = Pick<
   "id" | "pdfUrl" | "title" | "module" | "subtopic" | "hasSample"
 >;
 
+function normalizePdfUrl(pdfUrl: unknown): string {
+  if (typeof pdfUrl === "string") return pdfUrl.trim();
+  if (pdfUrl == null) return "";
+  return String(pdfUrl).trim();
+}
+
 function buildResourceQuery(item: ResourceLinkFields) {
   const params = new URLSearchParams();
-  params.set("pdf", item.pdfUrl);
+  params.set("pdf", normalizePdfUrl(item.pdfUrl));
   params.set("title", item.title);
   params.set("module", item.module);
   params.set("subtopic", String(item.subtopic));
@@ -23,7 +29,7 @@ export function resourceSamplePath(item: ResourceLinkFields) {
 }
 
 export function resourceDownloadPath(item: ResourceLinkFields) {
-  const url = item.pdfUrl?.trim();
+  const url = normalizePdfUrl(item.pdfUrl);
   if (
     url &&
     (url.startsWith("http://") ||

@@ -1,9 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import SubNavToggle from "@/features/studentPortal/components/SubNavToggle";
+import { useMemo } from "react";
 import MockTestCard from "@/features/resources/components/MockTestCard";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
+import {
+  FREE_RESOURCE_CARD_GRID,
+  RESOURCE_CARD_LIMIT,
+} from "@/features/resources/components/cardStyles";
 import { listDemoMockTestCards } from "@/features/resources/catalog/demoMockTests";
 import {
   findCategoryByKey,
@@ -12,17 +15,13 @@ import {
   useResourceCategories,
   useResourceSubCategories,
 } from "@/features/resources/hooks/useResources";
+import type { FreeResourcesExamType } from "../config";
 
-type MockTab = "prelims" | "mains";
+interface MockTestsPanelProps {
+  examType: FreeResourcesExamType;
+}
 
-const MOCK_TABS: { id: MockTab; label: string }[] = [
-  { id: "prelims", label: "Prelims" },
-  { id: "mains", label: "Mains" },
-];
-
-export default function MockTestsPanel() {
-  const [activeTab, setActiveTab] = useState<MockTab>("prelims");
-
+export default function MockTestsPanel({ examType }: MockTestsPanelProps) {
   const { data: categories } = useResourceCategories();
   const mockCategory = useMemo(
     () => findCategoryByKey(categories, "MOCK_TESTS"),
@@ -32,34 +31,26 @@ export default function MockTestsPanel() {
 
   const { data: subCategories } = useResourceSubCategories(categoryId);
   const subCategory = useMemo(
-    () => findSubCategoryByName(subCategories, activeTab),
-    [subCategories, activeTab],
+    () => findSubCategoryByName(subCategories, examType),
+    [subCategories, examType],
   );
   const subCategoryId = subCategory?._id;
 
   const { data: mockTests = [] } = useMockTests(
     { categoryId, subCategoryId },
     true,
-    activeTab,
+    examType,
   );
 
-  const displayTests = mockTests.length > 0 ? mockTests : listDemoMockTestCards(activeTab);
+  const displayTests = (
+    mockTests.length > 0 ? mockTests : listDemoMockTestCards(examType)
+  ).slice(0, RESOURCE_CARD_LIMIT);
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-center">
-        <SubNavToggle
-          options={MOCK_TABS}
-          active={activeTab}
-          onChange={setActiveTab}
-        />
-      </div>
-
-      <ResourceCardGrid>
-        {displayTests.map((test) => (
-          <MockTestCard key={test._id} test={test} variant="portal" />
-        ))}
-      </ResourceCardGrid>
-    </div>
+    <ResourceCardGrid className={FREE_RESOURCE_CARD_GRID}>
+      {displayTests.map((test) => (
+        <MockTestCard key={test._id} test={test} variant="portal" />
+      ))}
+    </ResourceCardGrid>
   );
 }

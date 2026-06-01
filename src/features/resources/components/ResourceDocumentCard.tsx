@@ -8,15 +8,52 @@ import {
   resourceViewPath,
 } from "@/features/resources/catalog/routes";
 import { RESOURCE_ASSETS } from "@/features/resources/catalog/assets";
-import ResourceCardThumbnail from "./ResourceCardThumbnail";
-import { RESOURCE_BUTTON, RESOURCE_CARD } from "./cardStyles";
+import { catalogDocumentDescription } from "@/features/resources/utils/cardDescription";
+import PremiumCardBanner from "./PremiumCardBanner";
+import { PREMIUM_CARD, RESOURCE_BUTTON } from "./cardStyles";
 
 interface ResourceDocumentCardProps {
   item: CatalogDocument;
   variant?: "public" | "portal";
   className?: string;
-  /** Keeps Read + Download on one row (e.g. Previous Year in narrow columns) */
   singleRowActions?: boolean;
+}
+
+function primaryActionLabel(item: CatalogDocument): string {
+  if (item.subtopic === "previous-year") return "View";
+  return "Read";
+}
+
+function resolveBanner(item: CatalogDocument) {
+  if (item.hideImage) {
+    return null;
+  }
+
+  const isMagazine = item.subtopic === "monthly-magazine";
+  const isCurrentAffairs = item.module === "current-affairs";
+
+  if (isMagazine) {
+    return {
+      src: item.image || RESOURCE_ASSETS.MAGAZINE,
+      fit: "magazine" as const,
+    };
+  }
+
+  const src =
+    item.image ||
+    (isCurrentAffairs || item.subtopic === "previous-year"
+      ? RESOURCE_ASSETS.PDF_ICON
+      : RESOURCE_ASSETS.PDF_THUMBNAIL);
+
+  const isPdfIcon =
+    src === RESOURCE_ASSETS.PDF_ICON || src === RESOURCE_ASSETS.PDF_THUMBNAIL;
+
+  return {
+    src,
+    fit: (isPdfIcon || item.subtopic === "previous-year" ? "cover" : "contain") as
+      | "cover"
+      | "contain",
+  };
 }
 
 export default function ResourceDocumentCard({
@@ -25,40 +62,51 @@ export default function ResourceDocumentCard({
   className = "",
   singleRowActions = false,
 }: ResourceDocumentCardProps) {
-  const showImage = !item.hideImage;
-  const imageSrc = item.image || RESOURCE_ASSETS.PDF_ICON;
-  const forceSingleRow =
-    singleRowActions || item.subtopic === "previous-year";
-  const actionsRowClass = forceSingleRow
-    ? RESOURCE_CARD.actions
-    : RESOURCE_CARD.actionsWrap;
-  const shellHover =
-    variant === "portal" ? RESOURCE_CARD.shellPortal : RESOURCE_CARD.shellPublic;
+  const banner = resolveBanner(item);
   const Tag = variant === "portal" ? "article" : "div";
+  const description = catalogDocumentDescription(item);
+  const isMagazine = item.subtopic === "monthly-magazine";
+  const actionCount = 2 + (item.hasSample ? 1 : 0);
+  const useSingleRow =
+    singleRowActions || isMagazine || actionCount >= 3;
+  const useCompactButtons = useSingleRow && actionCount >= 3;
+  const actionsClass = useSingleRow
+    ? PREMIUM_CARD.actionsRow
+    : PREMIUM_CARD.actions;
+  const buttonClass = useCompactButtons
+    ? RESOURCE_BUTTON.compact
+    : RESOURCE_BUTTON.base;
 
   return (
-    <Tag
-      className={`group animate-card ${RESOURCE_CARD.shell} ${shellHover} ${className}`}
-    >
-      {showImage ? (
-        <ResourceCardThumbnail src={imageSrc} alt={item.title} />
+    <Tag className={`${PREMIUM_CARD.shell} ${className}`}>
+      {banner ? (
+        <PremiumCardBanner src={banner.src} alt={item.title} fit={banner.fit} />
       ) : null}
-      <div className={RESOURCE_CARD.body}>
-        <h3 className={RESOURCE_CARD.title}>{item.title}</h3>
-        <div className={actionsRowClass}>
+      <div
+        className={banner ? PREMIUM_CARD.body : PREMIUM_CARD.bodyCentered}
+      >
+        <h3
+          className={`${PREMIUM_CARD.title}${isMagazine ? " line-clamp-1" : ""}`}
+        >
+          {item.title}
+        </h3>
+        {description ? (
+          <p className={PREMIUM_CARD.description}>{description}</p>
+        ) : null}
+        <div className={actionsClass}>
           <Link
             href={resourceViewPath(item)}
-            className={RESOURCE_BUTTON.base}
+            className={buttonClass}
             prefetch={false}
             target={variant === "portal" ? "_blank" : undefined}
             rel={variant === "portal" ? "noopener noreferrer" : undefined}
           >
-            Read
+            {primaryActionLabel(item)}
           </Link>
           {item.hasSample ? (
             <Link
               href={resourceSamplePath(item)}
-              className={RESOURCE_BUTTON.base}
+              className={buttonClass}
               prefetch={false}
             >
               Sample
@@ -66,7 +114,7 @@ export default function ResourceDocumentCard({
           ) : null}
           <a
             href={resourceDownloadPath(item)}
-            className={RESOURCE_BUTTON.base}
+            className={buttonClass}
             target="_blank"
             rel="noopener noreferrer"
           >

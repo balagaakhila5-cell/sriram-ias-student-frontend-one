@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { listFreeResourceDocuments } from "@/features/resources/catalog/freeResources";
 import NcertBookCard from "@/features/resources/components/NcertBookCard";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
+import { FREE_RESOURCE_CARD_GRID } from "@/features/resources/components/cardStyles";
 import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 import {
   findCategoryByKey,
@@ -31,12 +32,7 @@ export default function NcertBooksPanel() {
   );
 
   const items: CatalogDocument[] = useMemo(
-    () =>
-      mapApiFilesToCatalog(files, "ncert-books", fallback, 6).map((item) => ({
-        ...item,
-        hideImage: true,
-        image: "",
-      })),
+    () => mapApiFilesToCatalog(files, "ncert-books", fallback, 6),
     [files, fallback],
   );
 
@@ -47,7 +43,7 @@ export default function NcertBooksPanel() {
           Updating results…
         </p>
       ) : null}
-      <ResourceCardGrid>
+      <ResourceCardGrid className={FREE_RESOURCE_CARD_GRID}>
         {items.map((item) => (
           <NcertBookCard key={item.id} item={item} variant="portal" />
         ))}

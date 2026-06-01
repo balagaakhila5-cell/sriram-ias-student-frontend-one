@@ -2,7 +2,6 @@
 
 import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -14,9 +13,12 @@ import QuickLinks from "@/components/common/QuickLinks";
 import Courses from "@/components/common/Courses";
 import CustomDropdown from "@/components/common/CustomDropdown";
 import FloatingActions from "@/components/common/FloatingActions";
+import ExamTypeTabs from "@/components/common/ExamTypeTabs";
+import { PremiumAttemptNowButton } from "@/components/common/ResourceFilterButtons";
 
 import MockTestCard from "@/features/resources/components/MockTestCard";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
+import { FREE_RESOURCE_CARD_GRID, RESOURCE_CARD_LIMIT } from "@/features/resources/components/cardStyles";
 import { listDemoMockTestCards } from "@/features/resources/catalog/demoMockTests";
 import {
   findCategoryByKey,
@@ -31,12 +33,15 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function FreeMockTestsPage() {
   const containerRef = useRef<HTMLElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   const [selectedPaper, setSelectedPaper] = useState("");
   const [activeTab, setActiveTab] = useState<"prelims" | "mains">("prelims");
-  const [appliedPaperId, setAppliedPaperId] = useState<string | undefined>();
-  const [showResults, setShowResults] = useState(true);
+  const [appliedFilters, setAppliedFilters] = useState<{
+    subCategoryId?: string;
+    paperId?: string;
+  }>({});
 
   const { data: categories } = useResourceCategories();
   const mockCategory = useMemo(
@@ -60,10 +65,15 @@ export default function FreeMockTestsPage() {
     if (!subCategoryId) return [];
     const filtered = allPapers.filter((p) => {
       const sub = p.subCategory;
-      const subId = typeof sub === "string" ? sub : (sub as { _id?: string } | undefined)?._id;
+      const subId =
+        typeof sub === "string"
+          ? sub
+          : (sub as { _id?: string } | undefined)?._id;
       return !subId || subId === subCategoryId;
     });
-    return filtered.filter((p, i, arr) => arr.findIndex((x) => x.value === p.value) === i);
+    return filtered.filter(
+      (p, i, arr) => arr.findIndex((x) => x.value === p.value) === i,
+    );
   }, [allPapers, subCategoryId]);
 
   const paperId = useMemo(
@@ -71,14 +81,41 @@ export default function FreeMockTestsPage() {
     [papers, selectedPaper],
   );
 
+  const showResults = !!appliedFilters.subCategoryId;
+
   const { data: mockTests = [], isFetching } = useMockTests(
-    { categoryId, subCategoryId, paperId: appliedPaperId },
-    showResults,
+    {
+      categoryId,
+      subCategoryId: appliedFilters.subCategoryId,
+      paperId: appliedFilters.paperId,
+    },
+    showResults && !!categoryId,
     activeTab,
   );
 
-  const displayTests =
-    mockTests.length > 0 ? mockTests : listDemoMockTestCards(activeTab);
+  const displayTests = useMemo(() => {
+    if (!showResults) return [];
+    const tests =
+      mockTests.length > 0
+        ? mockTests
+        : listDemoMockTestCards(activeTab);
+    return tests.slice(0, RESOURCE_CARD_LIMIT);
+  }, [showResults, mockTests, activeTab]);
+
+  const handleTabChange = (tab: "prelims" | "mains") => {
+    setActiveTab(tab);
+    setSelectedPaper("");
+    setAppliedFilters({});
+  };
+
+  const handleAttemptNow = () => {
+    if (!subCategoryId) return;
+    setAppliedFilters({
+      subCategoryId,
+      paperId: paperId || undefined,
+    });
+    cardsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   useGSAP(
     () => {
@@ -102,7 +139,10 @@ export default function FreeMockTestsPage() {
           stagger: 0.1,
           duration: 0.8,
           ease: "power3.out",
-          scrollTrigger: { trigger: ".animate-cards-container", start: "top 85%" },
+          scrollTrigger: {
+            trigger: ".animate-cards-container",
+            start: "top 85%",
+          },
         },
       );
       gsap.fromTo(
@@ -117,16 +157,14 @@ export default function FreeMockTestsPage() {
     },
   );
 
-  const handleSearch = () => {
-    setAppliedPaperId(paperId);
-    setShowResults(true);
-  };
-
   return (
     <>
       <Header />
 
-      <main ref={containerRef} className="min-h-screen font-['Montserrat',sans-serif]">
+      <main
+        ref={containerRef}
+        className="min-h-screen font-['Montserrat',sans-serif]"
+      >
         <section className="relative h-[300px] w-full overflow-hidden md:h-[380px] lg:h-[390px]">
           <Image
             src="/assets/free-resources/free-mocktests/freemock-tests.png"
@@ -143,100 +181,58 @@ export default function FreeMockTestsPage() {
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-14">
               <div>
                 <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold leading-none md:text-[56px] lg:text-[56px]">
-                <span className="bg-gradient-to-r from-[#5f8fcb] via-[#8e8fb7] to-[#b57ea5] bg-clip-text text-transparent">
-                  Free Mock Tests
-                </span>
-              </h1>
+                  <span className="bg-gradient-to-r from-[#5f8fcb] via-[#8e8fb7] to-[#b57ea5] bg-clip-text text-transparent">
+                    Free Mock Tests
+                  </span>
+                </h1>
 
-                <div className="animate-tabs mx-auto mb-8 max-w-[800px] rounded-[24px] bg-[#F4F4F4] p-4 shadow-sm">
-                  <div className="flex w-full overflow-hidden">
-                    <button
-                      onClick={() => {
-                        setActiveTab("prelims");
-                        setSelectedPaper("");
-                        setAppliedPaperId(undefined);
-                      }}
-                      className={`flex flex-1 flex-col items-center justify-center gap-2 rounded-[16px] py-4 transition-all duration-300 ${
-                        activeTab === "prelims"
-                          ? "bg-[linear-gradient(90deg,#2aa7df_0%,#03283b_100%)] text-white shadow-lg"
-                          : "bg-transparent text-[#444] hover:bg-[#ebebeb]"
-                      }`}
-                    >
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={activeTab === "prelims" ? "stroke-white" : "stroke-[#444]"}>
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <path d="M16 13H8"></path>
-                        <path d="M16 17H8"></path>
-                        <path d="M10 9H8"></path>
-                      </svg>
-                      <span className="text-[16px] font-semibold md:text-[18px]">Prelims</span>
-                    </button>
+                <div className="animate-tabs mx-auto mb-12 max-w-[800px] rounded-[24px] bg-[#F4F4F4] p-5 shadow-sm">
+                  <ExamTypeTabs
+                    activeTab={activeTab}
+                    onChange={handleTabChange}
+                    variant="lite"
+                    embedded
+                    className="mb-6"
+                  />
 
-                    <div className="my-2 mx-2 w-[1px] bg-[#d9d9d9]"></div>
-
-                    <button
-                      onClick={() => {
-                        setActiveTab("mains");
-                        setSelectedPaper("");
-                        setAppliedPaperId(undefined);
-                      }}
-                      className={`flex flex-1 flex-col items-center justify-center gap-2 rounded-[16px] py-4 transition-all duration-300 ${
-                        activeTab === "mains"
-                          ? "bg-[linear-gradient(90deg,#2aa7df_0%,#03283b_100%)] text-white shadow-lg"
-                          : "bg-transparent text-[#444] hover:bg-[#ebebeb]"
-                      }`}
-                    >
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={activeTab === "mains" ? "stroke-white" : "stroke-[#444]"}>
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <path d="M16 13H8"></path>
-                        <path d="M16 17H8"></path>
-                        <path d="M10 9H8"></path>
-                      </svg>
-                      <span className="text-[16px] font-medium md:text-[18px]">Mains</span>
-                    </button>
+                  <div className="relative z-[60] mb-6 flex justify-center">
+                    <CustomDropdown
+                      options={papers.map((p) => p.value)}
+                      value={selectedPaper}
+                      onChange={setSelectedPaper}
+                      placeholder="Select Paper"
+                    />
                   </div>
-                </div>
 
-                <div className="relative z-[60] mb-8 flex justify-center">
-                  <CustomDropdown
-                    options={papers.map((p) => p.value)}
-                    value={selectedPaper}
-                    onChange={setSelectedPaper}
-                    placeholder="Select Paper (optional)"
+                  <PremiumAttemptNowButton
+                    onClick={handleAttemptNow}
+                    disabled={!subCategoryId}
                   />
                 </div>
 
-                <div className="mb-12 flex justify-center">
-                  <button
-                    onClick={handleSearch}
-                    className="rounded-full bg-[linear-gradient(90deg,#167fbd_0%,#03283b_100%)] px-10 py-2.5 text-[16px] font-bold text-white shadow-[0_8px_20px_rgba(0,0,0,0.1)] transition-transform hover:scale-105"
-                  >
-                    Show Tests
-                  </button>
+                <div ref={cardsRef} className="animate-cards-container">
+                  {showResults && isFetching && (
+                    <p className="mb-4 text-center text-[16px] text-[#555]">
+                      Loading...
+                    </p>
+                  )}
+                  {showResults && !isFetching && displayTests.length === 0 && (
+                    <p className="mb-4 text-center text-[16px] text-[#555]">
+                      No mock tests available.
+                    </p>
+                  )}
+                  {showResults && !isFetching && displayTests.length > 0 && (
+                    <ResourceCardGrid className={FREE_RESOURCE_CARD_GRID}>
+                      {displayTests.map((test) => (
+                        <MockTestCard
+                          key={test._id}
+                          test={test}
+                          variant="public"
+                        />
+                      ))}
+                    </ResourceCardGrid>
+                  )}
                 </div>
-
-                {showResults && (
-                  <div className="animate-cards-container">
-                    {isFetching && (
-                      <p className="mb-4 text-center text-[16px] text-[#555]">
-                        Loading...
-                      </p>
-                    )}
-                    {!isFetching && displayTests.length === 0 && (
-                      <p className="mb-4 text-center text-[16px] text-[#555]">
-                        No mock tests available.
-                      </p>
-                    )}
-                    {!isFetching && displayTests.length > 0 && (
-                      <ResourceCardGrid>
-                        {displayTests.map((test) => (
-                          <MockTestCard key={test._id} test={test} variant="public" />
-                        ))}
-                      </ResourceCardGrid>
-                    )}
-                  </div>
-                )}
               </div>
 
               <aside className="animate-sidebar w-full xl:mt-[100px]">

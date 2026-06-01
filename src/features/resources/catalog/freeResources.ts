@@ -1,6 +1,7 @@
 import { RESOURCE_ASSETS, pdfThumbnailSrc } from "./assets";
 import { resourceDownloadPath } from "./routes";
 import { registerDocuments } from "./registry";
+import { RESOURCE_CARD_LIMIT } from "../components/cardStyles";
 import type { CatalogDocument, FreeResourcesSubtopicId } from "./types";
 
 const MONTHS = [
@@ -43,13 +44,20 @@ function freeDoc(
 
 const freeResourceDocs: CatalogDocument[] = [
   ...Array.from({ length: 6 }, (_, i) =>
-    freeDoc("ncert-books", i, `NCERT Book ${i + 1} - History`),
+    freeDoc("ncert-books", i, `HISTORY-NCERT book${i + 1}`),
   ),
   ...Array.from({ length: 6 }, (_, i) =>
     freeDoc(
       "previous-year",
       i,
-      `${i % 2 === 0 ? "Prelims" : "Mains"} Exam Paper ${i + 1} - 2024`,
+      "Prelims Exam Paper-2 Question Paper .",
+    ),
+  ),
+  ...Array.from({ length: 6 }, (_, i) =>
+    freeDoc(
+      "previous-year",
+      i + 6,
+      "Mains Exam Paper-2 Question Paper .",
     ),
   ),
   ...Array.from({ length: 6 }, (_, i) =>
@@ -62,6 +70,11 @@ const freeResourceDocs: CatalogDocument[] = [
       hasSample: true,
     }),
   ),
+  ...Array.from({ length: 6 }, (_, i) =>
+    freeDoc("study-materials", i + 12, `INTERVIEW - Study Material ${i + 1}`, {
+      hasSample: true,
+    }),
+  ),
 ];
 
 registerDocuments(freeResourceDocs);
@@ -70,13 +83,27 @@ export function listFreeResourceDocuments(
   subtopic: FreeResourcesSubtopicId,
   year?: string,
   month?: string,
+  examType?: "prelims" | "mains" | "interview",
 ): CatalogDocument[] {
-  return freeResourceDocs.filter(
-    (item) =>
-      item.subtopic === subtopic &&
-      (!year || item.year === year) &&
-      (!month || item.month === month),
-  );
+  return freeResourceDocs
+    .filter((item) => {
+      if (item.subtopic !== subtopic) return false;
+      if (year && item.year !== year) return false;
+      if (month && item.month !== month) return false;
+      if (subtopic === "previous-year" && examType) {
+        const isPrelims = item.title.toLowerCase().startsWith("prelims");
+        return examType === "prelims" ? isPrelims : !isPrelims;
+      }
+      if (subtopic === "study-materials" && examType) {
+        const title = item.title.toUpperCase();
+        if (examType === "prelims") return title.includes("PRELIMS");
+        if (examType === "mains") return title.includes("MAINS");
+        if (examType === "interview") return title.includes("INTERVIEW");
+        return true;
+      }
+      return true;
+    })
+    .slice(0, RESOURCE_CARD_LIMIT);
 }
 
 export function catalogDocumentToResourceFile(doc: CatalogDocument) {
