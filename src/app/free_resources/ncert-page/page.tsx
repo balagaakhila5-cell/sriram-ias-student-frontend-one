@@ -1,8 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,13 +11,17 @@ import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import CustomDropdown from "@/components/common/CustomDropdown";
 import FloatingActions from "@/components/common/FloatingActions";
+import FreeResourcesCourseSlider from "@/components/common/FreeResourcesCourseSlider";
 import { PremiumSearchButton } from "@/components/common/ResourceFilterButtons";
 
 import { listFreeResourceDocuments } from "@/features/resources/catalog/freeResources";
 import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 import NcertBookCard from "@/features/resources/components/NcertBookCard";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
-import { FREE_RESOURCE_CARD_GRID } from "@/features/resources/components/cardStyles";
+import {
+  FREE_RESOURCE_CARD_GRID,
+  RESOURCE_PAGE_HEADING_GRADIENT,
+} from "@/features/resources/components/cardStyles";
 import {
   useResourceCategories,
   useResourceFiles,
@@ -27,15 +30,6 @@ import {
 } from "@/features/resources/hooks/useResources";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const defaultBooks = [
-  { _id: "1", title: "HISTORY-NCERT book1", fileUrl: "#" },
-  { _id: "2", title: "HISTORY-NCERT book2", fileUrl: "#" },
-  { _id: "3", title: "HISTORY-NCERT book3", fileUrl: "#" },
-  { _id: "4", title: "HISTORY-NCERT book4", fileUrl: "#" },
-  { _id: "5", title: "HISTORY-NCERT book5", fileUrl: "#" },
-  { _id: "6", title: "HISTORY-NCERT book6", fileUrl: "#" },
-];
 
 const toppers = [
   {
@@ -75,21 +69,6 @@ const toppers = [
   },
 ];
 
-const courseSlides = [
-  {
-    image: "/assets/course_image.png",
-  },
-  {
-    image: "/assets/free-resources/NCERT/optional-foundation-course.png",
-  },
-  {
-    image: "/assets/free-resources/NCERT/mentorship-program.png",
-  },
-  {
-    image: "/assets/free-resources/NCERT/test-series.png",
-  },
-];
-
 export default function NcertBooksPage() {
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -115,6 +94,7 @@ export default function NcertBooksPage() {
 
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
+
   const [hasSearched, setHasSearched] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<{
     subjectId?: string;
@@ -172,18 +152,18 @@ export default function NcertBooksPage() {
 
       gsap.fromTo(
         ".animate-card",
-        { y: 40, opacity: 0 },
+        { opacity: 0 },
         {
-          y: 0,
           opacity: 1,
           stagger: 0.1,
           duration: 0.8,
           ease: "power3.out",
+          immediateRender: false,
           scrollTrigger: {
             trigger: ".animate-cards-container",
             start: "top 85%",
           },
-        }
+        },
       );
 
       gsap.fromTo(
@@ -192,7 +172,7 @@ export default function NcertBooksPage() {
         { x: 0, opacity: 1, duration: 0.8, ease: "power3.out" }
       );
     },
-    { scope: containerRef, dependencies: [prefersReducedMotion, showResults] },
+    { scope: containerRef, dependencies: [prefersReducedMotion, showResults] }
   );
 
   const handleSearch = () => {
@@ -216,7 +196,6 @@ export default function NcertBooksPage() {
             priority
             className="object-cover"
           />
-
           <div className="absolute inset-0 bg-[linear-gradient(90deg,#000000_15.33%,rgba(0,0,0,0.1)_50.97%)]" />
         </section>
 
@@ -227,7 +206,7 @@ export default function NcertBooksPage() {
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_320px]">
               <div>
                 <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
-                  <span className="bg-[linear-gradient(90deg,#3E9CDB_0%,#9A8FB6_42%,#D57E89_100%)] bg-clip-text text-transparent">
+                  <span className={RESOURCE_PAGE_HEADING_GRADIENT}>
                     NCERT BOOKS
                   </span>
                 </h1>
@@ -268,43 +247,19 @@ export default function NcertBooksPage() {
                   {showResults && !isFetching && catalogItems.length > 0 && (
                     <ResourceCardGrid className={FREE_RESOURCE_CARD_GRID}>
                       {catalogItems.map((item) => (
-                        <NcertBookCard key={item.id} item={item} />
+                        <NcertBookCard
+                          key={item.id}
+                          item={item}
+                          className="animate-card"
+                        />
                       ))}
                     </ResourceCardGrid>
                   )}
                 </div>
               </div>
 
-              <aside className="animate-sidebar sticky top-[120px] mx-auto w-full max-w-[310px] self-start space-y-7 xl:ml-auto xl:mt-[40px]">
-                {/* COURSES SLIDER */}
-                <div className="course-slider-card">
-                  <h2 className="course-slider-title">
-                    <span>Courses</span>
-                  </h2>
-
-                  <div className="course-slider-image-area">
-                    {courseSlides.map((course, index) => (
-                      <div
-                        key={`${course.image}-${index}`}
-                        className={`course-slide course-slide-${index + 1}`}
-                      >
-                        <Image
-                          src={course.image}
-                          alt="Course"
-                          fill
-                          sizes="310px"
-                          className="course-img"
-                        />
-                      </div>
-                    ))}
-
-                    <div className="course-dots">
-                      {courseSlides.map((_, index) => (
-                        <span key={index} className={`course-dot-${index + 1}`} />
-                      ))}
-                    </div>
-                  </div>
-                </div>
+              <aside className="animate-sidebar sticky top-[120px] mx-auto w-full max-w-[310px] shrink-0 isolate self-start space-y-7 xl:ml-auto xl:mt-[40px]">
+                <FreeResourcesCourseSlider />
 
                 {/* OUR TOPPERS */}
                 <div className="toppers-card">
@@ -324,7 +279,7 @@ export default function NcertBooksPage() {
                               src={topper.image}
                               alt={topper.name}
                               fill
-                              sizes="310px"
+                              sizes="330px"
                               className="topper-img"
                             />
                           </div>
@@ -338,9 +293,12 @@ export default function NcertBooksPage() {
                       </div>
                     ))}
 
-                    <div className="topper-dots">
+                    <div className="toppers-dots">
                       {toppers.map((_, index) => (
-                        <span key={index} className={`topper-dot-${index + 1}`} />
+                        <span
+                          key={index}
+                          className={`topper-dot-${index + 1}`}
+                        />
                       ))}
                     </div>
                   </div>
@@ -355,284 +313,32 @@ export default function NcertBooksPage() {
       <FloatingActions />
 
       <style jsx>{`
-        .course-slider-card {
-          width: 100%;
-          overflow: hidden;
-          border-radius: 20px;
-          background: #ffffff;
-          padding: 12px;
-          box-shadow: 0px 8px 26px rgba(0, 0, 0, 0.07);
-          cursor: pointer;
-        }
-
-        .course-slider-title {
-          margin-bottom: 12px;
-          text-align: center;
-          font-size: 30px;
-          font-weight: 900;
-          line-height: 1;
-        }
-
-        .course-slider-title span {
-          background: linear-gradient(
-            90deg,
-            #20a0e0 0%,
-            #8e8fb7 45%,
-            #d57e89 100%
-          );
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-        }
-
-        .course-slider-image-area {
-          position: relative;
-          height: 275px;
-          width: 100%;
-          overflow: hidden;
-          border-radius: 16px;
-          background: #ffffff;
-        }
-
-        .course-slide {
-          position: absolute;
-          inset: 0;
-          opacity: 0;
-          transform: translateX(100%);
-          will-change: transform, opacity;
-        }
-
-        .course-slide-1 {
-          opacity: 1;
-          transform: translateX(0);
-        }
-
-        .course-img {
-          object-fit: cover;
-          object-position: center;
-          transition: transform 0.4s ease;
-        }
-
-        .course-slider-card:hover .course-img {
-          transform: scale(1.04);
-        }
-
-        .course-slider-card:hover .course-slide-1 {
-          animation: courseMove1 12s infinite ease-in-out;
-        }
-
-        .course-slider-card:hover .course-slide-2 {
-          animation: courseMove2 12s infinite ease-in-out;
-        }
-
-        .course-slider-card:hover .course-slide-3 {
-          animation: courseMove3 12s infinite ease-in-out;
-        }
-
-        .course-slider-card:hover .course-slide-4 {
-          animation: courseMove4 12s infinite ease-in-out;
-        }
-
-        @keyframes courseMove1 {
-          0%,
-          20% {
-            opacity: 1;
-            transform: translateX(0);
-          }
-
-          25%,
-          100% {
-            opacity: 1;
-            transform: translateX(-100%);
-          }
-        }
-
-        @keyframes courseMove2 {
-          0%,
-          20% {
-            opacity: 1;
-            transform: translateX(100%);
-          }
-
-          25%,
-          45% {
-            opacity: 1;
-            transform: translateX(0);
-          }
-
-          50%,
-          100% {
-            opacity: 1;
-            transform: translateX(-100%);
-          }
-        }
-
-        @keyframes courseMove3 {
-          0%,
-          45% {
-            opacity: 1;
-            transform: translateX(100%);
-          }
-
-          50%,
-          70% {
-            opacity: 1;
-            transform: translateX(0);
-          }
-
-          75%,
-          100% {
-            opacity: 1;
-            transform: translateX(-100%);
-          }
-        }
-
-        @keyframes courseMove4 {
-          0%,
-          70% {
-            opacity: 1;
-            transform: translateX(100%);
-          }
-
-          75%,
-          95% {
-            opacity: 1;
-            transform: translateX(0);
-          }
-
-          100% {
-            opacity: 1;
-            transform: translateX(-100%);
-          }
-        }
-
-        .course-dots {
-          position: absolute;
-          left: 50%;
-          bottom: 14px;
-          z-index: 10;
-          display: flex;
-          gap: 7px;
-          transform: translateX(-50%);
-        }
-
-        .course-dots span {
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.78);
-          box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
-        }
-
-        .course-slider-card:hover .course-dot-1 {
-          animation: courseDot1 12s infinite;
-        }
-
-        .course-slider-card:hover .course-dot-2 {
-          animation: courseDot2 12s infinite;
-        }
-
-        .course-slider-card:hover .course-dot-3 {
-          animation: courseDot3 12s infinite;
-        }
-
-        .course-slider-card:hover .course-dot-4 {
-          animation: courseDot4 12s infinite;
-        }
-
-        @keyframes courseDot1 {
-          0%,
-          20% {
-            background: #ff3f6c;
-            transform: scale(1.45);
-          }
-
-          25%,
-          100% {
-            background: rgba(255, 255, 255, 0.78);
-            transform: scale(1);
-          }
-        }
-
-        @keyframes courseDot2 {
-          0%,
-          20% {
-            background: rgba(255, 255, 255, 0.78);
-            transform: scale(1);
-          }
-
-          25%,
-          45% {
-            background: #ff3f6c;
-            transform: scale(1.45);
-          }
-
-          50%,
-          100% {
-            background: rgba(255, 255, 255, 0.78);
-            transform: scale(1);
-          }
-        }
-
-        @keyframes courseDot3 {
-          0%,
-          45% {
-            background: rgba(255, 255, 255, 0.78);
-            transform: scale(1);
-          }
-
-          50%,
-          70% {
-            background: #ff3f6c;
-            transform: scale(1.45);
-          }
-
-          75%,
-          100% {
-            background: rgba(255, 255, 255, 0.78);
-            transform: scale(1);
-          }
-        }
-
-        @keyframes courseDot4 {
-          0%,
-          70% {
-            background: rgba(255, 255, 255, 0.78);
-            transform: scale(1);
-          }
-
-          75%,
-          95% {
-            background: #ff3f6c;
-            transform: scale(1.45);
-          }
-
-          100% {
-            background: rgba(255, 255, 255, 0.78);
-            transform: scale(1);
-          }
-        }
-
         .toppers-card {
           width: 100%;
           overflow: hidden;
-          border-radius: 20px;
+          border-radius: 18px;
           background: #dfe9f8;
           padding: 12px;
-          box-shadow: 0px 8px 26px rgba(0, 0, 0, 0.05);
+          box-shadow: 0px 8px 22px rgba(0, 0, 0, 0.05);
           cursor: pointer;
         }
 
         .toppers-title {
           margin-bottom: 10px;
           text-align: center;
-          font-size: 30px;
+          font-size: 27px;
           font-weight: 900;
           line-height: 1;
         }
 
         .toppers-title span {
-          background: linear-gradient(90deg, #4d90d2 0%, #b57b95 100%);
+          background: linear-gradient(
+            90deg,
+            #3e9cdb 0%,
+            #8e9bc8 38%,
+            #d57e89 72%,
+            #e53935 100%
+          );
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
@@ -640,11 +346,10 @@ export default function NcertBooksPage() {
 
         .toppers-image-area {
           position: relative;
-          height: 370px;
+          height: 330px;
           width: 100%;
           overflow: hidden;
-          border-radius: 16px;
-          background: #dfe9f8;
+          border-radius: 14px;
         }
 
         .topper-slide {
@@ -652,6 +357,9 @@ export default function NcertBooksPage() {
           inset: 0;
           opacity: 0;
           transform: translateX(100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
           will-change: transform, opacity;
         }
 
@@ -660,37 +368,108 @@ export default function NcertBooksPage() {
           transform: translateX(0);
         }
 
+        .topper-inner-card {
+          width: 100%;
+          max-width: 248px;
+          height: 310px;
+          border-radius: 16px;
+          background: linear-gradient(
+            180deg,
+            rgba(233, 243, 255, 0.98) 0%,
+            rgba(223, 233, 248, 0.96) 48%,
+            rgba(213, 228, 247, 0.98) 100%
+          );
+          overflow: hidden;
+          box-shadow:
+            inset 0px 0px 18px rgba(255, 255, 255, 0.55),
+            0px 10px 26px rgba(60, 100, 150, 0.14);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        /* IMAGE SIZE INCREASED, MAIN CARD SAME */
+        .topper-image-wrap {
+          position: relative;
+          width: 100%;
+          height: 248px;
+          overflow: hidden;
+          background: linear-gradient(
+            180deg,
+            rgba(232, 243, 255, 0.65) 0%,
+            rgba(223, 233, 248, 0.2) 100%
+          );
+        }
+
+        .topper-img {
+          object-fit: contain;
+          object-position: center bottom;
+          transform: scale(1.08);
+        }
+
+        .topper-info {
+          padding: 5px 8px 8px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 4px;
+          text-align: center;
+        }
+
+        .topper-rank {
+          border-radius: 999px;
+          background: #ff9800;
+          padding: 3px 11px;
+          font-size: 10px;
+          font-weight: 900;
+          line-height: 1;
+          color: #ffffff;
+        }
+
+        .topper-info h3 {
+          font-size: 14px;
+          font-weight: 900;
+          line-height: 1.1;
+          color: #333333;
+        }
+
+        .topper-info p {
+          font-size: 10px;
+          font-weight: 500;
+          color: #555555;
+        }
+
         .toppers-card:hover .topper-slide-1 {
-          animation: topperMove1 21s infinite ease-in-out;
+          animation: topperMove1 28s infinite ease-in-out;
         }
 
         .toppers-card:hover .topper-slide-2 {
-          animation: topperMove2 21s infinite ease-in-out;
+          animation: topperMove2 28s infinite ease-in-out;
         }
 
         .toppers-card:hover .topper-slide-3 {
-          animation: topperMove3 21s infinite ease-in-out;
+          animation: topperMove3 28s infinite ease-in-out;
         }
 
         .toppers-card:hover .topper-slide-4 {
-          animation: topperMove4 21s infinite ease-in-out;
+          animation: topperMove4 28s infinite ease-in-out;
         }
 
         .toppers-card:hover .topper-slide-5 {
-          animation: topperMove5 21s infinite ease-in-out;
+          animation: topperMove5 28s infinite ease-in-out;
         }
 
         .toppers-card:hover .topper-slide-6 {
-          animation: topperMove6 21s infinite ease-in-out;
+          animation: topperMove6 28s infinite ease-in-out;
         }
 
         .toppers-card:hover .topper-slide-7 {
-          animation: topperMove7 21s infinite ease-in-out;
+          animation: topperMove7 28s infinite ease-in-out;
         }
 
         @keyframes topperMove1 {
           0%,
-          10% {
+          11% {
             opacity: 1;
             transform: translateX(0);
           }
@@ -704,13 +483,13 @@ export default function NcertBooksPage() {
 
         @keyframes topperMove2 {
           0%,
-          10% {
+          11% {
             opacity: 1;
             transform: translateX(100%);
           }
 
           14.28%,
-          24.28% {
+          25% {
             opacity: 1;
             transform: translateX(0);
           }
@@ -724,13 +503,13 @@ export default function NcertBooksPage() {
 
         @keyframes topperMove3 {
           0%,
-          24.28% {
+          25% {
             opacity: 1;
             transform: translateX(100%);
           }
 
           28.56%,
-          38.56% {
+          39% {
             opacity: 1;
             transform: translateX(0);
           }
@@ -744,13 +523,13 @@ export default function NcertBooksPage() {
 
         @keyframes topperMove4 {
           0%,
-          38.56% {
+          39% {
             opacity: 1;
             transform: translateX(100%);
           }
 
           42.84%,
-          52.84% {
+          53% {
             opacity: 1;
             transform: translateX(0);
           }
@@ -764,13 +543,13 @@ export default function NcertBooksPage() {
 
         @keyframes topperMove5 {
           0%,
-          52.84% {
+          53% {
             opacity: 1;
             transform: translateX(100%);
           }
 
           57.12%,
-          67.12% {
+          67% {
             opacity: 1;
             transform: translateX(0);
           }
@@ -784,13 +563,13 @@ export default function NcertBooksPage() {
 
         @keyframes topperMove6 {
           0%,
-          67.12% {
+          67% {
             opacity: 1;
             transform: translateX(100%);
           }
 
           71.4%,
-          81.4% {
+          81% {
             opacity: 1;
             transform: translateX(0);
           }
@@ -804,7 +583,7 @@ export default function NcertBooksPage() {
 
         @keyframes topperMove7 {
           0%,
-          81.4% {
+          81% {
             opacity: 1;
             transform: translateX(100%);
           }
@@ -821,137 +600,56 @@ export default function NcertBooksPage() {
           }
         }
 
-        .topper-inner-card {
-          width: 100%;
-          height: 100%;
-          border-radius: 16px;
-          background: linear-gradient(
-            180deg,
-            rgba(239, 248, 255, 0.96) 0%,
-            rgba(223, 233, 248, 0.98) 52%,
-            rgba(211, 226, 246, 0.96) 100%
-          );
-          overflow: hidden;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          border: 1px solid rgba(255, 255, 255, 0.9);
-          box-shadow:
-            inset 0 0 22px rgba(255, 255, 255, 0.65),
-            inset 0 -12px 24px rgba(91, 151, 210, 0.12),
-            0 10px 24px rgba(60, 100, 150, 0.16);
-        }
-
-        .topper-image-wrap {
-          position: relative;
-          width: 100%;
-          height: 292px;
-          overflow: hidden;
-          background: radial-gradient(
-            circle at center,
-            rgba(255, 255, 255, 0.9) 0%,
-            rgba(223, 233, 248, 0.92) 55%,
-            rgba(211, 226, 246, 0.96) 100%
-          );
-        }
-
-        .topper-img {
-          object-fit: contain;
-          object-position: center bottom;
-          transform: scale(1.1);
-          transition: transform 0.4s ease;
-        }
-
-        .toppers-card:hover .topper-img {
-          transform: scale(1.15);
-        }
-
-        .topper-info {
-          width: 100%;
-          flex: 1;
-          background: rgba(223, 233, 248, 0.92);
-          padding: 5px 8px 8px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 3px;
-          text-align: center;
-        }
-
-        .topper-rank {
-          border-radius: 999px;
-          background: #ff9800;
-          padding: 4px 13px;
-          font-size: 11px;
-          font-weight: 900;
-          line-height: 1;
-          color: #ffffff;
-        }
-
-        .topper-info h3 {
-          font-size: 15px;
-          font-weight: 900;
-          line-height: 1.1;
-          color: #333333;
-        }
-
-        .topper-info p {
-          font-size: 11px;
-          font-weight: 500;
-          color: #555555;
-        }
-
-        .topper-dots {
+        .toppers-dots {
           position: absolute;
           left: 50%;
-          bottom: 12px;
-          z-index: 20;
+          bottom: 8px;
+          z-index: 10;
           display: flex;
-          gap: 6px;
+          gap: 7px;
           transform: translateX(-50%);
         }
 
-        .topper-dots span {
+        .toppers-dots span {
           width: 5px;
           height: 5px;
           border-radius: 50%;
           background: rgba(255, 255, 255, 0.85);
-          box-shadow: 0 0 5px rgba(0, 0, 0, 0.22);
         }
 
         .toppers-card:hover .topper-dot-1 {
-          animation: topperDot1 21s infinite;
+          animation: activeTopperDot1 28s infinite;
         }
 
         .toppers-card:hover .topper-dot-2 {
-          animation: topperDot2 21s infinite;
+          animation: activeTopperDot2 28s infinite;
         }
 
         .toppers-card:hover .topper-dot-3 {
-          animation: topperDot3 21s infinite;
+          animation: activeTopperDot3 28s infinite;
         }
 
         .toppers-card:hover .topper-dot-4 {
-          animation: topperDot4 21s infinite;
+          animation: activeTopperDot4 28s infinite;
         }
 
         .toppers-card:hover .topper-dot-5 {
-          animation: topperDot5 21s infinite;
+          animation: activeTopperDot5 28s infinite;
         }
 
         .toppers-card:hover .topper-dot-6 {
-          animation: topperDot6 21s infinite;
+          animation: activeTopperDot6 28s infinite;
         }
 
         .toppers-card:hover .topper-dot-7 {
-          animation: topperDot7 21s infinite;
+          animation: activeTopperDot7 28s infinite;
         }
 
-        @keyframes topperDot1 {
+        @keyframes activeTopperDot1 {
           0%,
-          10% {
+          11% {
             background: #ff3f6c;
-            transform: scale(1.45);
+            transform: scale(1.35);
           }
 
           14.28%,
@@ -961,17 +659,17 @@ export default function NcertBooksPage() {
           }
         }
 
-        @keyframes topperDot2 {
+        @keyframes activeTopperDot2 {
           0%,
-          10% {
+          11% {
             background: rgba(255, 255, 255, 0.85);
             transform: scale(1);
           }
 
           14.28%,
-          24.28% {
+          25% {
             background: #ff3f6c;
-            transform: scale(1.45);
+            transform: scale(1.35);
           }
 
           28.56%,
@@ -981,17 +679,17 @@ export default function NcertBooksPage() {
           }
         }
 
-        @keyframes topperDot3 {
+        @keyframes activeTopperDot3 {
           0%,
-          24.28% {
+          25% {
             background: rgba(255, 255, 255, 0.85);
             transform: scale(1);
           }
 
           28.56%,
-          38.56% {
+          39% {
             background: #ff3f6c;
-            transform: scale(1.45);
+            transform: scale(1.35);
           }
 
           42.84%,
@@ -1001,17 +699,17 @@ export default function NcertBooksPage() {
           }
         }
 
-        @keyframes topperDot4 {
+        @keyframes activeTopperDot4 {
           0%,
-          38.56% {
+          39% {
             background: rgba(255, 255, 255, 0.85);
             transform: scale(1);
           }
 
           42.84%,
-          52.84% {
+          53% {
             background: #ff3f6c;
-            transform: scale(1.45);
+            transform: scale(1.35);
           }
 
           57.12%,
@@ -1021,17 +719,17 @@ export default function NcertBooksPage() {
           }
         }
 
-        @keyframes topperDot5 {
+        @keyframes activeTopperDot5 {
           0%,
-          52.84% {
+          53% {
             background: rgba(255, 255, 255, 0.85);
             transform: scale(1);
           }
 
           57.12%,
-          67.12% {
+          67% {
             background: #ff3f6c;
-            transform: scale(1.45);
+            transform: scale(1.35);
           }
 
           71.4%,
@@ -1041,17 +739,17 @@ export default function NcertBooksPage() {
           }
         }
 
-        @keyframes topperDot6 {
+        @keyframes activeTopperDot6 {
           0%,
-          67.12% {
+          67% {
             background: rgba(255, 255, 255, 0.85);
             transform: scale(1);
           }
 
           71.4%,
-          81.4% {
+          81% {
             background: #ff3f6c;
-            transform: scale(1.45);
+            transform: scale(1.35);
           }
 
           85.68%,
@@ -1061,9 +759,9 @@ export default function NcertBooksPage() {
           }
         }
 
-        @keyframes topperDot7 {
+        @keyframes activeTopperDot7 {
           0%,
-          81.4% {
+          81% {
             background: rgba(255, 255, 255, 0.85);
             transform: scale(1);
           }
@@ -1071,7 +769,7 @@ export default function NcertBooksPage() {
           85.68%,
           96% {
             background: #ff3f6c;
-            transform: scale(1.45);
+            transform: scale(1.35);
           }
 
           100% {
@@ -1081,48 +779,42 @@ export default function NcertBooksPage() {
         }
 
         @media (max-width: 1023px) {
-          .course-slider-card {
-            padding: 12px;
-          }
-
-          .course-slider-title {
-            font-size: 27px;
-          }
-
-          .course-slider-image-area {
-            height: 260px;
-          }
-
           .toppers-card {
             padding: 12px;
           }
 
           .toppers-title {
-            font-size: 27px;
+            font-size: 24px;
           }
 
           .toppers-image-area {
-            height: 345px;
+            height: 300px;
+          }
+
+          .topper-inner-card {
+            max-width: 230px;
+            height: 285px;
           }
 
           .topper-image-wrap {
-            height: 270px;
+            height: 228px;
           }
 
           .topper-img {
-            transform: scale(1.08);
+            transform: scale(1.05);
           }
 
-          .toppers-card:hover .topper-img {
-            transform: scale(1.12);
+          .topper-info {
+            padding-top: 4px;
+            gap: 3px;
           }
 
           .topper-info h3 {
-            font-size: 15px;
+            font-size: 16px;
           }
 
           .topper-info p {
-            font-size: 11px;
+            font-size: 12px;
           }
         }
       `}</style>

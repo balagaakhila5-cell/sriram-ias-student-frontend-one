@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { Check, X, House } from 'lucide-react';
 
 import { useMockTestResult } from '@/features/resources/hooks/useResources';
+import { RESOURCE_PAGE_HEADING_GRADIENT } from '@/features/resources/components/cardStyles';
 import type {
   MockTestDetail,
   MockTestResult,
@@ -106,7 +107,7 @@ export default function CheckAnswersPage({ params }: PageProps) {
         </h2>
 
         <h1 className="text-center text-[34px] font-black leading-none md:text-[54px]">
-          <span className="bg-gradient-to-r from-[#20A0E0] to-[#E16165] bg-clip-text text-transparent">
+          <span className={RESOURCE_PAGE_HEADING_GRADIENT}>
             Your Answers
           </span>
         </h1>

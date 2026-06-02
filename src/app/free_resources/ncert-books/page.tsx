@@ -11,6 +11,7 @@ import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import QuickLinks from "@/components/common/QuickLinks";
 import HoverCard from "@/components/common/HoverCard";
+import { RESOURCE_PAGE_HEADING_GRADIENT } from "@/features/resources/components/cardStyles";
 import { useResourceCategories } from "@/features/resources/hooks/useResources";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -19,7 +20,7 @@ const resourceCards = [
   {
     title: "NCERT Books",
     image: "/assets/free-resources/NCERT/NCERT-books.png",
-    href: "/free_resources/NCERT-page",
+    href: "/free_resources/ncert-page",
   },
   {
     title: "Previous Year Question Papers",
@@ -83,7 +84,7 @@ export default function NcertBooksPage() {
     {
       scope: containerRef,
       dependencies: [prefersReducedMotion, categories.length],
-    }
+    },
   );
 
   return (
@@ -106,7 +107,7 @@ export default function NcertBooksPage() {
         <section className="bg-[url('/assets/image-91.png')] bg-[position:center_35%] bg-cover bg-no-repeat px-4 py-10 sm:px-6 sm:py-12 md:px-8 lg:px-14">
           <div className="mx-auto max-w-[1600px]">
             <h1 className="animate-heading mb-8 text-center text-[32px] font-extrabold uppercase leading-none sm:text-[40px] md:mb-10 md:text-[52px] lg:text-left lg:text-[56px]">
-              <span className="bg-[linear-gradient(90deg,#459BE4_0%,#8D7DBA_45%,#E37B8A_100%)] bg-clip-text text-transparent">
+              <span className={RESOURCE_PAGE_HEADING_GRADIENT}>
                 FREE RESOURCES
               </span>
             </h1>
@@ -132,7 +133,9 @@ export default function NcertBooksPage() {
                 <QuickLinks />
 
                 <a href="/books" className="our-books-card">
-                  <h2 className="our-books-title">Our Books</h2>
+                  <h2 className="our-books-title">
+                    <span className={RESOURCE_PAGE_HEADING_GRADIENT}>Our Books</span>
+                  </h2>
 
                   <div className="our-books-image-area">
                     {ourBooksImages.map((image, index) => (
@@ -188,15 +191,6 @@ export default function NcertBooksPage() {
           font-size: 28px;
           line-height: 1;
           font-weight: 900;
-          background: linear-gradient(
-            90deg,
-            #3c9ddd 0%,
-            #817ec0 45%,
-            #d57483 100%
-          );
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
         }
 
         .our-books-image-area {
@@ -259,126 +253,148 @@ export default function NcertBooksPage() {
         }
 
         @keyframes bookMove1 {
-          0%, 9% {
+          0%,
+          9% {
             opacity: 1;
             transform: translateX(0);
           }
 
-          12.5%, 100% {
+          12.5%,
+          100% {
             opacity: 1;
             transform: translateX(-100%);
           }
         }
 
         @keyframes bookMove2 {
-          0%, 9% {
+          0%,
+          9% {
             opacity: 1;
             transform: translateX(100%);
           }
 
-          12.5%, 21.5% {
+          12.5%,
+          21.5% {
             opacity: 1;
             transform: translateX(0);
           }
 
-          25%, 100% {
+          25%,
+          100% {
             opacity: 1;
             transform: translateX(-100%);
           }
         }
 
         @keyframes bookMove3 {
-          0%, 21.5% {
+          0%,
+          21.5% {
             opacity: 1;
             transform: translateX(100%);
           }
 
-          25%, 34% {
+          25%,
+          34% {
             opacity: 1;
             transform: translateX(0);
           }
 
-          37.5%, 100% {
+          37.5%,
+          100% {
             opacity: 1;
             transform: translateX(-100%);
           }
         }
 
         @keyframes bookMove4 {
-          0%, 34% {
+          0%,
+          34% {
             opacity: 1;
             transform: translateX(100%);
           }
 
-          37.5%, 46.5% {
+          37.5%,
+          46.5% {
             opacity: 1;
             transform: translateX(0);
           }
 
-          50%, 100% {
+          50%,
+          100% {
             opacity: 1;
             transform: translateX(-100%);
           }
         }
 
         @keyframes bookMove5 {
-          0%, 46.5% {
+          0%,
+          46.5% {
             opacity: 1;
             transform: translateX(100%);
           }
 
-          50%, 59% {
+          50%,
+          59% {
             opacity: 1;
             transform: translateX(0);
           }
 
-          62.5%, 100% {
+          62.5%,
+          100% {
             opacity: 1;
             transform: translateX(-100%);
           }
         }
 
         @keyframes bookMove6 {
-          0%, 59% {
+          0%,
+          59% {
             opacity: 1;
             transform: translateX(100%);
           }
 
-          62.5%, 71.5% {
+          62.5%,
+          71.5% {
             opacity: 1;
             transform: translateX(0);
           }
 
-          75%, 100% {
+          75%,
+          100% {
             opacity: 1;
             transform: translateX(-100%);
           }
         }
 
         @keyframes bookMove7 {
-          0%, 71.5% {
+          0%,
+          71.5% {
             opacity: 1;
             transform: translateX(100%);
           }
 
-          75%, 84% {
+          75%,
+          84% {
             opacity: 1;
             transform: translateX(0);
           }
 
-          87.5%, 100% {
+          87.5%,
+          100% {
             opacity: 1;
             transform: translateX(-100%);
           }
         }
 
         @keyframes bookMove8 {
-          0%, 84% {
+          0%,
+          84% {
             opacity: 1;
             transform: translateX(100%);
           }
 
-          87.5%, 96.5% {
+          87.5%,
+          96.5% {
             opacity: 1;
             transform: translateX(0);
           }
@@ -439,126 +455,148 @@ export default function NcertBooksPage() {
         }
 
         @keyframes activeDot1 {
-          0%, 9% {
+          0%,
+          9% {
             background: #ff3f6c;
             transform: scale(1.35);
           }
 
-          12.5%, 100% {
+          12.5%,
+          100% {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1);
           }
         }
 
         @keyframes activeDot2 {
-          0%, 9% {
+          0%,
+          9% {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1);
           }
 
-          12.5%, 21.5% {
+          12.5%,
+          21.5% {
             background: #ff3f6c;
             transform: scale(1.35);
           }
 
-          25%, 100% {
+          25%,
+          100% {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1);
           }
         }
 
         @keyframes activeDot3 {
-          0%, 21.5% {
+          0%,
+          21.5% {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1);
           }
 
-          25%, 34% {
+          25%,
+          34% {
             background: #ff3f6c;
             transform: scale(1.35);
           }
 
-          37.5%, 100% {
+          37.5%,
+          100% {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1);
           }
         }
 
         @keyframes activeDot4 {
-          0%, 34% {
+          0%,
+          34% {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1);
           }
 
-          37.5%, 46.5% {
+          37.5%,
+          46.5% {
             background: #ff3f6c;
             transform: scale(1.35);
           }
 
-          50%, 100% {
+          50%,
+          100% {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1);
           }
         }
 
         @keyframes activeDot5 {
-          0%, 46.5% {
+          0%,
+          46.5% {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1);
           }
 
-          50%, 59% {
+          50%,
+          59% {
             background: #ff3f6c;
             transform: scale(1.35);
           }
 
-          62.5%, 100% {
+          62.5%,
+          100% {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1);
           }
         }
 
         @keyframes activeDot6 {
-          0%, 59% {
+          0%,
+          59% {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1);
           }
 
-          62.5%, 71.5% {
+          62.5%,
+          71.5% {
             background: #ff3f6c;
             transform: scale(1.35);
           }
 
-          75%, 100% {
+          75%,
+          100% {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1);
           }
         }
 
         @keyframes activeDot7 {
-          0%, 71.5% {
+          0%,
+          71.5% {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1);
           }
 
-          75%, 84% {
+          75%,
+          84% {
             background: #ff3f6c;
             transform: scale(1.35);
           }
 
-          87.5%, 100% {
+          87.5%,
+          100% {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1);
           }
         }
 
         @keyframes activeDot8 {
-          0%, 84% {
+          0%,
+          84% {
             background: rgba(255, 255, 255, 0.75);
             transform: scale(1);
           }
 
-          87.5%, 96.5% {
+          87.5%,
+          96.5% {
             background: #ff3f6c;
             transform: scale(1.35);
           }

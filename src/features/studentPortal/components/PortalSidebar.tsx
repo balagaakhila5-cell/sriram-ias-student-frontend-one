@@ -19,6 +19,7 @@ export default function PortalSidebar({ items }: PortalSidebarProps) {
           <Link
             key={item.href}
             href={item.href}
+            prefetch={item.href.includes("free-resources") ? false : undefined}
             className="flex items-center justify-center transition-all duration-200"
             style={{
               width: 294,

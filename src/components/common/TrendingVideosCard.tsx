@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { RESOURCE_PAGE_HEADING_GRADIENT } from "@/features/resources/components/cardStyles";
 
 export type TrendingVideo = {
   id: number | string;
@@ -40,7 +41,7 @@ export default function TrendingVideosCard({
   return (
     <div className="rounded-[26px] bg-white/95 p-6 shadow-[0px_12px_30px_rgba(0,0,0,0.06)]">
       <h2 className="mb-6 text-center text-[34px] font-extrabold leading-none -ml-3">
-        <span className=" bg-gradient-to-r from-[#4A8CCB] via-[#7882C7] to-[#B36F95] bg-clip-text text-transparent">
+        <span className={RESOURCE_PAGE_HEADING_GRADIENT}>
           Trending Videos
         </span>
       </h2>

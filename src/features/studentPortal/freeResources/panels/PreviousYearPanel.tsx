@@ -9,33 +9,32 @@ import { FREE_RESOURCE_CARD_GRID } from "@/features/resources/components/cardSty
 import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 import {
   findCategoryByKey,
-  findSubCategoryByName,
   useResourceCategories,
   useResourceFiles,
-  useResourceSubCategories,
 } from "@/features/resources/hooks/useResources";
 import type { CatalogDocument } from "@/features/resources/catalog/types";
-import type { PyqPaperFilter } from "../resourceFilters";
+import {
+  buildPyqPortalCardTitle,
+} from "../resourceFilters";
 
 interface PreviousYearPanelProps {
-  paper: PyqPaperFilter;
   pyqYear: string;
+  selectPaper: string;
+  examType: "prelims" | "mains";
 }
 
 export default function PreviousYearPanel({
-  paper,
   pyqYear,
+  selectPaper: _selectPaper,
+  examType,
 }: PreviousYearPanelProps) {
   const fallback = useMemo(
     () =>
-      listFreeResourceDocuments(
-        "previous-year",
-        pyqYear,
-        undefined,
-        undefined,
-        paper,
+      listFreeResourceDocuments("previous-year", pyqYear, undefined, examType).slice(
+        0,
+        10,
       ),
-    [paper, pyqYear],
+    [pyqYear, examType],
   );
 
   const { data: categories } = useResourceCategories();
@@ -45,27 +44,27 @@ export default function PreviousYearPanel({
   );
   const categoryId = pyqCategory?._id;
 
-  const { data: subCategories } = useResourceSubCategories(categoryId);
-  const subCategory = useMemo(
-    () => findSubCategoryByName(subCategories, paper.toLowerCase()),
-    [subCategories, paper],
-  );
-  const subCategoryId = subCategory?._id;
-
   const { data: files = [], isFetching } = useResourceFiles(
-    { categoryId, subCategoryId },
-    !!categoryId && !!subCategoryId,
+    { categoryId },
+    !!categoryId,
   );
 
-  const items: CatalogDocument[] = useMemo(
-    () =>
-      mapApiFilesToCatalog(files, "previous-year", fallback).map((item) => ({
+  const items: CatalogDocument[] = useMemo(() => {
+    const mapped = mapApiFilesToCatalog(files, "previous-year", fallback).map(
+      (item) => ({
         ...item,
         image: RESOURCE_ASSETS.PDF_ICON,
         year: pyqYear,
-      })),
-    [files, fallback, pyqYear],
-  );
+      }),
+    );
+
+    const base = (mapped.length > 0 ? mapped : fallback).slice(0, 10);
+
+    return base.map((item, index) => ({
+      ...item,
+      title: buildPyqPortalCardTitle(examType, index + 1),
+    }));
+  }, [files, fallback, pyqYear, examType]);
 
   return (
     <div className="space-y-4">

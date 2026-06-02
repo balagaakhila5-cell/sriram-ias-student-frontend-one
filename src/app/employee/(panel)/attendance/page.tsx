@@ -98,8 +98,13 @@ export default function EmployeeAttendancePage() {
           >
             <Link
               href={`/employee/attendance/${row.studentId}`}
-              className="text-[#2A9FDB] underline underline-offset-2"
+              className="inline-flex items-center gap-3 text-[#2A9FDB] underline underline-offset-2"
             >
+              <img
+                src={encodeURI(row.image)}
+                alt={row.name}
+                className="h-10 w-10 shrink-0 rounded-full object-cover object-top"
+              />
               {row.name}
             </Link>
             <div>{row.checkIn}</div>

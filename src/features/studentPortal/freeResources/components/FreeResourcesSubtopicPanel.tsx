@@ -1,7 +1,6 @@
 "use client";
 
 import type { StudyMaterialsExamType } from "../config";
-import type { PyqPaperFilter } from "../resourceFilters";
 import type { FreeResourcesSubtopicId } from "../types";
 import MockTestsPanel from "../panels/MockTestsPanel";
 import NcertBooksPanel from "../panels/NcertBooksPanel";
@@ -12,8 +11,9 @@ interface FreeResourcesSubtopicPanelProps {
   subtopic: FreeResourcesSubtopicId;
   studyExamType: StudyMaterialsExamType;
   mockExamType: "prelims" | "mains";
-  paper: PyqPaperFilter;
   pyqYear: string;
+  pyqSelectPaper: string;
+  pyqExamType: "prelims" | "mains";
   ncertClass: string;
 }
 
@@ -21,8 +21,9 @@ export default function FreeResourcesSubtopicPanel({
   subtopic,
   studyExamType,
   mockExamType,
-  paper,
   pyqYear,
+  pyqSelectPaper,
+  pyqExamType,
   ncertClass,
 }: FreeResourcesSubtopicPanelProps) {
   switch (subtopic) {
@@ -31,7 +32,13 @@ export default function FreeResourcesSubtopicPanel({
     case "ncert-books":
       return <NcertBooksPanel ncertClass={ncertClass} />;
     case "previous-year":
-      return <PreviousYearPanel paper={paper} pyqYear={pyqYear} />;
+      return (
+        <PreviousYearPanel
+          pyqYear={pyqYear}
+          selectPaper={pyqSelectPaper}
+          examType={pyqExamType}
+        />
+      );
     case "study-materials":
       return <StudyMaterialsPanel examType={studyExamType} />;
     default:

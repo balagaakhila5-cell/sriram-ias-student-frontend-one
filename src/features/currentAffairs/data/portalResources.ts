@@ -11,6 +11,7 @@ export {
   dailyPracticeItems,
   listCurrentAffairsDocuments,
   listPracticeTests,
+  buildTextDateOptions,
   toPortalDocument,
 } from "@/features/resources/catalog/currentAffairs";
 

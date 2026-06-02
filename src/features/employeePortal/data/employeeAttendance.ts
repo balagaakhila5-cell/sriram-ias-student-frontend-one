@@ -1,7 +1,10 @@
+import { students } from "./students";
+
 export interface StudentAttendanceRow {
   id: string;
   studentId: string;
   name: string;
+  image: string;
   checkIn: string;
   checkOut: string;
   reason: string;
@@ -13,16 +16,27 @@ export const employeeAttendanceOverview = {
   yetToCome: 5,
 };
 
-export const employeeAttendanceRows: StudentAttendanceRow[] = [
-  { id: "1", studentId: "darshan-1", name: "Darshan Kotla", checkIn: "10:00 AM", checkOut: "05:00 PM", reason: "-" },
-  { id: "2", studentId: "darshan-2", name: "Darshan Kotla", checkIn: "10:00 AM", checkOut: "05:00 PM", reason: "-" },
-  { id: "3", studentId: "varun-1", name: "Varun Kota", checkIn: "10:00 AM", checkOut: "05:00 PM", reason: "-" },
-  { id: "4", studentId: "varun-2", name: "Varun Kota", checkIn: "10:00 AM", checkOut: "05:00 PM", reason: "-" },
-  { id: "5", studentId: "varun-3", name: "Varun Kota", checkIn: "10:00 AM", checkOut: "05:00 PM", reason: "-" },
-  { id: "6", studentId: "varun-4", name: "Varun Kota", checkIn: "10:00 AM", checkOut: "05:00 PM", reason: "-" },
-  { id: "7", studentId: "varun-5", name: "Varun Kota", checkIn: "10:00 AM", checkOut: "05:00 PM", reason: "-" },
-  { id: "8", studentId: "varun-6", name: "Varun Kota", checkIn: "-", checkOut: "-", reason: "Sick Leave" },
+export const employeeAttendanceRows: StudentAttendanceRow[] = students.map(
+  (student, index) => ({
+    id: String(index + 1),
+    studentId: student.id,
+    name: student.name,
+    image: student.image,
+    checkIn: index === 11 ? "-" : "10:00 AM",
+    checkOut: index === 11 ? "-" : "05:00 PM",
+    reason: index === 11 ? "Sick Leave" : "-",
+  }),
+);
+
+export const attendanceDateFilters = [
+  "Today",
+  "Yesterday",
+  "This Week",
+  "This Month",
 ];
 
-export const attendanceDateFilters = ["Today", "Yesterday", "This Week", "This Month"];
-export const attendanceStudentFilters = ["All Students", "Darshan Kotla", "Varun Kota"];
+export const attendanceStudentFilters = [
+  "All Students",
+  "Darshan Kotla",
+  "Harshini K",
+];

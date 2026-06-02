@@ -54,9 +54,63 @@ export function buildDateFilterOptions(month: string, year: string): string[] {
   });
 }
 
+/** Main site DPQ — day numbers only in the Date dropdown (1, 2, 3, …) */
+export function buildDayOnlyDateOptions(month: string, _year?: string): string[] {
+  const count = DAYS_IN_MONTH[month] ?? 30;
+  return Array.from({ length: count }, (_, i) => String(i + 1));
+}
+
+const DAY_ORDINALS = [
+  "First",
+  "Second",
+  "Third",
+  "Fourth",
+  "Fifth",
+  "Sixth",
+  "Seventh",
+  "Eighth",
+  "Ninth",
+  "Tenth",
+  "Eleventh",
+  "Twelfth",
+  "Thirteenth",
+  "Fourteenth",
+  "Fifteenth",
+  "Sixteenth",
+  "Seventeenth",
+  "Eighteenth",
+  "Nineteenth",
+  "Twentieth",
+  "Twenty-First",
+  "Twenty-Second",
+  "Twenty-Third",
+  "Twenty-Fourth",
+  "Twenty-Fifth",
+  "Twenty-Sixth",
+  "Twenty-Seventh",
+  "Twenty-Eighth",
+  "Twenty-Ninth",
+  "Thirtieth",
+  "Thirty-First",
+] as const;
+
+/** Main site DPQ Date dropdown — text only, e.g. "First April" (no digits) */
+export function buildTextDateOptions(month: string): string[] {
+  const count = DAYS_IN_MONTH[month] ?? 30;
+  return Array.from(
+    { length: count },
+    (_, i) => `${DAY_ORDINALS[i]} ${month}`,
+  );
+}
+
 export function dayFromDateLabel(dateLabel: string): string {
   const match = dateLabel.match(/^(\d{1,2})\b/);
-  return match ? match[1] : dateLabel;
+  if (match) return match[1];
+  const ordinalIndex = DAY_ORDINALS.findIndex((ord) =>
+    dateLabel.startsWith(`${ord} `),
+  );
+  if (ordinalIndex >= 0) return String(ordinalIndex + 1);
+  return dateLabel;
 }
 
 const PDF_ICON_SUBTOPICS = new Set<CurrentAffairsSubtopicId>([
@@ -170,27 +224,50 @@ export function listPracticeTests(
   month?: string,
   examType?: "prelims" | "mains",
   dateLabel?: string,
+  options?: { filterByDay?: boolean; limit?: number; mainSite?: boolean },
 ): CatalogPracticeTest[] {
-  const day = dateLabel ? dayFromDateLabel(dateLabel) : undefined;
+  const limit = options?.limit ?? RESOURCE_CARD_LIMIT;
+  const filterByDay = options?.filterByDay ?? false;
+  const mainSite = options?.mainSite ?? false;
+  const day =
+    filterByDay && dateLabel ? dayFromDateLabel(dateLabel) : undefined;
+  const displayYear = year ?? PORTAL_FILTER_YEARS[0];
+  const displayMonth = month ?? "April";
+  const dayOnly =
+    dateLabel && /^\d{1,2}$/.test(dateLabel.trim()) ? dateLabel.trim() : undefined;
+  const displayDate = mainSite
+    ? `${displayMonth} ${displayYear}`
+    : dayOnly
+      ? `${dayOnly} ${displayMonth} ${displayYear}`
+      : dateLabel ?? `${day ?? "1"} ${displayMonth} ${displayYear}`;
 
   return dailyPracticeItems
     .filter(
       (item) =>
-        (!year || item.year === year) &&
-        (!month || item.month === month) &&
         (!examType || item.examType === examType) &&
-        (!day || item.day === day),
+        (!filterByDay || !day || item.day === day),
     )
-    .slice(0, RESOURCE_CARD_LIMIT);
+    .slice(0, limit)
+    .map((item, index) => {
+      const label = item.examType === "prelims" ? "Prelims" : "Mains";
+      const testNum = index + 1;
+      return {
+        ...item,
+        year: displayYear,
+        month: displayMonth,
+        title: `${label} practice test ${testNum} - ${displayDate}`,
+      };
+    });
 }
 
-/** Student portal: 10 cards per exam type (date dropdown is display-only for now) */
+/** Student portal: up to 10 practice cards per exam type */
 export function listPortalPracticeTests(
   examType: "prelims" | "mains",
+  year?: string,
+  month?: string,
+  dateLabel?: string,
 ): CatalogPracticeTest[] {
-  return dailyPracticeItems
-    .filter((item) => item.examType === examType)
-    .slice(0, RESOURCE_CARD_LIMIT);
+  return listPracticeTests(year, month, examType, dateLabel, { limit: 10 });
 }
 
 /** @deprecated Use listCurrentAffairsDocuments — kept for student portal types */

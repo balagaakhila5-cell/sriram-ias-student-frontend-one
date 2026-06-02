@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
+import { revealResourceCards } from "@/features/resources/utils/resourceCardGsap";
 
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
@@ -13,12 +14,16 @@ import QuickLinks from "@/components/common/QuickLinks";
 import Courses from "@/components/common/Courses";
 import CustomDropdown from "@/components/common/CustomDropdown";
 import FloatingActions from "@/components/common/FloatingActions";
-import { FileText } from "lucide-react";
+import PrelimsMainsExamTabs from "@/components/common/PrelimsMainsExamTabs";
 import { PremiumAttemptNowButton } from "@/components/common/ResourceFilterButtons";
 
 import MockTestCard from "@/features/resources/components/MockTestCard";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
-import { FREE_RESOURCE_CARD_GRID, RESOURCE_CARD_LIMIT } from "@/features/resources/components/cardStyles";
+import {
+  FREE_RESOURCE_CARD_GRID,
+  RESOURCE_CARD_LIMIT,
+  RESOURCE_PAGE_HEADING_GRADIENT,
+} from "@/features/resources/components/cardStyles";
 import { listDemoMockTestCards } from "@/features/resources/catalog/demoMockTests";
 import {
   findCategoryByKey,
@@ -41,6 +46,7 @@ export default function FreeMockTestsPage() {
   const [appliedFilters, setAppliedFilters] = useState<{
     subCategoryId?: string;
     paperId?: string;
+    examTab?: "prelims" | "mains";
   }>({});
 
   const { data: categories } = useResourceCategories();
@@ -81,7 +87,8 @@ export default function FreeMockTestsPage() {
     [papers, selectedPaper],
   );
 
-  const showResults = !!appliedFilters.subCategoryId;
+  const showResults = appliedFilters.examTab != null;
+  const resultsExamTab = appliedFilters.examTab ?? activeTab;
 
   const { data: mockTests = [], isFetching } = useMockTests(
     {
@@ -89,8 +96,8 @@ export default function FreeMockTestsPage() {
       subCategoryId: appliedFilters.subCategoryId,
       paperId: appliedFilters.paperId,
     },
-    showResults && !!categoryId,
-    activeTab,
+    showResults,
+    resultsExamTab,
   );
 
   const displayTests = useMemo(() => {
@@ -98,9 +105,9 @@ export default function FreeMockTestsPage() {
     const tests =
       mockTests.length > 0
         ? mockTests
-        : listDemoMockTestCards(activeTab);
+        : listDemoMockTestCards(resultsExamTab);
     return tests.slice(0, RESOURCE_CARD_LIMIT);
-  }, [showResults, mockTests, activeTab]);
+  }, [showResults, mockTests, resultsExamTab]);
 
   const handleTabChange = (tab: "prelims" | "mains") => {
     setActiveTab(tab);
@@ -109,10 +116,10 @@ export default function FreeMockTestsPage() {
   };
 
   const handleAttemptNow = () => {
-    if (!subCategoryId) return;
     setAppliedFilters({
       subCategoryId,
       paperId: paperId || undefined,
+      examTab: activeTab,
     });
     cardsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -130,21 +137,7 @@ export default function FreeMockTestsPage() {
         { y: 30, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.8, ease: "power3.out", delay: 0.2 },
       );
-      gsap.fromTo(
-        ".animate-card",
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          stagger: 0.1,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: ".animate-cards-container",
-            start: "top 85%",
-          },
-        },
-      );
+      revealResourceCards(".animate-cards-container");
       gsap.fromTo(
         ".animate-sidebar",
         { x: 50, opacity: 0 },
@@ -181,58 +174,33 @@ export default function FreeMockTestsPage() {
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-14">
               <div>
                 <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold leading-none md:text-[56px] lg:text-[56px]">
-                  <span className="bg-gradient-to-r from-[#5f8fcb] via-[#8e8fb7] to-[#b57ea5] bg-clip-text text-transparent">
+                  <span className={RESOURCE_PAGE_HEADING_GRADIENT}>
                     Free Mock Tests
                   </span>
                 </h1>
 
-                <div className="animate-tabs mx-auto mb-12 max-w-[800px]">
-                  <div className="mb-8 flex flex-col items-stretch justify-center gap-5 sm:flex-row sm:gap-8">
-                    {(
-                      [
-                        { id: "prelims" as const, label: "Prelims" },
-                        { id: "mains" as const, label: "Mains" },
-                      ] as const
-                    ).map((tab) => {
-                      const isActive = activeTab === tab.id;
-                      return (
-                        <button
-                          key={tab.id}
-                          type="button"
-                          onClick={() => handleTabChange(tab.id)}
-                          className={`flex flex-1 flex-col items-center justify-center gap-3 rounded-[24px] border-2 px-6 py-8 transition-all duration-300 ${
-                            isActive
-                              ? "border-[#2FA3E8] bg-white shadow-[0_12px_28px_rgba(42,163,232,0.18)]"
-                              : "border-[#E8E8E8] bg-[#FAFAFA] hover:border-[#C5DFF0]"
-                          }`}
-                        >
-                          <FileText
-                            className={`h-10 w-10 ${isActive ? "text-[#2FA3E8]" : "text-[#666]"}`}
-                            strokeWidth={1.75}
-                          />
-                          <span
-                            className={`text-[18px] font-semibold ${isActive ? "text-[#111]" : "text-[#666]"}`}
-                          >
-                            {tab.label}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                <div className="animate-tabs mx-auto mb-12 max-w-[900px]">
+                  <PrelimsMainsExamTabs
+                    activeTab={activeTab}
+                    onChange={handleTabChange}
+                    className="mb-8"
+                  />
 
                   <div className="relative z-[60] mb-8 flex justify-center">
                     <CustomDropdown
-                      options={papers.map((p) => p.value)}
+                      options={
+                        papers.length > 0
+                          ? papers.map((p) => p.value)
+                          : Array.from({ length: 10 }, (_, i) => `Paper ${i + 1}`)
+                      }
                       value={selectedPaper}
                       onChange={setSelectedPaper}
                       placeholder="Select Paper"
+                      buttonLabel="Select Paper"
                     />
                   </div>
 
-                  <PremiumAttemptNowButton
-                    onClick={handleAttemptNow}
-                    disabled={!subCategoryId}
-                  />
+                  <PremiumAttemptNowButton onClick={handleAttemptNow} />
                 </div>
 
                 <div ref={cardsRef} className="animate-cards-container">
@@ -248,11 +216,13 @@ export default function FreeMockTestsPage() {
                   )}
                   {showResults && !isFetching && displayTests.length > 0 && (
                     <ResourceCardGrid className={FREE_RESOURCE_CARD_GRID}>
-                      {displayTests.map((test) => (
+                      {displayTests.map((test, index) => (
                         <MockTestCard
                           key={test._id}
                           test={test}
                           variant="public"
+                          examType={resultsExamTab}
+                          index={index}
                         />
                       ))}
                     </ResourceCardGrid>

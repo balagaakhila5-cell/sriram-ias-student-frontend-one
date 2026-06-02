@@ -1,16 +1,25 @@
 import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
 
 interface CustomDropdownProps {
   options: string[];
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  /** Fixed label on closed button — e.g. always show "Date" */
+  buttonLabel?: string;
 }
 
-const CustomDropdown = ({ options, value, onChange, placeholder }: CustomDropdownProps) => {
+const CustomDropdown = ({
+  options,
+  value,
+  onChange,
+  placeholder,
+  buttonLabel,
+}: CustomDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const display =
+    buttonLabel ?? (value?.trim() ? value : placeholder ?? "");
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -31,7 +40,11 @@ const CustomDropdown = ({ options, value, onChange, placeholder }: CustomDropdow
         onClick={() => setIsOpen(!isOpen)}
         className="flex h-[58px] w-full items-center justify-between rounded-full border border-[#e7ebf3] bg-[#edf0fb] px-6 text-[18px] font-semibold text-[#111] shadow-[0_6px_20px_rgba(0,0,0,0.06)] outline-none transition-all"
       >
-        <div className="flex-1 text-center pl-6">{value || placeholder}</div>
+        <div
+          className={`flex-1 text-center ${buttonLabel ? "" : "pl-6"}`}
+        >
+          {display}
+        </div>
         <svg
           width="20"
           height="20"

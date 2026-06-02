@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import type { CatalogPracticeTest } from "@/features/resources/catalog/types";
 import { RESOURCE_ASSETS } from "@/features/resources/catalog/assets";
 import PremiumCardBanner from "./PremiumCardBanner";
-import { PREMIUM_CARD, RESOURCE_BUTTON } from "./cardStyles";
+import { PREMIUM_CARD } from "./cardStyles";
 
 interface PracticeTestCardProps {
   test: CatalogPracticeTest;
@@ -25,15 +24,6 @@ export default function PracticeTestCard({
       />
       <div className={PREMIUM_CARD.body}>
         <h3 className={PREMIUM_CARD.title}>{test.title}</h3>
-        <div className={PREMIUM_CARD.actions}>
-          <Link
-            href={test.attemptPath}
-            className={RESOURCE_BUTTON.attempt}
-            prefetch={false}
-          >
-            Attempt Test
-          </Link>
-        </div>
       </div>
     </div>
   );

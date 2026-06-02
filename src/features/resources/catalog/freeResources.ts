@@ -2,10 +2,11 @@ import { RESOURCE_ASSETS, pdfThumbnailSrc } from "./assets";
 import { resourceDownloadPath } from "./routes";
 import { registerDocuments } from "./registry";
 import { RESOURCE_CARD_LIMIT } from "../components/cardStyles";
+import { buildPyqCardTitle } from "../utils/pyqCardTitle";
 import type { CatalogDocument, FreeResourcesSubtopicId } from "./types";
 
 const PYQ_YEARS = ["2026", "2025", "2024"] as const;
-const PYQ_PAPERS = ["CSAT", "General Studies"] as const;
+const PYQ_EXAM_TYPES = ["prelims", "mains"] as const;
 
 function freeDoc(
   subtopic: FreeResourcesSubtopicId,
@@ -49,12 +50,12 @@ const freeResourceDocs: CatalogDocument[] = [
     freeDoc("ncert-books", i, `HISTORY-NCERT book${i + 1}`),
   ),
   ...PYQ_YEARS.flatMap((year, yearIndex) =>
-    PYQ_PAPERS.flatMap((paper, paperIndex) =>
+    PYQ_EXAM_TYPES.flatMap((examType, examIndex) =>
       Array.from({ length: 10 }, (_, i) =>
         freeDoc(
           "previous-year",
-          yearIndex * 20 + paperIndex * 10 + i,
-          `${paper} Exam Paper-${i + 1} Question Paper`,
+          yearIndex * 20 + examIndex * 10 + i,
+          buildPyqCardTitle(examType, i + 1),
           { year },
         ),
       ),
@@ -91,11 +92,12 @@ export function listFreeResourceDocuments(
       if (item.subtopic !== subtopic) return false;
       if (year && item.year !== year) return false;
       if (month && item.month !== month) return false;
+      if (subtopic === "previous-year" && examType) {
+        const label = examType === "prelims" ? "Prelims" : "Mains";
+        return item.title.includes(label);
+      }
       if (subtopic === "previous-year" && paper) {
-        if (paper === "CSAT") return item.title.includes("CSAT");
-        if (paper === "General Studies") {
-          return item.title.includes("General Studies");
-        }
+        return item.title.toLowerCase().includes(paper.toLowerCase());
       }
       if (subtopic === "study-materials" && examType) {
         const title = item.title.toUpperCase();

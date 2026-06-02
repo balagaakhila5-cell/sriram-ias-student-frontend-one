@@ -63,16 +63,51 @@ function buildDemoTest(
   examType: "prelims" | "mains",
   index: number,
 ): DemoMockTestCard {
-  const paper = index + 1;
+  const testNumber = index + 1;
+  const lines = buildMockTestCardLines(examType, testNumber);
   return {
-    _id: `demo-mock-${examType}-${paper}`,
-    title: `${examType === "prelims" ? "Prelims" : "Mains"} Exam Paper-${paper % 2 === 0 ? 2 : 1}`,
-    subtitle: `Test ${paper}`,
+    _id: `demo-mock-${examType}-${testNumber}`,
+    title: lines.title,
+    subtitle: lines.subtitle,
     examType,
     duration: 60,
     totalQuestions: DEMO_QUESTIONS.length,
     image: RESOURCE_ASSETS.MOCK_TEST_CARD,
   };
+}
+
+/** Portal / public card lines — e.g. "Prelims Exam Paper-2" + "Test-1" */
+export function buildMockTestCardLines(
+  examType: "prelims" | "mains",
+  testNumber: number,
+  paperNumber = 2,
+): { title: string; subtitle: string } {
+  const examLabel = examType === "prelims" ? "Prelims" : "Mains";
+  return {
+    title: `${examLabel} Exam Paper-${paperNumber}`,
+    subtitle: `Test-${testNumber}`,
+  };
+}
+
+export function getMockTestCardDisplay(
+  test: { title: string; subtitle?: string },
+  examType?: "prelims" | "mains",
+  index?: number,
+): { title: string; subtitle: string } {
+  if (test.subtitle) {
+    return { title: test.title, subtitle: test.subtitle };
+  }
+
+  const parts = test.title.split(" — ");
+  if (parts.length === 2) {
+    return { title: parts[0].trim(), subtitle: parts[1].trim() };
+  }
+
+  if (examType != null && index != null) {
+    return buildMockTestCardLines(examType, index + 1);
+  }
+
+  return { title: test.title, subtitle: "" };
 }
 
 export const DEMO_MOCK_TEST_CARDS: DemoMockTestCard[] = [

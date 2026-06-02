@@ -25,7 +25,11 @@ export const SUBTOPIC_OPTIONS: SubtopicOption[] = [
   { id: "monthly-recap", label: "Monthly Recap", tab: "current-affairs" },
   { id: "free-mocktests", label: "Mock Tests", tab: "free-resources" },
   { id: "ncert-books", label: "NCERT Books", tab: "free-resources" },
-  { id: "previous-year", label: "Previous Year", tab: "free-resources" },
+  {
+    id: "previous-year",
+    label: "Previous Year Question Papers",
+    tab: "free-resources",
+  },
   { id: "study-materials", label: "Study Materials", tab: "free-resources" },
 ];
 

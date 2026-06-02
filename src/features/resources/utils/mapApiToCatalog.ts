@@ -33,23 +33,45 @@ export function mapApiFilesToCatalog(
   }
 
   if (subtopic === "study-materials") {
-    const mapped = (files.length > 0
-      ? files.slice(0, limit).map((file, index) => {
-          const base = fallback[index % fallback.length];
-          return {
-            ...base,
-            id: file._id,
-            subtopic,
-            title: file.title,
-            pdfUrl: String(
-              file.fileUrl || base.pdfUrl || RESOURCE_ASSETS.DEFAULT_PDF,
-            ),
-            image: "",
-            hideImage: true,
-          };
-        })
-      : fallback.slice(0, limit)
-    ).map((item) => ({ ...item, image: "", hideImage: true }));
+    const filteredFiles = files.filter(
+      (file) => !String(file.title ?? "").toLowerCase().includes("indian polity"),
+    );
+
+    const fromApi =
+      filteredFiles.length > 0
+        ? filteredFiles.slice(0, limit).map((file, index) => {
+            const base = fallback[index % fallback.length];
+            return {
+              ...base,
+              id: file._id,
+              subtopic,
+              title: file.title,
+              pdfUrl: String(
+                file.fileUrl || base.pdfUrl || RESOURCE_ASSETS.DEFAULT_PDF,
+              ),
+              image: "",
+              hideImage: true,
+            };
+          })
+        : [];
+
+    // If API returns fewer than `limit`, pad with fallback cards
+    const padded =
+      fromApi.length >= limit
+        ? fromApi
+        : [
+            ...fromApi,
+            ...fallback
+              .slice(0, limit)
+              .slice(fromApi.length)
+              .map((item) => ({
+                ...item,
+                image: "",
+                hideImage: true,
+              })),
+          ];
+
+    const mapped = padded.map((item) => ({ ...item, image: "", hideImage: true }));
 
     registerDocuments(mapped);
     return mapped;

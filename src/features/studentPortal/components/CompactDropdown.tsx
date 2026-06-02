@@ -1,12 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 interface CompactDropdownProps {
   options: string[];
   value: string;
   onChange: (value: string) => void;
   className?: string;
+  /** Shown when value and buttonLabel are empty */
+  placeholder?: string;
+  /** Fixed label on the closed button (e.g. always show "Date") */
+  buttonLabel?: string;
 }
 
 export default function CompactDropdown({
@@ -14,27 +19,119 @@ export default function CompactDropdown({
   value,
   onChange,
   className = "",
+  placeholder,
+  buttonLabel,
 }: CompactDropdownProps) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [menuStyle, setMenuStyle] = useState<{
+    top: number;
+    left: number;
+    width: number;
+  } | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const display = buttonLabel ?? value ?? placeholder ?? "";
 
-  useEffect(() => {
-    const onClickOutside = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", onClickOutside);
-    return () => document.removeEventListener("mousedown", onClickOutside);
+  const updateMenuPosition = useCallback(() => {
+    const button = buttonRef.current;
+    if (!button) return;
+
+    const rect = button.getBoundingClientRect();
+    setMenuStyle({
+      top: rect.bottom + 8,
+      left: rect.left,
+      width: rect.width,
+    });
   }, []);
 
-  return (
-    <div ref={ref} className={`relative ${className}`}>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex h-[44px] w-full items-center justify-between rounded-full border border-[#e7ebf3] bg-[#edf0fb] px-4 text-[18px] font-semibold text-[#111] shadow-[0_4px_14px_rgba(0,0,0,0.05)] transition-all"
-        style={{ fontFamily: "Montserrat, sans-serif" }}
+  useEffect(() => {
+    if (!open) return;
+
+    updateMenuPosition();
+
+    const onClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (
+        rootRef.current?.contains(target) ||
+        menuRef.current?.contains(target)
+      ) {
+        return;
+      }
+      setOpen(false);
+    };
+
+    const onReposition = () => updateMenuPosition();
+
+    document.addEventListener("mousedown", onClickOutside);
+    window.addEventListener("resize", onReposition);
+    window.addEventListener("scroll", onReposition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", onClickOutside);
+      window.removeEventListener("resize", onReposition);
+      window.removeEventListener("scroll", onReposition, true);
+    };
+  }, [open, updateMenuPosition]);
+
+  const menu =
+    open && menuStyle ? (
+      <div
+        ref={menuRef}
+        className="fixed z-[9999] overflow-hidden rounded-[16px] bg-[#edf0fb] py-2 shadow-[0_10px_40px_rgba(0,0,0,0.12)]"
+        style={{
+          top: menuStyle.top,
+          left: menuStyle.left,
+          width: menuStyle.width,
+        }}
       >
-        <span className="flex-1 truncate text-center">{value}</span>
+        <div className="flex max-h-[260px] flex-col gap-1 overflow-y-auto px-2">
+          {options.map((opt) => (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => {
+                onChange(opt);
+                setOpen(false);
+              }}
+              className={`rounded-[12px] px-3 py-2 text-left text-[16px] font-semibold transition-all md:text-[17px] ${
+                value === opt
+                  ? "bg-white text-[#2a9cda] shadow-sm"
+                  : "text-[#111] hover:bg-[#e2e6f4]"
+              }`}
+              style={{ fontFamily: "Montserrat, sans-serif" }}
+            >
+              {opt}
+            </button>
+          ))}
+        </div>
+      </div>
+    ) : null;
+
+  return (
+    <div ref={rootRef} className={`relative ${className}`}>
+      <button
+        ref={buttonRef}
+        type="button"
+        onClick={() => {
+          setOpen((current) => {
+            const next = !current;
+            if (next) updateMenuPosition();
+            return next;
+          });
+        }}
+        className="flex h-[44px] w-full items-center justify-between rounded-full border border-[#e7ebf3] bg-[#edf0fb] px-4 text-[16px] font-semibold text-[#111] shadow-[0_4px_14px_rgba(0,0,0,0.05)] transition-all md:text-[17px]"
+        style={{ fontFamily: "Montserrat, sans-serif" }}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+      >
+        <span
+          className={`flex-1 truncate text-left ${
+            buttonLabel || (!value && placeholder) ? "text-[#111]" : ""
+          }`}
+        >
+          {display}
+        </span>
         <svg
           width="16"
           height="16"
@@ -50,30 +147,9 @@ export default function CompactDropdown({
         </svg>
       </button>
 
-      {open && (
-        <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 overflow-hidden rounded-[16px] bg-[#edf0fb] py-2 shadow-[0_10px_40px_rgba(0,0,0,0.12)]">
-          <div className="flex max-h-[260px] flex-col gap-1 overflow-y-auto px-2">
-            {options.map((opt) => (
-              <button
-                key={opt}
-                type="button"
-                onClick={() => {
-                  onChange(opt);
-                  setOpen(false);
-                }}
-                className={`rounded-[12px] px-3 py-2 text-center text-[18px] font-semibold transition-all ${
-                  value === opt
-                    ? "bg-white text-[#2a9cda] shadow-sm"
-                    : "text-[#111] hover:bg-[#e2e6f4]"
-                }`}
-                style={{ fontFamily: "Montserrat, sans-serif" }}
-              >
-                {opt}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      {typeof document !== "undefined" && menu
+        ? createPortal(menu, document.body)
+        : null}
     </div>
   );
 }

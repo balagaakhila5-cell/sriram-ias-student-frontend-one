@@ -13,11 +13,13 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useMemo, useState } from "react";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
+import { revealResourceCards } from "@/features/resources/utils/resourceCardGsap";
 import { listCurrentAffairsDocuments } from "@/features/resources/catalog/currentAffairs";
 import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 
 import Header from "@/components/common/Header";
+import { RESOURCE_PAGE_HEADING_GRADIENT } from "@/features/resources/components/cardStyles";
 import Footer from "@/components/common/Footer";
 import QuickLinks from "@/components/common/QuickLinks";
 import FloatingActions from "@/components/common/FloatingActions";
@@ -103,7 +105,7 @@ function QuickLinksCard() {
   return (
     <div className="rounded-[26px] bg-white/95 p-6 shadow-[0px_12px_30px_rgba(0,0,0,0.06)]">
       <h2 className="mb-6 text-center text-[34px] font-extrabold leading-none">
-        <span className="bg-gradient-to-r from-[#4A8CCB] via-[#7882C7] to-[#B36F95] bg-clip-text text-transparent">
+        <span className={RESOURCE_PAGE_HEADING_GRADIENT}>
           Quick Links
         </span>
       </h2>
@@ -167,22 +169,7 @@ export default function InfographicsPage() {
         }
       );
 
-      gsap.fromTo(
-        ".animate-card",
-        { y: 36, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          stagger: 0.08,
-          duration: 0.75,
-          ease: "power3.out",
-          clearProps: "transform",
-          scrollTrigger: {
-            trigger: ".animate-cards-container",
-            start: "top 85%",
-          },
-        }
-      );
+      revealResourceCards(".animate-cards-container");
 
       gsap.fromTo(
         ".animate-sidebar",
@@ -210,7 +197,7 @@ export default function InfographicsPage() {
         {/* Banner */}
         <section className="relative h-[280px] w-full overflow-hidden md:h-[340px] lg:h-[390px]">
         <Image
-          src="/assets/current-affairs/infographics/infographics-banner.png"
+          src="/assets/current-affairs/infographics/infographics-banner.svg"
           alt="Infographics Banner"
           fill
           priority
@@ -226,7 +213,7 @@ export default function InfographicsPage() {
               {/* Left */}
               <div>
                 <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
-                  <span className="bg-gradient-to-r from-[#20a0e0] via-[#9a6db5] to-[rgba(225,97,101,0.9)] bg-clip-text text-transparent">
+                  <span className={RESOURCE_PAGE_HEADING_GRADIENT}>
                     Infographics
                   </span>
                 </h1>

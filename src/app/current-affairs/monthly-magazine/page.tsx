@@ -8,11 +8,13 @@ import { useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
+import { revealResourceCards } from "@/features/resources/utils/resourceCardGsap";
 import { listCurrentAffairsDocuments } from "@/features/resources/catalog/currentAffairs";
 import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 
 import Header from "@/components/common/Header";
+import { RESOURCE_PAGE_HEADING_GRADIENT } from "@/features/resources/components/cardStyles";
 import Footer from "@/components/common/Footer";
 import CustomDropdown from "@/components/common/CustomDropdown";
 import FloatingActions from "@/components/common/FloatingActions";
@@ -142,22 +144,7 @@ export default function MonthlyMagazinePage() {
         }
       );
 
-      gsap.fromTo(
-        ".animate-card",
-        { y: 35, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          stagger: 0.08,
-          duration: 0.7,
-          ease: "power3.out",
-          clearProps: "transform",
-          scrollTrigger: {
-            trigger: ".cards-grid",
-            start: "top 85%",
-          },
-        }
-      );
+      revealResourceCards(".cards-grid");
 
       gsap.fromTo(
         ".animate-sidebar",
@@ -204,7 +191,7 @@ export default function MonthlyMagazinePage() {
               {/* Left Content */}
               <div>
               <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
-                <span className="bg-gradient-to-r from-[#2aa3ea] via-[#8b7ac9] to-[#d97b8d] bg-clip-text text-transparent">
+                <span className={RESOURCE_PAGE_HEADING_GRADIENT}>
                   Monthly Magazine
                 </span>
               </h1>

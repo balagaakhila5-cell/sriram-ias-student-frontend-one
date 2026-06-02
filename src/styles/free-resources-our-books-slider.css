@@ -1,0 +1,469 @@
+/* Free Resources — Our Books sidebar slider */
+@layer components {
+
+.free-resources-our-books-slider.our-books-card {
+  display: block;
+  width: 100%;
+  border-radius: 18px;
+  background: #dcecff;
+  padding: 16px;
+  text-decoration: none;
+  overflow: hidden;
+  box-shadow: 0px 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.free-resources-our-books-slider .our-books-title {
+  margin-bottom: 12px;
+  text-align: center;
+  font-family: Montserrat, sans-serif;
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 900;
+  background: linear-gradient(
+    90deg,
+    #3e9cdb 0%,
+    #8e9bc8 38%,
+    #d57e89 72%,
+    #e53935 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.free-resources-our-books-slider .our-books-image-area {
+  position: relative;
+  height: 245px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #111111;
+}
+
+.free-resources-our-books-slider .our-books-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateX(100%);
+  will-change: transform, opacity;
+}
+
+.free-resources-our-books-slider .our-books-slide-1 {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.free-resources-our-books-slider .our-books-img {
+  object-fit: cover;
+  object-position: center;
+}
+
+.free-resources-our-books-slider.our-books-card:hover .our-books-slide-1 {
+  animation: fr-books-move1 24s infinite ease-in-out;
+}
+
+.free-resources-our-books-slider.our-books-card:hover .our-books-slide-2 {
+  animation: fr-books-move2 24s infinite ease-in-out;
+}
+
+.free-resources-our-books-slider.our-books-card:hover .our-books-slide-3 {
+  animation: fr-books-move3 24s infinite ease-in-out;
+}
+
+.free-resources-our-books-slider.our-books-card:hover .our-books-slide-4 {
+  animation: fr-books-move4 24s infinite ease-in-out;
+}
+
+.free-resources-our-books-slider.our-books-card:hover .our-books-slide-5 {
+  animation: fr-books-move5 24s infinite ease-in-out;
+}
+
+.free-resources-our-books-slider.our-books-card:hover .our-books-slide-6 {
+  animation: fr-books-move6 24s infinite ease-in-out;
+}
+
+.free-resources-our-books-slider.our-books-card:hover .our-books-slide-7 {
+  animation: fr-books-move7 24s infinite ease-in-out;
+}
+
+.free-resources-our-books-slider.our-books-card:hover .our-books-slide-8 {
+  animation: fr-books-move8 24s infinite ease-in-out;
+}
+
+
+}
+
+@keyframes fr-books-move1 {
+  0%, 9% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  12.5%, 100% {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+}
+
+
+@keyframes fr-books-move2 {
+  0%, 9% {
+    opacity: 1;
+    transform: translateX(100%);
+  }
+
+  12.5%, 21.5% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  25%, 100% {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+}
+
+
+@keyframes fr-books-move3 {
+  0%, 21.5% {
+    opacity: 1;
+    transform: translateX(100%);
+  }
+
+  25%, 34% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  37.5%, 100% {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+}
+
+
+@keyframes fr-books-move4 {
+  0%, 34% {
+    opacity: 1;
+    transform: translateX(100%);
+  }
+
+  37.5%, 46.5% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  50%, 100% {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+}
+
+
+@keyframes fr-books-move5 {
+  0%, 46.5% {
+    opacity: 1;
+    transform: translateX(100%);
+  }
+
+  50%, 59% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  62.5%, 100% {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+}
+
+
+@keyframes fr-books-move6 {
+  0%, 59% {
+    opacity: 1;
+    transform: translateX(100%);
+  }
+
+  62.5%, 71.5% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  75%, 100% {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+}
+
+
+@keyframes fr-books-move7 {
+  0%, 71.5% {
+    opacity: 1;
+    transform: translateX(100%);
+  }
+
+  75%, 84% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  87.5%, 100% {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+}
+
+
+@keyframes fr-books-move8 {
+  0%, 84% {
+    opacity: 1;
+    transform: translateX(100%);
+  }
+
+  87.5%, 96.5% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+}
+
+.our-books-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  z-index: 5;
+  display: flex;
+  gap: 7px;
+  transform: translateX(-50%);
+}
+
+.our-books-dots span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.free-resources-our-books-slider.our-books-card:hover .dot-1 {
+  animation: fr-books-dot1 24s infinite;
+}
+
+.free-resources-our-books-slider.our-books-card:hover .dot-2 {
+  animation: fr-books-dot2 24s infinite;
+}
+
+.free-resources-our-books-slider.our-books-card:hover .dot-3 {
+  animation: fr-books-dot3 24s infinite;
+}
+
+.free-resources-our-books-slider.our-books-card:hover .dot-4 {
+  animation: fr-books-dot4 24s infinite;
+}
+
+.free-resources-our-books-slider.our-books-card:hover .dot-5 {
+  animation: fr-books-dot5 24s infinite;
+}
+
+.free-resources-our-books-slider.our-books-card:hover .dot-6 {
+  animation: fr-books-dot6 24s infinite;
+}
+
+.free-resources-our-books-slider.our-books-card:hover .dot-7 {
+  animation: fr-books-dot7 24s infinite;
+}
+
+.free-resources-our-books-slider.our-books-card:hover .dot-8 {
+  animation: fr-books-dot8 24s infinite;
+}
+
+
+@keyframes fr-books-dot1 {
+  0%, 9% {
+    background: #ff3f6c;
+    transform: scale(1.35);
+  }
+
+  12.5%, 100% {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(1);
+  }
+}
+
+
+@keyframes fr-books-dot2 {
+  0%, 9% {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(1);
+  }
+
+  12.5%, 21.5% {
+    background: #ff3f6c;
+    transform: scale(1.35);
+  }
+
+  25%, 100% {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(1);
+  }
+}
+
+
+@keyframes fr-books-dot3 {
+  0%, 21.5% {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(1);
+  }
+
+  25%, 34% {
+    background: #ff3f6c;
+    transform: scale(1.35);
+  }
+
+  37.5%, 100% {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(1);
+  }
+}
+
+
+@keyframes fr-books-dot4 {
+  0%, 34% {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(1);
+  }
+
+  37.5%, 46.5% {
+    background: #ff3f6c;
+    transform: scale(1.35);
+  }
+
+  50%, 100% {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(1);
+  }
+}
+
+
+@keyframes fr-books-dot5 {
+  0%, 46.5% {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(1);
+  }
+
+  50%, 59% {
+    background: #ff3f6c;
+    transform: scale(1.35);
+  }
+
+  62.5%, 100% {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(1);
+  }
+}
+
+
+@keyframes fr-books-dot6 {
+  0%, 59% {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(1);
+  }
+
+  62.5%, 71.5% {
+    background: #ff3f6c;
+    transform: scale(1.35);
+  }
+
+  75%, 100% {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(1);
+  }
+}
+
+
+@keyframes fr-books-dot7 {
+  0%, 71.5% {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(1);
+  }
+
+  75%, 84% {
+    background: #ff3f6c;
+    transform: scale(1.35);
+  }
+
+  87.5%, 100% {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(1);
+  }
+}
+
+
+@keyframes fr-books-dot8 {
+  0%, 84% {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(1);
+  }
+
+  87.5%, 96.5% {
+    background: #ff3f6c;
+    transform: scale(1.35);
+  }
+
+  100% {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(1);
+  }
+}
+
+.buy-now-btn {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: rgba(58, 78, 94, 0.88);
+  padding: 10px 24px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.free-resources-our-books-slider.our-books-card:hover .buy-now-btn {
+  background: rgba(26, 116, 170, 0.94);
+}
+
+@media (min-width: 640px) {
+  .free-resources-our-books-slider.our-books-card {
+    padding: 18px 18px 20px;
+  }
+
+  .our-books-title {
+    font-size: 30px;
+  }
+
+  .our-books-image-area {
+    height: 275px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .our-books-title {
+    font-size: 32px;
+  }
+
+  .our-books-image-area {
+    height: 305px;
+  }
+}
+      

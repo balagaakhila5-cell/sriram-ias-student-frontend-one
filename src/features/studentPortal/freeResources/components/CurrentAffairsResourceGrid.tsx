@@ -32,8 +32,8 @@ export default function CurrentAffairsResourceGrid({
   );
 
   const practiceCards = useMemo(
-    () => listPortalPracticeTests(examType),
-    [examType],
+    () => listPortalPracticeTests(examType, year, month, date),
+    [examType, year, month, date],
   );
 
   if (subtopic === "daily-practice-questions") {

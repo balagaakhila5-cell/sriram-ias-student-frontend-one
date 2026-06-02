@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import { RESOURCE_PAGE_HEADING_GRADIENT } from "@/features/resources/components/cardStyles";
 
 export interface TrendingArticleItem {
   title: string;
@@ -63,7 +64,7 @@ const TrendingArticles = ({
     <div className="rounded-[22px] bg-white px-5 py-6 shadow-[0px_10px_30px_rgba(0,0,0,0.05)]">
       {/* Heading */}
       <h2 className="mb-5 text-center text-[30px] font-extrabold leading-none md:text-[34px]">
-        <span className="bg-[linear-gradient(90deg,#4D90D2_0%,#B57B95_100%)] bg-clip-text text-transparent -ml-3.5 -mr-2">
+        <span className={`${RESOURCE_PAGE_HEADING_GRADIENT} -ml-3.5 -mr-2`}>
           Trending Articles
         </span>
 

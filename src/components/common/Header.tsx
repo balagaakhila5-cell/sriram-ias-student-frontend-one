@@ -666,7 +666,7 @@ const Header: React.FC = () => {
               <div className="mx-auto w-full max-w-[1280px] px-10">
                 <div className="grid grid-cols-4 gap-6">
                   <Link
-                    href="/free_resources/ncert-books"
+                    href="/free_resources/ncert-page"
                     onClick={() => setIsFreeResourcesOpen(false)}
                     className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                   >
@@ -679,7 +679,7 @@ const Header: React.FC = () => {
                   </Link>
 
                   <Link
-                    href="/free_resources/ncert-books"
+                    href="/free_resources/previous-year"
                     onClick={() => setIsFreeResourcesOpen(false)}
                     className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                   >
@@ -692,7 +692,7 @@ const Header: React.FC = () => {
                   </Link>
 
                   <Link
-                    href="/free_resources/ncert-books"
+                    href="/free_resources/free-mocktests"
                     onClick={() => setIsFreeResourcesOpen(false)}
                     className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                   >
@@ -705,7 +705,7 @@ const Header: React.FC = () => {
                   </Link>
 
                   <Link
-                    href="/free_resources/ncert-books"
+                    href="/free_resources/study-materials"
                     onClick={() => setIsFreeResourcesOpen(false)}
                     className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                   >
@@ -1068,7 +1068,7 @@ const Header: React.FC = () => {
 
           <nav className="flex flex-col gap-6 text-[#333333] font-medium text-[15px]">
             <a href="/courses" className="hover:text-primary transition-colors">Courses</a>
-            <a href="/free_resources" className="hover:text-primary transition-colors">Free Resources</a>
+            <a href="/free_resources/ncert-books" className="hover:text-primary transition-colors">Free Resources</a>
             <a href="/current-affairs" className="hover:text-primary transition-colors">Current Affairs</a>
             <a href="/books" className="hover:text-primary transition-colors">Books</a>
             <a href="/toppers" className="hover:text-primary transition-colors">Our Toppers</a>

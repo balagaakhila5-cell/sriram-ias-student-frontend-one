@@ -11,7 +11,7 @@ export default async function EmployeeStudentAttendancePage({
 }: PageProps) {
   const { studentId } = await params;
   const student = getStudentById(studentId);
-  const studentName = student?.name ?? "Darshan Kotla";
+  const studentName = student?.name ?? "Student";
 
   return (
     <div className="space-y-8">

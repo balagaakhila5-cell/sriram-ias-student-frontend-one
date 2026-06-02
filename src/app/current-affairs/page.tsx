@@ -8,6 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 
 import Header from "@/components/common/Header";
+import { RESOURCE_PAGE_HEADING_GRADIENT } from "@/features/resources/components/cardStyles";
 import Footer from "@/components/common/Footer";
 import QuickLinks from "@/components/common/QuickLinks";
 import FloatingActions from "@/components/common/FloatingActions";
@@ -158,7 +159,7 @@ export default function CurrentAffairsPage() {
             {/* Left side */}
             <div>
               <h1 className="animate-heading mb-10 text-left text-[36px] font-extrabold uppercase leading-none md:text-[46px] lg:text-[56px]">
-                <span className="bg-[linear-gradient(90deg,#4B97DD_0%,#8E7CB8_45%,#E07B8B_100%)] bg-clip-text text-transparent">
+                <span className={RESOURCE_PAGE_HEADING_GRADIENT}>
                   Current Affairs
                 </span>
               </h1>

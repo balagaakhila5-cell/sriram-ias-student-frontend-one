@@ -33,7 +33,8 @@ export default function HoverCard({
   return (
     <Link
       href={href}
-      className={`animate-card group relative block overflow-hidden rounded-[16px] transition-shadow duration-500 ease-out hover:shadow-[0px_14px_32px_rgba(0,0,0,0.18)] ${className}`}
+      prefetch
+      className={`animate-card group relative z-0 block overflow-hidden rounded-[16px] transition-shadow duration-500 ease-out hover:shadow-[0px_14px_32px_rgba(0,0,0,0.18)] ${className}`}
     >
       {/* Background Image */}
       <Image

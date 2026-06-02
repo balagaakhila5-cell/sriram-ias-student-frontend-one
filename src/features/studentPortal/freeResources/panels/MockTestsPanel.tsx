@@ -15,6 +15,7 @@ import {
   useResourceCategories,
   useResourceSubCategories,
 } from "@/features/resources/hooks/useResources";
+import { isResourcesApiConfigured } from "@/features/resources/services/resourcesApiClient";
 import type { FreeResourcesExamType } from "../config";
 
 interface MockTestsPanelProps {
@@ -22,6 +23,11 @@ interface MockTestsPanelProps {
 }
 
 export default function MockTestsPanel({ examType }: MockTestsPanelProps) {
+  const demoTests = useMemo(
+    () => listDemoMockTestCards(examType).slice(0, RESOURCE_CARD_LIMIT),
+    [examType],
+  );
+
   const { data: categories } = useResourceCategories();
   const mockCategory = useMemo(
     () => findCategoryByKey(categories, "MOCK_TESTS"),
@@ -36,20 +42,30 @@ export default function MockTestsPanel({ examType }: MockTestsPanelProps) {
   );
   const subCategoryId = subCategory?._id;
 
+  const apiReady =
+    !isResourcesApiConfigured() || Boolean(categoryId && subCategoryId);
+
   const { data: mockTests = [] } = useMockTests(
     { categoryId, subCategoryId },
-    true,
+    apiReady,
     examType,
   );
 
-  const displayTests = (
-    mockTests.length > 0 ? mockTests : listDemoMockTestCards(examType)
-  ).slice(0, RESOURCE_CARD_LIMIT);
+  const displayTests = useMemo(
+    () => (mockTests.length > 0 ? mockTests : demoTests).slice(0, RESOURCE_CARD_LIMIT),
+    [mockTests, demoTests],
+  );
 
   return (
     <ResourceCardGrid className={FREE_RESOURCE_CARD_GRID}>
-      {displayTests.map((test) => (
-        <MockTestCard key={test._id} test={test} variant="portal" />
+      {displayTests.map((test, index) => (
+        <MockTestCard
+          key={test._id}
+          test={test}
+          variant="portal"
+          examType={examType}
+          index={index}
+        />
       ))}
     </ResourceCardGrid>
   );

@@ -1,15 +1,13 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
-import ExamTypeTabs from "@/components/common/ExamTypeTabs";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import StudyMaterialsExamTabs from "@/components/common/StudyMaterialsExamTabs";
-import { buildDateFilterOptions } from "@/features/resources/catalog/currentAffairs";
-import { PORTAL_DPQ_DATE_OPTIONS } from "./resourceFilters";
+import DpqExamTabs from "@/features/studentPortal/components/DpqExamTabs";
 import FilterBar from "@/features/studentPortal/components/FilterBar";
 import SubNavToggle from "@/features/studentPortal/components/SubNavToggle";
 import type { CurrentAffairsSubtopicId } from "@/features/currentAffairs/data/portalResources";
-import ResourcesGridSkeleton from "./components/ResourcesGridSkeleton";
+import CurrentAffairsResourceGrid from "./components/CurrentAffairsResourceGrid";
+import FreeResourcesSubtopicPanel from "./components/FreeResourcesSubtopicPanel";
 import {
   DEFAULT_SUBTOPIC_BY_TAB,
   RESOURCE_TABS,
@@ -18,15 +16,16 @@ import {
   type StudyMaterialsExamType,
 } from "./config";
 import {
+  buildDayOnlyOptions,
   buildResourceFilters,
   CA_FILTER_YEARS,
   currentAffairsUsesExamTabs,
-  MOCK_EXAM_OPTIONS,
   NCERT_CLASS_OPTIONS,
-  PYQ_PAPER_OPTIONS,
+  PORTAL_DPQ_DEFAULT_DAY,
+  previousYearUsesExamTabs,
+  mockTestsUsesExamTabs,
+  PYQ_SELECT_PAPER_OPTIONS,
   PYQ_YEAR_OPTIONS,
-  type MockExamFilter,
-  type PyqPaperFilter,
 } from "./resourceFilters";
 import type {
   FreeResourcesSubtopicId,
@@ -34,33 +33,37 @@ import type {
   StudentSubtopicId,
 } from "./types";
 
-const CurrentAffairsResourceGrid = dynamic(
-  () => import("./components/CurrentAffairsResourceGrid"),
-  { loading: () => <ResourcesGridSkeleton /> },
-);
+interface FreeResourcesHubProps {
+  /** Route default: free-resources page opens on Free Resources tab */
+  initialTab?: StudentResourceTab;
+}
 
-const FreeResourcesSubtopicPanel = dynamic(
-  () => import("./components/FreeResourcesSubtopicPanel"),
-  { loading: () => <ResourcesGridSkeleton /> },
-);
-
-export default function FreeResourcesHub() {
-  const [tab, setTab] = useState<StudentResourceTab>("current-affairs");
+export default function FreeResourcesHub({
+  initialTab = "current-affairs",
+}: FreeResourcesHubProps) {
+  const [tab, setTab] = useState<StudentResourceTab>(initialTab);
   const [year, setYear] = useState<string>(CA_FILTER_YEARS[0]);
   const [month, setMonth] = useState<string>("April");
-  const [date, setDate] = useState<string>(PORTAL_DPQ_DATE_OPTIONS[0]);
-  const [paper, setPaper] = useState<PyqPaperFilter>(PYQ_PAPER_OPTIONS[0]);
+  const [date, setDate] = useState<string>(PORTAL_DPQ_DEFAULT_DAY);
   const [pyqYear, setPyqYear] = useState<string>(PYQ_YEAR_OPTIONS[0]);
-  const [mockExam, setMockExam] = useState<MockExamFilter>(MOCK_EXAM_OPTIONS[0]);
+  const [pyqSelectPaper, setPyqSelectPaper] = useState<string>(
+    PYQ_SELECT_PAPER_OPTIONS[0],
+  );
   const [ncertClass, setNcertClass] = useState<string>(NCERT_CLASS_OPTIONS[0]);
   const [dpqExamType, setDpqExamType] = useState<"prelims" | "mains">("prelims");
+  const [pyqExamType, setPyqExamType] = useState<"prelims" | "mains">("prelims");
+  const [mockExamType, setMockExamType] = useState<"prelims" | "mains">("prelims");
   const [studyExamType, setStudyExamType] =
     useState<StudyMaterialsExamType>("prelims");
   const [subtopic, setSubtopic] = useState<StudentSubtopicId>(
-    DEFAULT_SUBTOPIC_BY_TAB["current-affairs"],
+    DEFAULT_SUBTOPIC_BY_TAB[initialTab],
   );
 
   const subtopicOptions = useMemo(() => getSubtopicsForTab(tab), [tab]);
+
+  const handleSubtopicChange = useCallback((id: StudentSubtopicId) => {
+    setSubtopic(id);
+  }, []);
 
   useEffect(() => {
     const isValid = subtopicOptions.some((option) => option.id === subtopic);
@@ -70,10 +73,10 @@ export default function FreeResourcesHub() {
   }, [tab, subtopic, subtopicOptions]);
 
   useEffect(() => {
-    if (subtopic === "daily-practice-questions") return;
-    const options = buildDateFilterOptions(month, year);
+    if (subtopic !== "daily-practice-questions") return;
+    const options = buildDayOnlyOptions(month, year);
     setDate((current) =>
-      options.includes(current) ? current : options[0] ?? current,
+      options.includes(current) ? current : options[0] ?? PORTAL_DPQ_DEFAULT_DAY,
     );
   }, [month, year, subtopic]);
 
@@ -82,40 +85,35 @@ export default function FreeResourcesHub() {
     setSubtopic(DEFAULT_SUBTOPIC_BY_TAB[nextTab]);
   };
 
-  const filters = useMemo(
-    () =>
-      buildResourceFilters(
-        tab,
-        subtopic,
-        {
-          year,
-          month,
-          date,
-          paper,
-          pyqYear,
-          mockExam,
-          ncertClass,
-        },
-        {
-          setYear,
-          setMonth,
-          setDate,
-          setPaper,
-          setPyqYear,
-          setMockExam,
-          setNcertClass,
-          setSubtopic,
-        },
-      ),
-    [tab, subtopic, year, month, date, paper, pyqYear, mockExam, ncertClass],
+  const filters = buildResourceFilters(
+    tab,
+    subtopic,
+    {
+      year,
+      month,
+      date,
+      pyqYear,
+      pyqSelectPaper,
+      ncertClass,
+    },
+    {
+      setYear,
+      setMonth,
+      setDate,
+      setPyqYear,
+      setPyqSelectPaper,
+      setNcertClass,
+      setSubtopic: handleSubtopicChange,
+    },
   );
 
   const showDpqExamTabs = currentAffairsUsesExamTabs(subtopic);
+  const showPyqExamTabs =
+    tab === "free-resources" && previousYearUsesExamTabs(subtopic);
+  const showMockExamTabs =
+    tab === "free-resources" && mockTestsUsesExamTabs(subtopic);
   const showStudyMaterialsTabs =
     tab === "free-resources" && freeResourcesUsesStudyMaterialsTabs(subtopic);
-
-  const mockExamType =
-    mockExam.toLowerCase() as "prelims" | "mains";
 
   return (
     <div className="space-y-8">
@@ -127,15 +125,40 @@ export default function FreeResourcesHub() {
         />
       </div>
 
-      <div className="flex justify-center">
-        <FilterBar filters={filters} />
+      <div className="mx-auto w-full max-w-[1200px] overflow-visible px-2 sm:px-4">
+        <FilterBar
+          filters={filters}
+          layout={
+            showDpqExamTabs
+              ? "dpq"
+              : subtopic === "ncert-books"
+                ? "centered"
+                : "default"
+          }
+        />
       </div>
 
       {showDpqExamTabs ? (
-        <ExamTypeTabs
+        <DpqExamTabs
           activeTab={dpqExamType}
           onChange={setDpqExamType}
-          className="mx-auto w-full max-w-[720px]"
+          className="mx-auto w-full max-w-[900px]"
+        />
+      ) : null}
+
+      {showPyqExamTabs ? (
+        <DpqExamTabs
+          activeTab={pyqExamType}
+          onChange={setPyqExamType}
+          className="mx-auto w-full max-w-[900px]"
+        />
+      ) : null}
+
+      {showMockExamTabs ? (
+        <DpqExamTabs
+          activeTab={mockExamType}
+          onChange={setMockExamType}
+          className="mx-auto w-full max-w-[900px]"
         />
       ) : null}
 
@@ -149,6 +172,7 @@ export default function FreeResourcesHub() {
 
       {tab === "current-affairs" ? (
         <CurrentAffairsResourceGrid
+          key={`ca-${subtopic}-${dpqExamType}`}
           subtopic={subtopic as CurrentAffairsSubtopicId}
           year={year}
           month={month}
@@ -157,11 +181,13 @@ export default function FreeResourcesHub() {
         />
       ) : (
         <FreeResourcesSubtopicPanel
+          key={`fr-${subtopic}-${subtopic === "previous-year" ? pyqExamType : subtopic === "free-mocktests" ? mockExamType : subtopic === "study-materials" ? studyExamType : ""}`}
           subtopic={subtopic as FreeResourcesSubtopicId}
           studyExamType={studyExamType}
           mockExamType={mockExamType}
-          paper={paper}
           pyqYear={pyqYear}
+          pyqSelectPaper={pyqSelectPaper}
+          pyqExamType={pyqExamType}
           ncertClass={ncertClass}
         />
       )}

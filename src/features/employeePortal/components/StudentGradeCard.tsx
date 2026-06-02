@@ -22,16 +22,12 @@ export default function StudentGradeCard({
         boxShadow: "0px 4px 32px 0px #0000000D",
       }}
     >
-      <div
-        className="relative flex h-[170px] items-center justify-center"
-        style={{ background: student.avatarBg }}
-      >
-        <span
-          className="text-[64px] font-bold text-white/80"
-          style={{ fontFamily: "Montserrat, sans-serif" }}
-        >
-          {student.initials}
-        </span>
+      <div className="relative h-[130px] w-full overflow-hidden bg-[#E5EEF8]">
+        <img
+          src={encodeURI(student.image)}
+          alt={student.name}
+          className="h-full w-full object-cover object-top"
+        />
         <span
           className="absolute right-3 top-3 inline-flex h-[34px] items-center justify-center rounded-full bg-[#D25120] px-3 text-[14px] font-semibold text-white"
           style={{ fontFamily: "Montserrat, sans-serif" }}

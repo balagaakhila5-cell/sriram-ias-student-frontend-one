@@ -1,18 +1,27 @@
 /** Shared layout tokens for resource cards (CA, Free Resources, Student Portal). */
 
+/** Page h1 / section titles — blue → red (Free Resources & Current Affairs) */
+export const RESOURCE_PAGE_HEADING_GRADIENT =
+  "bg-[linear-gradient(90deg,#3E9CDB_0%,#8E9BC8_38%,#D57E89_72%,#E53935_100%)] bg-clip-text text-transparent";
+
 /** Max cards shown per section */
 export const RESOURCE_CARD_LIMIT = 10;
 
 /** Responsive grid — matches Monthly Magazine reference (2 columns) */
 export const RESOURCE_CARD_GRID =
-  "grid w-full grid-cols-1 gap-6 md:grid-cols-2 md:gap-x-8 md:gap-y-6";
+  "grid w-full grid-cols-1 gap-6 overflow-visible md:grid-cols-2 md:gap-x-8 md:gap-y-6";
 
 /** @deprecated use RESOURCE_CARD_GRID — kept for free-resources imports */
 export const FREE_RESOURCE_CARD_GRID = RESOURCE_CARD_GRID;
 
-/** Light card default with soft red-tinted hover */
+/** Figma resource cards — off-white default, peach hover */
+export const RESOURCE_CARD_BG_DEFAULT = "#F9F9F9";
+export const RESOURCE_CARD_BG_HOVER = "#FFF2E6";
+export const RESOURCE_CARD_BORDER_DEFAULT = "#EEEEEE";
+export const RESOURCE_CARD_BORDER_HOVER = "#F5E4D4";
+
 const CARD_SURFACE =
-  "rounded-[14px] border border-[#EFEFEB] bg-[#FEFEFC] shadow-[0_3px_12px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out hover:translate-x-[10px] hover:scale-[1.03] hover:border-[#FFD4C8] hover:bg-[#FFF5F2] hover:shadow-[0_10px_22px_rgba(255,115,100,0.12)]";
+  "resource-card-surface relative z-0 rounded-[14px]";
 
 /** Card title — shared sizing */
 const CARD_TITLE =
@@ -20,9 +29,9 @@ const CARD_TITLE =
 
 /** Unified horizontal card — image left, content right */
 export const PREMIUM_CARD = {
-  shell: `group animate-card flex h-[112px] min-h-[112px] w-full min-w-0 flex-row overflow-hidden ${CARD_SURFACE}`,
+  shell: `group flex h-[112px] min-h-[112px] w-full min-w-0 flex-row overflow-visible ${CARD_SURFACE}`,
   thumb:
-    "relative h-full w-[88px] shrink-0 overflow-hidden rounded-l-[14px] bg-transparent",
+    "resource-card-thumb relative h-full w-[88px] shrink-0 overflow-hidden rounded-l-[14px]",
   thumbInner:
     "relative flex h-full w-full items-center justify-center bg-transparent p-1.5",
   body:
@@ -75,7 +84,7 @@ export const RESOURCE_BUTTON = {
 } as const;
 
 export const STUDY_MATERIAL_CARD = {
-  shell: `group animate-card flex h-[112px] min-h-[112px] w-full flex-col overflow-hidden ${CARD_SURFACE}`,
+  shell: `group flex h-[112px] min-h-[112px] w-full flex-col overflow-visible ${CARD_SURFACE}`,
   bodyCentered:
     "flex h-full w-full flex-col items-center justify-center gap-1.5 px-4 py-2.5 text-center",
   title: CARD_TITLE,
@@ -84,10 +93,10 @@ export const STUDY_MATERIAL_CARD = {
 } as const;
 
 export const RESOURCE_EMPTY =
-  "rounded-[14px] border border-[#EFEFEB] bg-[#FEFEFC] px-6 py-8 text-center text-[14px] font-semibold text-[#5A6573]";
+  "resource-card-surface rounded-[14px] px-6 py-8 text-center text-[14px] font-semibold text-[#5A6573]";
 
 export const NCERT_BOOK_CARD = {
-  shell: `group animate-card flex h-[118px] min-h-[118px] w-full flex-col overflow-hidden ${CARD_SURFACE}`,
+  shell: `group flex h-[118px] min-h-[118px] w-full flex-col overflow-visible ${CARD_SURFACE}`,
   bodyCentered:
     "flex h-full w-full flex-col items-center justify-center gap-2 px-4 py-2.5 text-center",
   title: CARD_TITLE,

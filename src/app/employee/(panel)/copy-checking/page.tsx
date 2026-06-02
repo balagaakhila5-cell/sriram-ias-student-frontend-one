@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import SearchInput from "@/features/employeePortal/components/SearchInput";
 import StudentGradeCard from "@/features/employeePortal/components/StudentGradeCard";
@@ -27,13 +28,13 @@ export default function EmployeeCopyCheckingPage() {
             key={s.id}
             student={s}
             footer={
-              <a
+              <Link
                 href={`/employee/copy-checking/${s.id}`}
                 className="mt-1 inline-flex items-center gap-1 text-[14px] font-bold text-[#2A9FDB] underline underline-offset-2"
                 style={{ fontFamily: "Montserrat, sans-serif" }}
               >
                 Open Submissions <ArrowRight size={14} />
-              </a>
+              </Link>
             }
           />
         ))}
