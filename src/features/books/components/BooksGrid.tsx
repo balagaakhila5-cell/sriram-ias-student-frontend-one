@@ -26,9 +26,11 @@ type BookGridCardProps = {
 const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
   const router = useRouter();
   const addItem = useCartStore((state) => state.addItem);
+  const openCart = useCartStore((state) => state.openCart);
   const isInCart = useCartStore((state) =>
     state.items.some((item) => item.book.id === book.id),
   );
+  const [justAdded, setJustAdded] = useState(false);
 
   const popupBook = {
     title: book.title,
@@ -36,10 +38,23 @@ const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
     slug: book.slug,
   };
 
+  const showAddedLabel = justAdded || isInCart;
+
   const handleAddToCart = (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    if (!isInCart) addItem(book);
+
+    if (showAddedLabel) {
+      openCart();
+      return;
+    }
+
+    setJustAdded(true);
+    addItem(book, { openSidebar: false });
+
+    window.setTimeout(() => {
+      openCart();
+    }, 450);
   };
 
   const handleBuyNow = (event: React.MouseEvent) => {
@@ -114,14 +129,13 @@ const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
         <button
           type="button"
           onClick={handleAddToCart}
-          disabled={isInCart}
           className={`text-xs py-2 rounded-md font-medium transition-all border cursor-pointer ${
-            isInCart
-              ? 'border-[#249EDC] bg-[#EAF7FF] text-[#007BB5] cursor-default'
+            showAddedLabel
+              ? 'border-[#249EDC] bg-[#EAF7FF] text-[#007BB5]'
               : 'border-[#249EDC] text-[#007BB5] hover:bg-gray-50'
           }`}
         >
-          {isInCart ? 'ADDED TO CART' : 'ADD TO CART'}
+          {showAddedLabel ? 'ADDED TO CART' : 'ADD TO CART'}
         </button>
       </div>
     </div>

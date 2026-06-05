@@ -11,7 +11,7 @@ export interface CartItem {
 interface CartState {
   items: CartItem[];
   isOpen: boolean;
-  addItem: (book: Book) => void;
+  addItem: (book: Book, options?: { openSidebar?: boolean }) => void;
   removeItem: (bookId: string) => void;
   updateQuantity: (bookId: string, quantity: number) => void;
   openCart: () => void;
@@ -23,7 +23,9 @@ export const useCartStore = create<CartState>((set, get) => ({
   items: [],
   isOpen: false,
 
-  addItem: (book) => {
+  addItem: (book, options) => {
+    const openSidebar = options?.openSidebar !== false;
+
     set((state) => {
       const existing = state.items.find((i) => i.book.id === book.id);
       if (existing) {
@@ -31,10 +33,13 @@ export const useCartStore = create<CartState>((set, get) => ({
           items: state.items.map((i) =>
             i.book.id === book.id ? { ...i, quantity: i.quantity + 1 } : i
           ),
-          isOpen: true,
+          isOpen: openSidebar ? true : state.isOpen,
         };
       }
-      return { items: [...state.items, { book, quantity: 1 }], isOpen: true };
+      return {
+        items: [...state.items, { book, quantity: 1 }],
+        isOpen: openSidebar ? true : state.isOpen,
+      };
     });
   },
 

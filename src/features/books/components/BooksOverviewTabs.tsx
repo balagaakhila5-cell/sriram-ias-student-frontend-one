@@ -9,18 +9,39 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import FlipBook from '@/components/common/FlipBook';
+import { useCartStore } from '@/store/cartStore';
+import { mockBooks } from '@/features/books/data/books';
 
-type PopupBook = {
-  title: string;
-  image: string;
-};
+const featuredBook = mockBooks[0];
 
 const BooksOverviewTabs: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
-  const [selectedBook] = useState<PopupBook>({
-    title: 'Indian Economy General Studies Book -1',
-    image: '/assets/books/indianEconomy.png',
-  });
+  const [justAdded, setJustAdded] = useState(false);
+  const addItem = useCartStore((state) => state.addItem);
+  const openCart = useCartStore((state) => state.openCart);
+  const isInCart = useCartStore((state) =>
+    state.items.some((item) => item.book.id === featuredBook.id),
+  );
+
+  const showAddedLabel = justAdded || isInCart;
+
+  const handleAddToCart = () => {
+    if (showAddedLabel) {
+      openCart();
+      return;
+    }
+
+    setJustAdded(true);
+    addItem(featuredBook, { openSidebar: false });
+
+    window.setTimeout(() => {
+      openCart();
+    }, 450);
+  };
+
+  const handleBuyNow = () => {
+    setActiveTab('buy');
+  };
 
   const tabs = [
     {
@@ -107,15 +128,24 @@ const BooksOverviewTabs: React.FC = () => {
 
           {(activeTab === 'sample' || activeTab === 'buy') && (
             <div className="absolute inset-0 w-full h-full bg-[#01285A] px-4 sm:px-8 py-10 flex flex-col z-20">
-              <FlipBook coverImage={selectedBook.image} />
+              <FlipBook coverImage={featuredBook.coverImage} />
 
               {/* Bottom Button */}
               <div className="flex justify-center shrink-0 pb-4">
                 <button
                   type="button"
-                  className="min-w-[180px] h-[50px] md:h-[54px] px-8 rounded-full border-[1.5px] border-white bg-transparent text-white text-[18px] md:text-[20px] font-extrabold leading-none transition-all duration-300 hover:bg-[#0F8EDB] hover:border-[#0F8EDB] flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                  onClick={activeTab === 'sample' ? handleBuyNow : handleAddToCart}
+                  className={`min-w-[180px] h-[50px] md:h-[54px] px-8 rounded-full border-[1.5px] text-[18px] md:text-[20px] font-extrabold leading-none transition-all duration-300 flex items-center justify-center gap-2 shadow-lg ${
+                    activeTab === 'buy' && showAddedLabel
+                      ? 'border-[#0F8EDB] bg-[#0F8EDB] text-white'
+                      : 'border-white bg-transparent text-white hover:bg-[#0F8EDB] hover:border-[#0F8EDB] hover:shadow-xl'
+                  }`}
                 >
-                  {activeTab === 'sample' ? 'Buy Now' : 'Add to Cart'}
+                  {activeTab === 'sample'
+                    ? 'Buy Now'
+                    : showAddedLabel
+                      ? 'Added to Cart'
+                      : 'Add to Cart'}
                   <ArrowRight size={20} />
                 </button>
               </div>
