@@ -43,10 +43,12 @@ export const CA_FILTER_MONTHS = [
 
 export const PORTAL_DPQ_DEFAULT_DAY = "1";
 
-export {
+import {
   PYQ_SELECT_PAPER_OPTIONS,
   PYQ_YEAR_OPTIONS,
 } from "@/features/resources/constants/pyqFilters";
+
+export { PYQ_SELECT_PAPER_OPTIONS, PYQ_YEAR_OPTIONS };
 
 export const PYQ_SUBJECT_OPTIONS = ["CSAT", "General Studies"] as const;
 

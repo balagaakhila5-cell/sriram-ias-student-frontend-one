@@ -68,6 +68,16 @@ const getCategoryName = (c: CourseSummary): string | undefined => {
 const getCenterName = (c: CourseSummary): string | undefined =>
   typeof c.center === 'string' ? c.center : c.center?.name;
 
+const toExploreCardCourse = (c: CourseSummary): ExploreCardCourse => ({
+  _id: c._id,
+  title: c.title,
+  slug: c.slug,
+  onlineFees: c.onlineFees,
+  banner: c.banner,
+  category: getCategoryName(c),
+  center: getCenterName(c),
+});
+
 const catalogFallbackByTab = buildCanonicalExploreCategories();
 
 function catalogCoursesForTab(tab: string): ExploreCardCourse[] {
@@ -93,8 +103,9 @@ const ExploreCourses: React.FC = () => {
 
     if (names.length === 0) return [...FALLBACK_TABS];
 
+    const tabOrderLookup = new Set<string>(TAB_ORDER);
     const orderedTabs = TAB_ORDER.filter((tab) => names.includes(tab));
-    const remainingTabs = names.filter((tab) => !TAB_ORDER.includes(tab));
+    const remainingTabs = names.filter((tab) => !tabOrderLookup.has(tab));
 
     return [...orderedTabs, ...remainingTabs];
   }, [categories]);
@@ -117,7 +128,9 @@ const ExploreCourses: React.FC = () => {
 
   const visibleCourses = useMemo((): ExploreCardCourse[] => {
     const courses = Array.isArray(allCourses) ? allCourses : [];
-    const fromApi = courses.filter((c) => categoryMatchesTab(getCategoryName(c), activeTab));
+    const fromApi = courses
+      .filter((c) => categoryMatchesTab(getCategoryName(c), activeTab))
+      .map(toExploreCardCourse);
 
     if (fromApi.length > 0) return fromApi;
 
