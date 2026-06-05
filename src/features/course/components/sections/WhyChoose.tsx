@@ -430,7 +430,7 @@ const WhyChoose: React.FC<Props> = ({ course }) => {
           </h2>
 
           <div className="relative w-full pb-8 md:pb-16 lg:pb-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6 relative z-20">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6 relative z-20">
               {cityCards.map((item, i) => {
                 const Icon = item.Icon;
 

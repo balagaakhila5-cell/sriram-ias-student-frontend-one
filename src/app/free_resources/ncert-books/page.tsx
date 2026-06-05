@@ -81,7 +81,7 @@ export default function NcertBooksPage() {
     <>
       <Header />
 
-      <main ref={containerRef} className="min-h-screen bg-[#F6F6F6] overflow-hidden">
+      <main ref={containerRef} className="min-h-screen overflow-x-hidden bg-[#F6F6F6]">
         {/* Banner */}
         <section className="relative h-[260px] w-full overflow-hidden sm:h-[320px] md:h-[360px] lg:h-[400px]">
           <Image

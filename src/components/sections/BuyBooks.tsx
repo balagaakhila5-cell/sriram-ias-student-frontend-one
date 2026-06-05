@@ -55,7 +55,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
   };
 
   return (
-    <div className="book-card min-w-[320px] w-[320px] bg-white rounded-2xl shadow-xl border border-gray-100 flex flex-col p-6 space-y-4 group hover:shadow-2xl transition-shadow duration-300 transform-gpu backface-visibility-hidden">
+    <div className="book-card min-w-[85vw] w-[85vw] sm:min-w-[280px] sm:w-[320px] bg-white rounded-2xl shadow-xl border border-gray-100 flex flex-col p-6 space-y-4 group hover:shadow-2xl transition-shadow duration-300 transform-gpu backface-visibility-hidden">
       <div className="relative rounded-xl overflow-hidden shadow-md aspect-6/5 w-full bg-gray-100">
         <Image
           src={book.image}

@@ -330,7 +330,7 @@ const OurToppersGalleryPage = () => {
 
         <div className="relative z-10 mx-auto grid max-w-[1240px] items-center gap-10 lg:grid-cols-[0.88fr_1.42fr]">
           <div className="relative z-20 lg:-ml-8 xl:-ml-12">
-            <h2 className="mb-8 whitespace-nowrap bg-gradient-to-r from-[#159FE3] via-[#4FA0D6] to-[#6D8EB8] bg-clip-text text-center text-[28px] font-black uppercase leading-[1.05] tracking-[1px] text-transparent sm:text-[32px] md:text-[38px] lg:text-left lg:text-[36px] xl:text-[42px]">
+            <h2 className="mb-8 bg-gradient-to-r from-[#159FE3] via-[#4FA0D6] to-[#6D8EB8] bg-clip-text text-center text-[28px] font-black uppercase leading-[1.05] tracking-[1px] text-transparent sm:text-[32px] md:text-[38px] lg:text-left lg:text-[36px] xl:text-[42px]">
               OUR SUPPORT SYSTEM
             </h2>
 

@@ -46,7 +46,7 @@ export const PREMIUM_CARD = {
   meta: "line-clamp-1 text-[11px] font-medium text-[#5A6573]",
   actions: "mt-0.5 flex flex-wrap items-center gap-2",
   actionsRow:
-    "mt-1 flex w-full min-w-0 flex-nowrap items-center gap-1.5",
+    "mt-1 flex w-full min-w-0 flex-wrap items-center gap-1.5",
   actionsCentered:
     "mt-1 flex w-full flex-nowrap items-center justify-center gap-2",
 } as const;
@@ -104,6 +104,17 @@ export const RESOURCE_EMPTY =
 const NCERT_BUTTON =
   "inline-flex min-w-[100px] items-center justify-center rounded-[6px] border border-[#7EB4E2] bg-transparent px-5 py-2 text-center text-[13px] font-semibold text-[#7EB4E2] transition-all duration-300 ease-in-out hover:border-[#5BA3E0] hover:bg-[#7EB4E2] hover:text-white";
 
+/** Daily Practice Questions — Figma horizontal layout (icon left, title + Attempt Test) */
+export const PRACTICE_TEST_CARD = {
+  shell:
+    "practice-test-card group flex h-[132px] min-h-[132px] w-full min-w-0 flex-row overflow-visible rounded-[12px] resource-card-surface",
+  body: "flex min-w-0 flex-1 flex-col justify-center gap-2 px-4 py-3",
+  title: CARD_TITLE,
+  actions: "flex w-full min-w-0 flex-nowrap items-center",
+  attemptButton:
+    "inline-flex items-center gap-2 rounded-full border border-[#57B0F2] bg-white px-4 py-1.5 text-[12px] font-semibold text-[#46A7ED] transition-all duration-300 hover:border-[#2AA7DF] hover:bg-[#2AA7DF] hover:text-white",
+} as const;
+
 /** PYQ question paper cards — Figma horizontal layout (Prelims / Mains lists) */
 export const PYQ_PAPER_CARD = {
   shell: `pyq-paper-card group flex h-[132px] min-h-[132px] w-full min-w-0 flex-row overflow-visible rounded-[12px] ${CARD_SURFACE}`,
@@ -113,7 +124,7 @@ export const PYQ_PAPER_CARD = {
     "relative flex h-full w-full items-center justify-center bg-transparent p-2",
   body: "flex min-w-0 flex-1 flex-col justify-center gap-2 px-4 py-3",
   title: CARD_TITLE,
-  actions: "flex w-full min-w-0 flex-nowrap items-center gap-2.5",
+  actions: "flex w-full min-w-0 flex-wrap items-center gap-2.5",
   viewButton:
     "inline-flex shrink-0 items-center justify-center rounded-[6px] border border-[#7EB4E2] bg-transparent px-5 py-2 text-center text-[13px] font-semibold text-[#7EB4E2] transition-all duration-300 hover:border-[#5BA3E0] hover:bg-[#7EB4E2] hover:text-white",
   downloadButton:

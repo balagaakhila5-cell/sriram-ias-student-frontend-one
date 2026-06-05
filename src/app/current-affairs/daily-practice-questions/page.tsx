@@ -153,17 +153,17 @@ export default function DailyPracticeQuestionsPage() {
           <div className="relative z-10 mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-14">
               <div>
-                <h1 className="dpq-animate-heading mb-10 text-center text-[22px] font-extrabold uppercase leading-none tracking-tight whitespace-nowrap sm:text-[30px] md:text-[40px] lg:text-[48px] xl:text-[52px]">
+                <h1 className="dpq-animate-heading mb-10 text-center text-[22px] font-extrabold uppercase leading-tight tracking-tight sm:text-[30px] md:text-[40px] lg:text-[48px] xl:text-[52px]">
                   <span className={RESOURCE_PAGE_HEADING_GRADIENT}>
                     Daily Practice Questions
                   </span>
                 </h1>
 
-                <div className="dpq-animate-filters mx-auto mb-10 flex max-w-[620px] overflow-hidden rounded-[26px] bg-[#F1F1F1] p-3 shadow-[0px_10px_30px_rgba(0,0,0,0.08)]">
+                <div className="dpq-animate-filters mx-auto mb-10 flex max-w-[620px] overflow-hidden rounded-[26px] bg-[#F1F1F1] p-2 sm:p-3 shadow-[0px_10px_30px_rgba(0,0,0,0.08)]">
                   <button
                     type="button"
                     onClick={() => setActiveTab("prelims")}
-                    className={`flex h-[112px] flex-1 items-center justify-center rounded-[20px] transition-all duration-300 ${
+                    className={`flex min-h-[88px] sm:h-[112px] flex-1 items-center justify-center rounded-[20px] transition-all duration-300 ${
                       activeTab === "prelims"
                         ? "bg-gradient-to-r from-[#2FA3E8] to-[#0F567D] text-white shadow-[0px_12px_24px_rgba(23,110,156,0.28)]"
                         : "bg-transparent text-[#111111]"
@@ -184,7 +184,7 @@ export default function DailyPracticeQuestionsPage() {
                   <button
                     type="button"
                     onClick={() => setActiveTab("mains")}
-                    className={`flex h-[112px] flex-1 items-center justify-center rounded-[20px] transition-all duration-300 ${
+                    className={`flex min-h-[88px] sm:h-[112px] flex-1 items-center justify-center rounded-[20px] transition-all duration-300 ${
                       activeTab === "mains"
                         ? "bg-gradient-to-r from-[#2FA3E8] to-[#0F567D] text-white shadow-[0px_12px_24px_rgba(23,110,156,0.28)]"
                         : "bg-transparent text-[#111111]"

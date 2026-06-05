@@ -7,11 +7,11 @@ import Footer from '@/components/common/Footer';
 
 const FoundersMessagePage = () => {
   return (
-    <main className="min-h-screen bg-white overflow-hidden">
+    <main className="min-h-screen overflow-hidden bg-white">
       <Header />
 
       {/* HERO BANNER */}
-      <section className="relative w-full h-[390px] overflow-hidden">
+      <section className="relative h-[390px] w-full overflow-hidden">
         <Image
           src="/assets/about/about-us/About-banner.png"
           alt="Founder's Message Banner"
@@ -21,19 +21,18 @@ const FoundersMessagePage = () => {
           className="object-cover object-center"
         />
 
-        {/* Figma-like left black shade */}
         <div className="absolute inset-0 bg-black/20" />
         <div className="absolute inset-y-0 left-0 w-[55%] bg-gradient-to-r from-black/95 via-black/78 to-transparent" />
         <div className="absolute inset-y-0 right-0 w-[38%] bg-gradient-to-l from-black/20 to-transparent" />
 
-      <div className="relative z-10 h-full flex items-start px-6 sm:px-10 lg:px-[88px] pt-[270px]">
-        <h1 className="founder-hero-heading">FOUNDER&apos;S MESSAGE</h1>
-      </div>
+        <div className="relative z-10 flex h-full items-start px-6 pt-[270px] sm:px-10 lg:px-[88px]">
+          <h1 className="founder-hero-heading">FOUNDER&apos;S MESSAGE</h1>
+        </div>
       </section>
 
       {/* FOUNDER MESSAGE SECTION */}
-      <section className="relative bg-[#f8fbff] overflow-hidden min-h-[850px]">
-        <div className="absolute inset-0 founder-page-bg" />
+      <section className="founder-section relative min-h-[850px] overflow-hidden bg-[#f8fbff]">
+        <div className="founder-page-bg absolute inset-0" />
 
         <div className="founder-moving-bg">
           <Image
@@ -45,17 +44,17 @@ const FoundersMessagePage = () => {
           />
         </div>
 
-        <div className="relative z-10 w-full max-w-[1366px] mx-auto px-0 pt-[62px] pb-[110px]">
+        <div className="relative z-10 mx-auto w-full max-w-[1440px] px-4 pb-[110px] pt-[62px] sm:px-6 lg:px-8">
           <div className="founder-main-grid">
-            {/* LEFT DIALOG BOX */}
-            <div className="relative z-20 dialog-left-col">
+            {/* LEFT DIALOG BOX — Figma: 802.67 × 742.6 */}
+            <div className="dialog-left-col relative z-20">
               <div className="dialog-box-wrap">
                 <Image
                   src="/assets/about/founder's-message/dialog-box.png"
                   alt="Founder message dialog box"
                   fill
                   priority
-                  sizes="860px"
+                  sizes="(max-width: 768px) 100vw, 803px"
                   className="object-fill"
                 />
 
@@ -93,15 +92,15 @@ const FoundersMessagePage = () => {
               </div>
             </div>
 
-            {/* RIGHT FOUNDER IMAGE */}
-            <div className="relative z-30 right-founder-col">
+            {/* RIGHT FOUNDER — Figma group: 607.5 × 476.1 */}
+            <div className="right-founder-col relative z-30">
               <div className="founder-photo-wrap">
                 <Image
                   src="/assets/about/founder's-message/sriram-founder.png"
                   alt="Sriram Srirangam Founder"
                   fill
                   priority
-                  sizes="475px"
+                  sizes="(max-width: 768px) 78vw, 460px"
                   className="founder-main-img"
                 />
               </div>
@@ -120,6 +119,17 @@ const FoundersMessagePage = () => {
       <Footer />
 
       <style jsx>{`
+        /* Figma design tokens */
+        .founder-section {
+          --fm-dialog-w: 803px;
+          --fm-dialog-h: 743px;
+          --fm-text-w: 678px;
+          --fm-founder-group-w: 608px;
+          --fm-founder-photo: 460px;
+          --fm-font-size: 16px;
+          --fm-line-height: 26px;
+        }
+
         .founder-hero-heading {
           font-size: clamp(42px, 5vw, 70px);
           line-height: 1;
@@ -146,12 +156,7 @@ const FoundersMessagePage = () => {
               rgba(255, 255, 255, 0.86) 34%,
               transparent 58%
             ),
-            linear-gradient(
-              100deg,
-              #fffaf2 0%,
-              #ffffff 35%,
-              #e8f6ff 100%
-            );
+            linear-gradient(100deg, #fffaf2 0%, #ffffff 35%, #e8f6ff 100%);
         }
 
         .founder-moving-bg {
@@ -170,104 +175,111 @@ const FoundersMessagePage = () => {
           0% {
             transform: translateX(0px) translateY(0px) scale(1);
           }
-
           100% {
             transform: translateX(-16px) translateY(10px) scale(1.025);
           }
         }
 
+        /* Two-column layout — scales proportionally, no collapse until mobile */
         .founder-main-grid {
-          width: 100%;
           display: grid;
-          grid-template-columns: 860px 470px;
+          grid-template-columns: minmax(0, var(--fm-dialog-w)) minmax(
+              0,
+              var(--fm-founder-group-w)
+            );
           align-items: start;
           justify-content: center;
-          column-gap: 0px;
+          column-gap: clamp(0px, 1.5vw, 12px);
+          width: fit-content;
+          max-width: 100%;
+          margin: 0 auto;
         }
 
         .dialog-left-col {
-          margin-top: 0;
-          transform: translateX(-20px);
+          width: 100%;
+          max-width: var(--fm-dialog-w);
         }
 
         .dialog-box-wrap {
           position: relative;
-          width: 860px;
-          height: 760px;
+          width: 100%;
+          max-width: var(--fm-dialog-w);
+          aspect-ratio: 803 / 743;
+          height: auto;
           overflow: visible;
         }
 
+        /* Figma text: Montserrat 600, 16px, line-height 26px, width 678px */
         .dialog-text-content {
-          position: relative;
+          position: absolute;
+          inset: 0;
           z-index: 2;
-          width: 760px;
-          max-width: 760px;
-          padding: 74px 20px 170px 82px;
-          color: #4d5961;
-          font-size: 17px !important;
-          line-height: 1.85 !important;
-          font-weight: 500 !important;
-          letter-spacing: 0 !important;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
           box-sizing: border-box;
+          width: 84.4%;
+          max-width: var(--fm-text-w);
+          margin: 0 auto;
+          padding: 9.2% 4% 22% 9%;
+          color: #4d5961;
+          font-family: 'Montserrat', sans-serif;
+          font-size: var(--fm-font-size);
+          line-height: var(--fm-line-height);
+          font-weight: 600;
         }
 
         .dialog-text-content p {
-          margin-bottom: 42px !important;
-          font-size: 17px !important;
-          line-height: 1.85 !important;
-          font-weight: 500 !important;
-          letter-spacing: 0 !important;
-          color: #4d5961 !important;
+          margin: 0 0 20px;
+          font-family: 'Montserrat', sans-serif;
+          font-size: inherit;
+          line-height: inherit;
+          font-weight: 600;
+          color: #4d5961;
         }
 
-        .dialog-text-content p:nth-child(2) {
-          margin-bottom: 42px !important;
-        }
-
-        .dialog-text-content p:nth-child(3) {
-          margin-bottom: 12px !important;
+        .dialog-text-content p:last-child {
+          margin-bottom: 0;
         }
 
         .welcome-text {
+          margin-top: auto !important;
           text-align: center;
-          margin-top: 0 !important;
-          margin-bottom: 0 !important;
           white-space: nowrap;
-          padding-right: 40px;
-          font-weight: 600 !important;
         }
 
-       .right-founder-col {
-  margin-top: 0px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transform: translateX(28px);
-}
+        .right-founder-col {
+          display: flex;
+          width: 100%;
+          max-width: var(--fm-founder-group-w);
+          flex-direction: column;
+          align-items: center;
+          margin-top: clamp(24px, 4vw, 48px);
+        }
 
-.founder-photo-wrap {
-  position: relative;
-  width: 475px;
-  height: 475px;
-  overflow: visible;
-  transform: translateY(-12px);
-}
+        .founder-photo-wrap {
+          position: relative;
+          width: min(var(--fm-founder-photo), 100%);
+          aspect-ratio: 1 / 1;
+          height: auto;
+          overflow: visible;
+        }
+
         .founder-main-img {
           object-fit: contain;
           object-position: center center;
         }
 
         .founder-details {
-  margin-top: 28px;
-  position: relative;
-  z-index: 12;
-  width: 100%;
-  text-align: center;
-  transform: translateY(-10px);
-}
+          position: relative;
+          z-index: 12;
+          width: 100%;
+          margin-top: clamp(16px, 2.5vw, 28px);
+          text-align: center;
+        }
 
         .best-wishes-text {
-          font-size: 33px;
+          font-size: clamp(22px, 2.3vw, 33px);
           line-height: 1.05;
           font-weight: 800;
           letter-spacing: -0.02em;
@@ -284,8 +296,8 @@ const FoundersMessagePage = () => {
         }
 
         .founder-name {
-          margin-top: 17px;
-          font-size: 34px;
+          margin-top: clamp(12px, 1.2vw, 17px);
+          font-size: clamp(22px, 2.4vw, 34px);
           line-height: 1.1;
           font-weight: 700;
           letter-spacing: -0.03em;
@@ -293,262 +305,121 @@ const FoundersMessagePage = () => {
         }
 
         .founder-role {
-          margin-top: 21px;
-          font-size: 26px;
+          margin-top: clamp(14px, 1.5vw, 21px);
+          font-size: clamp(18px, 1.8vw, 26px);
           line-height: 1.15;
           font-weight: 600;
           color: #56616b;
         }
 
         .founder-brand {
-          margin-top: 22px;
-          font-size: 25px;
+          margin-top: clamp(14px, 1.5vw, 22px);
+          font-size: clamp(18px, 1.7vw, 25px);
           line-height: 1.15;
           font-weight: 700;
           color: #4f5964;
         }
 
-        @media (min-width: 1280px) and (max-width: 1450px) {
-          .founder-main-grid {
-            grid-template-columns: 850px 455px;
-            column-gap: 0px;
-          }
-
-          .dialog-left-col {
-            transform: translateX(-18px);
-          }
-
-          .dialog-box-wrap {
-            width: 850px;
-            height: 760px;
-          }
-
-          .dialog-text-content {
-            width: 750px;
-            max-width: 750px;
-            padding: 72px 20px 170px 82px;
-            font-size: 16.8px !important;
-            line-height: 1.82 !important;
-            font-weight: 500 !important;
-            box-sizing: border-box;
-          }
-
-          .dialog-text-content p {
-            font-size: 16.8px !important;
-            line-height: 1.82 !important;
-            font-weight: 500 !important;
-            margin-bottom: 40px !important;
-          }
-
-          .dialog-text-content p:nth-child(2) {
-            margin-bottom: 40px !important;
-          }
-
-          .dialog-text-content p:nth-child(3) {
-            margin-bottom: 12px !important;
-          }
-
-         .right-founder-col {
-  margin-top: 0px;
-  transform: translateX(24px);
-}
-
-.founder-photo-wrap {
-  width: 455px;
-  height: 455px;
-  transform: translateY(-12px);
-}
-
-.founder-details {
-  margin-top: 28px;
-  transform: translateY(-10px);
-}
-
-          .best-wishes-text {
-            font-size: 31px;
-          }
-
-          .founder-name {
-            font-size: 32px;
-          }
-
-          .founder-role {
-            font-size: 25px;
-          }
-
-          .founder-brand {
-            font-size: 24px;
+        /* Scale down proportionally on medium screens — keep 2-column structure */
+        @media (max-width: 1439px) {
+          .founder-section {
+            --fm-dialog-w: min(803px, 56vw);
+            --fm-founder-group-w: min(608px, 42vw);
+            --fm-founder-photo: min(460px, 34vw);
+            --fm-text-w: min(678px, 47vw);
           }
         }
 
-        @media (max-width: 1279px) {
+        @media (max-width: 1100px) {
+          .founder-section {
+            --fm-dialog-w: min(803px, 52vw);
+            --fm-founder-group-w: min(608px, 44vw);
+            --fm-founder-photo: min(400px, 36vw);
+            --fm-font-size: clamp(14px, 1.45vw, 16px);
+            --fm-line-height: clamp(22px, 2.3vw, 26px);
+          }
+
+          .founder-moving-bg {
+            width: 78%;
+            opacity: 0.7;
+          }
+        }
+
+        /* Tablet — still side-by-side, tighter proportions */
+        @media (max-width: 900px) {
+          .founder-section {
+            --fm-dialog-w: 58vw;
+            --fm-founder-group-w: 38vw;
+            --fm-founder-photo: 38vw;
+            --fm-font-size: clamp(12px, 1.6vw, 15px);
+            --fm-line-height: clamp(20px, 2.6vw, 24px);
+          }
+
           .founder-main-grid {
-            grid-template-columns: 1fr;
-            row-gap: 30px;
-            padding: 0 24px;
-          }
-
-          .dialog-left-col {
-            transform: translateX(0);
-          }
-
-          .dialog-box-wrap {
-            width: 100%;
-            max-width: 850px;
-            height: 760px;
-            margin: 0 auto;
-          }
-
-          .dialog-text-content {
-            width: 88%;
-            max-width: 755px;
-            padding: 72px 20px 170px 82px;
-            font-size: 16.5px !important;
-            line-height: 1.78 !important;
-            font-weight: 500 !important;
-            box-sizing: border-box;
-          }
-
-          .dialog-text-content p {
-            font-size: 16.5px !important;
-            line-height: 1.78 !important;
-            font-weight: 500 !important;
-            margin-bottom: 36px !important;
+            column-gap: 0;
           }
 
           .right-founder-col {
-            margin-top: 32px;
-            transform: translateX(0);
-          }
-
-          .founder-photo-wrap {
-            width: 450px;
-            height: 450px;
-            transform: translateY(18px);
-          }
-
-          .founder-details {
-            margin-top: 56px;
+            margin-top: clamp(16px, 3vw, 32px);
           }
         }
 
+        /* Mobile — stack vertically, preserve aspect ratios */
         @media (max-width: 1023px) {
-          .founder-moving-bg {
+          .founder-section {
+            --fm-dialog-w: 100%;
+            --fm-founder-group-w: 100%;
+            --fm-founder-photo: min(380px, 78vw);
+            --fm-font-size: clamp(13px, 3.6vw, 16px);
+            --fm-line-height: clamp(21px, 5.8vw, 26px);
+          }
+
+          .founder-main-grid {
+            grid-template-columns: 1fr;
+            row-gap: clamp(24px, 6vw, 40px);
             width: 100%;
-            right: -160px;
-            opacity: 0.45;
-          }
-
-          .dialog-box-wrap {
-            max-width: 100%;
-            height: auto;
-            background: linear-gradient(
-              135deg,
-              rgba(221, 246, 255, 0.94) 0%,
-              rgba(202, 238, 252, 0.94) 48%,
-              rgba(184, 230, 250, 0.98) 100%
-            );
-            border-radius: 64px;
-          }
-
-          .dialog-box-wrap > :global(img) {
-            display: none;
           }
 
           .dialog-text-content {
-            width: 100%;
-            max-width: 100%;
-            padding: 42px 40px 42px;
-            font-size: 14.5px !important;
-            line-height: 1.65 !important;
-            font-weight: 500 !important;
+            width: 86%;
+            padding: 10% 5% 20% 8%;
           }
 
           .dialog-text-content p {
-            font-size: 14.5px !important;
-            line-height: 1.65 !important;
-            font-weight: 500 !important;
-            margin-bottom: 18px !important;
+            margin-bottom: clamp(14px, 3.5vw, 20px);
           }
 
           .welcome-text {
             white-space: normal;
-            padding-right: 0;
-            font-weight: 600 !important;
           }
 
-          .founder-photo-wrap {
-            width: 350px;
-            height: 350px;
-            transform: translateY(14px);
+          .founder-moving-bg {
+            width: 100%;
+            right: -80px;
+            opacity: 0.45;
           }
 
-          .founder-details {
-            margin-top: 46px;
-          }
-
-          .best-wishes-text {
-            font-size: 28px;
-          }
-
-          .founder-name {
-            font-size: 29px;
-          }
-
-          .founder-role {
-            font-size: 22px;
-          }
-
-          .founder-brand {
-            font-size: 22px;
+          .right-founder-col {
+            margin-top: 0;
           }
         }
 
-        @media (max-width: 640px) {
-          .founder-main-grid {
-            row-gap: 16px;
-            padding: 0 16px;
-          }
-
-          .dialog-box-wrap {
-            border-radius: 36px;
+        @media (max-width: 480px) {
+          .founder-section {
+            --fm-founder-photo: min(340px, 84vw);
+            --fm-font-size: 13px;
+            --fm-line-height: 21px;
           }
 
           .dialog-text-content {
-            padding: 30px 22px 30px;
-            font-size: 12.5px !important;
-            line-height: 1.6 !important;
-            font-weight: 500 !important;
+            width: 88%;
+            padding: 11% 4% 18% 7%;
           }
+        }
 
-          .dialog-text-content p {
-            font-size: 12.5px !important;
-            line-height: 1.6 !important;
-            font-weight: 500 !important;
-            margin-bottom: 14px !important;
-          }
-
-          .founder-photo-wrap {
-            width: 285px;
-            height: 285px;
-            transform: translateY(12px);
-          }
-
-          .founder-details {
-            margin-top: 40px;
-          }
-
-          .best-wishes-text {
-            font-size: 23px;
-          }
-
-          .founder-name {
-            font-size: 24px;
-          }
-
-          .founder-role,
-          .founder-brand {
-            font-size: 18px;
+        @media (prefers-reduced-motion: reduce) {
+          .founder-moving-bg {
+            animation: none;
           }
         }
       `}</style>

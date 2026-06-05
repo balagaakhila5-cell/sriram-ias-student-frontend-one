@@ -250,7 +250,7 @@ const ExploreCourses: React.FC = () => {
                   buttonRefs.current[idx] = el;
                 }}
                 onClick={() => handleTabClick(tab, idx)}
-              className={`relative z-10 flex-1 whitespace-nowrap rounded-full px-8 py-3 text-center text-sm font-medium transition-colors duration-300 md:text-base ${
+              className={`relative z-10 shrink-0 rounded-full px-4 py-3 text-center text-sm font-medium transition-colors duration-300 sm:px-6 md:px-8 md:text-base ${
                   activeTab === tab
                   ? 'text-white'
                   : 'text-gray-500 hover:text-gray-800'

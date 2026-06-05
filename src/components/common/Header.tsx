@@ -575,7 +575,7 @@ const Header: React.FC = () => {
                 </button>
 
                 {isAboutOpen && (
-                  <div className="absolute top-full right-0 mt-10 w-[602px] h-[274px] rounded-[22px] bg-white shadow-[0px_18px_50px_rgba(0,0,0,0.18)] overflow-hidden z-50">
+                  <div className="absolute top-full right-0 mt-10 w-[min(602px,calc(100vw-2rem))] h-[274px] rounded-[22px] bg-white shadow-[0px_18px_50px_rgba(0,0,0,0.18)] overflow-hidden z-50">
                     <div className="about-bg-motion absolute inset-0 pointer-events-none" />
                     <div className="absolute inset-0 bg-white/10 pointer-events-none" />
 
@@ -664,7 +664,7 @@ const Header: React.FC = () => {
           <div ref={freeResourcesDropdownRef} className="absolute top-full left-0 right-0 z-50 mt-4">
             <div className="w-full border-t border-b border-[#E9E9E9] bg-white/95 py-14">
               <div className="mx-auto w-full max-w-[1280px] px-10">
-                <div className="grid grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4 xl:gap-6">
                   <Link
                     href="/free_resources/ncert-page"
                     onClick={() => setIsFreeResourcesOpen(false)}
@@ -913,7 +913,7 @@ const Header: React.FC = () => {
 
  <div
   ref={centersMenuRef}
-  className={`absolute top-full left-1/2 mt-6 w-[700px] h-[265px] -translate-x-1/2 overflow-hidden rounded-[8px] bg-white shadow-[0px_18px_50px_rgba(0,0,0,0.18)] border border-white/40 text-center cursor-default transform origin-top transition-all duration-300 z-50 ${
+  className={`absolute top-full left-1/2 mt-6 w-[min(700px,calc(100vw-2rem))] h-[265px] -translate-x-1/2 overflow-hidden rounded-[8px] bg-white shadow-[0px_18px_50px_rgba(0,0,0,0.18)] border border-white/40 text-center cursor-default transform origin-top transition-all duration-300 z-50 ${
     isCentersOpen
       ? 'scale-100 opacity-100 pointer-events-auto'
       : 'scale-95 opacity-0 pointer-events-none'

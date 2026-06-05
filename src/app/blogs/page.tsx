@@ -121,7 +121,7 @@ export default function BlogsPage() {
 
       <main ref={mainRef} className="min-h-screen bg-white font-['Montserrat',sans-serif]">
         {/* Banner */}
-        <section className="relative h-[360px] w-full overflow-hidden">
+        <section className="relative h-[280px] w-full overflow-hidden sm:h-[320px] md:h-[360px]">
           <Image
             src="/assets/blogs/blogs-banner.png"
             alt="Blogs Banner"
@@ -132,11 +132,13 @@ export default function BlogsPage() {
 
           <div className="absolute inset-0 bg-black/45" />
 
-          <h1 className="absolute left-[28px] top-[200px] text-[48px] font-black uppercase leading-none">
-            <span className="ml-10 bg-gradient-to-r from-white via-[#c9c4ff] to-[#8f8cff] bg-clip-text text-transparent">
-              BLOGS
-            </span>
-          </h1>
+          <div className="relative z-10 flex h-full items-end px-4 pb-8 sm:px-8 sm:pb-10 md:px-10">
+            <h1 className="text-[32px] font-black uppercase leading-none sm:text-[40px] md:text-[48px]">
+              <span className="bg-gradient-to-r from-white via-[#c9c4ff] to-[#8f8cff] bg-clip-text text-transparent">
+                BLOGS
+              </span>
+            </h1>
+          </div>
         </section>
 
         <section className="relative overflow-hidden px-4 py-12 lg:px-6 xl:px-8">
@@ -157,12 +159,12 @@ export default function BlogsPage() {
             <div className="min-w-0">
               {/* Language Tabs */}
               <div className="mb-7 flex justify-center">
-                <div className="flex h-[70px] w-full max-w-[610px] items-center justify-between rounded-full bg-[#F1F1F1] p-[10px]">
+                <div className="flex h-auto min-h-[56px] w-full max-w-[610px] flex-col items-stretch justify-between gap-2 rounded-full bg-[#F1F1F1] p-2 sm:h-[70px] sm:flex-row sm:p-[10px]">
                   {['ENGLISH', 'MARATHI', 'TELUGU'].map((lang) => (
                     <button
                       key={lang}
                       onClick={() => setActiveLang(lang)}
-                      className={`h-[50px] flex-1 rounded-full text-[18px] font-bold capitalize transition-all duration-300 ${
+                      className={`h-[44px] flex-1 rounded-full text-[14px] font-bold capitalize transition-all duration-300 sm:h-[50px] sm:text-[18px] ${
                         activeLang === lang
                           ? 'bg-gradient-to-r from-[#35A8DF] to-[#096A8D] text-white shadow-[0_8px_18px_rgba(0,0,0,0.16)]'
                           : 'bg-transparent text-[#666666]'

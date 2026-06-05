@@ -200,7 +200,7 @@ const AppAndVideos: React.FC = () => {
           <div className="max-w-[1440px] mx-auto px-6 md:px-16 grid grid-cols-1 lg:grid-cols-2 items-center">
             {/* LEFT CONTENT */}
             <div className="space-y-8 z-10">
-              <h2 className="global-section-heading whitespace-nowrap">
+              <h2 className="global-section-heading">
                 Download Our App
               </h2>
 
@@ -212,13 +212,13 @@ const AppAndVideos: React.FC = () => {
 
               {/* CHANGED: QR block updated to use only image, no white card background */}
               <div className="download-app-element flex flex-col items-start gap-8">
-               <div className="flex flex-row -space-x-6 md:-space-x-10">
+               <div className="flex flex-col items-start gap-6 sm:flex-row sm:-space-x-6 md:-space-x-10">
                  <div className="flex flex-col items-center gap-0">
                   {/* QR */}
                   <img
                     src="/assets/Qr_code.svg"
                     alt="QR Code IOS"
-                    className="w-[220px] md:w-[260px] h-auto object-contain block"
+                    className="w-[180px] sm:w-[220px] md:w-[260px] h-auto object-contain block"
                   />
 
                   {/* Scan Button */}
@@ -243,7 +243,7 @@ const AppAndVideos: React.FC = () => {
               <img
                 src="/assets/Qr_code.svg"
                 alt="QR Code IOS"
-                className="w-[220px] md:w-[260px] h-auto object-contain block"
+                className="w-[180px] sm:w-[220px] md:w-[260px] h-auto object-contain block"
               />
 
               {/* Scan Button */}

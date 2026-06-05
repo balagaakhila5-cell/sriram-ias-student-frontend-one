@@ -204,7 +204,7 @@ const FreeCourses: React.FC = () => {
             <div className="relative z-10 grid w-full max-w-[1450px] mx-auto grid-cols-1 md:grid-cols-[58%_42%] items-center gap-8 md:gap-10 lg:gap-12">
               {/* Text */}
               <div className="section-text w-full min-w-0 space-y-8 md:space-y-10 overflow-visible">
-                <h3 className="text-[32px] md:text-[44px] lg:text-[52px] xl:text-[58px] font-extrabold leading-[1.05] whitespace-nowrap">
+                <h3 className="text-[24px] sm:text-[32px] md:text-[44px] lg:text-[52px] xl:text-[58px] font-extrabold leading-[1.05] break-words">
                   <span className={section.accentColor}>{section.title}</span>
                 </h3>
 

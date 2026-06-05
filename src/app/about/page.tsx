@@ -9,30 +9,25 @@ const circleImages = [
   {
     src: "/assets/about/about-us/Ellipse 56.png",
     alt: "Student",
+    objectPosition: "center center",
   },
   {
     src: "/assets/about/about-us/Ellipse 57.png",
     alt: "Classroom Student",
+    objectPosition: "58% center",
   },
   {
     src: "/assets/about/about-us/Ellipse 58.png",
     alt: "Classroom Student",
+    objectPosition: "center center",
   },
 ];
 
+/* Position 0 = top, 1 = bottom-left, 2 = bottom-right */
 const imagePositions = [
-  {
-    left: "160px",
-    top: "0px",
-  },
-  {
-    left: "20px",
-    top: "360px",
-  },
-  {
-    left: "325px",
-    top: "360px",
-  },
+  { left: "50%", top: "0%", transform: "translateX(-50%)" },
+  { left: "16%", top: "43%" },
+  { left: "52%", top: "43%" },
 ];
 
 const AboutPage = () => {
@@ -50,7 +45,6 @@ const AboutPage = () => {
     <main className="min-h-screen overflow-hidden bg-white">
       <Header />
 
-      {/* HERO SECTION */}
       <section className="relative h-[300px] w-full overflow-hidden sm:h-[340px] md:h-[390px]">
         <Image
           src="/assets/about/about-us/About-banner.png"
@@ -61,7 +55,6 @@ const AboutPage = () => {
           className="object-cover object-center"
         />
 
-        {/* Figma-like banner dark effect */}
         <div className="absolute inset-0 bg-black/20" />
         <div className="absolute inset-y-0 left-0 w-[78%] bg-gradient-to-r from-black/95 via-black/75 to-transparent md:w-[52%]" />
         <div className="absolute inset-y-0 right-0 w-[38%] bg-gradient-to-l from-black/20 to-transparent" />
@@ -74,31 +67,24 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* ABOUT CONTENT SECTION */}
       <section className="about-section-bg relative -mt-[1px] w-full overflow-hidden px-4 pb-[45px] pt-[28px] sm:px-6 md:px-8 lg:px-0 lg:pb-[35px] lg:pt-[30px] lg:min-h-[1120px]">
-        {/* LEFT / RIGHT SOFT BLUE CIRCLES WITH LIGHT EFFECT */}
         <div className="side-circle-left pointer-events-none" />
         <div className="side-circle-right pointer-events-none" />
-
-        {/* BOTTOM WAVE LINES ONLY */}
         <div className="bottom-wave-lines pointer-events-none" />
 
-        {/* ONLY 2 ROTATING BLUE DOT CIRCLE LINES */}
         <div className="clean-orbit-wrap pointer-events-none">
           <div className="clean-orbit clean-orbit-one">
             <span className="clean-dot clean-dot-one" />
           </div>
-
           <div className="clean-orbit clean-orbit-two">
             <span className="clean-dot clean-dot-two" />
           </div>
         </div>
 
-        <div className="about-main-grid relative z-10 mx-auto grid w-full max-w-[1366px] grid-cols-1 items-start justify-center gap-8 lg:grid-cols-[700px_650px] lg:gap-[20px] lg:px-[20px]">
-          {/* LEFT TEXT CARDS */}
+        <div className="about-main-grid relative z-10 mx-auto grid w-full max-w-[1366px] grid-cols-1 items-start justify-center gap-8 lg:grid-cols-[677px_627px] lg:gap-[20px] lg:px-[20px]">
           <div className="about-left-cards flex w-full flex-col gap-5 md:gap-[28px]">
-            <div className="about-text-card rounded-[10px] bg-white px-4 py-5 shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.015] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)] sm:px-5 sm:py-6 md:px-[30px] md:py-[26px] lg:hover:scale-[1.025]">
-              <p className="font-['Montserrat'] text-[14px] font-semibold leading-[28px] text-[#666666] sm:text-[15px] sm:leading-[30px] md:text-[17px] md:leading-[36px] lg:text-[18px] lg:leading-[39px]">
+            <div className="about-text-card about-text-card--one rounded-[12px] bg-white px-4 py-5 shadow-[0px_4px_32px_rgba(0,0,0,0.1)] transition-all duration-300 hover:scale-[1.02] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)] sm:px-5 sm:py-6 md:px-[30px] md:py-[26px]">
+              <p className="about-card-text font-['Montserrat'] font-semibold text-[#666666]">
                 SRIRAM&apos;s IAS is one of the premier institutions for
                 Preparation of UPSC Civil Services Examination. Established in
                 1985 by Sriram Sir, a visionary mentor and academician, the
@@ -108,8 +94,8 @@ const AboutPage = () => {
               </p>
             </div>
 
-            <div className="about-text-card rounded-[10px] bg-white px-4 py-5 shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.015] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)] sm:px-5 sm:py-6 md:px-[30px] md:py-[26px] lg:hover:scale-[1.025]">
-              <p className="font-['Montserrat'] text-[14px] font-semibold leading-[28px] text-[#666666] sm:text-[15px] sm:leading-[30px] md:text-[17px] md:leading-[36px] lg:text-[18px] lg:leading-[39px]">
+            <div className="about-text-card about-text-card--two rounded-[12px] bg-white px-4 py-5 shadow-[0px_4px_32px_rgba(0,0,0,0.1)] transition-all duration-300 hover:scale-[1.02] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)] sm:px-5 sm:py-6 md:px-[30px] md:py-[26px]">
+              <p className="about-card-text font-['Montserrat'] font-semibold text-[#666666]">
                 We believe that preparation for the Civil Services is more than
                 a career choice, it is a journey towards leadership and public
                 service. The hallmark of SRIRAM&apos;s IAS lies in its
@@ -120,8 +106,8 @@ const AboutPage = () => {
               </p>
             </div>
 
-            <div className="about-text-card rounded-[10px] bg-white px-4 py-5 shadow-[0px_8px_28px_rgba(0,0,0,0.08)] transition-all duration-300 hover:scale-[1.015] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)] sm:px-5 sm:py-6 md:px-[30px] md:py-[26px] lg:hover:scale-[1.025]">
-              <p className="font-['Montserrat'] text-[14px] font-semibold leading-[28px] text-[#666666] sm:text-[15px] sm:leading-[30px] md:text-[17px] md:leading-[36px] lg:text-[18px] lg:leading-[39px]">
+            <div className="about-text-card about-text-card--three rounded-[12px] bg-white px-4 py-5 shadow-[0px_4px_32px_rgba(0,0,0,0.1)] transition-all duration-300 hover:scale-[1.02] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)] sm:px-5 sm:py-6 md:px-[30px] md:py-[26px]">
+              <p className="about-card-text font-['Montserrat'] font-semibold text-[#666666]">
                 The distinguished faculty team comprises highly experienced
                 educators, retired bureaucrats, and subject knowledge experts
                 who ensure conceptual clarity and exam-oriented focus across all
@@ -136,38 +122,38 @@ const AboutPage = () => {
             </div>
           </div>
 
-          {/* RIGHT IMAGE NETWORK */}
-          <div className="about-circle-network relative mx-auto mt-8 h-[560px] w-full max-w-[360px] shrink-0 overflow-visible sm:h-[650px] sm:max-w-[520px] md:h-[760px] md:max-w-[650px] lg:mt-[170px] lg:h-[840px] lg:w-[650px] lg:max-w-none">
-            <div className="about-line about-line-left absolute left-[50%] top-[135px] hidden h-[260px] w-[4px] origin-top rotate-[34deg] rounded-full bg-gradient-to-b from-[#2D9CDB] via-[#8C87B7] to-[#D86D7B] sm:block lg:left-[258px] lg:top-[198px] lg:h-[330px] lg:w-[5px]" />
+          <div className="about-circle-network relative mx-auto mt-8 w-full max-w-[340px] shrink-0 overflow-visible sm:max-w-[520px] lg:mt-[170px] lg:max-w-[627px]">
+            <div className="about-network-stage relative w-full" style={{ aspectRatio: "627 / 594" }}>
+              <div className="about-line about-line-left absolute left-[50%] top-[22%] hidden h-[42%] w-[4px] origin-top -translate-x-1/2 rotate-[32deg] rounded-full bg-gradient-to-b from-[#2D9CDB] via-[#8C87B7] to-[#D86D7B] sm:block" />
+              <div className="about-line about-line-right absolute left-[50%] top-[22%] hidden h-[42%] w-[4px] origin-top -translate-x-1/2 rotate-[-32deg] rounded-full bg-gradient-to-b from-[#2D9CDB] via-[#8C87B7] to-[#D86D7B] sm:block" />
+              <div className="about-line about-line-middle absolute left-[50%] top-[58%] z-[5] hidden h-[5px] w-[48%] -translate-x-1/2 rounded-full bg-gradient-to-r from-[#2D9CDB] via-[#8C87B7] to-[#D86D7B] sm:block" />
+              {circleImages.map((item, index) => {
+                const positionIndex =
+                  (index + activeIndex) % imagePositions.length;
+                const position = imagePositions[positionIndex];
 
-            <div className="about-line about-line-right absolute left-[50%] top-[135px] hidden h-[260px] w-[4px] origin-top rotate-[-34deg] rounded-full bg-gradient-to-b from-[#2D9CDB] via-[#8C87B7] to-[#D86D7B] sm:block lg:left-[258px] lg:top-[198px] lg:h-[330px] lg:w-[5px]" />
-
-            <div className="about-line about-line-middle absolute left-[50%] top-[380px] z-[5] hidden h-[4px] w-[72px] rounded-full bg-gradient-to-r from-[#2D9CDB] via-[#8C87B7] to-[#D86D7B] sm:block lg:left-[260px] lg:top-[500px] lg:h-[5px] lg:w-[95px]" />
-
-            {circleImages.map((item, index) => {
-              const positionIndex =
-                (index + activeIndex) % imagePositions.length;
-              const position = imagePositions[positionIndex];
-
-              return (
-                <div
-                  key={item.src}
-                  className={`about-floating-circle about-floating-circle-${index} absolute z-10 h-[155px] w-[155px] overflow-hidden rounded-full shadow-[0px_14px_35px_rgba(0,0,0,0.16)] transition-all duration-[900ms] ease-in-out hover:scale-105 sm:h-[205px] sm:w-[205px] md:h-[230px] md:w-[230px] lg:h-[245px] lg:w-[245px]`}
-                  style={{
-                    left: position.left,
-                    top: position.top,
-                  }}
-                >
-                  <Image
-                    src={item.src}
-                    alt={item.alt}
-                    fill
-                    sizes="(max-width: 640px) 155px, (max-width: 768px) 205px, 245px"
-                    className="object-cover object-center scale-[1.04] lg:scale-[1.08]"
-                  />
-                </div>
-              );
-            })}
+                return (
+                  <div
+                    key={item.src}
+                    className="about-floating-circle absolute z-10 aspect-square w-[31.5%] overflow-hidden rounded-full shadow-[0px_14px_35px_rgba(0,0,0,0.16)] transition-all duration-[900ms] ease-in-out hover:scale-105"
+                    style={{
+                      left: position.left,
+                      top: position.top,
+                      transform: position.transform,
+                    }}
+                  >
+                    <Image
+                      src={item.src}
+                      alt={item.alt}
+                      fill
+                      sizes="(max-width: 640px) 120px, (max-width: 1024px) 180px, 200px"
+                      className="object-contain object-center"
+                      style={{ objectPosition: item.objectPosition }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
 
@@ -197,10 +183,42 @@ const AboutPage = () => {
 
           .about-left-cards {
             transform: translateX(42px);
+            max-width: 677px;
+            padding-top: 12px;
           }
 
           .about-circle-network {
             transform: translateX(45px);
+          }
+
+          .about-text-card {
+            cursor: pointer;
+            width: 100%;
+            max-width: 677px;
+          }
+
+          .about-text-card--one {
+            min-height: 200px;
+            margin-bottom: 8px;
+          }
+
+          .about-text-card--two {
+            min-height: 222px;
+            margin-top: 20px;
+          }
+
+          .about-text-card--three {
+            min-height: auto;
+          }
+
+          .about-card-text {
+            font-size: 15px;
+            line-height: 30px;
+            font-weight: 600;
+          }
+
+          .about-network-stage {
+            width: 100%;
           }
 
           .side-circle-left {
@@ -255,7 +273,6 @@ const AboutPage = () => {
               transform: scale(1);
               filter: brightness(1);
             }
-
             100% {
               opacity: 0.96;
               transform: scale(1.025);
@@ -271,10 +288,20 @@ const AboutPage = () => {
             height: 430px;
             z-index: 1;
             background-image: url("/assets/about/about-us/background-anime-2.png");
-            background-size: 100% 1120px;
+            background-size: 120% 1120px;
             background-repeat: no-repeat;
-            background-position: center bottom;
+            background-position: 0% bottom;
             opacity: 1;
+            animation: bottomWaveDrift 18s linear infinite;
+          }
+
+          @keyframes bottomWaveDrift {
+            0% {
+              background-position: 0% bottom;
+            }
+            100% {
+              background-position: 100% bottom;
+            }
           }
 
           .clean-orbit-wrap {
@@ -333,7 +360,6 @@ const AboutPage = () => {
             0% {
               transform: rotate(15deg) translateX(450px) rotate(-15deg);
             }
-
             100% {
               transform: rotate(375deg) translateX(450px) rotate(-375deg);
             }
@@ -343,14 +369,68 @@ const AboutPage = () => {
             0% {
               transform: rotate(190deg) translateX(340px) rotate(-190deg);
             }
-
             100% {
               transform: rotate(550deg) translateX(340px) rotate(-550deg);
             }
           }
 
-          .about-text-card {
-            cursor: pointer;
+          @media (min-width: 768px) {
+            .about-card-text {
+              font-size: 16px;
+              line-height: 32px;
+            }
+
+            .about-text-card--one {
+              min-height: 220px;
+              margin-bottom: 12px;
+            }
+
+            .about-text-card--two {
+              min-height: 244px;
+              margin-top: 24px;
+            }
+
+            .about-text-card--three {
+              min-height: auto;
+            }
+          }
+
+          @media (min-width: 1024px) {
+            .about-card-text {
+              font-size: 17px;
+              line-height: 36px;
+            }
+
+            .about-text-card--one {
+              min-height: 241px;
+              margin-bottom: 16px;
+            }
+
+            .about-text-card--two {
+              min-height: 267px;
+              margin-top: 28px;
+            }
+
+            .about-text-card--three {
+              min-height: auto;
+              padding-bottom: 22px !important;
+            }
+
+            .about-circle-network {
+              width: 627px;
+              max-width: 627px;
+            }
+
+            .about-line-left,
+            .about-line-right {
+              width: 5px;
+            }
+
+            .about-line-middle {
+              top: 58%;
+              width: 44%;
+              height: 6px;
+            }
           }
 
           @media (max-width: 1279px) {
@@ -368,7 +448,14 @@ const AboutPage = () => {
             }
 
             .bottom-wave-lines {
-              background-size: 1440px 1120px;
+              background-size: 140% 1120px;
+              animation: bottomWaveDrift 18s linear infinite;
+            }
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .bottom-wave-lines {
+              animation: none;
             }
           }
 
@@ -386,7 +473,8 @@ const AboutPage = () => {
             }
 
             .bottom-wave-lines {
-              background-size: cover;
+              background-size: 160% auto;
+              animation: bottomWaveDrift 18s linear infinite;
             }
 
             .side-circle-left,
@@ -404,89 +492,24 @@ const AboutPage = () => {
               max-width: 100% !important;
             }
 
-            .about-text-card {
-              width: 100%;
-            }
-
-            .bottom-wave-lines {
-              height: 360px;
-              opacity: 0.55;
-              background-size: 1200px auto;
-            }
-
             .about-line-left,
             .about-line-right,
             .about-line-middle {
               display: block;
             }
-
-            .about-line-left {
-              left: 50% !important;
-              top: 105px !important;
-              height: 230px !important;
-              transform: rotate(28deg);
-            }
-
-            .about-line-right {
-              left: 50% !important;
-              top: 105px !important;
-              height: 230px !important;
-              transform: rotate(-28deg);
-            }
-
-            .about-line-middle {
-              left: 50% !important;
-              top: 325px !important;
-              width: 58px !important;
-              transform: translateX(-8px);
-            }
-
-            .about-floating-circle-0 {
-              left: 50% !important;
-              top: 0px !important;
-              transform: translateX(-50%);
-            }
-
-            .about-floating-circle-1 {
-              left: 8px !important;
-              top: 330px !important;
-            }
-
-            .about-floating-circle-2 {
-              right: 8px !important;
-              left: auto !important;
-              top: 330px !important;
-            }
           }
 
           @media (max-width: 420px) {
-            .about-floating-circle {
-              height: 145px !important;
-              width: 145px !important;
+            .about-text-card--one {
+              min-height: 188px;
             }
 
-            .about-circle-network {
-              height: 520px !important;
+            .about-text-card--two {
+              min-height: 208px;
             }
 
-            .about-floating-circle-1 {
-              left: 0px !important;
-              top: 315px !important;
-            }
-
-            .about-floating-circle-2 {
-              right: 0px !important;
-              top: 315px !important;
-            }
-
-            .about-line-left,
-            .about-line-right {
-              top: 98px !important;
-              height: 220px !important;
-            }
-
-            .about-line-middle {
-              top: 300px !important;
+            .about-text-card--three {
+              min-height: auto;
             }
           }
         `}</style>

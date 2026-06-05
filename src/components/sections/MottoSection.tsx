@@ -108,7 +108,7 @@ const MottoSection: React.FC = () => {
             )}
 
             {/* LINE 1: LOGO + IN SHAPING */}
-            <div className="motto-text-line flex items-start gap-0 sm:gap-1 md:gap-2 mb-3">
+            <div className="motto-text-line flex flex-wrap items-start gap-0 sm:gap-1 md:gap-2 mb-3">
               <div className="relative shrink-0 w-[135px] h-[115px] sm:w-[155px] sm:h-[125px] md:w-[185px] md:h-[145px] lg:w-[225px] lg:h-[170px] xl:w-[255px] xl:h-[190px]">
                 <Image
                   src="/assets/40_years_experience.png"
@@ -120,33 +120,33 @@ const MottoSection: React.FC = () => {
                 />
               </div>
 
-              <span className="text-[#00000099] whitespace-nowrap mt-[54px] sm:mt-[68px] md:mt-[84px] lg:mt-[100px] xl:mt-[112px] -ml-8">
+              <span className="text-[#00000099] mt-[54px] sm:mt-[68px] md:mt-[84px] lg:mt-[100px] xl:mt-[112px] sm:-ml-4 md:-ml-8">
                 In shaping
               </span>
             </div>
 
             {/* LINE 2: OFFICERS + NOW IT'S */}
-            <div className="motto-text-line flex items-center gap-4 mb-2">
+            <div className="motto-text-line flex flex-wrap items-center gap-x-4 gap-y-1 mb-2">
               <span
-                className="inline-block bg-clip-text text-transparent whitespace-nowrap"
+                className="inline-block bg-clip-text text-transparent"
                 style={gradientStyle}
               >
                 Officers
               </span>
 
-              <span className="text-[#00000099] whitespace-nowrap">
+              <span className="text-[#00000099]">
                 Now it&apos;s
               </span>
             </div>
 
             {/* LINE 3: YOUR TURN TO SERVE */}
-            <div className="motto-text-line flex items-center gap-4 mb-2">
-              <span className="text-[#00000099] whitespace-nowrap">
+            <div className="motto-text-line flex flex-wrap items-center gap-x-4 gap-y-1 mb-2">
+              <span className="text-[#00000099]">
                 your turn to
               </span>
 
               <span
-                className="inline-block bg-clip-text text-transparent whitespace-nowrap"
+                className="inline-block bg-clip-text text-transparent"
                 style={gradientStyle}
               >
                 serve
@@ -154,13 +154,13 @@ const MottoSection: React.FC = () => {
             </div>
 
             {/* LINE 4: THE NATION */}
-            <div className="motto-text-line flex items-center gap-4">
-              <span className="text-[#00000099] whitespace-nowrap">
+            <div className="motto-text-line flex flex-wrap items-center gap-x-4 gap-y-1">
+              <span className="text-[#00000099]">
                 the
               </span>
 
               <span
-                className="inline-block bg-clip-text text-transparent whitespace-nowrap"
+                className="inline-block bg-clip-text text-transparent"
                 style={gradientStyle}
               >
                 nation

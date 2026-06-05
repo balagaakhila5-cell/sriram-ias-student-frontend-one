@@ -76,9 +76,9 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
       >
         <div className="relative z-10 mx-auto max-w-[1400px]">
           <div className="flex w-full flex-col items-center justify-between gap-4 xl:flex-row xl:items-center">
-            <div className="flex w-full flex-col items-center justify-between gap-4 md:flex-row md:items-center xl:gap-6">
+            <div className="flex w-full flex-wrap items-center justify-center gap-4 md:justify-between xl:gap-6">
               {/* 1. Date Block */}
-              <div className="info-item flex min-w-[240px] items-center gap-4">
+              <div className="info-item flex min-w-0 flex-1 basis-[220px] items-center gap-4 sm:basis-[240px]">
                 <div className="h-12 w-12 shrink-0 md:h-[52px] md:w-[52px]">
                   <img
                     src="/assets/course/calendar.png"
@@ -87,8 +87,8 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
                   />
                 </div>
 
-                <div className="flex flex-col">
-                  <span className="whitespace-nowrap text-[18px] font-extrabold leading-tight text-[#000000] md:text-[20px]">
+                <div className="flex min-w-0 flex-col">
+                  <span className="text-[18px] font-extrabold leading-tight text-[#000000] md:text-[20px]">
                     {course.startDate || 'Course Starts Soon'}
                   </span>
 
@@ -99,7 +99,7 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
               </div>
 
               {/* 2. Modes Block */}
-              <div className="info-item flex min-w-[200px] flex-col items-center md:items-start">
+              <div className="info-item flex min-w-0 flex-1 basis-[180px] flex-col items-center md:items-start">
                 <div className="flex items-center gap-3">
                   <img
                     src="/assets/course/online-icon.png"
@@ -130,7 +130,7 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
               </div>
 
               {/* 3. Duration Block */}
-              <div className="info-item flex min-w-[210px] items-center gap-4">
+              <div className="info-item flex min-w-0 flex-1 basis-[200px] items-center gap-4 sm:basis-[210px]">
                 <div className="h-12 w-12 shrink-0 md:h-[52px] md:w-[52px]">
                   <img
                     src="/assets/course/clock.png"
@@ -139,8 +139,8 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
                   />
                 </div>
 
-                <div className="flex flex-col">
-                  <span className="whitespace-nowrap text-[18px] font-extrabold leading-tight text-[#000000] md:text-[20px]">
+                <div className="flex min-w-0 flex-col">
+                  <span className="text-[18px] font-extrabold leading-tight text-[#000000] md:text-[20px]">
                     {course.duration || '12 Months'}
                   </span>
 
@@ -151,7 +151,7 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
               </div>
 
               {/* 4. Fees Block */}
-              <div className="info-item flex min-w-[260px] items-start gap-4">
+              <div className="info-item flex min-w-0 flex-1 basis-[240px] items-start gap-4 sm:basis-[260px]">
                 <div className="mt-1 h-12 w-12 shrink-0 md:h-[52px] md:w-[52px]">
                   <img
                     src="/assets/course/money.png"
@@ -160,12 +160,12 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
                   />
                 </div>
 
-                <div className="flex flex-col gap-1">
-                  <span className="whitespace-nowrap text-[16px] font-extrabold leading-tight text-[#000000] md:text-[18px]">
+                <div className="flex min-w-0 flex-col gap-1">
+                  <span className="text-[16px] font-extrabold leading-tight text-[#000000] md:text-[18px]">
                     {course.feesOnline || 'Rs.2,10,000'} | ONLINE
                   </span>
 
-                  <span className="whitespace-nowrap text-[16px] font-extrabold leading-tight text-[#000000] md:text-[18px]">
+                  <span className="text-[16px] font-extrabold leading-tight text-[#000000] md:text-[18px]">
                     {course.feesOffline || 'Rs.1,75,000'} | OFFLINE
                   </span>
 

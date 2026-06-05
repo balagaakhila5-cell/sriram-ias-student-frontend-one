@@ -129,16 +129,14 @@ const OurToppers: React.FC = () => {
                 className="w-[245px] md:w-[265px] lg:w-[285px] flex shrink-0 flex-col items-center overflow-visible"
               >
                 {/* IMAGE AREA */}
-                <div className="relative h-[405px] w-full flex items-end justify-center overflow-visible">
+                <div className="relative h-[405px] w-full flex items-end justify-center overflow-hidden">
                   <img
                     src={`/assets/ourtoppers/_originals/${topper.img}`}
                     alt={topper.name}
                     loading={idx < 5 ? 'eager' : 'lazy'}
-                    className="block select-none pointer-events-none object-contain object-bottom"
+                    className="block max-w-[115%] w-full h-auto select-none pointer-events-none object-contain object-bottom"
                     style={{
-                      width: '445px',
-                      height: '445px',
-                      maxWidth: 'none',
+                      maxHeight: '400px',
                       objectFit: 'contain',
                       objectPosition: 'bottom center',
                       transform: `translateY(${topper.y - 18}px) scale(${topper.scale})`,
@@ -148,8 +146,8 @@ const OurToppers: React.FC = () => {
                 </div>
 
                 {/* TEXT AREA */}
-                <div className="mt-1 flex min-h-[110px] flex-col items-center justify-start text-center relative z-20 -translate-y-1">
-                  <h3 className="text-white text-[15px] md:text-[16px] font-bold leading-tight min-h-[24px] whitespace-nowrap">
+                <div className="mt-1 flex min-h-[110px] flex-col items-center justify-start text-center relative z-20 -translate-y-1 px-1">
+                  <h3 className="text-white text-[15px] md:text-[16px] font-bold leading-tight min-h-[24px] max-w-full truncate">
                     {topper.name}
                   </h3>
 
