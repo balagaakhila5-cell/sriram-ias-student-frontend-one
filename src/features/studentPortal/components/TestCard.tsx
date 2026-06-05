@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { RESOURCE_CARD_TITLE } from "@/features/resources/components/cardStyles";
 import { useEffect, useState } from "react";
 import { ArrowRight, Bookmark } from "lucide-react";
 import type { TestItem } from "../data/tests";
@@ -84,12 +85,7 @@ export default function TestCard({
       </div>
 
       <div className="min-w-0 flex-1 pr-6">
-        <h4
-          className="text-[15px] font-semibold leading-snug text-[#000000]"
-          style={{ fontFamily: "Montserrat, sans-serif" }}
-        >
-          {test.title}
-        </h4>
+        <h4 className={RESOURCE_CARD_TITLE}>{test.title}</h4>
 
         <Link
           href={

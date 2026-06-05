@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useRef } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -9,6 +10,12 @@ import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import DiamondLayer from '../DiamondLayer';
 import { heroDiamondConfig } from '../diamondConfigs';
 import { useHomepage } from '@/features/homepage/hooks/useHomepage';
+import { useCartStore } from '@/store/cartStore';
+import {
+  mapHomepageBook,
+  toCartBook,
+  type HomeSectionBook,
+} from '@/features/homepage/utils/homepageBook';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,6 +33,92 @@ const formatPrice = (value?: number) =>
     ? `Rs. ${value.toLocaleString('en-IN')} /-`
     : 'Rs. —';
 
+const parseFallbackPrice = (label: string) => {
+  const digits = label.replace(/[^\d]/g, '');
+  const parsed = Number.parseInt(digits, 10);
+  return Number.isFinite(parsed) ? parsed : 5999;
+};
+
+type BookCardProps = {
+  book: HomeSectionBook;
+};
+
+const BookCard: React.FC<BookCardProps> = ({ book }) => {
+  const router = useRouter();
+  const addItem = useCartStore((state) => state.addItem);
+  const isInCart = useCartStore((state) =>
+    state.items.some((item) => item.book.id === book.id),
+  );
+
+  const handleAddToCart = () => {
+    addItem(toCartBook(book));
+  };
+
+  return (
+    <div className="book-card min-w-[320px] w-[320px] bg-white rounded-2xl shadow-xl border border-gray-100 flex flex-col p-6 space-y-4 group hover:shadow-2xl transition-shadow duration-300 transform-gpu backface-visibility-hidden">
+      <div className="relative rounded-xl overflow-hidden shadow-md aspect-6/5 w-full bg-gray-100">
+        <Image
+          src={book.image}
+          alt={book.title}
+          fill
+          sizes="280px"
+          className="object-cover group-hover:scale-110 transition-transform duration-700"
+        />
+      </div>
+
+      <div className="space-y-3">
+        <h3 className="font-bold text-lg text-gray-800 line-clamp-1">
+          {book.title}
+        </h3>
+
+        <p className="text-gray-400 text-xs leading-relaxed line-clamp-2">
+          {book.summary}
+        </p>
+
+        <div className="flex justify-between items-center pt-1">
+          <span
+            className="font-bold text-lg inline-block text-transparent bg-clip-text"
+            style={{
+              backgroundImage:
+                'linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)',
+            }}
+          >
+            {book.priceLabel}
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          onClick={() => router.push(`/books/${book.slug}`)}
+          className="py-2 text-xs text-white rounded-md transition-all hover:opacity-90 font-medium cursor-pointer"
+          style={{
+            background:
+              'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)',
+            boxShadow: '0px 4px 32px 0px #0000001A',
+          }}
+        >
+          Buy Now
+        </button>
+
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          disabled={isInCart}
+          className={`text-xs py-2 rounded-md font-medium transition-all border ${
+            isInCart
+              ? 'border-[#249EDC] bg-[#EAF7FF] text-[#007BB5] cursor-default'
+              : 'border-[#249EDC] text-[#007BB5] hover:bg-gray-50 cursor-pointer'
+          }`}
+        >
+          {isInCart ? 'ADDED TO CART' : 'ADD TO CART'}
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const BuyBooks: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
@@ -35,15 +128,29 @@ const BuyBooks: React.FC = () => {
 
   const books = useMemo(() => {
     const apiBooks = sectionBooks?.books ?? [];
-    if (apiBooks.length === 0) return fallbackBooks;
+    if (apiBooks.length === 0) {
+      return fallbackBooks.map((book) =>
+        mapHomepageBook({
+          id: book.id,
+          title: book.title,
+          summary: book.summary,
+          priceLabel: book.priceLabel,
+          image: book.image,
+          discountedPrice: parseFallbackPrice(book.priceLabel),
+        }),
+      );
+    }
 
-    return apiBooks.map((book) => ({
-      id: book._id,
-      title: book.title,
-      summary: book.summary ?? 'Explore this book to level up your preparation.',
-      priceLabel: formatPrice(book.discountedPrice),
-      image: book.image ?? '/assets/books.png',
-    }));
+    return apiBooks.map((book) =>
+      mapHomepageBook({
+        id: book._id,
+        title: book.title,
+        summary: book.summary,
+        priceLabel: formatPrice(book.discountedPrice),
+        image: book.image ?? '/assets/books.png',
+        discountedPrice: book.discountedPrice,
+      }),
+    );
   }, [sectionBooks]);
 
   const duplicatedBooks = useMemo(() => [...books, ...books], [books]);
@@ -116,73 +223,19 @@ const BuyBooks: React.FC = () => {
       <DiamondLayer config={heroDiamondConfig} />
 
       <div className="relative z-10 mx-auto w-full overflow-hidden">
-        {/* HEADING */}
         <div className="buy-books-header text-center">
           <h2 className="global-section-heading">
             {sectionBooks?.title ?? 'BUY OUR BOOKS'}
           </h2>
         </div>
 
-        {/* BOOK CARDS - MOVED DOWN */}
-      <div className="w-full relative flex mt-32 pb-16">
+        <div className="w-full relative flex mt-32 pb-16">
           <div
             ref={cardsContainerRef}
             className="flex gap-8 w-max will-change-transform pl-8"
           >
             {duplicatedBooks.map((book, index) => (
-              <div
-                key={`${book.id}-${index}`}
-                className="book-card min-w-[320px] w-[320px] bg-white rounded-2xl shadow-xl border border-gray-100 flex flex-col p-6 space-y-4 group hover:shadow-2xl transition-shadow duration-300 transform-gpu backface-visibility-hidden"
-              >
-                <div className="relative rounded-xl overflow-hidden shadow-md aspect-6/5 w-full bg-gray-100">
-                  <Image
-                    src={book.image}
-                    alt={book.title}
-                    fill
-                    sizes="280px"
-                    className="object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <h3 className="font-bold text-lg text-gray-800 line-clamp-1">
-                    {book.title}
-                  </h3>
-
-                  <p className="text-gray-400 text-xs leading-relaxed line-clamp-2">
-                    {book.summary}
-                  </p>
-
-                  <div className="flex justify-between items-center pt-1">
-                    <span
-                      className="font-bold text-lg inline-block text-transparent bg-clip-text"
-                      style={{
-                        backgroundImage:
-                          'linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)',
-                      }}
-                    >
-                      {book.priceLabel}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    className="py-2 text-xs text-white rounded-md transition-all hover:opacity-90 font-medium"
-                    style={{
-                      background:
-                        'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)',
-                      boxShadow: '0px 4px 32px 0px #0000001A',
-                    }}
-                  >
-                    Buy Now
-                  </button>
-
-                  <button className="text-xs py-2 rounded-md font-medium transition-all hover:bg-gray-50 border border-[#249EDC] text-[#007BB5]">
-                    Add To cart
-                  </button>
-                </div>
-              </div>
+              <BookCard key={`${book.id}-${index}`} book={book} />
             ))}
           </div>
         </div>

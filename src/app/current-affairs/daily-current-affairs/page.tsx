@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -15,7 +16,6 @@ import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 import Header from "@/components/common/Header";
 import { RESOURCE_PAGE_HEADING_GRADIENT } from "@/features/resources/components/cardStyles";
 import Footer from "@/components/common/Footer";
-import QuickLinks from "@/components/common/QuickLinks";
 import FloatingActions from "@/components/common/FloatingActions";
 import TrendingVideosCard from "@/components/common/TrendingVideosCard";
 import CustomDropdown from "@/components/common/CustomDropdown";
@@ -27,6 +27,7 @@ const quickLinks = [
     title: "Daily Practice Questions",
     href: "/current-affairs/daily-practice-questions",
     border: "border-[#7B72C4]",
+    hoverBg: "hover:bg-[#7B72C4] hover:border-[#7B72C4]",
     text: "text-[#625BB0]",
     icon: (
       <svg
@@ -51,6 +52,7 @@ const quickLinks = [
     title: "Monthly Magazine",
     href: "/current-affairs/monthly-magazine",
     border: "border-[#E29A9A]",
+    hoverBg: "hover:bg-[#E29A9A] hover:border-[#E29A9A]",
     text: "text-[#C77878]",
     icon: (
       <svg
@@ -72,6 +74,7 @@ const quickLinks = [
     title: "Monthly Recap",
     href: "/current-affairs/monthly-recap",
     border: "border-[#91B25F]",
+    hoverBg: "hover:bg-[#91B25F] hover:border-[#91B25F]",
     text: "text-[#73923F]",
     icon: (
       <svg
@@ -106,16 +109,18 @@ function QuickLinksCard() {
 
       <div className="space-y-4">
         {quickLinks.map((item) => (
-          <a
+          <Link
             key={item.title}
             href={item.href}
-            className={`flex min-h-[60px] items-center gap-4 rounded-full border bg-white px-6 transition-all duration-300 hover:shadow-sm ${item.border}`}
+            className={`group flex min-h-[60px] items-center gap-4 rounded-full border bg-white px-6 transition-all duration-300 hover:shadow-sm ${item.border} ${item.hoverBg}`}
           >
-            <span className="shrink-0">{item.icon}</span>
-            <span className={`text-[16px] font-semibold ${item.text}`}>
+            <span className="shrink-0 transition-colors duration-300 group-hover:text-white">
+              {item.icon}
+            </span>
+            <span className={`text-[16px] font-semibold transition-colors duration-300 ${item.text} group-hover:text-white`}>
               {item.title}
             </span>
-          </a>
+          </Link>
         ))}
       </div>
     </div>
@@ -199,7 +204,8 @@ export default function DailyCurrentAffairsPage() {
             alt="Daily Current Affairs Banner"
             fill
             priority
-            className="object-cover brightness-[1.08]"
+            sizes="100vw"
+            className="object-cover object-center brightness-[1.08]"
           />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.10)_0%,rgba(0,0,0,0.04)_45%,rgba(0,0,0,0.00)_100%)]" />
         </section>

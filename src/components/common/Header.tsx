@@ -391,7 +391,7 @@ const Header: React.FC = () => {
                 <Image src="/assets/Search-Icon.svg" alt="search" width={20} height={20} />
               </div>
 
-              <Link href="/login" aria-label="Login" className="flex items-center justify-center cursor-pointer ml-0">
+              <Link href="/login" aria-label="Login" className="ml-0 flex cursor-pointer items-center justify-center">
                 <svg width="30" height="30" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
                     fillRule="evenodd"
@@ -436,9 +436,9 @@ const Header: React.FC = () => {
               <Link
                 href="/login"
                 aria-label="Login"
-                className="cursor-pointer hover:text-primary transition-colors border-2 border-white rounded-full p-0.5 flex items-center justify-center"
+                className="flex cursor-pointer items-center justify-center rounded-full border-2 border-white p-0.5 transition-colors hover:text-primary"
               >
-                <User size={20} className="md:w-[22px] md:h-[22px]" />
+                <User size={20} className="md:h-[22px] md:w-[22px]" />
               </Link>
             </div>
 

@@ -9,7 +9,7 @@ export const RESOURCE_CARD_LIMIT = 10;
 
 /** Responsive grid — matches Monthly Magazine reference (2 columns) */
 export const RESOURCE_CARD_GRID =
-  "grid w-full grid-cols-1 gap-6 overflow-visible md:grid-cols-2 md:gap-x-8 md:gap-y-6";
+  "grid w-full grid-cols-1 gap-6 overflow-visible px-1 py-2 md:grid-cols-2 md:gap-x-8 md:gap-y-6";
 
 /** @deprecated use RESOURCE_CARD_GRID — kept for free-resources imports */
 export const FREE_RESOURCE_CARD_GRID = RESOURCE_CARD_GRID;
@@ -23,9 +23,11 @@ export const RESOURCE_CARD_BORDER_HOVER = "#F5E4D4";
 const CARD_SURFACE =
   "resource-card-surface relative z-0 rounded-[14px]";
 
-/** Card title — shared sizing */
-const CARD_TITLE =
-  "line-clamp-2 text-[14px] font-semibold leading-snug text-[#1F2A37]";
+/** Figma card title — Montserrat SemiBold 15px, 160% line-height, #000000 */
+export const RESOURCE_CARD_TITLE =
+  "line-clamp-2 font-['Montserrat'] text-[15px] font-semibold leading-[1.6] tracking-normal text-[#000000]";
+
+const CARD_TITLE = RESOURCE_CARD_TITLE;
 
 /** Unified horizontal card — image left, content right */
 export const PREMIUM_CARD = {
@@ -70,7 +72,7 @@ export const RESOURCE_THUMB = {
 
 /** Card action buttons — shared across CA, Free Resources, Student Portal */
 const BUTTON_CORE =
-  "inline-flex items-center justify-center text-center whitespace-nowrap rounded-[7px] border border-[#57B0F2] bg-white font-semibold text-[#46A7ED] transition-all duration-300 ease-in-out";
+  "inline-flex items-center justify-center text-center whitespace-nowrap rounded-[7px] border border-[#57B0F2] bg-transparent font-semibold text-[#46A7ED] transition-all duration-300 ease-in-out";
 
 export const RESOURCE_BUTTON = {
   /** Standard 2-button cards (View + Download, Read + Download) */
@@ -83,24 +85,48 @@ export const RESOURCE_BUTTON = {
   downloadSolid: `${BUTTON_CORE} shrink-0 px-4 py-1.5 text-[12px] hover:border-[#2AA7DF] hover:bg-[#2AA7DF] hover:text-white`,
 } as const;
 
+/** Study materials list — Figma cream cards (title + View / Download PDF) */
 export const STUDY_MATERIAL_CARD = {
-  shell: `group flex h-[112px] min-h-[112px] w-full flex-col overflow-visible ${CARD_SURFACE}`,
+  shell: `study-material-card group flex h-[132px] min-h-[132px] w-full flex-col overflow-visible rounded-[12px] resource-card-surface`,
   bodyCentered:
-    "flex h-full w-full flex-col items-center justify-center gap-1.5 px-4 py-2.5 text-center",
+    "flex h-full w-full flex-col items-center justify-center gap-2.5 px-5 py-3 text-center",
   title: CARD_TITLE,
-  actionsCentered: "flex flex-nowrap items-center justify-center gap-2",
-  button: RESOURCE_BUTTON.base,
+  actionsCentered: "flex flex-nowrap items-center justify-center gap-3",
+  viewButton:
+    "inline-flex shrink-0 items-center justify-center rounded-[6px] border border-[#7EB4E2] bg-transparent px-5 py-2 text-center text-[13px] font-semibold text-[#7EB4E2] transition-all duration-300 hover:border-[#5BA3E0] hover:bg-[#7EB4E2] hover:text-white",
+  downloadButton:
+    "inline-flex shrink-0 items-center justify-center rounded-[6px] border border-[#57B0F2] bg-transparent px-5 py-2 text-center text-[13px] font-semibold text-[#57B0F2] transition-all duration-300 hover:border-[#4599d9] hover:bg-[#57B0F2] hover:text-white",
 } as const;
 
 export const RESOURCE_EMPTY =
   "resource-card-surface rounded-[14px] px-6 py-8 text-center text-[14px] font-semibold text-[#5A6573]";
 
-export const NCERT_BOOK_CARD = {
-  shell: `group flex h-[118px] min-h-[118px] w-full flex-col overflow-visible ${CARD_SURFACE}`,
-  bodyCentered:
-    "flex h-full w-full flex-col items-center justify-center gap-2 px-4 py-2.5 text-center",
+const NCERT_BUTTON =
+  "inline-flex min-w-[100px] items-center justify-center rounded-[6px] border border-[#7EB4E2] bg-transparent px-5 py-2 text-center text-[13px] font-semibold text-[#7EB4E2] transition-all duration-300 ease-in-out hover:border-[#5BA3E0] hover:bg-[#7EB4E2] hover:text-white";
+
+/** PYQ question paper cards — Figma horizontal layout (Prelims / Mains lists) */
+export const PYQ_PAPER_CARD = {
+  shell: `pyq-paper-card group flex h-[132px] min-h-[132px] w-full min-w-0 flex-row overflow-visible rounded-[12px] ${CARD_SURFACE}`,
+  thumb:
+    "resource-card-thumb relative h-full w-[108px] shrink-0 overflow-hidden rounded-l-[12px]",
+  thumbInner:
+    "relative flex h-full w-full items-center justify-center bg-transparent p-2",
+  body: "flex min-w-0 flex-1 flex-col justify-center gap-2 px-4 py-3",
   title: CARD_TITLE,
-  actionsCentered: "flex flex-nowrap items-center justify-center gap-2",
+  actions: "flex w-full min-w-0 flex-nowrap items-center gap-2.5",
+  viewButton:
+    "inline-flex shrink-0 items-center justify-center rounded-[6px] border border-[#7EB4E2] bg-transparent px-5 py-2 text-center text-[13px] font-semibold text-[#7EB4E2] transition-all duration-300 hover:border-[#5BA3E0] hover:bg-[#7EB4E2] hover:text-white",
+  downloadButton:
+    "inline-flex shrink-0 items-center justify-center rounded-[6px] border border-[#57B0F2] bg-transparent px-5 py-2 text-center text-[13px] font-semibold text-[#57B0F2] transition-all duration-300 hover:border-[#4599d9] hover:bg-[#57B0F2] hover:text-white",
+} as const;
+
+export const NCERT_BOOK_CARD = {
+  shell: `ncert-book-card group flex h-[120px] min-h-[120px] w-full flex-col overflow-visible rounded-[12px] ${CARD_SURFACE}`,
+  bodyCentered:
+    "flex h-full w-full flex-col items-center justify-center gap-2.5 px-5 py-3 text-center",
+  title: CARD_TITLE,
+  actionsCentered: "flex flex-nowrap items-center justify-center gap-3",
+  button: NCERT_BUTTON,
 } as const;
 
 /** @deprecated use PREMIUM_CARD.shell — kept for compatibility */

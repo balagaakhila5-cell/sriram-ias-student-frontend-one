@@ -1,11 +1,16 @@
 'use client';
 
 import React, { useMemo, useRef } from 'react';
+import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import { useHomepage } from '@/features/homepage/hooks/useHomepage';
+import {
+  FREE_LEARNING_EXPLORE_HREFS,
+  freeLearningHref,
+} from '@/features/homepage/utils/homepageLinks';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,6 +21,7 @@ const FreeCourses: React.FC = () => {
   const fallbackSections = [
     {
       id: 'quizzes',
+      href: FREE_LEARNING_EXPLORE_HREFS.dailyQuiz,
       title: 'Daily Quiz',
       description:
         'Participate in our daily quizzes to test your knowledge, strengthen your understanding of key concepts, and stay consistent with your learning journey.',
@@ -27,6 +33,7 @@ const FreeCourses: React.FC = () => {
     },
     {
       id: 'current-affairs',
+      href: FREE_LEARNING_EXPLORE_HREFS.dailyCurrentAffairs,
       title: 'Daily Current Affairs',
       description:
         'Engage with our daily current affairs designed to help you stay updated with key national and international events while improving your analytical understanding for competitive exams.',
@@ -38,6 +45,7 @@ const FreeCourses: React.FC = () => {
     },
     {
       id: 'mains-question',
+      href: FREE_LEARNING_EXPLORE_HREFS.dailyMainsQuestions,
       title: 'Daily Mains Questions',
       description:
         'Solve our Daily Mains Questions to improve your answer-writing skills, build strong arguments, and stay consistent with your UPSC Mains preparation.',
@@ -49,6 +57,7 @@ const FreeCourses: React.FC = () => {
     },
     {
       id: 'blogs',
+      href: FREE_LEARNING_EXPLORE_HREFS.blogs,
       title: 'Blogs',
       description:
         'Explore our latest blogs for valuable insights, study tips, and expert advice to enhance your preparation and stay motivated on your path to success.',
@@ -84,9 +93,13 @@ const FreeCourses: React.FC = () => {
       const palette = colorPalette[index % colorPalette.length];
       const [backgroundImage, rightImage, floatingImage] = card.images ?? [];
 
+      const title = card.title ?? fallback.title;
+      const id = card._id ?? fallback.id ?? `card-${index}`;
+
       return {
-        id: card._id ?? fallback.id ?? `card-${index}`,
-        title: card.title ?? fallback.title,
+        id,
+        title,
+        href: freeLearningHref(title, id),
         description: card.description ?? fallback.description,
         backgroundImage: backgroundImage ?? fallback.backgroundImage,
         rightImage: rightImage ?? fallback.rightImage,
@@ -199,9 +212,12 @@ const FreeCourses: React.FC = () => {
                   {section.description}
                 </p>
 
-                <button className="bg-white text-[#1E6F9F] px-6 py-2 rounded-md font-semibold text-sm md:text-base hover:bg-[#1E6F9F] hover:text-white transition-all duration-300 w-fit shadow-md">
+                <Link
+                  href={section.href}
+                  className="bg-white text-[#1E6F9F] px-6 py-2 rounded-md font-semibold text-sm md:text-base hover:bg-[#1E6F9F] hover:text-white transition-all duration-300 w-fit shadow-md cursor-pointer"
+                >
                   Explore
-                </button>
+                </Link>
               </div>
 
               {/* Image */}

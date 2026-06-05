@@ -6,7 +6,7 @@ import {
   resourceDownloadPath,
   resourceViewPath,
 } from "@/features/resources/catalog/routes";
-import { NCERT_BOOK_CARD, RESOURCE_BUTTON } from "./cardStyles";
+import { NCERT_BOOK_CARD } from "./cardStyles";
 
 interface NcertBookCardProps {
   item: CatalogDocument;
@@ -28,7 +28,7 @@ export default function NcertBookCard({
         <div className={NCERT_BOOK_CARD.actionsCentered}>
           <Link
             href={resourceViewPath(item)}
-            className={RESOURCE_BUTTON.base}
+            className={NCERT_BOOK_CARD.button}
             prefetch={false}
             target={variant === "portal" ? "_blank" : undefined}
             rel={variant === "portal" ? "noopener noreferrer" : undefined}
@@ -37,7 +37,7 @@ export default function NcertBookCard({
           </Link>
           <a
             href={resourceDownloadPath(item)}
-            className={RESOURCE_BUTTON.base}
+            className={NCERT_BOOK_CARD.button}
             target="_blank"
             rel="noopener noreferrer"
           >

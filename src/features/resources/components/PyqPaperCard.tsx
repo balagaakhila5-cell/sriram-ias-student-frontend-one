@@ -1,44 +1,69 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
+import type { CatalogDocument } from "@/features/resources/catalog/types";
 import { RESOURCE_ASSETS } from "@/features/resources/catalog/assets";
-import PremiumCardBanner from "./PremiumCardBanner";
-import { PREMIUM_CARD, RESOURCE_BUTTON } from "./cardStyles";
+import {
+  resourceDownloadPath,
+  resourceViewPath,
+} from "@/features/resources/catalog/routes";
+import { PYQ_PAPER_CARD } from "./cardStyles";
 
 interface PyqPaperCardProps {
-  title: string;
-  fileUrl?: string | null;
+  item: CatalogDocument;
+  variant?: "public" | "portal";
   className?: string;
 }
 
 export default function PyqPaperCard({
-  title,
-  fileUrl,
+  item,
+  variant = "public",
   className = "",
 }: PyqPaperCardProps) {
-  const url = fileUrl ?? "#";
+  const Tag = variant === "portal" ? "article" : "div";
+  const iconSrc = item.image || RESOURCE_ASSETS.PDF_ICON;
 
   return (
-    <div className={`${PREMIUM_CARD.shell} ${className}`}>
-      <PremiumCardBanner src={RESOURCE_ASSETS.PDF_ICON} alt={title} fit="cover" />
-      <div className={PREMIUM_CARD.body}>
-        <h3 className={PREMIUM_CARD.title}>{title}</h3>
-        <p className={PREMIUM_CARD.description}>
-          Previous year question paper for practice.
-        </p>
-        <div className={PREMIUM_CARD.actions}>
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={RESOURCE_BUTTON.base}
+    <Tag className={`${PYQ_PAPER_CARD.shell} ${className}`}>
+      <div className={PYQ_PAPER_CARD.thumb}>
+        <div className={PYQ_PAPER_CARD.thumbInner}>
+          <Image
+            src={iconSrc}
+            alt=""
+            width={72}
+            height={88}
+            className="h-auto w-[72px] object-contain"
+            onError={(e) => {
+              const target = e.currentTarget;
+              if (target.src.includes(RESOURCE_ASSETS.PDF_ICON)) return;
+              target.src = RESOURCE_ASSETS.PDF_ICON;
+            }}
+          />
+        </div>
+      </div>
+      <div className={PYQ_PAPER_CARD.body}>
+        <h3 className={PYQ_PAPER_CARD.title}>{item.title}</h3>
+        <div className={PYQ_PAPER_CARD.actions}>
+          <Link
+            href={resourceViewPath(item)}
+            className={PYQ_PAPER_CARD.viewButton}
+            prefetch={false}
+            target={variant === "portal" ? "_blank" : undefined}
+            rel={variant === "portal" ? "noopener noreferrer" : undefined}
           >
             View
-          </a>
-          <a href={url} download className={RESOURCE_BUTTON.base}>
+          </Link>
+          <a
+            href={resourceDownloadPath(item)}
+            className={PYQ_PAPER_CARD.downloadButton}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Download PDF
           </a>
         </div>
       </div>
-    </div>
+    </Tag>
   );
 }

@@ -119,7 +119,7 @@ const LoginPortal: React.FC = () => {
           <SubmitButton loading={isPending} variant="student">
             {buttonLabel}
           </SubmitButton>
-          <Footer />
+          <StudentSignupFooter />
         </form>
       )}
 
@@ -139,7 +139,6 @@ const LoginPortal: React.FC = () => {
           />
           {mutationError && <ErrorText>{mutationError}</ErrorText>}
           <SubmitButton loading={isPending}>{buttonLabel}</SubmitButton>
-          <Footer />
         </form>
       )}
 
@@ -159,7 +158,6 @@ const LoginPortal: React.FC = () => {
           />
           {mutationError && <ErrorText>{mutationError}</ErrorText>}
           <SubmitButton loading={isPending}>{buttonLabel}</SubmitButton>
-          <Footer />
         </form>
       )}
 
@@ -173,7 +171,7 @@ const LoginPortal: React.FC = () => {
   );
 };
 
-const Footer = () => (
+const StudentSignupFooter = () => (
   <p className="mt-2 text-center text-[13px] text-gray-600">
     Don&apos;t have an account?{" "}
     <Link

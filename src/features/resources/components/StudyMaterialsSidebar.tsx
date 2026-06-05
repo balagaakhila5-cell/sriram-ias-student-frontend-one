@@ -1,7 +1,7 @@
 import FreeResourcesCourseSlider from "@/components/common/FreeResourcesCourseSlider";
 import FreeResourcesOurBooksSlider from "@/components/common/FreeResourcesOurBooksSlider";
 
-/** Study materials sidebar — Our Books + Courses as separate hover sliders */
+/** Study materials sidebar — Our Books + Courses sliders */
 export default function StudyMaterialsSidebar() {
   return (
     <aside className="study-materials-sidebar animate-sidebar mx-auto flex w-full max-w-[340px] shrink-0 flex-col gap-7 lg:mx-0 lg:max-w-[340px]">

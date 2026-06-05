@@ -112,7 +112,7 @@ export default function UpsPrelims2026Countdown({
     return () => window.clearInterval(id);
   }, []);
 
-  const display = parts ?? getCountdownParts(getNextUpcomingTarget());
+  const display = parts;
 
   return (
     <div
@@ -133,7 +133,11 @@ export default function UpsPrelims2026Countdown({
             className="flex h-[72px] w-[68px] flex-col items-center justify-center rounded-[10px] bg-[#0B1628] shadow-lg sm:h-[78px] sm:w-[72px]"
           >
             <div className="text-[20px] font-extrabold leading-none text-white sm:text-[22px]">
-              {key === "days" ? display.days : pad(display[key])}
+              {!display
+                ? "--"
+                : key === "days"
+                  ? display.days
+                  : pad(display[key])}
             </div>
             <span className="mt-2 text-[9px] font-extrabold uppercase tracking-wide text-[#A5DEFF] sm:text-[10px]">
               {label}
@@ -142,13 +146,13 @@ export default function UpsPrelims2026Countdown({
         ))}
       </div>
 
-      {display.activeTarget === "mains" && !display.isComplete && (
+      {display?.activeTarget === "mains" && !display.isComplete && (
         <p className="mt-4 text-center text-[13px] font-semibold text-[#5A6B8C]">
           Prelims complete — counting down to Mains 2026
         </p>
       )}
 
-      {display.isComplete && (
+      {display?.isComplete && (
         <p className="mt-4 text-center text-[13px] font-semibold text-[#5A6B8C]">
           UPSC 2026 examination cycle has concluded.
         </p>

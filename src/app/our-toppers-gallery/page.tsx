@@ -15,6 +15,9 @@ type Topper = {
   course: 'GS Course' | 'Optional Course' | 'Test Series' | 'Other';
 };
 
+const SUPPORT_SYSTEM_CARD =
+  'min-h-[185px] rounded-[10px] bg-white p-5 shadow-[0_16px_34px_rgba(29,119,176,0.14)] transition-all duration-300 ease-out hover:z-10 hover:scale-[1.04] hover:bg-[#FFF9E6] hover:shadow-[0_20px_40px_rgba(29,119,176,0.18)] motion-reduce:transition-none motion-reduce:hover:scale-100';
+
 const fallbackToppers: Topper[] = [
   {
     name: 'AAKASH GARG',
@@ -327,12 +330,12 @@ const OurToppersGalleryPage = () => {
 
         <div className="relative z-10 mx-auto grid max-w-[1240px] items-center gap-10 lg:grid-cols-[0.88fr_1.42fr]">
           <div className="relative z-20 lg:-ml-8 xl:-ml-12">
-            <h2 className="mb-8 bg-gradient-to-r from-[#159FE3] via-[#4FA0D6] to-[#6D8EB8] bg-clip-text text-center text-[30px] font-black uppercase leading-[1.05] tracking-[1px] text-transparent sm:text-[36px] md:text-[42px] lg:text-left lg:text-[46px]">
+            <h2 className="mb-8 whitespace-nowrap bg-gradient-to-r from-[#159FE3] via-[#4FA0D6] to-[#6D8EB8] bg-clip-text text-center text-[28px] font-black uppercase leading-[1.05] tracking-[1px] text-transparent sm:text-[32px] md:text-[38px] lg:text-left lg:text-[36px] xl:text-[42px]">
               OUR SUPPORT SYSTEM
             </h2>
 
-            <div className="mx-auto grid max-w-[560px] grid-cols-1 gap-5 sm:grid-cols-2 lg:mx-0">
-              <div className="min-h-[185px] rounded-[10px] bg-white p-5 shadow-[0_16px_34px_rgba(29,119,176,0.14)]">
+            <div className="mx-auto grid max-w-[560px] grid-cols-1 gap-5 overflow-visible px-1 py-2 sm:grid-cols-2 lg:mx-0">
+              <div className={SUPPORT_SYSTEM_CARD}>
                 <div className="mb-4 flex h-[44px] w-[44px] items-center justify-center rounded-[10px] bg-[#FFF0DA] shadow-sm">
                   <Image
                     src="/assets/our-toppers-gallery/timer-icon.svg"
@@ -353,7 +356,7 @@ const OurToppersGalleryPage = () => {
                 </p>
               </div>
 
-              <div className="min-h-[185px] rounded-[10px] bg-white p-5 shadow-[0_16px_34px_rgba(29,119,176,0.14)] sm:mt-[58px]">
+              <div className={`${SUPPORT_SYSTEM_CARD} sm:mt-[58px]`}>
                 <div className="mb-4 flex h-[44px] w-[44px] items-center justify-center rounded-[10px] bg-[#FFE5E8] shadow-sm">
                   <Image
                     src="/assets/our-toppers-gallery/personalized-attention-icon.svg"
@@ -374,7 +377,7 @@ const OurToppersGalleryPage = () => {
                 </p>
               </div>
 
-              <div className="min-h-[185px] rounded-[10px] bg-white p-5 shadow-[0_16px_34px_rgba(29,119,176,0.14)] sm:col-span-2 lg:col-span-1">
+              <div className={`${SUPPORT_SYSTEM_CARD} sm:col-span-2 lg:col-span-1`}>
                 <div className="mb-4 flex h-[44px] w-[44px] items-center justify-center rounded-[10px] bg-[#FFE5E8] shadow-sm">
                   <Image
                     src="/assets/our-toppers-gallery/expert-mentorship-icon.svg"

@@ -1,6 +1,6 @@
 import FreeResourcesOurBooksSlider from "@/components/common/FreeResourcesOurBooksSlider";
 
-/** Sidebar Our Books promo with hover-to-slide carousel (NCERT-books pattern). */
+/** Sidebar Our Books promo with auto-rotating book carousel. */
 export default function OurBooks() {
   return <FreeResourcesOurBooksSlider />;
 }

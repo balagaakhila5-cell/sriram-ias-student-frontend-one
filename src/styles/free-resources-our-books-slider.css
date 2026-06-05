@@ -58,35 +58,36 @@
   object-position: center;
 }
 
-.free-resources-our-books-slider.our-books-card:hover .our-books-slide-1 {
+/* Auto-play carousel — no hover required */
+.our-books-card .our-books-slide-1 {
   animation: fr-books-move1 24s infinite ease-in-out;
 }
 
-.free-resources-our-books-slider.our-books-card:hover .our-books-slide-2 {
+.our-books-card .our-books-slide-2 {
   animation: fr-books-move2 24s infinite ease-in-out;
 }
 
-.free-resources-our-books-slider.our-books-card:hover .our-books-slide-3 {
+.our-books-card .our-books-slide-3 {
   animation: fr-books-move3 24s infinite ease-in-out;
 }
 
-.free-resources-our-books-slider.our-books-card:hover .our-books-slide-4 {
+.our-books-card .our-books-slide-4 {
   animation: fr-books-move4 24s infinite ease-in-out;
 }
 
-.free-resources-our-books-slider.our-books-card:hover .our-books-slide-5 {
+.our-books-card .our-books-slide-5 {
   animation: fr-books-move5 24s infinite ease-in-out;
 }
 
-.free-resources-our-books-slider.our-books-card:hover .our-books-slide-6 {
+.our-books-card .our-books-slide-6 {
   animation: fr-books-move6 24s infinite ease-in-out;
 }
 
-.free-resources-our-books-slider.our-books-card:hover .our-books-slide-7 {
+.our-books-card .our-books-slide-7 {
   animation: fr-books-move7 24s infinite ease-in-out;
 }
 
-.free-resources-our-books-slider.our-books-card:hover .our-books-slide-8 {
+.our-books-card .our-books-slide-8 {
   animation: fr-books-move8 24s infinite ease-in-out;
 }
 
@@ -248,35 +249,35 @@
   background: rgba(255, 255, 255, 0.75);
 }
 
-.free-resources-our-books-slider.our-books-card:hover .dot-1 {
+.our-books-card .dot-1 {
   animation: fr-books-dot1 24s infinite;
 }
 
-.free-resources-our-books-slider.our-books-card:hover .dot-2 {
+.our-books-card .dot-2 {
   animation: fr-books-dot2 24s infinite;
 }
 
-.free-resources-our-books-slider.our-books-card:hover .dot-3 {
+.our-books-card .dot-3 {
   animation: fr-books-dot3 24s infinite;
 }
 
-.free-resources-our-books-slider.our-books-card:hover .dot-4 {
+.our-books-card .dot-4 {
   animation: fr-books-dot4 24s infinite;
 }
 
-.free-resources-our-books-slider.our-books-card:hover .dot-5 {
+.our-books-card .dot-5 {
   animation: fr-books-dot5 24s infinite;
 }
 
-.free-resources-our-books-slider.our-books-card:hover .dot-6 {
+.our-books-card .dot-6 {
   animation: fr-books-dot6 24s infinite;
 }
 
-.free-resources-our-books-slider.our-books-card:hover .dot-7 {
+.our-books-card .dot-7 {
   animation: fr-books-dot7 24s infinite;
 }
 
-.free-resources-our-books-slider.our-books-card:hover .dot-8 {
+.our-books-card .dot-8 {
   animation: fr-books-dot8 24s infinite;
 }
 
@@ -439,7 +440,11 @@
   transition: background 0.3s ease;
 }
 
-.free-resources-our-books-slider.our-books-card:hover .buy-now-btn {
+.our-books-card .buy-now-btn {
+  background: rgba(58, 78, 94, 0.88);
+}
+
+.our-books-card:hover .buy-now-btn {
   background: rgba(26, 116, 170, 0.94);
 }
 

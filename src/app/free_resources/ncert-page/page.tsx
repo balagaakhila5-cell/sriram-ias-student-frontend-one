@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
@@ -212,8 +212,9 @@ export default function NcertBooksPage() {
                 </h1>
 
                 <div className="animate-tabs relative z-[60] mb-12">
-                  <div className="flex flex-col items-center justify-center gap-6 md:flex-row">
+                  <div className="mx-auto flex w-full max-w-[820px] flex-col items-stretch justify-center gap-5 sm:flex-row sm:gap-6">
                     <CustomDropdown
+                      variant="filter"
                       options={subjects.map((s) => s.value)}
                       value={selectedSubject}
                       onChange={setSelectedSubject}
@@ -221,6 +222,7 @@ export default function NcertBooksPage() {
                     />
 
                     <CustomDropdown
+                      variant="filter"
                       options={classes.map((c) => c.value)}
                       value={selectedClass}
                       onChange={setSelectedClass}
@@ -228,7 +230,11 @@ export default function NcertBooksPage() {
                     />
                   </div>
 
-                  <PremiumSearchButton onClick={handleSearch} className="mt-8" />
+                  <PremiumSearchButton
+                    variant="solid"
+                    onClick={handleSearch}
+                    className="mt-8"
+                  />
                 </div>
 
                 <div className="animate-cards-container overflow-visible">

@@ -46,20 +46,18 @@ interface CardItemProps {
   card: CardData;
   activeId: number | null;
   setActiveId: React.Dispatch<React.SetStateAction<number | null>>;
-  isLast?: boolean;
 }
 
 const CardItem: React.FC<CardItemProps> = ({
   card,
   activeId,
   setActiveId,
-  isLast = false,
 }) => {
   const isActive = activeId === card.id;
 
   return (
     <div
-      className="why-choose-card w-full relative"
+      className="why-choose-card w-full relative pb-1"
       onMouseEnter={() => setActiveId(card.id)}
       onMouseLeave={() => setActiveId(null)}
     >
@@ -94,14 +92,10 @@ const CardItem: React.FC<CardItemProps> = ({
       </div>
 
       <div
-        className={`absolute left-0 right-0 z-20 transition-all duration-300 ease-in-out ${
-          isLast ? "bottom-full mb-2" : "top-full mt-2"
-        } ${
+        className={`absolute left-0 right-0 top-full mt-2 z-30 transition-all duration-300 ease-in-out ${
           isActive
             ? "opacity-100 pointer-events-auto translate-y-0"
-            : `opacity-0 pointer-events-none ${
-                isLast ? "translate-y-2" : "-translate-y-2"
-              }`
+            : "opacity-0 pointer-events-none -translate-y-2"
         }`}
       >
         <div
@@ -495,7 +489,7 @@ const WhyChoose: React.FC<Props> = ({ course }) => {
   return (
     <section
       ref={sectionRef}
-      className="w-full bg-[#F7F7F8] px-6 md:px-10 lg:px-14 xl:px-20 py-12 md:py-16 overflow-hidden relative font-['Montserrat',sans-serif]"
+      className="w-full bg-[#F7F7F8] px-6 md:px-10 lg:px-14 xl:px-20 py-12 md:py-16 overflow-x-hidden overflow-y-visible relative font-['Montserrat',sans-serif]"
     >
       <style>{`
         @keyframes svgFloat {
@@ -548,28 +542,26 @@ const WhyChoose: React.FC<Props> = ({ course }) => {
           </span>
         </h2>
 
-        <div className="xl:pr-[420px]">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-6 items-start">
-            <div className="flex flex-col gap-6">
-              {leftCards.map((card, index) => (
+        <div className="xl:pr-[420px] pb-8 md:pb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-6 items-start overflow-visible">
+            <div className="flex flex-col gap-6 overflow-visible pb-28 md:pb-32">
+              {leftCards.map((card) => (
                 <CardItem
                   key={card.id}
                   card={card}
                   activeId={activeLeftId}
                   setActiveId={setActiveLeftId}
-                  isLast={index === leftCards.length - 1}
                 />
               ))}
             </div>
 
-            <div className="flex flex-col gap-6">
-              {rightCards.map((card, index) => (
+            <div className="flex flex-col gap-6 overflow-visible pb-28 md:pb-32">
+              {rightCards.map((card) => (
                 <CardItem
                   key={card.id}
                   card={card}
                   activeId={activeRightId}
                   setActiveId={setActiveRightId}
-                  isLast={index === rightCards.length - 1}
                 />
               ))}
             </div>

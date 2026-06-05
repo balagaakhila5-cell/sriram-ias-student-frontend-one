@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { GraduationCap, Users, UserRound } from 'lucide-react';
 
 export type UserRole = 'student' | 'parent' | 'faculty';
@@ -43,10 +44,28 @@ const AuthPortalShell: React.FC<AuthPortalShellProps> = ({
   title,
   children,
 }) => {
+  const router = useRouter();
+
+  const handleBack = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
+      return;
+    }
+    router.push('/');
+  };
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden font-['Montserrat']" style={{ background: 'radial-gradient(ellipse at top, #0F2030 0%, #050B11 70%)' }}>
       <div className="relative z-10 flex min-h-screen items-center justify-center px-4 pt-32 pb-16 md:pt-36 lg:pt-40">
-        <div className="w-full max-w-[1067px] overflow-hidden rounded-[20px] bg-white shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+        <div className="relative w-full max-w-[1067px] overflow-hidden rounded-[20px] bg-white shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <button
+            type="button"
+            onClick={handleBack}
+            aria-label="Go back"
+            className="absolute right-5 top-5 z-30 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white/95 text-[24px] font-semibold leading-none text-black shadow hover:bg-white"
+          >
+            ×
+          </button>
           <div className="grid min-h-[476px] grid-cols-1 lg:grid-cols-[315px_1fr]">
             <aside className="flex flex-col gap-2 p-6 md:p-8">
               {roles.map((role) => {

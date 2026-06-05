@@ -27,12 +27,12 @@ const PYQ_ASSETS = {
 
 /** Same box for Prelims and Mains visuals — equal size (circle built into PNG) */
 const PYQ_VISUAL_SIZE = {
-  width: 232,
-  height: 258,
+  width: 290,
+  height: 322,
 } as const;
 
 const PYQ_CARD_SHELL =
-  "animate-card group relative mx-auto h-[300px] w-full max-w-[451px] overflow-visible rounded-[28px] shadow-[0_12px_40px_rgba(0,0,0,0.08)] transition-[transform,box-shadow] duration-300 ease-out hover:z-10 hover:translate-x-6 hover:scale-[1.03] hover:shadow-[0_20px_48px_rgba(0,0,0,0.14)] motion-reduce:transition-none motion-reduce:hover:translate-x-0 motion-reduce:hover:scale-100 sm:mx-0 sm:max-w-none md:hover:translate-x-8 md:hover:scale-[1.035]";
+  "pyq-gateway-card group relative mx-auto h-[300px] w-full max-w-[451px] overflow-visible rounded-[28px] shadow-[0_12px_40px_rgba(0,0,0,0.08)] sm:mx-0 sm:max-w-none";
 
 /** Figma View button — teal → navy gradient */
 const PYQ_VIEW_BUTTON =
@@ -46,7 +46,7 @@ const sections = [
     href: "/free_resources/previous-year/prelims-paper",
     background: PYQ_ASSETS.prelimsBg,
     visual: PYQ_ASSETS.prelimsVisual,
-    visualScale: "scale-100",
+    visualScale: "scale-105",
   },
   {
     id: "mains",
@@ -56,7 +56,7 @@ const sections = [
     background: PYQ_ASSETS.mainsBg,
     visual: PYQ_ASSETS.mainsVisual,
     /** Mains PNG has more padding — scale up to match Prelims boy */
-    visualScale: "scale-[1.16]",
+    visualScale: "scale-[1.22]",
   },
 ] as const;
 
@@ -121,9 +121,10 @@ export default function PreviousYearPage() {
             </h1>
 
             <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_310px] lg:gap-8 xl:grid-cols-[minmax(0,1fr)_320px] xl:gap-10">
-              <div className="animate-cards-row grid min-w-0 grid-cols-1 gap-6 overflow-visible px-1 py-3 sm:grid-cols-2 sm:gap-6">
+              <div className="animate-cards-row grid min-w-0 grid-cols-1 gap-6 overflow-visible px-2 py-6 sm:grid-cols-2 sm:gap-8">
                 {sections.map((section) => (
-                  <article key={section.id} className={PYQ_CARD_SHELL}>
+                  <div key={section.id} className="animate-card min-w-0">
+                    <article className={PYQ_CARD_SHELL}>
                     <div className="absolute inset-0 overflow-hidden rounded-[28px]">
                       <Image
                         src={section.background}
@@ -135,8 +136,8 @@ export default function PreviousYearPage() {
                       />
                     </div>
 
-                    <div className="relative z-20 grid h-full grid-cols-[minmax(0,48%)_minmax(0,52%)] items-center overflow-visible">
-                      <div className="flex min-w-0 flex-col justify-center overflow-visible pl-7 pr-4 py-6 sm:pl-8 sm:pr-5">
+                    <div className="relative z-20 flex h-full items-center overflow-visible">
+                      <div className="flex min-w-0 max-w-[48%] flex-col justify-center overflow-visible pl-7 pr-4 py-6 sm:pl-8 sm:pr-5">
                         <h2
                           className={`w-fit max-w-full text-[26px] font-extrabold uppercase leading-[1.08] tracking-tight sm:text-[30px] ${RESOURCE_PAGE_HEADING_GRADIENT}`}
                         >
@@ -154,9 +155,9 @@ export default function PreviousYearPage() {
                         </Link>
                       </div>
 
-                      <div className="pointer-events-none flex min-h-0 min-w-0 items-center justify-end overflow-visible pr-0 sm:pr-1">
+                      <div className="pointer-events-none absolute bottom-0 right-0 z-10 flex items-end justify-end overflow-visible">
                         <div
-                          className={`relative shrink-0 origin-center transition-transform duration-300 ${section.visualScale}`}
+                          className={`relative shrink-0 origin-bottom-right transition-transform duration-300 group-hover:scale-[1.04] ${section.visualScale}`}
                           style={{
                             width: PYQ_VISUAL_SIZE.width,
                             height: PYQ_VISUAL_SIZE.height,
@@ -168,13 +169,14 @@ export default function PreviousYearPage() {
                             width={PYQ_VISUAL_SIZE.width * 2}
                             height={PYQ_VISUAL_SIZE.height * 2}
                             priority
-                            className="h-full w-full object-contain object-center"
+                            className="h-full w-full object-contain object-bottom"
                             sizes={`${PYQ_VISUAL_SIZE.width}px`}
                           />
                         </div>
                       </div>
                     </div>
-                  </article>
+                    </article>
+                  </div>
                 ))}
               </div>
 

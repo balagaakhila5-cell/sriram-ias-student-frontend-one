@@ -28,7 +28,9 @@ export default function MockTestCard({
     "image" in test && test.image
       ? test.image
       : RESOURCE_ASSETS.MOCK_TEST_CARD;
+
   const attemptHref = `/free_resources/free-mocktests/${test._id}`;
+
   const { title, subtitle } = getMockTestCardDisplay(test, examType, index);
 
   return (

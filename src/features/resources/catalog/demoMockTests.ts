@@ -110,6 +110,9 @@ export function getMockTestCardDisplay(
   return { title: test.title, subtitle: "" };
 }
 
+/** Default mock test opened from the home page Daily Quiz Explore button */
+export const DEFAULT_DAILY_QUIZ_MOCK_TEST_ID = "demo-mock-prelims-1";
+
 export const DEMO_MOCK_TEST_CARDS: DemoMockTestCard[] = [
   ...Array.from({ length: 10 }, (_, i) => buildDemoTest("prelims", i)),
   ...Array.from({ length: 10 }, (_, i) => buildDemoTest("mains", i)),

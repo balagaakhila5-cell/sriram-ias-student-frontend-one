@@ -128,8 +128,8 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
         onClick={onClose}
       />
 
-      <div className="relative flex min-h-[500px] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl duration-300 animate-in fade-in zoom-in-95 md:flex-row">
-        <div className="relative hidden md:block md:w-[45%]">
+      <div className="relative flex w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl duration-300 animate-in fade-in zoom-in-95 md:max-h-[min(520px,90vh)] md:flex-row">
+        <div className="relative hidden min-h-[280px] md:block md:w-[42%] md:min-h-0">
           <img
             src="/assets/modal-img-1.png"
             alt="Sriram's IAS"
@@ -137,7 +137,7 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
           />
         </div>
 
-        <div className="relative flex flex-1 flex-col justify-center bg-white p-6 md:p-10">
+        <div className="relative flex flex-1 flex-col bg-white p-5 md:p-6">
           <button
             type="button"
             onClick={onClose}
@@ -146,15 +146,15 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
             <X size={20} />
           </button>
 
-          <div className="mb-6 flex items-center justify-center gap-2 md:mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 md:text-3xl">
+          <div className="mb-4 flex items-center justify-center gap-2">
+            <h2 className="text-xl font-semibold text-gray-900 md:text-2xl">
               Enquiry Form
             </h2>
-            <span className="text-2xl">📋</span>
+            <span className="text-xl">📋</span>
           </div>
 
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            <div className="space-y-1">
+          <form className="space-y-2.5" onSubmit={handleSubmit}>
+            <div className="space-y-0.5">
               <label className="ml-1 text-sm font-normal text-gray-400">
                 Full Name
               </label>
@@ -163,11 +163,11 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
                 value={form.name}
                 onChange={handleChange('name')}
                 required
-                className="w-full rounded-lg border-none bg-[#E0F2F9] px-4 py-2.5 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
+                className="h-9 w-full rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
               />
             </div>
 
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               <label className="ml-1 text-sm font-normal text-gray-400">
                 Mobile Number
               </label>
@@ -176,11 +176,11 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
                 value={form.phone}
                 onChange={handleChange('phone')}
                 required
-                className="w-full rounded-lg border-none bg-[#E0F2F9] px-4 py-2.5 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
+                className="h-9 w-full rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
               />
             </div>
 
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               <label className="ml-1 text-sm font-normal text-gray-400">
                 Email ID
               </label>
@@ -189,12 +189,12 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
                 value={form.email}
                 onChange={handleChange('email')}
                 required
-                className="w-full rounded-lg border-none bg-[#E0F2F9] px-4 py-2.5 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
+                className="h-9 w-full rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
               />
             </div>
 
             {/* Course Dropdown */}
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               <label className="ml-1 text-sm font-normal text-gray-400">
                 Course
               </label>
@@ -204,7 +204,7 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
                   value={form.courseId}
                   onChange={handleChange('courseId')}
                   required
-                  className="w-full cursor-pointer appearance-none rounded-lg border-none bg-[#E0F2F9] px-4 py-2.5 text-gray-600 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
+                  className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm text-gray-600 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
                 >
                   <option value="">Choose course</option>
 
@@ -233,7 +233,7 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
             </div>
 
             {/* Center Dropdown */}
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               <label className="ml-1 text-sm font-normal text-gray-400">
                 Center
               </label>
@@ -243,7 +243,7 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
                   value={form.centerId}
                   onChange={handleChange('centerId')}
                   required
-                  className="w-full cursor-pointer appearance-none rounded-lg border-none bg-[#E0F2F9] px-4 py-2.5 text-gray-600 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
+                  className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm text-gray-600 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
                 >
                   <option value="">Choose center</option>
 
@@ -274,11 +274,11 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
             {error && <p className="text-sm text-red-600">{error}</p>}
             {success && <p className="text-sm text-green-600">{success}</p>}
 
-            <div className="pt-4">
+            <div className="pt-2">
               <button
                 type="submit"
                 disabled={isPending}
-                className="w-full rounded-xl py-3 font-medium text-white shadow-md transition-all hover:brightness-105 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                className="h-10 w-full rounded-xl text-sm font-medium text-white shadow-md transition-all hover:brightness-105 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                 style={{
                   background:
                     'linear-gradient(90deg, #37B6E9 0%, #0077B6 100%)',

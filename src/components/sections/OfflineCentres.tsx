@@ -2,6 +2,7 @@
 
 import React, { useMemo, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { MapPin, Star, Building2, Phone, Mail } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -10,6 +11,7 @@ import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import DiamondLayer from '../DiamondLayer';
 import { heroDiamondConfig } from '../diamondConfigs';
 import { useHomepage } from '@/features/homepage/hooks/useHomepage';
+import { centerPageHref } from '@/features/homepage/utils/homepageLinks';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -140,7 +142,10 @@ const OfflineCentres: React.FC = () => {
 
         {/* Centers Grid */}
         <div className="offline-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {centres.map((center) => (
+          {centres.map((center) => {
+            const centerHref = centerPageHref(center.name);
+
+            return (
             <div
               key={center.id}
               className="offline-card group relative overflow-hidden shadow-2xl cursor-pointer aspect-square rounded-none bg-black"
@@ -169,9 +174,13 @@ const OfflineCentres: React.FC = () => {
                     <Star size={20} fill="currentColor" className="text-[#D9F400]" />
                   </div>
                 </div>
-                <button className="w-full text-white py-2 rounded-xl font-semibold text-lg" style={buttonStyle}>
+                <Link
+                  href={centerHref}
+                  className="w-full text-white py-2 rounded-xl font-semibold text-lg text-center block"
+                  style={buttonStyle}
+                >
                   Explore More
-                </button>
+                </Link>
               </div>
 
               <div
@@ -230,13 +239,18 @@ const OfflineCentres: React.FC = () => {
 
                 {/* Hover Button */}
                 <div className="mt-auto transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-[transform,opacity] duration-500 delay-[500ms] relative z-10">
-                  <button className="w-full text-white py-2 rounded-xl font-semibold text-lg hover:brightness-110 active:scale-[0.98] transition-all" style={buttonStyle}>
+                  <Link
+                    href={centerHref}
+                    className="w-full text-white py-2 rounded-xl font-semibold text-lg text-center block hover:brightness-110 active:scale-[0.98] transition-all"
+                    style={buttonStyle}
+                  >
                     Explore More
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
-          ))}
+          );
+          })}
         </div>
       </div>
     </section>

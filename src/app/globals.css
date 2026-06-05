@@ -340,7 +340,23 @@
   }
 
   .resource-card-surface:hover {
-    transform: none;
+    transform: none !important;
+  }
+
+  .ncert-book-card.resource-card-surface:hover {
+    transform: none !important;
+  }
+
+  .pyq-paper-card.resource-card-surface:hover {
+    transform: none !important;
+  }
+
+  .study-material-card.resource-card-surface:hover {
+    transform: none !important;
+  }
+
+  .pyq-gateway-card:hover {
+    transform: none !important;
   }
 }
 
@@ -366,8 +382,80 @@
     --resource-card-bg: #fff2e6;
     --resource-card-border: #f5e4d4;
     z-index: 5;
-    box-shadow: 0 10px 22px rgba(255, 165, 110, 0.14);
-    transform: translate3d(14px, 0, 0) !important;
+    box-shadow: 0 12px 28px rgba(255, 165, 110, 0.16);
+    transform: translate3d(12px, 0, 0) scale(1.03) !important;
+  }
+
+  /* NCERT Books — Figma cream cards; hover: scale + slight shift right */
+  .ncert-book-card.resource-card-surface {
+    --resource-card-bg: #fdfbf7;
+    --resource-card-border: #efe9e0;
+    min-height: 120px;
+    height: 120px;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  }
+
+  .ncert-book-card.resource-card-surface:hover {
+    --resource-card-bg: #fff8f0;
+    --resource-card-border: #e8ddd0;
+    z-index: 5;
+    transform: translate3d(12px, 0, 0) scale(1.03) !important;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  }
+
+  /* PYQ paper list — cream cards; hover: scale + shift right (Figma) */
+  .pyq-paper-card.resource-card-surface {
+    --resource-card-bg: #fdfbf7;
+    --resource-card-border: #efe9e0;
+    min-height: 132px;
+    height: 132px;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  }
+
+  .pyq-paper-card.resource-card-surface:hover {
+    --resource-card-bg: #fff8f0;
+    --resource-card-border: #e8ddd0;
+    z-index: 5;
+    transform: translate3d(12px, 0, 0) scale(1.03) !important;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Study materials — Figma cream cards; hover: scale + shift right */
+  .study-material-card.resource-card-surface {
+    --resource-card-bg: #fdfbf7;
+    --resource-card-border: #efe9e0;
+    min-height: 132px;
+    height: 132px;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  }
+
+  .study-material-card.resource-card-surface:hover {
+    --resource-card-bg: #fff8f0;
+    --resource-card-border: #e8ddd0;
+    z-index: 5;
+    transform: translate3d(12px, 0, 0) scale(1.03) !important;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  }
+
+  /* PYQ gateway — Prelims / Mains cards (Figma pop-up on hover) */
+  .pyq-gateway-card {
+    position: relative;
+    z-index: 0;
+    transform: translate3d(0, 0, 0) scale(1);
+    transform-origin: center center;
+    transition:
+      transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      box-shadow 0.35s ease;
+    will-change: transform;
+  }
+
+  .pyq-gateway-card:hover {
+    z-index: 20;
+    transform: translate3d(10px, -6px, 0) scale(1.07) !important;
+    box-shadow: 0 26px 56px rgba(0, 0, 0, 0.18);
   }
 
   .resource-card-surface .resource-card-thumb {
@@ -415,7 +503,6 @@
     background: #ffffff;
     padding: 12px;
     box-shadow: 0px 8px 26px rgba(0, 0, 0, 0.07);
-    cursor: pointer;
   }
 
   .free-resources-course-slider .course-slider-title {
@@ -441,6 +528,7 @@
 
   .free-resources-course-slider .course-slider-image-area {
     position: relative;
+    isolation: isolate;
     height: 275px;
     width: 100%;
     overflow: hidden;
@@ -451,95 +539,107 @@
       0 10px 26px rgba(60, 100, 150, 0.12);
   }
 
-  .free-resources-course-slider .course-slider-image-area::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 5;
-    height: 42%;
-    pointer-events: none;
-    border-radius: 0 0 16px 16px;
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.35) 55%,
-      rgba(223, 233, 248, 0.65) 100%
-    );
+  .free-resources-course-slider .course-slider-track {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    transition: transform 0.65s ease-in-out;
+    will-change: transform;
   }
 
-  .free-resources-course-slider .course-slide {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transform: translateX(100%);
-    will-change: transform, opacity;
-  }
-
-  .free-resources-course-slider .course-slide-1 {
-    opacity: 1;
-    transform: translateX(0);
+  .free-resources-course-slider .course-slider-panel {
+    position: relative;
+    min-width: 100%;
+    height: 100%;
+    flex-shrink: 0;
   }
 
   .free-resources-course-slider .course-img {
     object-fit: cover;
     object-position: center;
-    transition: transform 0.4s ease;
   }
 
-  .free-resources-course-slider.course-slider-card:hover .course-img {
-    transform: scale(1.04);
+  .free-resources-course-slider .course-slider-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 12;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 14px 36px;
+    pointer-events: none;
+    border-radius: 0 0 16px 16px;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.55) 45%,
+      rgba(0, 0, 0, 0.88) 100%
+    );
   }
 
-  .free-resources-course-slider.course-slider-card:hover .course-slide-1 {
-    animation: fr-course-move-1 12s infinite ease-in-out;
+  .free-resources-course-slider .course-slider-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    pointer-events: none;
   }
 
-  .free-resources-course-slider.course-slider-card:hover .course-slide-2 {
-    animation: fr-course-move-2 12s infinite ease-in-out;
+  .free-resources-course-slider .course-slider-course-name {
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.25;
+    color: #ffe81c;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
   }
 
-  .free-resources-course-slider.course-slider-card:hover .course-slide-3 {
-    animation: fr-course-move-3 12s infinite ease-in-out;
+  .free-resources-course-slider .course-slider-enroll {
+    pointer-events: auto;
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 8px;
+    border-radius: 9999px;
+    border: 1.5px solid #ffffff;
+    background: rgba(0, 0, 0, 0.82);
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    transition: background-color 0.2s ease, transform 0.2s ease;
   }
 
-  .free-resources-course-slider.course-slider-card:hover .course-slide-4 {
-    animation: fr-course-move-4 12s infinite ease-in-out;
+  .free-resources-course-slider .course-slider-enroll:hover {
+    background: rgba(0, 0, 0, 0.95);
+    transform: scale(1.02);
   }
 
   .free-resources-course-slider .course-dots {
     position: absolute;
     left: 50%;
-    bottom: 14px;
-    z-index: 10;
+    bottom: 12px;
+    z-index: 14;
     display: flex;
     gap: 7px;
     transform: translateX(-50%);
   }
 
-  .free-resources-course-slider .course-dots span {
-    width: 6px;
-    height: 6px;
+  .free-resources-course-slider .course-dots button {
+    width: 7px;
+    height: 7px;
+    border: none;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.78);
+    background: rgba(255, 255, 255, 0.55);
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.2s ease, background-color 0.2s ease;
   }
 
-  .free-resources-course-slider.course-slider-card:hover .course-dot-1 {
-    animation: fr-course-dot-1 12s infinite;
-  }
-
-  .free-resources-course-slider.course-slider-card:hover .course-dot-2 {
-    animation: fr-course-dot-2 12s infinite;
-  }
-
-  .free-resources-course-slider.course-slider-card:hover .course-dot-3 {
-    animation: fr-course-dot-3 12s infinite;
-  }
-
-  .free-resources-course-slider.course-slider-card:hover .course-dot-4 {
-    animation: fr-course-dot-4 12s infinite;
+  .free-resources-course-slider .course-dots button.is-active {
+    background: #ff3f6c;
+    transform: scale(1.35);
   }
 
   @media (max-width: 1023px) {

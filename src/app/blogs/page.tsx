@@ -5,6 +5,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
+import FreeResourcesCourseSlider from '@/components/common/FreeResourcesCourseSlider';
+import { FREE_LEARNING_EXPLORE_HREFS } from '@/features/homepage/utils/homepageLinks';
 import {
   Bookmark,
   Share2,
@@ -173,7 +175,7 @@ export default function BlogsPage() {
               </div>
 
               {/* Main Cup Card */}
-              <div className="blog-main-card group relative mb-7 h-[278px] overflow-hidden rounded-[7px] shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-2 hover:scale-[1.01] hover:shadow-[0_12px_30px_rgba(0,0,0,0.16)]">
+              <div className="blog-main-card group relative mb-7 h-[278px] overflow-hidden rounded-[7px] shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-500 ease-out hover:scale-[1.06] hover:shadow-[0_20px_40px_rgba(0,0,0,0.22)]">
                 <Image
                   src="/assets/blogs/main-cup.png"
                   alt="Main Cup Blog"
@@ -222,7 +224,7 @@ export default function BlogsPage() {
                 {blogs.map((blog, index) => (
                   <div
                     key={index}
-                    className="blog-grid-card group relative h-[220px] overflow-hidden rounded-[8px] shadow-md transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-[0_12px_30px_rgba(0,0,0,0.18)]"
+                  className="blog-grid-card group relative h-[220px] overflow-hidden rounded-[8px] shadow-md transition-all duration-500 ease-out hover:scale-[1.08] hover:shadow-[0_22px_45px_rgba(0,0,0,0.24)]"
                   >
                     <Image
                       src={blog.image}
@@ -301,7 +303,7 @@ export default function BlogsPage() {
                   {gsPapers.map((image, index) => (
                     <div
                       key={index}
-                      className="blog-grid-card group relative h-[220px] overflow-hidden rounded-[8px] shadow-md transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-[0_12px_30px_rgba(0,0,0,0.18)]"
+                    className="blog-grid-card group relative h-[220px] overflow-hidden rounded-[8px] shadow-md transition-all duration-500 ease-out hover:scale-[1.08] hover:shadow-[0_22px_45px_rgba(0,0,0,0.24)]"
                     >
                       <Image
                         src={image}
@@ -388,7 +390,7 @@ export default function BlogsPage() {
               </div>
 
               {/* Daily Learning */}
-              <div className="rounded-[10px] bg-[#EEF3FF] p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+              <div className="rounded-[10px] bg-[#EEF3FF] p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-transform duration-300 hover:scale-[1.02]">
                 <h3 className="mb-3 text-center text-[30px] font-extrabold leading-none">
                   <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
                     Daily Learning
@@ -404,9 +406,12 @@ export default function BlogsPage() {
                   />
 
                   <div className="absolute bottom-5 left-1/2 -translate-x-1/2">
-                    <button className="h-[38px] rounded-full border border-white px-8 text-[14px] font-semibold text-white">
+                    <Link
+                      href="/current-affairs/daily-practice-questions"
+                      className="inline-flex h-[38px] items-center justify-center rounded-full border border-white px-8 text-[14px] font-semibold text-white transition hover:bg-white/10"
+                    >
                       Explore →
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -433,30 +438,20 @@ export default function BlogsPage() {
                     {String.fromCharCode(65 + i)} .&nbsp;&nbsp; {opt}
                   </div>
                 ))}
+
+                <div className="mt-8 flex justify-center">
+                  <Link
+                    href={FREE_LEARNING_EXPLORE_HREFS.dailyQuiz}
+                    className="inline-flex h-[45px] items-center justify-center rounded-full bg-gradient-to-r from-[#38AEE5] to-[#07344D] px-7 text-[18px] font-bold text-white transition hover:opacity-90"
+                  >
+                    Attempt Quiz →
+                  </Link>
+                </div>
               </div>
 
               {/* Courses */}
               <div className="rounded-[10px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
-                <h3 className="mb-3 text-center text-[28px] font-extrabold leading-none">
-                  <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
-                    Courses
-                  </span>
-                </h3>
-
-                <div className="relative h-[230px] overflow-hidden rounded-[8px]">
-                  <Image
-                    src="/assets/blogs/Course card.png"
-                    alt="Course"
-                    fill
-                    className="object-cover"
-                  />
-
-                  <div className="absolute bottom-5 left-1/2 -translate-x-1/2">
-                    <button className="h-[38px] rounded-full border border-white px-8 text-[14px] font-semibold text-white">
-                      Enroll Now →
-                    </button>
-                  </div>
-                </div>
+                <FreeResourcesCourseSlider />
               </div>
 
               {/* Trending Videos */}
@@ -513,25 +508,25 @@ export default function BlogsPage() {
                 <div className="relative space-y-5">
                   <Link
                     href="/current-affairs"
-                    className="flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#E47A7D] bg-white text-[17px] font-bold text-[#C76B70] transition-all duration-300 hover:bg-[#FFF1F1]"
+                    className="group flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#E47A7D] bg-white text-[17px] font-bold text-[#C76B70] transition-all duration-300 hover:bg-[#E47A7D] hover:text-white"
                   >
-                    <Lightbulb size={26} />
+                    <Lightbulb size={26} className="transition-colors duration-300 group-hover:text-white" />
                     Daily Current Affairs
                   </Link>
 
                   <Link
                     href="/current-affairs/daily-practice-questions"
-                    className="flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#7F72C9] bg-white text-[17px] font-bold text-[#6962B4] transition-all duration-300 hover:bg-[#F3F1FF]"
+                    className="group flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#7F72C9] bg-white text-[17px] font-bold text-[#6962B4] transition-all duration-300 hover:bg-[#7F72C9] hover:text-white"
                   >
-                    <BookOpenText size={26} />
+                    <BookOpenText size={26} className="transition-colors duration-300 group-hover:text-white" />
                     Daily Practice Questions
                   </Link>
 
                   <Link
                     href="/current-affairs/infographics"
-                    className="flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#7A9B42] bg-white text-[17px] font-bold text-[#5D842D] transition-all duration-300 hover:bg-[#F6FFE9]"
+                    className="group flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#7A9B42] bg-white text-[17px] font-bold text-[#5D842D] transition-all duration-300 hover:bg-[#7A9B42] hover:text-white"
                   >
-                    <BarChart3 size={26} />
+                    <BarChart3 size={26} className="transition-colors duration-300 group-hover:text-white" />
                     Infographics
                   </Link>
                 </div>

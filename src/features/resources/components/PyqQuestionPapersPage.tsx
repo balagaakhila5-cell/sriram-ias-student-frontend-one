@@ -33,9 +33,16 @@ import { listFreeResourceDocuments } from "@/features/resources/catalog/freeReso
 
 import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 
-import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
+import PyqPaperCard from "@/features/resources/components/PyqPaperCard";
 
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
+
+import {
+  PYQ_SELECT_PAPER_OPTIONS,
+  PYQ_YEAR_OPTIONS,
+  filterCatalogByPyqPaper,
+  resolvePyqPaperId,
+} from "@/features/resources/constants/pyqFilters";
 
 import {
   FREE_RESOURCE_CARD_GRID,
@@ -184,7 +191,7 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
   const paperId = useMemo(
 
-    () => papers.find((p) => p.value === selectedPaper)?._id,
+    () => resolvePyqPaperId(papers, selectedPaper),
 
     [papers, selectedPaper],
 
@@ -232,7 +239,7 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
       "previous-year",
 
-      undefined,
+      selectedYear || undefined,
 
       undefined,
 
@@ -240,7 +247,7 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
     );
 
-    return mapApiFilesToCatalog(files, "previous-year", fallback, 10).map(
+    const mapped = mapApiFilesToCatalog(files, "previous-year", fallback, 10).map(
 
       (item, index) => ({
 
@@ -254,7 +261,15 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
     );
 
-  }, [files, showResults, section]);
+    const byYear = selectedYear
+
+      ? mapped.filter((item) => !item.year || item.year === selectedYear)
+
+      : mapped;
+
+    return filterCatalogByPyqPaper(byYear, selectedPaper);
+
+  }, [files, showResults, section, selectedPaper, selectedYear]);
 
 
 
@@ -390,7 +405,7 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
           <div className="mx-auto max-w-[1500px]">
 
-            <h1 className="animate-heading mb-10 text-left text-[36px] font-extrabold uppercase leading-[0.95] md:text-[48px] lg:text-[56px]">
+            <h1 className="animate-heading mb-10 pl-6 text-left text-[36px] font-extrabold uppercase leading-[0.95] md:pl-10 md:text-[48px] lg:pl-14 lg:text-[56px]">
 
               <span className={RESOURCE_PAGE_HEADING_GRADIENT}>
 
@@ -406,15 +421,17 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
               <div>
 
-                <div className="animate-filters relative z-[60] mb-10">
+                <div className="animate-filters relative z-[60] mb-10 pl-6 md:pl-10 lg:pl-14">
 
-                  <div className="mx-auto flex w-full max-w-[700px] flex-col items-center gap-6">
+                  <div className="mx-auto flex w-full max-w-[720px] flex-col items-center gap-6">
 
-                    <div className="flex w-full flex-col items-center justify-center gap-5 sm:flex-row sm:gap-8 md:gap-12">
+                    <div className="flex w-full flex-col gap-5 sm:flex-row sm:gap-6">
 
                       <CustomDropdown
 
-                        options={papers.map((p) => p.value)}
+                        variant="filter"
+
+                        options={[...PYQ_SELECT_PAPER_OPTIONS]}
 
                         value={selectedPaper}
 
@@ -427,7 +444,9 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
                       <CustomDropdown
 
-                        options={years.map((y) => y.value)}
+                        variant="filter"
+
+                        options={[...PYQ_YEAR_OPTIONS]}
 
                         value={selectedYear}
 
@@ -440,7 +459,13 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
                     </div>
 
-                    <PremiumSearchButton onClick={handleSearch} />
+                    <PremiumSearchButton
+
+                      variant="solid"
+
+                      onClick={handleSearch}
+
+                    />
 
                   </div>
 
@@ -448,7 +473,7 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
 
 
-                <div className="animate-cards-container">
+                <div className="animate-cards-container overflow-visible px-1 py-2 pl-6 md:pl-10 lg:pl-14">
 
                   {showResults && isFetching && (
 
@@ -476,17 +501,11 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
                       {catalogItems.map((item) => (
 
-                        <ResourceDocumentCard
+                        <div key={item.id} className="animate-card min-w-0">
 
-                          key={item.id}
+                          <PyqPaperCard item={item} />
 
-                          item={item}
-
-                          singleRowActions
-
-                          className="animate-card"
-
-                        />
+                        </div>
 
                       ))}
 

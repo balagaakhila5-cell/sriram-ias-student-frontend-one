@@ -6,6 +6,7 @@ import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import {
   Bookmark,
+  ChevronDown,
   Clock3,
   Lightbulb,
   BookOpenText,
@@ -14,6 +15,8 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import FreeResourcesCourseSlider from '@/components/common/FreeResourcesCourseSlider';
+import { FREE_LEARNING_EXPLORE_HREFS } from '@/features/homepage/utils/homepageLinks';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -30,6 +33,7 @@ const sections = [
 
 export default function BlogDetailPage() {
   const [activeId, setActiveId] = useState('introduction');
+  const [isTocOpen, setIsTocOpen] = useState(true);
   const tocRef = useRef<HTMLUListElement>(null);
   const articleRef = useRef<HTMLDivElement>(null);
   const bgTopRef = useRef<HTMLDivElement>(null);
@@ -220,16 +224,41 @@ export default function BlogDetailPage() {
             <div ref={articleRef} className="grid grid-cols-1 gap-8 xl:grid-cols-[255px_1fr]">
               {/* Table Of Content */}
               <aside className="h-fit rounded-[12px] bg-white px-6 py-7 shadow-[0_8px_30px_rgba(0,0,0,0.08)] xl:sticky xl:top-[100px]">
-                <h3 className="mb-7 text-[24px] font-bold">
-                  <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
-                    Table Of Content
-                  </span>
-                </h3>
+                <button
+                  type="button"
+                  onClick={() => setIsTocOpen((prev) => !prev)}
+                  className="mb-0 flex w-full items-center justify-between gap-3 text-left"
+                  aria-expanded={isTocOpen}
+                  aria-controls="blog-table-of-content"
+                >
+                  <h3 className="text-[24px] font-bold">
+                    <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
+                      Table Of Content
+                    </span>
+                  </h3>
 
-                <ul ref={tocRef} className="space-y-4 text-[18px] font-bold">
+                  <ChevronDown
+                    size={24}
+                    className={`shrink-0 text-[#349EE3] transition-transform duration-300 ${
+                      isTocOpen ? 'rotate-180' : ''
+                    }`}
+                    aria-hidden
+                  />
+                </button>
+
+                <ul
+                  id="blog-table-of-content"
+                  ref={tocRef}
+                  className={`space-y-4 overflow-hidden text-[18px] font-bold transition-all duration-300 ease-in-out ${
+                    isTocOpen
+                      ? 'mt-7 max-h-[640px] opacity-100'
+                      : 'mt-0 max-h-0 opacity-0'
+                  }`}
+                >
                   {sections.map(({ id, label }) => (
                     <li key={id}>
                       <button
+                        type="button"
                         onClick={() => scrollToSection(id)}
                         className={`w-full rounded-[8px] px-3 py-2 text-left text-[20px] font-semibold transition-all duration-300 ${
                           activeId === id
@@ -422,9 +451,12 @@ export default function BlogDetailPage() {
                         />
 
                         <div className="absolute bottom-5 left-1/2 -translate-x-1/2">
-                          <button className="h-[38px] rounded-full border border-white px-8 text-[14px] font-semibold text-white">
+                          <Link
+                            href="/current-affairs/daily-practice-questions"
+                            className="inline-flex h-[38px] items-center justify-center rounded-full border border-white px-8 text-[14px] font-semibold text-white transition hover:bg-white/10"
+                          >
                             Explore →
-                          </button>
+                          </Link>
                         </div>
                       </div>
                     </div>
@@ -453,34 +485,18 @@ export default function BlogDetailPage() {
                       ))}
 
                       <div className="mt-8 flex justify-center">
-                        <button className="h-[45px] rounded-full bg-gradient-to-r from-[#38AEE5] to-[#07344D] px-7 text-[18px] font-bold text-white">
+                        <Link
+                          href={FREE_LEARNING_EXPLORE_HREFS.dailyQuiz}
+                          className="inline-flex h-[45px] items-center justify-center rounded-full bg-gradient-to-r from-[#38AEE5] to-[#07344D] px-7 text-[18px] font-bold text-white transition hover:opacity-90"
+                        >
                           Attempt Quiz →
-                        </button>
+                        </Link>
                       </div>
                     </div>
 
                     {/* Courses */}
                     <div className="right-sidebar-card rounded-[10px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
-                      <h3 className="mb-3 text-center text-[28px] font-extrabold leading-none">
-                        <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
-                          Courses
-                        </span>
-                      </h3>
-
-                      <div className="relative h-[230px] overflow-hidden rounded-[8px]">
-                        <Image
-                          src="/assets/blogs/Course card.png"
-                          alt="Course"
-                          fill
-                          className="object-cover"
-                        />
-
-                        <div className="absolute bottom-5 left-1/2 -translate-x-1/2">
-                          <button className="h-[38px] rounded-full border border-white px-8 text-[14px] font-semibold text-white">
-                            Enroll Now →
-                          </button>
-                        </div>
-                      </div>
+                      <FreeResourcesCourseSlider />
                     </div>
 
                     {/* Trending Videos */}
@@ -537,25 +553,25 @@ export default function BlogDetailPage() {
                       <div className="relative space-y-5">
                         <Link
                           href="/current-affairs"
-                          className="flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#E47A7D] bg-white text-[17px] font-bold text-[#C76B70] transition-all duration-300 hover:bg-[#FFF1F1]"
+                          className="group flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#E47A7D] bg-white text-[17px] font-bold text-[#C76B70] transition-all duration-300 hover:bg-[#E47A7D] hover:text-white"
                         >
-                          <Lightbulb size={26} />
+                          <Lightbulb size={26} className="transition-colors duration-300 group-hover:text-white" />
                           Daily Current Affairs
                         </Link>
 
                         <Link
                           href="/current-affairs/daily-practice-questions"
-                          className="flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#7F72C9] bg-white text-[17px] font-bold text-[#6962B4] transition-all duration-300 hover:bg-[#F3F1FF]"
+                          className="group flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#7F72C9] bg-white text-[17px] font-bold text-[#6962B4] transition-all duration-300 hover:bg-[#7F72C9] hover:text-white"
                         >
-                          <BookOpenText size={26} />
+                          <BookOpenText size={26} className="transition-colors duration-300 group-hover:text-white" />
                           Daily Practice Questions
                         </Link>
 
                         <Link
                           href="/current-affairs/infographics"
-                          className="flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#7A9B42] bg-white text-[17px] font-bold text-[#5D842D] transition-all duration-300 hover:bg-[#F6FFE9]"
+                          className="group flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#7A9B42] bg-white text-[17px] font-bold text-[#5D842D] transition-all duration-300 hover:bg-[#7A9B42] hover:text-white"
                         >
-                          <BarChart3 size={26} />
+                          <BarChart3 size={26} className="transition-colors duration-300 group-hover:text-white" />
                           Infographics
                         </Link>
                       </div>

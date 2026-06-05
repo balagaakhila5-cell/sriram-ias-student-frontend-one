@@ -43,14 +43,12 @@ export const CA_FILTER_MONTHS = [
 
 export const PORTAL_DPQ_DEFAULT_DAY = "1";
 
-export const PYQ_YEAR_OPTIONS = ["2026", "2025", "2024"] as const;
+export {
+  PYQ_SELECT_PAPER_OPTIONS,
+  PYQ_YEAR_OPTIONS,
+} from "@/features/resources/constants/pyqFilters";
 
 export const PYQ_SUBJECT_OPTIONS = ["CSAT", "General Studies"] as const;
-
-export const PYQ_SELECT_PAPER_OPTIONS = Array.from(
-  { length: 10 },
-  (_, i) => `Paper ${i + 1}`,
-) as readonly string[];
 
 /** NCERT — class labels without Arabic numerals */
 export const NCERT_CLASS_OPTIONS = [
