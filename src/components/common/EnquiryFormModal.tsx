@@ -88,13 +88,13 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
       return;
     }
 
-    if (!form.courseId) {
-      setError('Please choose a course.');
+    if (!form.centerId) {
+      setError('Please choose a center.');
       return;
     }
 
-    if (!form.centerId) {
-      setError('Please choose a center.');
+    if (!form.courseId) {
+      setError('Please choose a course.');
       return;
     }
 
@@ -193,24 +193,24 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
               />
             </div>
 
-            {/* Course Dropdown */}
+            {/* Center Dropdown */}
             <div className="space-y-0.5">
               <label className="ml-1 text-sm font-normal text-gray-400">
-                Course
+                Center
               </label>
 
               <div className="relative">
                 <select
-                  value={form.courseId}
-                  onChange={handleChange('courseId')}
+                  value={form.centerId}
+                  onChange={handleChange('centerId')}
                   required
                   className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm text-gray-600 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
                 >
-                  <option value="">Choose course</option>
+                  <option value="">Choose center</option>
 
-                  {courses.map((course) => (
-                    <option key={course._id} value={course._id}>
-                      {course.title}
+                  {centers.map((center) => (
+                    <option key={center._id} value={center._id}>
+                      {center.name}
                     </option>
                   ))}
                 </select>
@@ -232,24 +232,24 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
               </div>
             </div>
 
-            {/* Center Dropdown */}
+            {/* Course Dropdown */}
             <div className="space-y-0.5">
               <label className="ml-1 text-sm font-normal text-gray-400">
-                Center
+                Course
               </label>
 
               <div className="relative">
                 <select
-                  value={form.centerId}
-                  onChange={handleChange('centerId')}
+                  value={form.courseId}
+                  onChange={handleChange('courseId')}
                   required
                   className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm text-gray-600 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
                 >
-                  <option value="">Choose center</option>
+                  <option value="">Choose course</option>
 
-                  {centers.map((center) => (
-                    <option key={center._id} value={center._id}>
-                      {center.name}
+                  {courses.map((course) => (
+                    <option key={course._id} value={course._id}>
+                      {course.title}
                     </option>
                   ))}
                 </select>

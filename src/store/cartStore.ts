@@ -2,6 +2,11 @@
 
 import { create } from 'zustand';
 import { Book } from '@/features/books/types';
+import type { AppliedCoupon } from '@/features/books/utils/checkoutCoupons';
+import {
+  tryApplyCouponCode,
+  tryApplyOfferIndex,
+} from '@/features/books/utils/checkoutCoupons';
 
 export interface CartItem {
   book: Book;
@@ -11,17 +16,25 @@ export interface CartItem {
 interface CartState {
   items: CartItem[];
   isOpen: boolean;
+  appliedCoupon: AppliedCoupon | null;
+  couponMessage: string | null;
   addItem: (book: Book, options?: { openSidebar?: boolean }) => void;
   removeItem: (bookId: string) => void;
   updateQuantity: (bookId: string, quantity: number) => void;
   openCart: () => void;
   closeCart: () => void;
   subtotal: () => number;
+  applyCouponCode: (code: string) => boolean;
+  applyOfferCoupon: (offerIndex: number) => boolean;
+  clearCoupon: () => void;
+  clearCouponMessage: () => void;
 }
 
 export const useCartStore = create<CartState>((set, get) => ({
   items: [],
   isOpen: false,
+  appliedCoupon: null,
+  couponMessage: null,
 
   addItem: (book, options) => {
     const openSidebar = options?.openSidebar !== false;
@@ -31,27 +44,37 @@ export const useCartStore = create<CartState>((set, get) => ({
       if (existing) {
         return {
           items: state.items.map((i) =>
-            i.book.id === book.id ? { ...i, quantity: i.quantity + 1 } : i
+            i.book.id === book.id ? { ...i, quantity: i.quantity + 1 } : i,
           ),
           isOpen: openSidebar ? true : state.isOpen,
+          appliedCoupon: null,
+          couponMessage: null,
         };
       }
       return {
         items: [...state.items, { book, quantity: 1 }],
         isOpen: openSidebar ? true : state.isOpen,
+        appliedCoupon: null,
+        couponMessage: null,
       };
     });
   },
 
   removeItem: (bookId) =>
-    set((state) => ({ items: state.items.filter((i) => i.book.id !== bookId) })),
+    set((state) => ({
+      items: state.items.filter((i) => i.book.id !== bookId),
+      appliedCoupon: null,
+      couponMessage: null,
+    })),
 
   updateQuantity: (bookId, quantity) => {
     if (quantity < 1) return;
     set((state) => ({
       items: state.items.map((i) =>
-        i.book.id === bookId ? { ...i, quantity } : i
+        i.book.id === bookId ? { ...i, quantity } : i,
       ),
+      appliedCoupon: null,
+      couponMessage: null,
     }));
   },
 
@@ -59,5 +82,43 @@ export const useCartStore = create<CartState>((set, get) => ({
   closeCart: () => set({ isOpen: false }),
 
   subtotal: () =>
-    get().items.reduce((sum, i) => sum + i.book.discountedPrice * i.quantity, 0),
+    get().items.reduce(
+      (sum, item) => sum + item.book.discountedPrice * item.quantity,
+      0,
+    ),
+
+  applyCouponCode: (code) => {
+    const cartSubtotal = get().subtotal();
+    const result = tryApplyCouponCode(code, cartSubtotal);
+
+    if ('error' in result) {
+      set({ appliedCoupon: null, couponMessage: result.error });
+      return false;
+    }
+
+    set({
+      appliedCoupon: result.coupon,
+      couponMessage: `${result.coupon.label} — saved Rs.${result.coupon.amount.toLocaleString('en-IN')}`,
+    });
+    return true;
+  },
+
+  applyOfferCoupon: (offerIndex) => {
+    const cartSubtotal = get().subtotal();
+    const result = tryApplyOfferIndex(offerIndex, cartSubtotal);
+
+    if ('error' in result) {
+      set({ appliedCoupon: null, couponMessage: result.error });
+      return false;
+    }
+
+    set({
+      appliedCoupon: result.coupon,
+      couponMessage: `${result.coupon.label} — saved Rs.${result.coupon.amount.toLocaleString('en-IN')}`,
+    });
+    return true;
+  },
+
+  clearCoupon: () => set({ appliedCoupon: null, couponMessage: null }),
+  clearCouponMessage: () => set({ couponMessage: null }),
 }));

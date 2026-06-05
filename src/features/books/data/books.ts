@@ -4,6 +4,7 @@ export const mockBooks: Book[] = Array(8).fill(null).map((_, i) => ({
   id: `${i + 1}`,
   slug: `indian-economy-general-studies-book-${i + 1}`,
   title: "Indian Economy General Studies Book -1",
+  subtitle: "Sriram's IAS Prelims Series",
   author: "Author Name",
   originalPrice: 6999,
   discountedPrice: 5999,

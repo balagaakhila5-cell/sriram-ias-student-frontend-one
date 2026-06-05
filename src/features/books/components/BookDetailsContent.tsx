@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Share2 } from 'lucide-react';
 import { Book } from '../types';
 import FlipBook from '@/components/common/FlipBook';
+import FreeResourcesCourseSlider from '@/components/common/FreeResourcesCourseSlider';
 import { useCartStore } from '@/store/cartStore';
 
 interface BookDetailsContentProps {
@@ -139,53 +140,41 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
             </div>
          </div>
 
-         <div className="mt-12 grid gap-6 xl:grid-cols-[1.55fr_1fr]">
-            <Link
-               href="/current-affairs/daily-practice-questions"
-               className="group relative overflow-hidden rounded-[20px] bg-[#EEF3FF] p-6 shadow-[0_14px_40px_rgba(28,78,141,0.12)] transition hover:shadow-[0_18px_45px_rgba(28,78,141,0.18)]"
-            >
-               <div className="mb-4 flex items-center justify-between gap-3">
-                  <div>
-                     <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#1B4B7A]">
-                        Daily Learning
-                     </p>
-                     <h2 className="mt-3 text-3xl font-black text-[#062A4D]">
-                        Practice daily questions now
-                     </h2>
-                  </div>
+         <div className="book-details-promo-grid mt-10 grid min-w-0 gap-5 lg:grid-cols-[1.35fr_0.65fr] lg:items-start">
+            <div className="relative min-w-0 overflow-hidden rounded-[16px] bg-[#EEF3FF] p-4 shadow-[0_10px_28px_rgba(28,78,141,0.1)]">
+               <div className="mb-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1B4B7A]">
+                     Daily Learning
+                  </p>
+                  <h2 className="mt-2 text-xl font-black leading-tight text-[#062A4D] sm:text-[22px]">
+                     Practice daily questions now
+                  </h2>
                </div>
 
-               <div className="relative h-[230px] overflow-hidden rounded-[20px] bg-[#D5E9FF]">
+               <div className="relative h-[220px] overflow-hidden rounded-[14px] bg-[#D5E9FF] sm:h-[240px]">
                   <Image
                      src="/assets/blogs/timer-image.png"
                      alt="Daily Learning"
                      fill
                      className="object-cover"
+                     sizes="(max-width: 640px) 100vw, 50vw"
                   />
                   <div className="absolute inset-0 bg-black/10" />
-                  <span className="absolute bottom-5 left-1/2 -translate-x-1/2 inline-flex h-[42px] items-center justify-center rounded-full border border-white bg-[#072F50]/80 px-8 text-[15px] font-semibold text-white transition duration-200 hover:bg-white/10">
-                     Explore →
-                  </span>
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
+                     <Link
+                        href="/current-affairs/daily-practice-questions"
+                        className="inline-flex h-[34px] items-center justify-center rounded-full border border-white bg-[#072F50]/80 px-6 text-[13px] font-semibold text-white transition duration-200 hover:bg-white/10"
+                     >
+                        Explore →
+                     </Link>
+                  </div>
                </div>
-            </Link>
+            </div>
 
-            <Link
-               href="/course/2-years-gs-foundation"
-               className="group relative overflow-hidden rounded-[20px] shadow-[0_14px_40px_rgba(28,78,141,0.12)] transition hover:shadow-[0_18px_45px_rgba(28,78,141,0.18)]"
-            >
-               <div className="relative h-[230px] overflow-hidden rounded-[20px] bg-[#F7F8FB]">
-                  <Image
-                     src="/assets/student/course-card.png"
-                     alt="Course Card"
-                     fill
-                     className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/10 transition duration-300 group-hover:bg-black/20" />
-                  <span className="absolute bottom-5 left-1/2 -translate-x-1/2 inline-flex h-[42px] items-center justify-center rounded-full border border-white bg-black/40 px-8 text-[15px] font-semibold text-white transition duration-200 group-hover:bg-white/10">
-                     Enroll Now →
-                  </span>
-               </div>
-            </Link>
+            <FreeResourcesCourseSlider
+               compact
+               className="min-w-0 max-w-[320px] rounded-[16px] shadow-[0_10px_28px_rgba(28,78,141,0.1)] lg:max-w-none lg:justify-self-end"
+            />
          </div>
       </section>
    );

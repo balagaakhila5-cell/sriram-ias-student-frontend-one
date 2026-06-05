@@ -913,7 +913,7 @@ const Header: React.FC = () => {
 
  <div
   ref={centersMenuRef}
-  className={`absolute top-full left-1/2 mt-6 w-[min(700px,calc(100vw-2rem))] h-[265px] -translate-x-1/2 overflow-hidden rounded-[8px] bg-white shadow-[0px_18px_50px_rgba(0,0,0,0.18)] border border-white/40 text-center cursor-default transform origin-top transition-all duration-300 z-50 ${
+  className={`absolute top-full left-1/2 mt-6 w-[min(840px,calc(100vw-2rem))] h-[290px] -translate-x-1/2 overflow-hidden rounded-[8px] bg-white shadow-[0px_18px_50px_rgba(0,0,0,0.18)] border border-white/40 text-center cursor-default transform origin-top transition-all duration-300 z-50 ${
     isCentersOpen
       ? 'scale-100 opacity-100 pointer-events-auto'
       : 'scale-95 opacity-0 pointer-events-none'
@@ -925,52 +925,52 @@ const Header: React.FC = () => {
   {/* Very light overlay only */}
   <div className="absolute inset-0 z-[1] bg-white/10 pointer-events-none" />
 
-  <div className="relative z-10 flex h-full w-full items-center justify-center gap-[28px] px-[34px]">
+  <div className="relative z-10 flex h-full w-full items-center justify-center gap-4 px-4 py-5 sm:gap-6 sm:px-8 overflow-hidden">
     <Link
       href="/centers/delhi"
       onClick={() => setIsCentersOpen(false)}
-      className="group flex h-[190px] w-[195px] items-center justify-center transition-all duration-300 hover:-translate-y-1"
+      className="group flex h-[200px] w-[210px] items-center justify-center transition-all duration-300 hover:-translate-y-1 sm:h-[228px] sm:w-[240px]"
     >
       <Image
         src="/assets/new-delhi-icon.svg"
         alt="New Delhi"
-        width={195}
-        height={190}
+        width={266}
+        height={252}
         priority
         unoptimized
-        className="h-[190px] w-[195px] object-contain transition-transform duration-300 group-hover:scale-[1.04]"
+        className="h-[200px] w-[210px] object-contain transition-transform duration-300 group-hover:scale-[1.04] sm:h-[228px] sm:w-[240px]"
       />
     </Link>
 
     <Link
       href="/centers/hyderabad"
       onClick={() => setIsCentersOpen(false)}
-      className="group flex h-[190px] w-[195px] items-center justify-center transition-all duration-300 hover:-translate-y-1"
+      className="group flex h-[200px] w-[210px] items-center justify-center transition-all duration-300 hover:-translate-y-1 sm:h-[228px] sm:w-[240px]"
     >
       <Image
         src="/assets/hyderabad-icon.svg"
         alt="Hyderabad"
-        width={195}
-        height={190}
+        width={266}
+        height={252}
         priority
         unoptimized
-        className="h-[190px] w-[195px] object-contain transition-transform duration-300 group-hover:scale-[1.04]"
+        className="h-[200px] w-[210px] object-contain transition-transform duration-300 group-hover:scale-[1.04] sm:h-[228px] sm:w-[240px]"
       />
     </Link>
 
     <Link
       href="/centers/pune"
       onClick={() => setIsCentersOpen(false)}
-      className="group flex h-[190px] w-[195px] items-center justify-center transition-all duration-300 hover:-translate-y-1"
+      className="group flex h-[200px] w-[210px] items-center justify-center transition-all duration-300 hover:-translate-y-1 sm:h-[228px] sm:w-[240px]"
     >
       <Image
         src="/assets/pune-icon.svg"
         alt="Pune"
-        width={195}
-        height={190}
+        width={266}
+        height={252}
         priority
         unoptimized
-        className="h-[190px] w-[195px] object-contain transition-transform duration-300 group-hover:scale-[1.04]"
+        className="h-[200px] w-[210px] object-contain transition-transform duration-300 group-hover:scale-[1.04] sm:h-[228px] sm:w-[240px]"
       />
     </Link>
   </div>

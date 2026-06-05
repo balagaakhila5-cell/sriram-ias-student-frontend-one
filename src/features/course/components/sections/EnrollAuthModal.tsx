@@ -1279,7 +1279,7 @@ const DeliveryModeCard: React.FC<DeliveryModeCardProps> = ({
 }) => {
   return (
     <div
-      className={`relative min-h-[385px] rounded-[6px] border px-7 py-7 ${
+      className={`relative rounded-[6px] border px-7 py-7 ${
         popular
           ? 'border-[#096bbb] bg-[#eef5ff] shadow-[0_6px_18px_rgba(9,107,187,0.18)]'
           : 'border-[#c2c9d4] bg-white'
@@ -1374,36 +1374,10 @@ const DeliveryModeCard: React.FC<DeliveryModeCardProps> = ({
         {saving}
       </span>
 
-      <div className="mt-7">
-        <p className="mb-2 text-[14px] font-extrabold tracking-[0.7px] text-[#444]">
-          Latest Coupons
-        </p>
-
-        <div className="flex gap-2">
-          <div className="relative flex-1">
-            <input
-              type="text"
-              placeholder="Enter coupon code"
-              className="h-[36px] w-full rounded-[3px] border border-[#cfd7e3] bg-[#f7f8fb] px-3 pr-8 text-[12px] font-medium outline-none"
-            />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] text-[#1d67a8]">
-              ¤
-            </span>
-          </div>
-
-          <button
-            type="button"
-            className="h-[36px] cursor-pointer rounded-[4px] bg-gradient-to-r from-[#42a9db] to-[#003247] px-4 text-[12px] font-bold text-white"
-          >
-            Apply
-          </button>
-        </div>
-      </div>
-
       <button
         type="button"
         onClick={onEnroll}
-        className="mx-auto mt-5 flex h-[38px] w-full max-w-[220px] cursor-pointer items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#42a9db] to-[#003247] text-[13px] font-extrabold text-white transition hover:scale-[1.02]"
+        className="mx-auto mt-7 flex h-[38px] w-full max-w-[220px] cursor-pointer items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#42a9db] to-[#003247] text-[13px] font-extrabold text-white transition hover:scale-[1.02]"
       >
         <span className="text-[15px]">▣</span>
         Enroll Now

@@ -58,14 +58,21 @@ const CartSidebar: React.FC = () => {
               {items.map(({ book, quantity }) => (
                 <div key={book.id} className="flex gap-3 bg-white rounded-xl p-3 border border-gray-100">
                   {/* Book Image */}
-                  <div className="w-[80px] h-[90px] relative rounded-lg overflow-hidden shrink-0 bg-[#01285A]">
+                  <div className="relative h-[90px] w-[80px] shrink-0 overflow-hidden rounded-lg bg-[#01285A]">
                     <Image src={book.coverImage} alt={book.title} fill className="object-cover" />
                   </div>
 
                   {/* Info */}
                   <div className="flex-1 flex flex-col gap-1 font-['Montserrat']">
                     <div className="flex justify-between items-start gap-2">
-                      <p className="font-bold text-sm text-gray-900 leading-tight line-clamp-2">{book.title}</p>
+                      <div className="min-w-0">
+                        <p className="font-bold text-sm text-gray-900 leading-tight line-clamp-2">{book.title}</p>
+                        {book.subtitle ? (
+                          <p className="mt-0.5 text-xs font-medium text-gray-500 line-clamp-1">
+                            {book.subtitle}
+                          </p>
+                        ) : null}
+                      </div>
                       <button
                         onClick={() => removeItem(book.id)}
                         className="shrink-0 text-gray-400 hover:text-red-500 transition-colors mt-0.5"

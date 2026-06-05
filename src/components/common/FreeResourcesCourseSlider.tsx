@@ -40,12 +40,15 @@ interface FreeResourcesCourseSliderProps {
   className?: string;
   /** Optional wrapper with courses-bg (study-materials / mock-tests sidebar) */
   showBackground?: boolean;
+  /** Smaller card for book details and tight layouts */
+  compact?: boolean;
 }
 
 /** Free Resources sidebar — auto-sliding courses with title + Enroll Now → course page */
 export default function FreeResourcesCourseSlider({
   className = "",
   showBackground = false,
+  compact = false,
 }: FreeResourcesCourseSliderProps) {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -63,7 +66,11 @@ export default function FreeResourcesCourseSlider({
   }, [prefersReducedMotion, slideCount]);
 
   const card = (
-    <div className="free-resources-course-slider course-slider-card fr-course-slider-auto">
+    <div
+      className={`free-resources-course-slider course-slider-card fr-course-slider-auto${
+        compact ? " course-slider-card--compact" : ""
+      }`}
+    >
       <h2 className="course-slider-title">
         <span>Courses</span>
       </h2>

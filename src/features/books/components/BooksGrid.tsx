@@ -26,11 +26,12 @@ type BookGridCardProps = {
 const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
   const router = useRouter();
   const addItem = useCartStore((state) => state.addItem);
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const removeItem = useCartStore((state) => state.removeItem);
   const openCart = useCartStore((state) => state.openCart);
-  const isInCart = useCartStore((state) =>
-    state.items.some((item) => item.book.id === book.id),
+  const cartQuantity = useCartStore(
+    (state) => state.items.find((item) => item.book.id === book.id)?.quantity ?? 0,
   );
-  const [justAdded, setJustAdded] = useState(false);
 
   const popupBook = {
     title: book.title,
@@ -38,23 +39,36 @@ const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
     slug: book.slug,
   };
 
-  const showAddedLabel = justAdded || isInCart;
-
   const handleAddToCart = (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
+    addItem(book, { openSidebar: false });
+    openCart();
+  };
 
-    if (showAddedLabel) {
-      openCart();
+  const handleIncrement = (event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    addItem(book, { openSidebar: false });
+    openCart();
+  };
+
+  const handleOpenCart = (event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    openCart();
+  };
+
+  const handleDecrement = (event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (cartQuantity <= 1) {
+      removeItem(book.id);
       return;
     }
 
-    setJustAdded(true);
-    addItem(book, { openSidebar: false });
-
-    window.setTimeout(() => {
-      openCart();
-    }, 450);
+    updateQuantity(book.id, cartQuantity - 1);
   };
 
   const handleBuyNow = (event: React.MouseEvent) => {
@@ -65,40 +79,46 @@ const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
 
   return (
     <div className="group flex flex-col items-center text-center">
-      <div
-        className="relative w-full aspect-[3/4] mb-6 rounded-xl overflow-hidden shadow-lg group-hover:shadow-2xl transition-shadow duration-300 cursor-pointer"
-        onClick={() => onOpenSample(popupBook)}
-      >
-        <Image
-          src={book.coverImage}
-          alt={book.title}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src =
-              'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMwZTEzMjQiIC8+PC9zdmc+';
-          }}
-        />
-
-        <div className="absolute inset-0 bg-black/40 flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pb-4">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onOpenSample(popupBook);
+      <div className="relative mb-6 w-full">
+        <div
+          className="relative aspect-[3/4] w-full cursor-pointer overflow-hidden rounded-xl shadow-lg transition-shadow duration-300 group-hover:shadow-2xl"
+          onClick={() => onOpenSample(popupBook)}
+        >
+          <Image
+            src={book.coverImage}
+            alt={book.title}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src =
+                'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMwZTEzMjQiIC8+PC9zdmc+';
             }}
-            className="px-5 py-2 rounded-full border-[1.5px] border-white bg-transparent text-white font-[Montserrat] font-semibold text-[16px] hover:bg-[#0F8EDB] hover:border-[#0F8EDB] transition-colors cursor-pointer"
-          >
-            Sample
-          </button>
+          />
+
+          <div className="absolute inset-0 z-20 flex items-end justify-center bg-black/40 pb-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onOpenSample(popupBook);
+              }}
+              className="cursor-pointer rounded-full border-[1.5px] border-white bg-transparent px-5 py-2 font-[Montserrat] text-[16px] font-semibold text-white transition-colors hover:border-[#0F8EDB] hover:bg-[#0F8EDB]"
+            >
+              Sample
+            </button>
+          </div>
         </div>
       </div>
 
-      <h3 className="font-semibold text-[20px] text-gray-900 leading-snug mb-2 font-[Montserrat]">
-        {book.title} <br />
-        Studies Book -1
-      </h3>
+      <div className="mb-2 w-full max-w-[280px] text-center">
+        <h3 className="font-[Montserrat] text-[18px] font-semibold leading-snug text-gray-900 sm:text-[20px]">
+          {book.title}
+        </h3>
+        <p className="mt-1 font-[Montserrat] text-[14px] font-normal leading-snug text-[#666666]">
+          {book.subtitle ?? "Sriram's IAS Prelims Series"}
+        </p>
+      </div>
 
       <div className="flex items-center justify-center gap-2 mt-1">
         <span className="font-bold text-[#4999C6] text-xl">
@@ -126,17 +146,42 @@ const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
           Buy Now
         </button>
 
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          className={`text-xs py-2 rounded-md font-medium transition-all border cursor-pointer ${
-            showAddedLabel
-              ? 'border-[#249EDC] bg-[#EAF7FF] text-[#007BB5]'
-              : 'border-[#249EDC] text-[#007BB5] hover:bg-gray-50'
-          }`}
-        >
-          {showAddedLabel ? 'ADDED TO CART' : 'ADD TO CART'}
-        </button>
+        {cartQuantity > 0 ? (
+          <div className="flex h-[34px] items-center justify-between rounded-md border border-[#249EDC] bg-[#EAF7FF] px-2">
+            <button
+              type="button"
+              onClick={handleDecrement}
+              aria-label="Decrease quantity"
+              className="flex h-7 w-7 items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white cursor-pointer"
+            >
+              −
+            </button>
+            <button
+              type="button"
+              onClick={handleOpenCart}
+              aria-label="View cart"
+              className="min-w-[24px] cursor-pointer text-center text-sm font-bold text-[#007BB5] hover:underline"
+            >
+              {cartQuantity}
+            </button>
+            <button
+              type="button"
+              onClick={handleIncrement}
+              aria-label="Increase quantity"
+              className="flex h-7 w-7 items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white cursor-pointer"
+            >
+              +
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            className="cursor-pointer rounded-md border border-[#249EDC] py-2 text-xs font-medium text-[#007BB5] transition-all hover:bg-gray-50"
+          >
+            ADD TO CART
+          </button>
+        )}
       </div>
     </div>
   );

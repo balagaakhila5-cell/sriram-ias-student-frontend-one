@@ -2,6 +2,7 @@ export interface Book {
   id: string;
   slug: string;
   title: string;
+  subtitle?: string;
   author: string;
   originalPrice: number;
   discountedPrice: number;

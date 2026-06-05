@@ -217,6 +217,16 @@
   50% { opacity: 0.7; transform: scale(1.1); }
 }
 
+@keyframes whatsappBounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-5px) scale(1.04);
+  }
+}
+
   @keyframes geometric-float {
     0% {
       transform: translate(0, 0);
@@ -691,6 +701,60 @@
 
     .free-resources-course-slider .course-slider-image-area {
       height: 260px;
+    }
+  }
+
+  /* Book details — compact course slider beside Daily Learning */
+  .free-resources-course-slider.course-slider-card--compact {
+    padding: 8px;
+    border-radius: 14px;
+    box-shadow: none;
+    max-width: 100%;
+  }
+
+  .free-resources-course-slider.course-slider-card--compact .course-slider-title {
+    margin-bottom: 6px;
+    font-size: 18px;
+  }
+
+  .free-resources-course-slider.course-slider-card--compact .course-slider-image-area {
+    height: 118px;
+    border-radius: 12px;
+  }
+
+  .free-resources-course-slider.course-slider-card--compact .course-slider-overlay {
+    gap: 4px;
+    padding: 8px 8px 24px;
+  }
+
+  .free-resources-course-slider.course-slider-card--compact .course-slider-course-name {
+    font-size: 11px;
+    line-height: 1.15;
+  }
+
+  .free-resources-course-slider.course-slider-card--compact .course-slider-label svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .free-resources-course-slider.course-slider-card--compact .course-slider-enroll {
+    padding: 5px 12px;
+    font-size: 11px;
+  }
+
+  .free-resources-course-slider.course-slider-card--compact .course-dots {
+    bottom: 6px;
+    gap: 4px;
+  }
+
+  .free-resources-course-slider.course-slider-card--compact .course-dots button {
+    width: 5px;
+    height: 5px;
+  }
+
+  @media (min-width: 640px) {
+    .free-resources-course-slider.course-slider-card--compact .course-slider-image-area {
+      height: 128px;
     }
   }
 }

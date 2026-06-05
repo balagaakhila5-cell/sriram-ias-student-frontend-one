@@ -60,14 +60,14 @@ const AboutPage = () => {
         <div className="absolute inset-y-0 right-0 w-[38%] bg-gradient-to-l from-black/20 to-transparent" />
 
         <div className="relative z-10 flex h-full w-full items-center px-6 pt-[70px] sm:px-10 md:px-[72px] md:pt-[90px] lg:px-[82px]">
-          <h1 className="font-['Montserrat'] text-[52px] font-extrabold uppercase leading-[1.15] tracking-[1px] text-white sm:text-[56px] md:text-[58px]">
+          <h1 className="font-['Montserrat'] text-[clamp(36px,8vw,58px)] font-extrabold uppercase leading-[1.15] tracking-[1px] text-white">
             ABOUT <br className="block sm:hidden" />
             <span className="text-[#B8B2FF]">US</span>
           </h1>
         </div>
       </section>
 
-      <section className="about-section-bg relative -mt-[1px] w-full overflow-hidden px-4 pb-[45px] pt-[28px] sm:px-6 md:px-8 lg:px-0 lg:pb-[35px] lg:pt-[30px] lg:min-h-[1120px]">
+      <section className="about-section-bg relative -mt-[1px] w-full overflow-hidden px-4 pb-12 pt-7 sm:px-6 sm:pb-14 sm:pt-8 md:px-8 lg:px-6 lg:pb-[35px] lg:pt-[30px] xl:px-0">
         <div className="side-circle-left pointer-events-none" />
         <div className="side-circle-right pointer-events-none" />
         <div className="bottom-wave-lines pointer-events-none" />
@@ -81,8 +81,8 @@ const AboutPage = () => {
           </div>
         </div>
 
-        <div className="about-main-grid relative z-10 mx-auto grid w-full max-w-[1366px] grid-cols-1 items-start justify-center gap-8 lg:grid-cols-[677px_627px] lg:gap-[20px] lg:px-[20px]">
-          <div className="about-left-cards flex w-full flex-col gap-5 md:gap-[28px]">
+        <div className="about-main-grid relative z-10 mx-auto grid w-full max-w-[1366px] grid-cols-1 items-start justify-center gap-8 md:gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:items-start lg:gap-4 lg:px-3 xl:grid-cols-[minmax(0,677px)_minmax(0,627px)] xl:gap-5 xl:px-5">
+          <div className="about-left-cards flex w-full min-w-0 flex-col gap-5 md:gap-7 lg:max-w-none">
             <div className="about-text-card about-text-card--one rounded-[12px] bg-white px-4 py-5 shadow-[0px_4px_32px_rgba(0,0,0,0.1)] transition-all duration-300 hover:scale-[1.02] hover:bg-[#F7F3ED] hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)] sm:px-5 sm:py-6 md:px-[30px] md:py-[26px]">
               <p className="about-card-text font-['Montserrat'] font-semibold text-[#666666]">
                 SRIRAM&apos;s IAS is one of the premier institutions for
@@ -122,7 +122,7 @@ const AboutPage = () => {
             </div>
           </div>
 
-          <div className="about-circle-network relative mx-auto mt-8 w-full max-w-[340px] shrink-0 overflow-visible sm:max-w-[520px] lg:mt-[170px] lg:max-w-[627px]">
+          <div className="about-circle-network relative mx-auto mt-4 w-full min-w-0 max-w-[340px] shrink-0 overflow-visible sm:max-w-[480px] md:max-w-[560px] lg:mx-0 lg:mt-[48px] lg:max-w-none lg:w-full xl:mt-[170px] xl:max-w-[627px]">
             <div className="about-network-stage relative w-full" style={{ aspectRatio: "627 / 594" }}>
               <div className="about-line about-line-left absolute left-[50%] top-[22%] hidden h-[42%] w-[4px] origin-top -translate-x-1/2 rotate-[32deg] rounded-full bg-gradient-to-b from-[#2D9CDB] via-[#8C87B7] to-[#D86D7B] sm:block" />
               <div className="about-line about-line-right absolute left-[50%] top-[22%] hidden h-[42%] w-[4px] origin-top -translate-x-1/2 rotate-[-32deg] rounded-full bg-gradient-to-b from-[#2D9CDB] via-[#8C87B7] to-[#D86D7B] sm:block" />
@@ -182,29 +182,35 @@ const AboutPage = () => {
           }
 
           .about-left-cards {
-            transform: translateX(42px);
+            transform: none;
             max-width: 677px;
+            width: 100%;
             padding-top: 12px;
+            margin: 0 auto;
           }
 
           .about-circle-network {
-            transform: translateX(45px);
+            transform: none;
+            margin-left: auto;
+            margin-right: auto;
           }
 
           .about-text-card {
             cursor: pointer;
             width: 100%;
             max-width: 677px;
+            margin-left: auto;
+            margin-right: auto;
           }
 
           .about-text-card--one {
-            min-height: 200px;
-            margin-bottom: 8px;
+            min-height: auto;
+            margin-bottom: 0;
           }
 
           .about-text-card--two {
-            min-height: 222px;
-            margin-top: 20px;
+            min-height: auto;
+            margin-top: 0;
           }
 
           .about-text-card--three {
@@ -212,8 +218,8 @@ const AboutPage = () => {
           }
 
           .about-card-text {
-            font-size: 15px;
-            line-height: 30px;
+            font-size: clamp(14px, 2.8vw, 15px);
+            line-height: clamp(26px, 5.2vw, 30px);
             font-weight: 600;
           }
 
@@ -311,6 +317,7 @@ const AboutPage = () => {
             width: 900px;
             height: 900px;
             z-index: 4;
+            pointer-events: none;
           }
 
           .clean-orbit {
@@ -376,49 +383,40 @@ const AboutPage = () => {
 
           @media (min-width: 768px) {
             .about-card-text {
-              font-size: 16px;
-              line-height: 32px;
-            }
-
-            .about-text-card--one {
-              min-height: 220px;
-              margin-bottom: 12px;
-            }
-
-            .about-text-card--two {
-              min-height: 244px;
-              margin-top: 24px;
-            }
-
-            .about-text-card--three {
-              min-height: auto;
+              font-size: clamp(15px, 1.8vw, 16px);
+              line-height: clamp(28px, 3.4vw, 32px);
             }
           }
 
-          @media (min-width: 1024px) {
+          @media (min-width: 1280px) {
             .about-card-text {
               font-size: 17px;
               line-height: 36px;
             }
 
+            .about-left-cards {
+              transform: translateX(42px);
+              margin: 0;
+            }
+
+            .about-circle-network {
+              transform: translateX(45px);
+              width: 627px;
+              max-width: 627px;
+              margin-left: 0;
+              margin-right: 0;
+            }
+
             .about-text-card--one {
-              min-height: 241px;
               margin-bottom: 16px;
             }
 
             .about-text-card--two {
-              min-height: 267px;
               margin-top: 28px;
             }
 
             .about-text-card--three {
-              min-height: auto;
               padding-bottom: 22px !important;
-            }
-
-            .about-circle-network {
-              width: 627px;
-              max-width: 627px;
             }
 
             .about-line-left,
@@ -431,25 +429,93 @@ const AboutPage = () => {
               width: 44%;
               height: 6px;
             }
+
+            .clean-orbit-wrap {
+              left: 235px;
+              top: -650px;
+            }
           }
 
-          @media (max-width: 1279px) {
+          @media (min-width: 1024px) and (max-width: 1279px) {
             .about-left-cards {
-              transform: translateX(24px);
+              transform: none;
+              margin: 0;
+              max-width: 100%;
+              width: 100%;
+              padding-top: 8px;
+            }
+
+            .about-text-card {
+              margin-left: 0;
+              margin-right: 0;
+              max-width: 100%;
+            }
+
+            .about-text-card--one {
+              margin-bottom: 10px;
+            }
+
+            .about-text-card--two {
+              margin-top: 12px;
+            }
+
+            .about-text-card--three {
+              padding-bottom: 18px !important;
+            }
+
+            .about-card-text {
+              font-size: 14px;
+              line-height: 26px;
             }
 
             .about-circle-network {
-              transform: translateX(28px);
+              transform: none;
+              margin-left: 0;
+              margin-right: 0;
+              margin-top: 48px;
+              width: 100%;
+              max-width: 100%;
+            }
+
+            .about-network-stage {
+              max-width: 100%;
             }
 
             .clean-orbit-wrap {
-              left: 120px;
-              top: -640px;
+              left: 60px;
+              top: -620px;
+              transform: scale(0.72);
+              transform-origin: top left;
             }
 
             .bottom-wave-lines {
-              background-size: 140% 1120px;
-              animation: bottomWaveDrift 18s linear infinite;
+              background-size: 130% 1120px;
+            }
+
+            .side-circle-left {
+              left: -100px;
+              width: 220px;
+              height: 220px;
+            }
+
+            .side-circle-right {
+              right: -100px;
+              width: 230px;
+              height: 230px;
+            }
+          }
+
+          @media (max-width: 1279px) {
+            .side-circle-left {
+              left: -120px;
+              width: 260px;
+              height: 260px;
+            }
+
+            .side-circle-right {
+              right: -120px;
+              width: 270px;
+              height: 270px;
             }
           }
 
@@ -460,12 +526,9 @@ const AboutPage = () => {
           }
 
           @media (max-width: 1023px) {
-            .about-left-cards {
-              transform: translateX(0);
-            }
-
+            .about-left-cards,
             .about-circle-network {
-              transform: translateX(0);
+              transform: none;
             }
 
             .clean-orbit-wrap {
@@ -474,7 +537,6 @@ const AboutPage = () => {
 
             .bottom-wave-lines {
               background-size: 160% auto;
-              animation: bottomWaveDrift 18s linear infinite;
             }
 
             .side-circle-left,
@@ -496,20 +558,6 @@ const AboutPage = () => {
             .about-line-right,
             .about-line-middle {
               display: block;
-            }
-          }
-
-          @media (max-width: 420px) {
-            .about-text-card--one {
-              min-height: 188px;
-            }
-
-            .about-text-card--two {
-              min-height: 208px;
-            }
-
-            .about-text-card--three {
-              min-height: auto;
             }
           }
         `}</style>

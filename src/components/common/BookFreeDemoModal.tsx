@@ -116,7 +116,7 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
         onClick={resetAndClose}
       />
 
-      <div className="relative bg-white rounded-[32px] w-full max-w-[1300px] flex overflow-hidden shadow-2xl z-10 font-['Montserrat'] min-h-[600px] max-h-[95vh] overflow-y-auto">
+      <div className="relative z-10 flex max-h-[88vh] w-full max-w-[980px] min-h-0 overflow-hidden overflow-y-auto rounded-[24px] bg-white font-['Montserrat'] shadow-2xl md:max-h-[min(540px,88vh)]">
         <div className="absolute inset-0 pointer-events-none z-0">
           <Image
             src="/assets/free-demo-bgs.png"
@@ -136,22 +136,22 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
           </svg>
         </button>
 
-        <div className="w-[45%] relative z-10 hidden md:flex items-center justify-center pl-4 py-8">
-          <div className="relative w-[380px] h-[480px]">
-            <div className="absolute top-[30px] left-[10px] w-[170px] h-[170px] rounded-[35px] overflow-hidden shadow-lg z-10 bg-gray-200">
+        <div className="relative z-10 hidden w-[40%] items-center justify-center py-5 pl-3 md:flex">
+          <div className="relative h-[340px] w-[280px]">
+            <div className="absolute left-[8px] top-[20px] z-10 h-[130px] w-[130px] overflow-hidden rounded-[28px] bg-gray-200 shadow-lg">
               <Image src="/assets/why-choose/how-will-3.png" alt="Student writing" fill className="object-cover" />
             </div>
-            <div className="absolute top-[20px] right-[-20%] w-[275px] h-[248px] rounded-[132px] overflow-hidden shadow-md z-20 bg-gray-200">
+            <div className="absolute right-[-18%] top-[12px] z-20 h-[200px] w-[220px] overflow-hidden rounded-[110px] bg-gray-200 shadow-md">
               <Image src="/assets/why-choose/how-will-1.png" alt="Students discussing" fill className="object-cover" />
             </div>
-            <div className="absolute bottom-[-10%] left-[30px] w-[400px] h-[300px] rounded-[300px] overflow-hidden shadow-2xl z-30">
+            <div className="absolute bottom-[-6%] left-[24px] z-30 h-[220px] w-[290px] overflow-hidden rounded-[220px] shadow-2xl">
               <Image src="/assets/why-choose/how-will-2.png" alt="Student thinking" fill className="object-cover" />
             </div>
           </div>
         </div>
 
-        <div className="w-full md:w-[55%] p-10 md:p-14 relative z-10 flex flex-col justify-center">
-          <h2 className="text-2xl font-bold text-center mb-8 text-black">
+        <div className="relative z-10 flex w-full flex-col justify-center p-6 md:w-[60%] md:p-8">
+          <h2 className="mb-5 text-center text-xl font-bold text-black md:text-[22px]">
             Book Free Demo
           </h2>
 
@@ -173,21 +173,21 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
               </button>
             </div>
           ) : (
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              <div className="flex flex-col sm:flex-row gap-4">
+            <form className="space-y-3" onSubmit={handleSubmit}>
+              <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="flex-1">
-                  <label className="block text-sm text-[#00000080] font-medium mb-1.5 ml-1">Full Name</label>
+                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Full Name</label>
                   <input
                     type="text"
                     name="name"
                     value={form.name}
                     onChange={handleChange}
                     required
-                    className="w-full bg-[#D7EEF7] border-none rounded-xl px-4 py-3 text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
+                    className="h-9 w-full rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm text-[#00000080] font-medium mb-1.5 ml-1">Mobile Number</label>
+                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Mobile Number</label>
                   <input
                     type="tel"
                     name="phone"
@@ -195,33 +195,33 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                     onChange={handleChange}
                     required
                     pattern="[0-9]{10}"
-                    className="w-full bg-[#D7EEF7] border-none rounded-xl px-4 py-3 text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
+                    className="h-9 w-full rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm text-[#00000080] font-medium mb-1.5 ml-1">Email</label>
+                <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Email</label>
                 <input
                   type="email"
                   name="email"
                   value={form.email}
                   onChange={handleChange}
                   required
-                  className="w-full bg-[#D7EEF7] border-none rounded-xl px-4 py-3 text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
+                  className="h-9 w-full rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
                 />
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="flex-1 min-w-0">
-                  <label className="block text-sm text-[#00000080] font-medium mb-1.5 ml-1">Center</label>
+                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Center</label>
                   <div className="relative">
                     <select
                       name="centerId"
                       value={form.centerId}
                       onChange={handleChange}
                       required
-                      className="w-full bg-[#D7EEF7] border-none rounded-xl px-4 py-3 text-gray-800 outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1897D8]/50"
+                      className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
                     >
                       <option value="" disabled>Choose Center</option>
                       {centers.map((c) => (
@@ -237,14 +237,14 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <label className="block text-sm text-[#00000080] font-medium mb-1.5 ml-1">Category</label>
+                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Category</label>
                   <div className="relative">
                     <select
                       name="categoryId"
                       value={form.categoryId}
                       onChange={handleChange}
                       required
-                      className="w-full bg-[#D7EEF7] border-none rounded-xl px-4 py-3 text-gray-800 outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1897D8]/50"
+                      className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
                     >
                       <option value="" disabled>Choose Category</option>
                       {categories.map((c) => (
@@ -260,9 +260,9 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-[2] min-w-0">
-                  <label className="block text-sm text-[#00000080] font-medium mb-1.5 ml-1">Course</label>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <div className="min-w-0 flex-[2]">
+                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Course</label>
                   <div className="relative">
                     <select
                       name="courseId"
@@ -270,7 +270,7 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                       onChange={handleChange}
                       required
                       disabled={!selectedCenter || !selectedCategory || coursesLoading}
-                      className="w-full bg-[#D7EEF7] border-none rounded-xl px-4 py-3 text-gray-800 outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1897D8]/50 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       <option value="" disabled>
                         {!selectedCenter || !selectedCategory
@@ -293,14 +293,14 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                   </div>
                 </div>
 
-                <div className="flex-1 min-w-0">
-                  <label className="block text-sm text-[#00000080] font-medium mb-1.5 ml-1 truncate">Target Year For UPSC CSE</label>
+                <div className="min-w-0 flex-1">
+                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Target Year</label>
                   <div className="relative">
                     <select
                       name="targetYear"
                       value={form.targetYear}
                       onChange={handleChange}
-                      className="w-full bg-[#D7EEF7] border-none rounded-xl px-4 py-3 text-gray-800 outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1897D8]/50"
+                      className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
                     >
                       <option value="2025">2025</option>
                       <option value="2026">2026</option>
@@ -317,13 +317,13 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
               </div>
 
               <div>
-                <label className="block text-sm text-[#00000080] font-medium mb-1.5 ml-1">What are your expectation from the Course ?</label>
+                <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">What are your expectation from the Course ?</label>
                 <textarea
                   name="expectation"
                   value={form.expectation}
                   onChange={handleChange}
-                  rows={3}
-                  className="w-full bg-[#D7EEF7] border-none rounded-xl px-4 py-3 text-gray-800 outline-none resize-none focus:ring-2 focus:ring-[#1897D8]/50"
+                  rows={2}
+                  className="w-full resize-none rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
                 />
               </div>
 
@@ -333,11 +333,11 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                 </p>
               )}
 
-              <div className="flex justify-center pt-2">
+              <div className="flex justify-center pt-1">
                 <button
                   type="submit"
                   disabled={submit.isPending}
-                  className="text-white font-semibold text-[18px] px-10 py-3.5 rounded-full shadow-[0px_4px_32px_0px_#0000001A] hover:scale-105 hover:shadow-xl transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-70"
+                  className="rounded-full px-8 py-2.5 text-[16px] font-semibold text-white shadow-[0px_4px_32px_0px_#0000001A] transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-70"
                   style={{ background: 'linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)' }}
                 >
                   {submit.isPending ? 'Submitting...' : 'Book Your Session'}

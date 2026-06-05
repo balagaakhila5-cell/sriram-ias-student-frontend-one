@@ -7,11 +7,11 @@ import Footer from '@/components/common/Footer';
 
 const FoundersMessagePage = () => {
   return (
-    <main className="min-h-screen overflow-hidden bg-white">
+    <main className="min-h-screen overflow-x-hidden bg-white">
       <Header />
 
       {/* HERO BANNER */}
-      <section className="relative h-[390px] w-full overflow-hidden">
+      <section className="relative h-[280px] w-full overflow-hidden sm:h-[340px] md:h-[390px]">
         <Image
           src="/assets/about/about-us/About-banner.png"
           alt="Founder's Message Banner"
@@ -22,16 +22,18 @@ const FoundersMessagePage = () => {
         />
 
         <div className="absolute inset-0 bg-black/20" />
-        <div className="absolute inset-y-0 left-0 w-[55%] bg-gradient-to-r from-black/95 via-black/78 to-transparent" />
+        <div className="absolute inset-y-0 left-0 w-[78%] bg-gradient-to-r from-black/95 via-black/75 to-transparent md:w-[55%]" />
         <div className="absolute inset-y-0 right-0 w-[38%] bg-gradient-to-l from-black/20 to-transparent" />
 
-        <div className="relative z-10 flex h-full items-start px-6 pt-[270px] sm:px-10 lg:px-[88px]">
-          <h1 className="founder-hero-heading">FOUNDER&apos;S MESSAGE</h1>
+        <div className="relative z-10 flex h-full w-full min-w-0 items-end px-4 pb-8 sm:items-center sm:px-10 sm:pb-0 lg:px-[88px]">
+          <h1 className="founder-hero-heading max-w-full break-words">
+            FOUNDER&apos;S MESSAGE
+          </h1>
         </div>
       </section>
 
       {/* FOUNDER MESSAGE SECTION */}
-      <section className="founder-section relative min-h-[850px] overflow-hidden bg-[#f8fbff]">
+      <section className="founder-section relative overflow-x-hidden bg-[#f8fbff]">
         <div className="founder-page-bg absolute inset-0" />
 
         <div className="founder-moving-bg">
@@ -44,19 +46,21 @@ const FoundersMessagePage = () => {
           />
         </div>
 
-        <div className="relative z-10 mx-auto w-full max-w-[1440px] px-4 pb-[110px] pt-[62px] sm:px-6 lg:px-8">
+        <div className="relative z-10 mx-auto w-full min-w-0 max-w-[1440px] box-border px-4 pb-16 pt-10 sm:px-6 sm:pb-20 sm:pt-12 lg:px-8 lg:pb-[110px] lg:pt-[62px]">
           <div className="founder-main-grid">
-            {/* LEFT DIALOG BOX — Figma: 802.67 × 742.6 */}
-            <div className="dialog-left-col relative z-20">
+            {/* LEFT — single message box */}
+            <div className="dialog-left-col relative z-20 w-full min-w-0 max-w-full">
               <div className="dialog-box-wrap">
-                <Image
-                  src="/assets/about/founder's-message/dialog-box.png"
-                  alt="Founder message dialog box"
-                  fill
-                  priority
-                  sizes="(max-width: 768px) 100vw, 803px"
-                  className="object-fill"
-                />
+                <div className="dialog-box-bg" aria-hidden>
+                  <Image
+                    src="/assets/about/founder's-message/dialog-box.png"
+                    alt=""
+                    fill
+                    priority
+                    sizes="(max-width: 1023px) 100vw, 803px"
+                    className="object-fill"
+                  />
+                </div>
 
                 <div className="dialog-text-content">
                   <p>
@@ -92,8 +96,8 @@ const FoundersMessagePage = () => {
               </div>
             </div>
 
-            {/* RIGHT FOUNDER — Figma group: 607.5 × 476.1 */}
-            <div className="right-founder-col relative z-30">
+            {/* RIGHT FOUNDER */}
+            <div className="right-founder-col relative z-30 w-full min-w-0 max-w-full">
               <div className="founder-photo-wrap">
                 <Image
                   src="/assets/about/founder's-message/sriram-founder.png"
@@ -119,20 +123,29 @@ const FoundersMessagePage = () => {
       <Footer />
 
       <style jsx>{`
-        /* Figma design tokens */
         .founder-section {
-          --fm-dialog-w: 803px;
-          --fm-dialog-h: 743px;
-          --fm-text-w: 678px;
-          --fm-founder-group-w: 608px;
-          --fm-founder-photo: 460px;
+          --fm-dialog-w: min(803px, 100%);
+          --fm-founder-group-w: min(608px, 100%);
+          --fm-founder-photo: min(290px, 78vw);
           --fm-font-size: 16px;
           --fm-line-height: 26px;
         }
 
+        @media (min-width: 640px) {
+          .founder-section {
+            --fm-founder-photo: min(340px, 72vw);
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .founder-section {
+            --fm-founder-photo: min(460px, 92%);
+          }
+        }
+
         .founder-hero-heading {
-          font-size: clamp(42px, 5vw, 70px);
-          line-height: 1;
+          font-size: clamp(22px, 6.5vw, 70px);
+          line-height: 1.05;
           font-weight: 900;
           letter-spacing: -0.04em;
           text-transform: uppercase;
@@ -180,62 +193,82 @@ const FoundersMessagePage = () => {
           }
         }
 
-        /* Two-column layout — scales proportionally, no collapse until mobile */
         .founder-main-grid {
           display: grid;
-          grid-template-columns: minmax(0, var(--fm-dialog-w)) minmax(
-              0,
-              var(--fm-founder-group-w)
-            );
+          grid-template-columns: 1fr;
           align-items: start;
           justify-content: center;
-          column-gap: clamp(0px, 1.5vw, 12px);
-          width: fit-content;
-          max-width: 100%;
+          row-gap: clamp(28px, 5vw, 48px);
+          width: 100%;
+          max-width: 1411px;
           margin: 0 auto;
+          min-width: 0;
+        }
+
+        @media (min-width: 1024px) {
+          .founder-main-grid {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            column-gap: clamp(12px, 2vw, 28px);
+            row-gap: 0;
+          }
         }
 
         .dialog-left-col {
           width: 100%;
           max-width: var(--fm-dialog-w);
+          justify-self: end;
+          min-width: 0;
         }
 
+        /* Speech bubble — mobile-first: PNG stretches to text height */
         .dialog-box-wrap {
           position: relative;
+          box-sizing: border-box;
           width: 100%;
-          max-width: var(--fm-dialog-w);
-          aspect-ratio: 803 / 743;
-          height: auto;
-          overflow: visible;
+          max-width: 100%;
+          min-width: 0;
+          margin: 0 auto;
+          display: block;
+          overflow: hidden;
         }
 
-        /* Figma text: Montserrat 600, 16px, line-height 26px, width 678px */
-        .dialog-text-content {
+        .dialog-box-bg {
           position: absolute;
           inset: 0;
+          z-index: 1;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+        }
+
+        .dialog-text-content {
+          position: relative;
           z-index: 2;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-start;
+          display: block;
           box-sizing: border-box;
-          width: 84.4%;
-          max-width: var(--fm-text-w);
-          margin: 0 auto;
-          padding: 9.2% 4% 22% 9%;
+          width: 100%;
+          max-width: 100%;
+          min-width: 0;
+          margin: 0;
+          padding: 26px 22px 50px 20px;
           color: #4d5961;
           font-family: 'Montserrat', sans-serif;
-          font-size: var(--fm-font-size);
-          line-height: var(--fm-line-height);
+          font-size: 10.5px;
+          line-height: 16px;
           font-weight: 600;
+          overflow-wrap: break-word;
+          word-break: break-word;
+          hyphens: none;
         }
 
         .dialog-text-content p {
-          margin: 0 0 20px;
-          font-family: 'Montserrat', sans-serif;
+          margin: 0 0 9px;
+          max-width: 100%;
+          font-family: inherit;
           font-size: inherit;
           line-height: inherit;
-          font-weight: 600;
-          color: #4d5961;
+          font-weight: inherit;
+          color: inherit;
         }
 
         .dialog-text-content p:last-child {
@@ -243,9 +276,127 @@ const FoundersMessagePage = () => {
         }
 
         .welcome-text {
-          margin-top: auto !important;
+          margin-top: 10px !important;
           text-align: center;
-          white-space: nowrap;
+          white-space: normal;
+        }
+
+        @media (max-width: 360px) {
+          .dialog-text-content {
+            padding: 24px 18px 46px 18px;
+            font-size: 10px;
+            line-height: 15px;
+          }
+
+          .dialog-text-content p {
+            margin-bottom: 8px;
+          }
+        }
+
+        @media (min-width: 425px) {
+          .dialog-text-content {
+            padding: 28px 24px 54px 22px;
+            font-size: 11px;
+            line-height: 17px;
+          }
+
+          .dialog-text-content p {
+            margin-bottom: 10px;
+          }
+
+          .welcome-text {
+            margin-top: 12px !important;
+          }
+        }
+
+        @media (min-width: 640px) {
+          .dialog-text-content {
+            padding: 32px 28px 60px 26px;
+            font-size: 12px;
+            line-height: 19px;
+          }
+
+          .dialog-text-content p {
+            margin-bottom: 11px;
+          }
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+          .dialog-text-content {
+            padding: 36px 32px 68px 30px;
+            font-size: 13px;
+            line-height: 21px;
+          }
+
+          .founder-moving-bg {
+            display: block;
+            width: 55%;
+            right: 0;
+            opacity: 0.4;
+            animation: none;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .founder-moving-bg {
+            display: none;
+          }
+        }
+
+        /* Desktop: grid overlay, text + PNG share cell */
+        @media (min-width: 1024px) {
+          .dialog-box-wrap {
+            display: grid;
+            grid-template: 1fr / 1fr;
+          }
+
+          .dialog-box-wrap::before {
+            content: '';
+            grid-area: 1 / 1;
+            width: 100%;
+            padding-bottom: 92.53%;
+            visibility: hidden;
+            pointer-events: none;
+          }
+
+          .dialog-box-bg {
+            position: relative;
+            grid-area: 1 / 1;
+            inset: auto;
+            height: 100%;
+            min-height: 100%;
+            align-self: stretch;
+            justify-self: stretch;
+          }
+
+          .dialog-text-content {
+            grid-area: 1 / 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            width: 84.4%;
+            margin: 0 auto;
+            padding: clamp(28px, 9.2%, 68px) clamp(16px, 5%, 32px)
+              clamp(48px, 22%, 164px) clamp(20px, 9%, 72px);
+            font-size: var(--fm-font-size);
+            line-height: var(--fm-line-height);
+          }
+
+          .dialog-text-content p {
+            margin: 0 0 clamp(12px, 2.5%, 20px);
+          }
+
+          .welcome-text {
+            margin-top: auto !important;
+          }
+
+          .founder-moving-bg {
+            display: block;
+            width: 68%;
+            right: -28px;
+            opacity: 0.95;
+            animation: founderBgMove 5s ease-in-out infinite alternate;
+          }
         }
 
         .right-founder-col {
@@ -254,15 +405,24 @@ const FoundersMessagePage = () => {
           max-width: var(--fm-founder-group-w);
           flex-direction: column;
           align-items: center;
-          margin-top: clamp(24px, 4vw, 48px);
+          justify-self: start;
+          margin-top: 0;
+          min-width: 0;
+        }
+
+        @media (min-width: 1024px) {
+          .right-founder-col {
+            margin-top: clamp(24px, 4vw, 48px);
+          }
         }
 
         .founder-photo-wrap {
           position: relative;
           width: min(var(--fm-founder-photo), 100%);
+          max-width: 100%;
           aspect-ratio: 1 / 1;
           height: auto;
-          overflow: visible;
+          overflow: hidden;
         }
 
         .founder-main-img {
@@ -274,6 +434,7 @@ const FoundersMessagePage = () => {
           position: relative;
           z-index: 12;
           width: 100%;
+          max-width: 100%;
           margin-top: clamp(16px, 2.5vw, 28px);
           text-align: center;
         }
@@ -320,100 +481,28 @@ const FoundersMessagePage = () => {
           color: #4f5964;
         }
 
-        /* Scale down proportionally on medium screens — keep 2-column structure */
-        @media (max-width: 1439px) {
+        @media (min-width: 1024px) and (max-width: 1280px) {
           .founder-section {
-            --fm-dialog-w: min(803px, 56vw);
-            --fm-founder-group-w: min(608px, 42vw);
-            --fm-founder-photo: min(460px, 34vw);
-            --fm-text-w: min(678px, 47vw);
-          }
-        }
-
-        @media (max-width: 1100px) {
-          .founder-section {
-            --fm-dialog-w: min(803px, 52vw);
-            --fm-founder-group-w: min(608px, 44vw);
-            --fm-founder-photo: min(400px, 36vw);
-            --fm-font-size: clamp(14px, 1.45vw, 16px);
-            --fm-line-height: clamp(22px, 2.3vw, 26px);
-          }
-
-          .founder-moving-bg {
-            width: 78%;
-            opacity: 0.7;
-          }
-        }
-
-        /* Tablet — still side-by-side, tighter proportions */
-        @media (max-width: 900px) {
-          .founder-section {
-            --fm-dialog-w: 58vw;
-            --fm-founder-group-w: 38vw;
-            --fm-founder-photo: 38vw;
-            --fm-font-size: clamp(12px, 1.6vw, 15px);
-            --fm-line-height: clamp(20px, 2.6vw, 24px);
-          }
-
-          .founder-main-grid {
-            column-gap: 0;
-          }
-
-          .right-founder-col {
-            margin-top: clamp(16px, 3vw, 32px);
-          }
-        }
-
-        /* Mobile — stack vertically, preserve aspect ratios */
-        @media (max-width: 1023px) {
-          .founder-section {
-            --fm-dialog-w: 100%;
-            --fm-founder-group-w: 100%;
-            --fm-founder-photo: min(380px, 78vw);
-            --fm-font-size: clamp(13px, 3.6vw, 16px);
-            --fm-line-height: clamp(21px, 5.8vw, 26px);
-          }
-
-          .founder-main-grid {
-            grid-template-columns: 1fr;
-            row-gap: clamp(24px, 6vw, 40px);
-            width: 100%;
+            --fm-font-size: clamp(12px, 1.1vw, 14px);
+            --fm-line-height: clamp(19px, 1.75vw, 22px);
           }
 
           .dialog-text-content {
             width: 86%;
-            padding: 10% 5% 20% 8%;
+            padding-bottom: clamp(40px, 18%, 120px);
           }
 
           .dialog-text-content p {
-            margin-bottom: clamp(14px, 3.5vw, 20px);
-          }
-
-          .welcome-text {
-            white-space: normal;
+            margin-bottom: clamp(10px, 1.8%, 14px);
           }
 
           .founder-moving-bg {
-            width: 100%;
-            right: -80px;
-            opacity: 0.45;
+            width: 72%;
+            opacity: 0.75;
           }
 
           .right-founder-col {
-            margin-top: 0;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .founder-section {
-            --fm-founder-photo: min(340px, 84vw);
-            --fm-font-size: 13px;
-            --fm-line-height: 21px;
-          }
-
-          .dialog-text-content {
-            width: 88%;
-            padding: 11% 4% 18% 7%;
+            margin-top: clamp(20px, 3vw, 36px);
           }
         }
 
