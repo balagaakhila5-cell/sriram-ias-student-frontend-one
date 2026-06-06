@@ -24,7 +24,16 @@ export function toCartBook(book: HomeSectionBook): Book {
     coverImage: book.image,
     tags: ["UPSC", "Books"],
     summary: book.summary,
-    offers: [],
+    offers: [
+      {
+        price: Math.round(book.discountedPrice * 0.92),
+        description: "Buy for 2,500 or more to get 5% off",
+      },
+      {
+        price: Math.round(book.discountedPrice * 0.9),
+        description: "Buy for 5,000 or more to get 10% off",
+      },
+    ],
   };
 }
 

@@ -118,6 +118,15 @@
     word-break: break-word;
   }
 
+  .download-app-heading {
+    white-space: nowrap;
+    word-break: normal;
+    max-width: none;
+    width: max-content;
+    font-size: clamp(32px, 6vw, 72px);
+    line-height: 1.05;
+  }
+
   .btn-gradient {
     background: var(--btn-gradient);
     box-shadow: var(--btn-shadow);

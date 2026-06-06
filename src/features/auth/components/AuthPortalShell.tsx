@@ -56,7 +56,7 @@ const AuthPortalShell: React.FC<AuthPortalShellProps> = ({
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden font-['Montserrat']" style={{ background: 'radial-gradient(ellipse at top, #0F2030 0%, #050B11 70%)' }}>
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 pt-32 pb-16 md:pt-36 lg:pt-40">
+      <div className="relative z-10 flex min-h-screen items-start justify-center px-4 pb-12 pt-24 md:pt-28 lg:pt-[112px]">
         <div className="relative w-full max-w-[1067px] overflow-hidden rounded-[20px] bg-white shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
           <button
             type="button"
@@ -116,9 +116,11 @@ const AuthPortalShell: React.FC<AuthPortalShellProps> = ({
                     priority
                   />
                 </div>
-                <h2 className="mb-8 text-[16px] font-semibold text-black">
-                  {title}
-                </h2>
+                {title ? (
+                  <h2 className="mb-8 text-[16px] font-semibold text-black">
+                    {title}
+                  </h2>
+                ) : null}
 
                 <div className="flex w-full flex-col gap-5">{children}</div>
               </div>

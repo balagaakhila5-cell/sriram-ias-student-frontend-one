@@ -31,6 +31,7 @@ export interface StudentSignupPayload {
   name: string;
   mobile: string;
   email: string;
+  centerId: string;
 }
 
 export interface SendOtpPayload {

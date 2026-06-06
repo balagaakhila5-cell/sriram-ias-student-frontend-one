@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Mail, Phone } from 'lucide-react';
@@ -8,6 +8,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import useInViewport from '@/hooks/useInViewport';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
+import BookFreeDemoModal from './BookFreeDemoModal';
 
 interface FooterProps {
   /** Skip GSAP animations and parallax — use on portal layouts for faster loads. */
@@ -15,6 +16,7 @@ interface FooterProps {
 }
 
 const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
+  const [isBookDemoOpen, setIsBookDemoOpen] = useState(false);
   const footerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const isInViewport = useInViewport(footerRef, {
@@ -126,7 +128,9 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
         <div className="footer-top-bar flex flex-col lg:flex-row items-center justify-between gap-6 -mt-2">
           <div className="flex flex-wrap items-center gap-4 -mt-3">
             <button
-              className="text-white px-7 py-2.5 rounded-lg font-bold text-[15px] transition-all uppercase tracking-wide"
+              type="button"
+              onClick={() => setIsBookDemoOpen(true)}
+              className="cursor-pointer text-white px-7 py-2.5 rounded-lg font-bold text-[15px] transition-all uppercase tracking-wide"
               style={{
                 background:
                   'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)',
@@ -135,7 +139,8 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
               BOOK A DEMO
             </button>
 
-            <button
+            <Link
+              href="/course/mentorship-program"
               className="text-white px-7 py-2.5 rounded-lg font-bold text-[15px] transition-all tracking-wide"
               style={{
                 background:
@@ -143,7 +148,7 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
               }}
             >
               Book Free 1:1 Mentorship Session
-            </button>
+            </Link>
           </div>
 
           <div className="flex items-center gap-6">
@@ -386,6 +391,11 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
           </div>
         </div>
       </div>
+
+      <BookFreeDemoModal
+        isOpen={isBookDemoOpen}
+        onClose={() => setIsBookDemoOpen(false)}
+      />
     </footer>
   );
 };

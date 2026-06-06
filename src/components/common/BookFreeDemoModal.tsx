@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 
 import {
   useCategories,
@@ -9,6 +11,7 @@ import {
   useCourses,
   useSubmitEnquiry,
 } from '@/features/course/hooks/useCourses';
+import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 
 interface BookFreeDemoModalProps {
   isOpen: boolean;
@@ -55,6 +58,42 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
   }, [form.centerId, form.categoryId]);
 
   const submit = useSubmitEnquiry();
+  const modalRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  useGSAP(
+    () => {
+      if (!modalRef.current || prefersReducedMotion) return;
+
+      gsap.fromTo(
+        '.book-demo-backdrop',
+        { opacity: 0 },
+        { opacity: 1, duration: 0.35, ease: 'power2.out' },
+      );
+
+      gsap.fromTo(
+        '.book-demo-modal-panel',
+        { opacity: 0, scale: 0.95, y: 24 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: 'power3.out', delay: 0.05 },
+      );
+
+      gsap.fromTo(
+        '.book-demo-bg-motion',
+        { xPercent: -5, yPercent: -4, scale: 1.08 },
+        {
+          xPercent: 5,
+          yPercent: 4,
+          scale: 1.16,
+          duration: 5.5,
+          ease: 'sine.inOut',
+          repeat: -1,
+          yoyo: true,
+          force3D: true,
+        },
+      );
+    },
+    { dependencies: [isOpen, prefersReducedMotion], scope: modalRef },
+  );
 
   if (!isOpen) return null;
 
@@ -110,20 +149,22 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div ref={modalRef} className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+        className={`book-demo-backdrop absolute inset-0 bg-black/60 backdrop-blur-sm${prefersReducedMotion ? '' : ' opacity-0'}`}
         onClick={resetAndClose}
       />
 
-      <div className="relative z-10 flex max-h-[88vh] w-full max-w-[980px] min-h-0 overflow-hidden overflow-y-auto rounded-[24px] bg-white font-['Montserrat'] shadow-2xl md:max-h-[min(540px,88vh)]">
-        <div className="absolute inset-0 pointer-events-none z-0">
-          <Image
-            src="/assets/free-demo-bgs.png"
-            alt="Background styling"
-            fill
-            className="object-cover opacity-80"
-          />
+      <div className={`book-demo-modal-panel relative z-10 flex max-h-[92vh] w-full max-w-[980px] min-h-0 overflow-hidden overflow-y-auto rounded-[24px] bg-white font-['Montserrat'] shadow-2xl md:max-h-[min(600px,92vh)]${prefersReducedMotion ? '' : ' opacity-0'}`}>
+        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+          <div className="book-demo-bg-motion absolute left-[-12%] top-[-12%] h-[124%] w-[124%] will-change-transform">
+            <Image
+              src="/assets/free-demo-bgs.png"
+              alt="Background styling"
+              fill
+              className="object-cover opacity-80"
+            />
+          </div>
         </div>
 
         <button
@@ -136,15 +177,15 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
           </svg>
         </button>
 
-        <div className="relative z-10 hidden w-[40%] items-center justify-center py-5 pl-3 md:flex">
-          <div className="relative h-[340px] w-[280px]">
-            <div className="absolute left-[8px] top-[20px] z-10 h-[130px] w-[130px] overflow-hidden rounded-[28px] bg-gray-200 shadow-lg">
+        <div className="relative z-10 hidden w-[40%] items-center justify-center py-6 pl-4 md:flex">
+          <div className="relative h-[430px] w-[320px]">
+            <div className="absolute left-[8px] top-[16px] z-10 h-[165px] w-[150px] overflow-hidden rounded-[32px] bg-gray-200 shadow-lg">
               <Image src="/assets/why-choose/how-will-3.png" alt="Student writing" fill className="object-cover" />
             </div>
-            <div className="absolute right-[-18%] top-[12px] z-20 h-[200px] w-[220px] overflow-hidden rounded-[110px] bg-gray-200 shadow-md">
+            <div className="absolute right-[-16%] top-[8px] z-20 h-[255px] w-[250px] overflow-hidden rounded-[125px] bg-gray-200 shadow-md">
               <Image src="/assets/why-choose/how-will-1.png" alt="Students discussing" fill className="object-cover" />
             </div>
-            <div className="absolute bottom-[-6%] left-[24px] z-30 h-[220px] w-[290px] overflow-hidden rounded-[220px] shadow-2xl">
+            <div className="absolute bottom-[-4%] left-[20px] z-30 h-[280px] w-[320px] overflow-hidden rounded-[240px] shadow-2xl">
               <Image src="/assets/why-choose/how-will-2.png" alt="Student thinking" fill className="object-cover" />
             </div>
           </div>

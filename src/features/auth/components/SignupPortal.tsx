@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import AuthPortalShell, { UserRole } from "./AuthPortalShell";
-import OtpModal from "./OtpModal";
-import { useSendOtp, useStudentSignup } from "../hooks/useAuth";
+import AuthSuccessView from "./AuthSuccessView";
+import OtpVerificationForm from "./OtpVerificationForm";
+import { setMockStudentAuth } from "../utils/mockAuth";
 
 const mobileRegex = /^\d{10}$/;
 
@@ -19,15 +20,15 @@ const studentSchema = z.object({
 });
 
 type StudentSignupForm = z.infer<typeof studentSchema>;
+type SignupScreen = "form" | "otp" | "success";
 
 const SignupPortal: React.FC = () => {
   const router = useRouter();
 
   const [role, setRole] = useState<UserRole>("student");
-  const [otpEmail, setOtpEmail] = useState<string | null>(null);
-
-  const signup = useStudentSignup();
-  const sendOtp = useSendOtp();
+  const [screen, setScreen] = useState<SignupScreen>("form");
+  const [signupData, setSignupData] = useState<StudentSignupForm | null>(null);
+  const [otpError, setOtpError] = useState<string | null>(null);
 
   const form = useForm<StudentSignupForm>({
     resolver: zodResolver(studentSchema),
@@ -38,34 +39,51 @@ const SignupPortal: React.FC = () => {
     },
   });
 
+  useEffect(() => {
+    if (screen !== "success") return;
+
+    const timer = window.setTimeout(() => {
+      router.push("/");
+    }, 1600);
+
+    return () => window.clearTimeout(timer);
+  }, [screen, router]);
+
   const onSubmit = form.handleSubmit((values) => {
     if (role !== "student") return;
-
-    const payload = {
-      name: values.name,
-      email: values.email,
-      mobile: values.mobile,
-    };
-
-    signup.mutate(payload, {
-      onSuccess: () => {
-        sendOtp.mutate(
-          { email: values.email },
-          {
-            onSuccess: () => {
-              setOtpEmail(values.email);
-            },
-          }
-        );
-      },
-    });
+    setSignupData(values);
+    setOtpError(null);
+    setScreen("otp");
   });
+
+  const handleOtpVerify = (otp: string) => {
+    if (otp.length !== 4) {
+      setOtpError("Please enter 4 digit OTP");
+      return;
+    }
+
+    if (!signupData) return;
+
+    setMockStudentAuth({
+      name: signupData.name,
+      email: signupData.email,
+      mobile: signupData.mobile,
+    });
+    setOtpError(null);
+    setScreen("success");
+  };
+
+  const handleRoleChange = (newRole: UserRole) => {
+    setRole(newRole);
+    setScreen("form");
+    setOtpError(null);
+  };
 
   if (role !== "student") {
     return (
       <AuthPortalShell
         activeRole={role}
-        onRoleChange={setRole}
+        onRoleChange={handleRoleChange}
         loginMode={false}
         title="Account Signup"
       >
@@ -87,71 +105,83 @@ const SignupPortal: React.FC = () => {
     );
   }
 
+  if (screen === "success") {
+    return (
+      <AuthPortalShell
+        activeRole={role}
+        onRoleChange={handleRoleChange}
+        loginMode={false}
+        title=""
+      >
+        <AuthSuccessView title="Sign Up Successful" />
+      </AuthPortalShell>
+    );
+  }
+
+  const title =
+    screen === "otp" ? "OTP Verification" : "Create your account";
+
   return (
     <AuthPortalShell
       activeRole={role}
-      onRoleChange={setRole}
+      onRoleChange={handleRoleChange}
       loginMode={false}
-      title="Create your account"
+      title={title}
     >
-      <form onSubmit={onSubmit} className="flex w-full flex-col gap-5">
-        <Field
-          label="Full Name"
-          type="text"
-          error={form.formState.errors.name?.message}
-          {...form.register("name")}
-        />
+      {screen === "form" ? (
+        <form onSubmit={onSubmit} className="flex w-full flex-col gap-5">
+          <Field
+            label="Full Name"
+            type="text"
+            error={form.formState.errors.name?.message}
+            {...form.register("name")}
+          />
 
-        <Field
-          label="Email ID"
-          type="email"
-          error={form.formState.errors.email?.message}
-          {...form.register("email")}
-        />
+          <Field
+            label="Email ID"
+            type="email"
+            error={form.formState.errors.email?.message}
+            {...form.register("email")}
+          />
 
-        <Field
-          label="Mobile Number"
-          type="tel"
-          error={form.formState.errors.mobile?.message}
-          {...form.register("mobile")}
-        />
+          <Field
+            label="Mobile Number"
+            type="tel"
+            error={form.formState.errors.mobile?.message}
+            {...form.register("mobile")}
+          />
 
-        {(signup.error || sendOtp.error) && (
-          <p className="text-sm text-red-600">
-            {signup.error?.message ?? sendOtp.error?.message}
-          </p>
-        )}
-
-        <button
-          type="submit"
-          disabled={signup.isPending || sendOtp.isPending}
-          className="mt-4 flex h-[43px] w-full items-center justify-center rounded-[24px] text-[18px] font-medium text-white shadow-[0px_4px_20px_rgba(0,103,156,0.35)] transition-opacity hover:opacity-95 disabled:opacity-60"
-          style={{
-            background:
-              "linear-gradient(90deg, rgba(24,151,216,0.85) 0%, #021C29 100%)",
-          }}
-        >
-          {signup.isPending || sendOtp.isPending ? "Please wait..." : "Sign Up"}
-        </button>
-
-        <p className="mt-2 text-center text-[13px] text-gray-600">
-          Already have an account?{" "}
-          <Link
-            href="/login"
-            className="font-semibold text-[#0A73B7] hover:underline"
+          <button
+            type="submit"
+            className="mt-4 flex h-[43px] w-full items-center justify-center rounded-[24px] text-[18px] font-medium text-white shadow-[0px_4px_20px_rgba(0,103,156,0.35)] transition-opacity hover:opacity-95"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(24,151,216,0.85) 0%, #021C29 100%)",
+            }}
           >
-            Log in
-          </Link>
-        </p>
-      </form>
+            Sign Up
+          </button>
 
-      <OtpModal
-        open={otpEmail !== null}
-        email={otpEmail ?? ""}
-        onClose={() => setOtpEmail(null)}
-        onSuccess={() => router.push("/")}
-        title="Verify your email"
-      />
+          <p className="mt-2 text-center text-[13px] text-gray-600">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="font-semibold text-[#0A73B7] hover:underline"
+            >
+              Log in
+            </Link>
+          </p>
+        </form>
+      ) : (
+        <OtpVerificationForm
+          onVerify={handleOtpVerify}
+          onBack={() => {
+            setScreen("form");
+            setOtpError(null);
+          }}
+          error={otpError ?? undefined}
+        />
+      )}
     </AuthPortalShell>
   );
 };
@@ -174,7 +204,7 @@ const Field = React.forwardRef<HTMLInputElement, FieldProps>(
 
       {error && <span className="text-xs text-red-600">{error}</span>}
     </label>
-  )
+  ),
 );
 
 Field.displayName = "Field";

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useVerifyOtp } from "../hooks/useAuth";
+import { useVerifyOtp, useVerifyStudentSignup } from "../hooks/useAuth";
 
 interface OtpModalProps {
   open: boolean;
@@ -9,6 +9,7 @@ interface OtpModalProps {
   onClose: () => void;
   onSuccess?: () => void;
   title?: string;
+  flow?: "login" | "signup";
 }
 
 const OtpModal: React.FC<OtpModalProps> = ({
@@ -17,9 +18,12 @@ const OtpModal: React.FC<OtpModalProps> = ({
   onClose,
   onSuccess,
   title = "Enter OTP",
+  flow = "login",
 }) => {
   const [otp, setOtp] = useState("");
-  const verify = useVerifyOtp();
+  const verifyLogin = useVerifyOtp();
+  const verifySignup = useVerifyStudentSignup();
+  const verify = flow === "signup" ? verifySignup : verifyLogin;
 
   if (!open) return null;
 
@@ -58,7 +62,11 @@ const OtpModal: React.FC<OtpModalProps> = ({
           />
 
           {verify.isError && (
-            <p className="text-sm text-red-600">{verify.error.message}</p>
+            <p className="text-sm text-red-600">
+              {verify.error.message.toLowerCase().includes("deactivated")
+                ? "This account already exists. Please log in instead."
+                : verify.error.message}
+            </p>
           )}
 
           <div className="flex gap-3">

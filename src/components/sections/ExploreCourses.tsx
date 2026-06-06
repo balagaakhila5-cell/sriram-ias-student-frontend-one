@@ -247,12 +247,12 @@ const ExploreCourses: React.FC = () => {
 
           <div
             ref={tabsRef}
-          className="scrollbar-hide relative flex w-full overflow-x-auto rounded-full bg-[#F5F5F5] p-2"
+            className="relative grid w-full grid-cols-6 rounded-full bg-[#F5F5F5] p-2"
           >
             <div
               ref={indicatorRef}
-            className="btn-gradient absolute bottom-2 left-0 top-2 z-0 rounded-full shadow-md will-change-transform"
-            style={{ width: '0px' }}
+              className="btn-gradient absolute bottom-2 left-0 top-2 z-0 rounded-full shadow-md will-change-transform"
+              style={{ width: '0px' }}
             />
 
             {tabs.map((tab, idx) => (
@@ -263,10 +263,10 @@ const ExploreCourses: React.FC = () => {
                   buttonRefs.current[idx] = el;
                 }}
                 onClick={() => handleTabClick(tab, idx)}
-              className={`relative z-10 shrink-0 rounded-full px-4 py-3 text-center text-sm font-medium transition-colors duration-300 sm:px-6 md:px-8 md:text-base ${
+                className={`relative z-10 min-w-0 rounded-full px-1 py-3 text-center text-[11px] font-medium leading-tight transition-colors duration-300 sm:px-2 sm:text-sm md:px-3 md:text-base ${
                   activeTab === tab
-                  ? 'text-white'
-                  : 'text-gray-500 hover:text-gray-800'
+                    ? 'text-white'
+                    : 'text-gray-500 hover:text-gray-800'
                 }`}
               >
                 {tab}

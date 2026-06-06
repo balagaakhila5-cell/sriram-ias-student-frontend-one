@@ -11,6 +11,14 @@ import { useHomepage } from '@/features/homepage/hooks/useHomepage';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const FEATURED_YOUTUBE_VIDEO = {
+  id: 'featured-youtube-8aLYn6C9n8I',
+  title: 'Sriram IAS',
+  image: 'https://img.youtube.com/vi/8aLYn6C9n8I/hqdefault.jpg',
+  author: 'Sriram IAS',
+  url: 'https://youtu.be/8aLYn6C9n8I?si=GRscIaL1AhLEtOoD',
+};
+
 const AppAndVideos: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
@@ -23,21 +31,30 @@ const AppAndVideos: React.FC = () => {
 
   const fallbackVideos = [
     { id: 1, title: 'The Hindu Daily Current Affairs', image: '/assets/youtube_video_image.png', author: 'Saurabh Tripathi', url: undefined },
-    { id: 2, title: 'History NCERT (6-12)', image: '/assets/youtube_video_image.png', author: 'Team Sriram', url: undefined },
+    FEATURED_YOUTUBE_VIDEO,
     { id: 3, title: 'Complete Modern History', image: '/assets/youtube_video_image.png', author: 'Expert Faculty', url: undefined },
   ];
 
   const videos = useMemo(() => {
     const apiVideos = section7?.videos ?? [];
-    if (apiVideos.length === 0) return fallbackVideos;
+    const mapped =
+      apiVideos.length === 0
+        ? fallbackVideos
+        : apiVideos.map((video, index) => ({
+            id: video._id ?? `video-${index}`,
+            title: `Video ${index + 1}`,
+            image: video.videoThumbnail ?? '/assets/youtube_video_image.png',
+            author: 'Sriram IAS',
+            url: video.videoUrl,
+          }));
 
-    return apiVideos.map((video, index) => ({
-      id: video._id ?? `video-${index}`,
-      title: `Video ${index + 1}`,
-      image: video.videoThumbnail ?? '/assets/youtube_video_image.png',
-      author: 'Sriram IAS',
-      url: video.videoUrl,
-    }));
+    const hasFeaturedVideo = mapped.some((video) => video.url?.includes('8aLYn6C9n8I'));
+    if (hasFeaturedVideo) return mapped;
+
+    const withFeatured = [...mapped];
+    const insertAt = Math.min(1, withFeatured.length);
+    withFeatured.splice(insertAt, 0, FEATURED_YOUTUBE_VIDEO);
+    return withFeatured;
   }, [section7]);
 
   useEffect(() => {
@@ -197,10 +214,10 @@ const AppAndVideos: React.FC = () => {
         <div className="absolute bottom-10 right-[-10%] w-[40vw] h-[40vw] bg-[#E16165]/5 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="relative w-full">
-          <div className="max-w-[1440px] mx-auto px-6 md:px-16 grid grid-cols-1 lg:grid-cols-2 items-center">
+          <div className="max-w-[1440px] mx-auto px-6 md:px-16 grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] items-center">
             {/* LEFT CONTENT */}
-            <div className="space-y-8 z-10">
-              <h2 className="global-section-heading">
+            <div className="space-y-8 z-10 min-w-0 overflow-visible">
+              <h2 className="global-section-heading download-app-heading">
                 Download Our App
               </h2>
 

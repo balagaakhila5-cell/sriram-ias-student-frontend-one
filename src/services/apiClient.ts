@@ -84,11 +84,30 @@ apiClient.interceptors.response.use(
       error.message ??
       "Something went wrong. Please try again.";
 
+    const responseData = error.response?.data;
+    let fieldErrors: Record<string, string[]> | undefined;
+
+    if (responseData && typeof responseData === "object") {
+      const rawErrors = (responseData as Record<string, unknown>).errors;
+      if (Array.isArray(rawErrors)) {
+        fieldErrors = rawErrors.reduce<Record<string, string[]>>((acc, item) => {
+          if (!item || typeof item !== "object") return acc;
+          const field = (item as Record<string, unknown>).field;
+          const fieldMessage = (item as Record<string, unknown>).message;
+          if (typeof field === "string" && typeof fieldMessage === "string") {
+            acc[field] = [fieldMessage];
+          }
+          return acc;
+        }, {});
+      }
+    }
+
     return Promise.reject(
       new ApiError({
         message,
         status,
         code: error.code,
+        errors: fieldErrors,
       }),
     );
   },

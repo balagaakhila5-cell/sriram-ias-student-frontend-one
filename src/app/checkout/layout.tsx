@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Image from 'next/image';
 import Footer from '@/components/common/Footer';
 
@@ -29,7 +29,9 @@ export default function CheckoutLayout({ children }: { children: React.ReactNode
 
       {/* Page content — fills remaining space */}
       <main className="flex-1 flex flex-col">
-        {children}
+        <Suspense fallback={<div className="flex-1 bg-[#F4F7FB]" />}>
+          {children}
+        </Suspense>
       </main>
 
       <Footer />

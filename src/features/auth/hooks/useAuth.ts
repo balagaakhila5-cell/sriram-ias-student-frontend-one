@@ -42,6 +42,15 @@ export function useParentLoginRequest() {
   });
 }
 
+export function useVerifyStudentSignup() {
+  const setAuth = useAuthStore((s) => s.setAuth);
+  return useMutation({
+    mutationFn: (payload: VerifyOtpPayload) =>
+      authService.verifyStudentSignup(payload),
+    onSuccess: (data) => setAuth(data.user, data.token),
+  });
+}
+
 export function useVerifyOtp() {
   const setAuth = useAuthStore((s) => s.setAuth);
   return useMutation({

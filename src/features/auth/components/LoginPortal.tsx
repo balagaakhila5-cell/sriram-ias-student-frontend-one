@@ -1,18 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import AuthPortalShell, { UserRole } from "./AuthPortalShell";
+import AuthSuccessView from "./AuthSuccessView";
+import OtpVerificationForm from "./OtpVerificationForm";
 import OtpModal from "./OtpModal";
-import {
-  useParentLoginRequest,
-  useSendOtp,
-  useStaffLogin,
-} from "../hooks/useAuth";
+import { useParentLoginRequest, useStaffLogin } from "../hooks/useAuth";
+import { setMockStudentAuth } from "../utils/mockAuth";
+
+type StudentScreen = "form" | "otp" | "success";
 
 const titleByRole: Record<UserRole, string> = {
   student: "Login Portal",
@@ -44,10 +45,18 @@ const LoginPortal: React.FC = () => {
   const router = useRouter();
   const [role, setRole] = useState<UserRole>("student");
   const [otpEmail, setOtpEmail] = useState<string | null>(null);
+  const [studentScreen, setStudentScreen] = useState<StudentScreen>("form");
+  const [studentIdentifier, setStudentIdentifier] = useState("");
+  const [otpError, setOtpError] = useState<string | null>(null);
 
-  const sendOtp = useSendOtp();
   const parentLoginRequest = useParentLoginRequest();
   const staffLogin = useStaffLogin("staff");
+
+  const handleRoleChange = (newRole: UserRole) => {
+    setRole(newRole);
+    setStudentScreen("form");
+    setOtpError(null);
+  };
 
   const studentForm = useForm({
     resolver: zodResolver(studentSchema),
@@ -62,15 +71,37 @@ const LoginPortal: React.FC = () => {
     defaultValues: { email: "", password: "" },
   });
 
-  const onStudentSubmit = studentForm.handleSubmit(({ identifier }) => {
-    const isEmail = identifier.includes("@");
-    sendOtp.mutate(
-      isEmail ? { email: identifier } : { mobile: identifier },
-      {
-        onSuccess: () => setOtpEmail(isEmail ? identifier : identifier),
-      },
-    );
+  useEffect(() => {
+    if (studentScreen !== "success") return;
+
+    const timer = window.setTimeout(() => {
+      router.push("/");
+    }, 1600);
+
+    return () => window.clearTimeout(timer);
+  }, [studentScreen, router]);
+
+  const onStudentSubmit = studentForm.handleSubmit((values) => {
+    setStudentIdentifier(values.identifier.trim());
+    setOtpError(null);
+    setStudentScreen("otp");
   });
+
+  const handleStudentOtpVerify = (otp: string) => {
+    if (otp.length !== 4) {
+      setOtpError("Please enter 4 digit OTP");
+      return;
+    }
+
+    setMockStudentAuth({
+      name: studentIdentifier.includes("@")
+        ? studentIdentifier.split("@")[0]
+        : "Student",
+      identifier: studentIdentifier,
+    });
+    setOtpError(null);
+    setStudentScreen("success");
+  };
 
   const onParentSubmit = parentForm.handleSubmit((values) => {
     parentLoginRequest.mutate(values, {
@@ -85,29 +116,43 @@ const LoginPortal: React.FC = () => {
   });
 
   const mutationError =
-    role === "student"
-      ? sendOtp.error?.message
-      : role === "parent"
-        ? parentLoginRequest.error?.message
-        : staffLogin.error?.message;
+    role === "parent"
+      ? parentLoginRequest.error?.message
+      : role === "faculty"
+        ? staffLogin.error?.message
+        : null;
 
   const isPending =
-    role === "student"
-      ? sendOtp.isPending
-      : role === "parent"
-        ? parentLoginRequest.isPending
-        : staffLogin.isPending;
+    role === "parent"
+      ? parentLoginRequest.isPending
+      : role === "faculty"
+        ? staffLogin.isPending
+        : false;
 
-  const buttonLabel = role === "faculty" ? "Login" : "Send OTP";
+  if (role === "student" && studentScreen === "success") {
+    return (
+      <AuthPortalShell
+        activeRole={role}
+        onRoleChange={handleRoleChange}
+        loginMode
+        title=""
+      >
+        <AuthSuccessView title="Log In Successful" />
+      </AuthPortalShell>
+    );
+  }
+
+  const studentTitle =
+    studentScreen === "otp" ? "OTP Verification" : titleByRole.student;
 
   return (
     <AuthPortalShell
       activeRole={role}
-      onRoleChange={setRole}
+      onRoleChange={handleRoleChange}
       loginMode
-      title={titleByRole[role]}
+      title={role === "student" ? studentTitle : titleByRole[role]}
     >
-      {role === "student" && (
+      {role === "student" && studentScreen === "form" && (
         <form onSubmit={onStudentSubmit} className="flex w-full flex-col gap-5">
           <Field
             label="Mobile Number / Email Id"
@@ -115,12 +160,22 @@ const LoginPortal: React.FC = () => {
             error={studentForm.formState.errors.identifier?.message}
             {...studentForm.register("identifier")}
           />
-          {mutationError && <ErrorText>{mutationError}</ErrorText>}
           <SubmitButton loading={isPending} variant="student">
-            {buttonLabel}
+            Send OTP
           </SubmitButton>
           <StudentSignupFooter />
         </form>
+      )}
+
+      {role === "student" && studentScreen === "otp" && (
+        <OtpVerificationForm
+          onVerify={handleStudentOtpVerify}
+          onBack={() => {
+            setStudentScreen("form");
+            setOtpError(null);
+          }}
+          error={otpError ?? undefined}
+        />
       )}
 
       {role === "parent" && (
@@ -138,7 +193,7 @@ const LoginPortal: React.FC = () => {
             {...parentForm.register("parentEmail")}
           />
           {mutationError && <ErrorText>{mutationError}</ErrorText>}
-          <SubmitButton loading={isPending}>{buttonLabel}</SubmitButton>
+          <SubmitButton loading={isPending}>Send OTP</SubmitButton>
         </form>
       )}
 
@@ -157,7 +212,7 @@ const LoginPortal: React.FC = () => {
             {...facultyForm.register("password")}
           />
           {mutationError && <ErrorText>{mutationError}</ErrorText>}
-          <SubmitButton loading={isPending}>{buttonLabel}</SubmitButton>
+          <SubmitButton loading={isPending}>Login</SubmitButton>
         </form>
       )}
 

@@ -16,6 +16,7 @@ import {
   toCartBook,
   type HomeSectionBook,
 } from '@/features/homepage/utils/homepageBook';
+import BooksCartButton from '@/features/books/components/BooksCartButton';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -46,12 +47,33 @@ type BookCardProps = {
 const BookCard: React.FC<BookCardProps> = ({ book }) => {
   const router = useRouter();
   const addItem = useCartStore((state) => state.addItem);
-  const isInCart = useCartStore((state) =>
-    state.items.some((item) => item.book.id === book.id),
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const removeItem = useCartStore((state) => state.removeItem);
+  const cartBook = toCartBook(book);
+  const cartQuantity = useCartStore(
+    (state) =>
+      state.items.find((item) => item.book.id === book.id)?.quantity ?? 0,
   );
 
   const handleAddToCart = () => {
-    addItem(toCartBook(book));
+    addItem(cartBook, { openSidebar: false });
+  };
+
+  const handleIncrement = () => {
+    addItem(cartBook, { openSidebar: false });
+  };
+
+  const handleDecrement = () => {
+    if (cartQuantity <= 1) {
+      removeItem(book.id);
+      return;
+    }
+
+    updateQuantity(book.id, cartQuantity - 1);
+  };
+
+  const handleGoToCheckout = () => {
+    router.push('/checkout');
   };
 
   return (
@@ -102,18 +124,42 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
           Buy Now
         </button>
 
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          disabled={isInCart}
-          className={`text-xs py-2 rounded-md font-medium transition-all border ${
-            isInCart
-              ? 'border-[#249EDC] bg-[#EAF7FF] text-[#007BB5] cursor-default'
-              : 'border-[#249EDC] text-[#007BB5] hover:bg-gray-50 cursor-pointer'
-          }`}
-        >
-          {isInCart ? 'ADDED TO CART' : 'ADD TO CART'}
-        </button>
+        {cartQuantity > 0 ? (
+          <div className="flex h-[34px] items-center justify-between rounded-md border border-[#249EDC] bg-[#EAF7FF] px-2">
+            <button
+              type="button"
+              onClick={handleDecrement}
+              aria-label="Decrease quantity"
+              className="flex h-7 w-7 items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white cursor-pointer"
+            >
+              −
+            </button>
+            <button
+              type="button"
+              onClick={handleGoToCheckout}
+              aria-label="Go to checkout"
+              className="min-w-[24px] cursor-pointer text-center text-sm font-bold text-[#007BB5] hover:underline"
+            >
+              {cartQuantity}
+            </button>
+            <button
+              type="button"
+              onClick={handleIncrement}
+              aria-label="Increase quantity"
+              className="flex h-7 w-7 items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white cursor-pointer"
+            >
+              +
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            className="cursor-pointer rounded-md border border-[#249EDC] py-2 text-xs font-medium text-[#007BB5] transition-all hover:bg-gray-50"
+          >
+            ADD TO CART
+          </button>
+        )}
       </div>
     </div>
   );
@@ -221,6 +267,7 @@ const BuyBooks: React.FC = () => {
   return (
     <section ref={sectionRef} className="relative z-30 py-18 overflow-hidden">
       <DiamondLayer config={heroDiamondConfig} />
+      <BooksCartButton />
 
       <div className="relative z-10 mx-auto w-full overflow-hidden">
         <div className="buy-books-header text-center">

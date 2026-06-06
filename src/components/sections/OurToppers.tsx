@@ -102,7 +102,7 @@ const OurToppers: React.FC = () => {
     'Driven by a commitment to success, we stand behind our toppers with constant support, expert mentorship, and personalized attention.';
 
   return (
-    <section className="relative w-full min-h-[680px] flex flex-col items-center pt-0 pb-6 overflow-hidden">
+    <section className="relative w-full min-h-[520px] flex flex-col items-center pt-0 pb-0 overflow-hidden">
       {/* BACKGROUND */}
       <img
         src="/assets/our-centers/centers-bg.png"
@@ -111,51 +111,46 @@ const OurToppers: React.FC = () => {
       />
 
       <div className="relative z-10 w-full max-w-[1900px] flex flex-col items-center">
-        {/* HEADING - MOVED DOWN */}
-        <div className="text-center mt-10">
+        <div className="text-center mt-8 md:mt-10 pt-2">
           <h2 className="global-section-heading">{heading}</h2>
         </div>
 
-        <p className="text-center text-[#2A3742] font-medium max-w-[800px] mx-auto text-[14px] md:text-[16px] leading-relaxed px-6">
+        <p className="text-center text-[#2A3742] font-medium max-w-[800px] mx-auto text-[13px] md:text-[15px] leading-snug px-6 mb-0">
           {subTitle}
         </p>
 
-        {/* SCROLL - IMAGES + TEXT MOVED DOWN LITTLE BIT */}
-        <div className="w-full mt-4 overflow-hidden -translate-y-2">
-          <div className="toppers-track flex gap-0 w-max">
+        <div className="w-full -mt-2 overflow-hidden -translate-y-14 md:-translate-y-16">
+          <div className="toppers-track flex w-max gap-0">
             {duplicatedToppers.map((topper, idx) => (
               <div
                 key={`${topper.name}-${idx}`}
-                className="w-[245px] md:w-[265px] lg:w-[285px] flex shrink-0 flex-col items-center overflow-visible"
+                className="-ml-20 md:-ml-24 lg:-ml-28 first:ml-0 flex shrink-0 flex-col items-center overflow-visible"
               >
                 {/* IMAGE AREA */}
-                <div className="relative h-[405px] w-full flex items-end justify-center overflow-hidden">
+                <div className="relative flex h-[360px] w-full items-end justify-center overflow-visible sm:h-[400px] lg:h-[440px]">
                   <img
                     src={`/assets/ourtoppers/_originals/${topper.img}`}
                     alt={topper.name}
                     loading={idx < 5 ? 'eager' : 'lazy'}
-                    className="block max-w-[115%] w-full h-auto select-none pointer-events-none object-contain object-bottom"
+                    className="block h-[360px] w-auto max-w-[400px] select-none object-contain object-bottom pointer-events-none sm:h-[400px] sm:max-w-[440px] lg:h-[460px] lg:max-w-[500px]"
                     style={{
-                      maxHeight: '400px',
-                      objectFit: 'contain',
-                      objectPosition: 'bottom center',
-                      transform: `translateY(${topper.y - 18}px) scale(${topper.scale})`,
+                      transform: `translateY(${topper.y - 28}px) scale(${topper.scale})`,
                       transformOrigin: 'bottom center',
                     }}
                   />
                 </div>
 
                 {/* TEXT AREA */}
-                <div className="mt-1 flex min-h-[110px] flex-col items-center justify-start text-center relative z-20 -translate-y-1 px-1">
-                  <h3 className="text-white text-[15px] md:text-[16px] font-bold leading-tight min-h-[24px] max-w-full truncate">
+                <div className="-mt-3 flex min-h-[76px] flex-col items-center justify-start text-center relative z-20 px-1 sm:-mt-4">
+                  <h3 className="text-white text-[14px] md:text-[15px] font-bold leading-tight min-h-[20px] max-w-full truncate">
                     {topper.name}
                   </h3>
 
-                  <span className="bg-[#FF9800] text-white text-[14px] font-semibold py-2 px-6 rounded-full mt-2">
+                  <span className="bg-[#FF9800] text-white text-[13px] font-semibold py-1.5 px-5 rounded-full mt-1.5">
                     {topper.rank}
                   </span>
 
-                  <span className="text-white text-[13px] opacity-90 text-center mt-1">
+                  <span className="text-white text-[12px] opacity-90 text-center mt-2.5">
                     {topper.description}
                   </span>
                 </div>

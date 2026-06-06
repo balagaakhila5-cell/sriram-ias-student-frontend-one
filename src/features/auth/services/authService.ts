@@ -56,6 +56,16 @@ export const authService = {
     return data;
   },
 
+  verifyStudentSignup: async (
+    payload: VerifyOtpPayload,
+  ): Promise<AuthResponse> => {
+    const { data } = await apiClient.post<AuthResponse>(
+      "/api/auth/verify-student-signup",
+      payload,
+    );
+    return data;
+  },
+
   parentLoginRequest: async (
     payload: ParentLoginRequestPayload,
   ): Promise<OtpRequestResponse> => {
