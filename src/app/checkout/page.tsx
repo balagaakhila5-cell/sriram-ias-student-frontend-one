@@ -1,22 +1,28 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import React, { useMemo, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCartStore } from '@/store/cartStore';
 import PaymentReceiptSuccess from '@/components/common/PaymentReceiptSuccess';
 import CheckoutOrderSummary from '@/features/books/components/CheckoutOrderSummary';
-import CheckoutPaymentMethods, {
-  type PaymentMethod,
-} from '@/features/books/components/CheckoutPaymentMethods';
+import CheckoutPaymentModal from '@/features/books/components/CheckoutPaymentModal';
+import { type PaymentMethod } from '@/features/books/components/CheckoutPaymentMethods';
 import {
   buildReceiptData,
   formatPaymentDate,
   generateReceiptNo,
 } from '@/features/books/utils/checkoutPayment';
+import {
+  type CheckoutFormErrors,
+  type CheckoutFormFields,
+  hasCheckoutFormErrors,
+  validateCheckoutForm,
+} from '@/features/books/utils/checkoutFormValidation';
 
-type CheckoutStep = 'cart' | 'payment';
+const brandGradient = 'bg-gradient-to-r from-[rgba(24,151,216,0.8)] to-[#021C29]';
 
 export default function CheckoutPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const items = useCartStore((state) => state.items);
   const appliedCoupon = useCartStore((state) => state.appliedCoupon);
@@ -25,28 +31,21 @@ export default function CheckoutPage() {
   const applyOfferCoupon = useCartStore((state) => state.applyOfferCoupon);
   const clearCouponMessage = useCartStore((state) => state.clearCouponMessage);
 
-  const [step, setStep] = useState<CheckoutStep>('cart');
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [coupon, setCoupon] = useState('');
   const [method, setMethod] = useState<PaymentMethod>('qr');
   const [upiId, setUpiId] = useState('');
   const [card, setCard] = useState({ number: '', name: '', expiry: '', cvv: '' });
   const [showReceipt, setShowReceipt] = useState(false);
   const [receiptNo] = useState(generateReceiptNo);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<CheckoutFormFields>({
     name: '',
     mobile: '',
     email: '',
     address: '',
     pincode: '',
   });
-
-  const brandGradient = 'bg-gradient-to-r from-[rgba(24,151,216,0.8)] to-[#021C29]';
-
-  useEffect(() => {
-    if (searchParams.get('step') === 'payment' && items.length > 0) {
-      setStep('payment');
-    }
-  }, [searchParams, items.length]);
+  const [errors, setErrors] = useState<CheckoutFormErrors>({});
 
   const receiptData = useMemo(() => {
     const orderTitles = items.map(({ book }) => book.title).join(', ');
@@ -57,8 +56,27 @@ export default function CheckoutPage() {
     );
   }, [appliedCoupon?.amount, items, subtotal]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    const field = name as keyof CheckoutFormFields;
+
+    let nextValue = value;
+    if (field === 'mobile') {
+      nextValue = value.replace(/\D/g, '').slice(0, 10);
+    } else if (field === 'pincode') {
+      nextValue = value.replace(/\D/g, '').slice(0, 6);
+    }
+
+    setForm((f) => ({ ...f, [field]: nextValue }));
+
+    if (errors[field]) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+  };
 
   const handleCouponInputChange = (value: string) => {
     setCoupon(value);
@@ -73,13 +91,25 @@ export default function CheckoutPage() {
     applyOfferCoupon(offerIndex);
   };
 
-  const handleProceedToPayment = () => {
+  const openPaymentModal = () => {
     if (items.length === 0) return;
-    setStep('payment');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const validationErrors = validateCheckoutForm(form);
+    setErrors(validationErrors);
+    if (hasCheckoutFormErrors(validationErrors)) return;
+
+    setIsPaymentModalOpen(true);
+  };
+
+  const closePaymentModal = () => {
+    setIsPaymentModalOpen(false);
+    if (searchParams.get('step') === 'payment') {
+      router.replace('/checkout', { scroll: false });
+    }
   };
 
   const handlePayment = () => {
+    setIsPaymentModalOpen(false);
     setShowReceipt(true);
   };
 
@@ -97,124 +127,117 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div
-      className={`flex flex-1 flex-col items-stretch ${
-        step === 'cart' ? 'lg:flex-row' : ''
-      }`}
-    >
-      <div
-        className={`flex flex-1 ${
-          step === 'payment'
-            ? 'items-center justify-center bg-[#F4F7FB] px-6 py-12 md:px-10'
-            : 'items-start justify-center bg-white px-6 py-12 md:px-16'
-        }`}
-      >
-        <div
-          className={`w-full rounded-xl bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] md:p-10 ${
-            step === 'payment' ? 'max-w-[560px]' : 'flex-1'
-          }`}
-        >
-          {step === 'cart' ? (
-            <>
-              <h2 className="mb-6 text-[16px] font-semibold text-[#374151]">
-                Contact Details
-              </h2>
+    <>
+      <div className="flex flex-1 flex-col items-stretch lg:flex-row">
+        <div className="flex flex-1 items-start justify-center bg-white px-6 py-12 md:px-16">
+          <div className="w-full flex-1 rounded-xl bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] md:p-10">
+            <h2 className="mb-6 text-[16px] font-semibold text-[#374151]">
+              Contact Details
+            </h2>
 
-              <div className="mb-4 flex flex-col gap-4 sm:flex-row">
+            <div className="mb-4 flex flex-col gap-4 sm:flex-row">
+              <div className="flex flex-1 flex-col">
                 <input
                   name="name"
                   value={form.name}
                   onChange={handleChange}
                   placeholder="Name *"
-                  className="flex-1 rounded-lg bg-[#EBF0FF] px-4 py-3.5 text-center text-sm font-medium text-gray-700 outline-none placeholder:text-gray-400"
+                  className="w-full rounded-lg bg-[#EBF0FF] px-4 py-3.5 text-center text-sm font-medium text-gray-700 outline-none placeholder:text-gray-400"
                 />
+                {errors.name ? (
+                  <p className="mt-1.5 text-left text-xs font-medium text-red-600">{errors.name}</p>
+                ) : null}
+              </div>
+              <div className="flex flex-1 flex-col">
                 <input
                   name="mobile"
                   value={form.mobile}
                   onChange={handleChange}
+                  inputMode="numeric"
+                  maxLength={10}
                   placeholder="Mobile Number *"
-                  className="flex-1 rounded-lg bg-[#EBF0FF] px-4 py-3.5 text-center text-sm font-medium text-gray-700 outline-none placeholder:text-gray-400"
+                  className="w-full rounded-lg bg-[#EBF0FF] px-4 py-3.5 text-center text-sm font-medium text-gray-700 outline-none placeholder:text-gray-400"
                 />
+                {errors.mobile ? (
+                  <p className="mt-1.5 text-left text-xs font-medium text-red-600">{errors.mobile}</p>
+                ) : null}
               </div>
+            </div>
 
+            <div className="mb-8">
               <input
                 name="email"
                 value={form.email}
                 onChange={handleChange}
+                type="email"
                 placeholder="Email Address *"
-                className="mb-8 w-full rounded-lg bg-[#EBF0FF] px-4 py-3.5 text-center text-sm font-medium text-gray-700 outline-none placeholder:text-gray-400"
+                className="w-full rounded-lg bg-[#EBF0FF] px-4 py-3.5 text-center text-sm font-medium text-gray-700 outline-none placeholder:text-gray-400"
               />
+              {errors.email ? (
+                <p className="mt-1.5 text-left text-xs font-medium text-red-600">{errors.email}</p>
+              ) : null}
+            </div>
 
-              <h2 className="mb-6 text-[16px] font-semibold text-[#374151]">
-                Address Details
-              </h2>
+            <h2 className="mb-6 text-[16px] font-semibold text-[#374151]">
+              Address Details
+            </h2>
 
+            <div className="mb-4">
               <textarea
                 name="address"
                 value={form.address}
                 onChange={handleChange}
                 placeholder="Enter Address *"
                 rows={3}
-                className="mb-4 w-full resize-none rounded-lg bg-[#EBF0FF] px-4 py-3.5 text-center text-sm font-medium text-gray-700 outline-none placeholder:text-gray-400"
+                className="w-full resize-none rounded-lg bg-[#EBF0FF] px-4 py-3.5 text-center text-sm font-medium text-gray-700 outline-none placeholder:text-gray-400"
               />
+              {errors.address ? (
+                <p className="mt-1.5 text-left text-xs font-medium text-red-600">{errors.address}</p>
+              ) : null}
+            </div>
 
+            <div className="mb-8">
               <input
                 name="pincode"
                 value={form.pincode}
                 onChange={handleChange}
+                inputMode="numeric"
+                maxLength={6}
                 placeholder="Pin code *"
-                className="mb-8 w-full rounded-lg bg-[#EBF0FF] px-4 py-3.5 text-center text-sm font-medium text-gray-700 outline-none placeholder:text-gray-400"
+                className="w-full rounded-lg bg-[#EBF0FF] px-4 py-3.5 text-center text-sm font-medium text-gray-700 outline-none placeholder:text-gray-400"
               />
+              {errors.pincode ? (
+                <p className="mt-1.5 text-left text-xs font-medium text-red-600">{errors.pincode}</p>
+              ) : null}
+            </div>
 
-              <div className="flex items-center justify-end gap-6">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setForm({
-                      name: '',
-                      mobile: '',
-                      email: '',
-                      address: '',
-                      pincode: '',
-                    })
-                  }
-                  className="text-[18px] font-semibold text-[#1F4D9D] hover:underline"
-                >
-                  Reset
-                </button>
-                <button
-                  type="button"
-                  className={`${brandGradient} rounded-lg px-9 py-2 text-[18px] font-semibold text-white shadow-md transition-opacity hover:opacity-90`}
-                >
-                  Save
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <CheckoutPaymentMethods
-                method={method}
-                onMethodChange={setMethod}
-                upiId={upiId}
-                onUpiIdChange={setUpiId}
-                card={card}
-                onCardChange={setCard}
-              />
-
+            <div className="flex items-center justify-end gap-6">
               <button
                 type="button"
-                onClick={handlePayment}
-                disabled={items.length === 0}
-                className={`mt-8 w-full rounded-full py-3.5 ${brandGradient} text-[15px] font-bold text-white shadow-lg transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40`}
+                onClick={() => {
+                  setForm({
+                    name: '',
+                    mobile: '',
+                    email: '',
+                    address: '',
+                    pincode: '',
+                  });
+                  setErrors({});
+                }}
+                className="text-[18px] font-semibold text-[#1F4D9D] hover:underline"
               >
-                Pay
+                Reset
               </button>
-            </>
-          )}
+              <button
+                type="button"
+                className={`${brandGradient} rounded-lg px-9 py-2 text-[18px] font-semibold text-white shadow-md transition-opacity hover:opacity-90`}
+              >
+                Save
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
 
-      {step === 'cart' && (
         <CheckoutOrderSummary
           variant="cart"
           couponInput={coupon}
@@ -225,7 +248,7 @@ export default function CheckoutPage() {
             <div className="mt-2 flex shrink-0 justify-center px-8 pb-12">
               <button
                 type="button"
-                onClick={handleProceedToPayment}
+                onClick={openPaymentModal}
                 disabled={items.length === 0}
                 className={`w-[80%] rounded-full py-3.5 ${brandGradient} text-[15px] font-bold text-white shadow-lg transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40`}
               >
@@ -234,7 +257,20 @@ export default function CheckoutPage() {
             </div>
           }
         />
-      )}
-    </div>
+      </div>
+
+      <CheckoutPaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={closePaymentModal}
+        method={method}
+        onMethodChange={setMethod}
+        upiId={upiId}
+        onUpiIdChange={setUpiId}
+        card={card}
+        onCardChange={setCard}
+        onPay={handlePayment}
+        payDisabled={items.length === 0}
+      />
+    </>
   );
 }

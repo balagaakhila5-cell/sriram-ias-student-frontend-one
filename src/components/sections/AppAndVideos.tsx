@@ -8,6 +8,8 @@ import { useGSAP } from '@gsap/react';
 import useInViewport from '@/hooks/useInViewport';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import { useHomepage } from '@/features/homepage/hooks/useHomepage';
+import YouTubeVideoModal from '@/components/common/YouTubeVideoModal';
+import { getYouTubeVideoId } from '@/lib/youtube';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -22,6 +24,7 @@ const FEATURED_YOUTUBE_VIDEO = {
 const AppAndVideos: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
+  const [playingVideo, setPlayingVideo] = useState<{ videoId: string; title: string } | null>(null);
   const touchStartX = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const isInViewport = useInViewport(sectionRef, { threshold: 0.2 });
@@ -63,10 +66,13 @@ const AppAndVideos: React.FC = () => {
     }
   }, [activeIndex, videos.length]);
 
-  const openVideo = (url?: string) => {
-    if (!url) return;
-    window.open(url, '_blank', 'noopener,noreferrer');
+  const openVideo = (url?: string, title?: string) => {
+    const videoId = getYouTubeVideoId(url);
+    if (!videoId) return;
+    setPlayingVideo({ videoId, title: title ?? 'YouTube video' });
   };
+
+  const closeVideo = () => setPlayingVideo(null);
 
   useEffect(() => {
     if (isPaused || prefersReducedMotion || !isInViewport) {
@@ -431,7 +437,7 @@ const AppAndVideos: React.FC = () => {
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          openVideo(video.url);
+                          openVideo(video.url, video.title);
                         }}
                         className="relative w-20 h-20 flex items-center justify-center"
                         aria-label="Play video"
@@ -476,6 +482,13 @@ const AppAndVideos: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <YouTubeVideoModal
+        isOpen={playingVideo !== null}
+        videoId={playingVideo?.videoId ?? null}
+        title={playingVideo?.title}
+        onClose={closeVideo}
+      />
     </section>
   );
 };
