@@ -25,7 +25,7 @@ const FoundersMessagePage = () => {
         <div className="absolute inset-y-0 left-0 w-[78%] bg-gradient-to-r from-black/95 via-black/75 to-transparent md:w-[55%]" />
         <div className="absolute inset-y-0 right-0 w-[38%] bg-gradient-to-l from-black/20 to-transparent" />
 
-        <div className="relative z-10 flex h-full w-full min-w-0 items-end px-4 pb-8 sm:items-center sm:px-10 sm:pb-0 lg:px-[88px]">
+        <div className="relative z-10 flex h-full w-full min-w-0 items-end px-4 pb-3 sm:px-10 sm:pb-8 md:pb-10 lg:px-[88px] lg:pb-12">
           <h1 className="founder-hero-heading max-w-full break-words">
             FOUNDER&apos;S MESSAGE
           </h1>
