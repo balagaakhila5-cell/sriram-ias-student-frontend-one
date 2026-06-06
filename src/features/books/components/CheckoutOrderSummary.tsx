@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { useCartStore } from '@/store/cartStore';
+import { mockBooks } from '../data/books';
 import {
   bookDiscountTotal,
   originalTotal,
@@ -39,6 +40,7 @@ export default function CheckoutOrderSummary({
   const cartSubtotal = subtotal();
   const finalTotal = Math.max(cartSubtotal - couponDiscount + deliveryCharge, 0);
   const firstItem = items[0];
+  const offerBook = firstItem?.book ?? mockBooks[0];
 
   return (
     <div className="flex w-full flex-1 shrink-0 flex-col bg-[#F4F7FB]">
@@ -93,45 +95,43 @@ export default function CheckoutOrderSummary({
           </div>
         ) : null}
 
-        {firstItem ? (
-          <div className="flex gap-3">
-            {firstItem.book.offers.map((offer, index) => {
-              const isActive = appliedCoupon?.code === (index === 0 ? 'OFFER5' : 'OFFER10');
+        <div className="flex gap-3 pb-6">
+          {offerBook.offers.map((offer, index) => {
+            const isActive = appliedCoupon?.code === (index === 0 ? 'OFFER5' : 'OFFER10');
 
-              return (
-                <div
-                  key={offer.description}
-                  className={`relative flex flex-1 flex-col rounded-xl bg-white p-5 shadow-sm ${
-                    isActive ? 'ring-2 ring-[#249EDC]' : ''
-                  }`}
-                >
-                  <div className="mb-3 flex items-center gap-3">
-                    <div
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${brandGradient}`}
-                    >
-                      <span className="text-[15px] font-bold text-white">%</span>
-                    </div>
-                    <p className="text-[16px] font-bold leading-snug text-black">
-                      Get this for {offer.price.toLocaleString('en-IN')} /-
-                    </p>
+            return (
+              <div
+                key={offer.description}
+                className={`relative flex flex-1 flex-col rounded-xl bg-white p-5 shadow-sm ${
+                  isActive ? 'ring-2 ring-[#249EDC]' : ''
+                }`}
+              >
+                <div className="mb-3 flex items-center gap-3">
+                  <div
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${brandGradient}`}
+                  >
+                    <span className="text-[15px] font-bold text-white">%</span>
                   </div>
-                  <p className="mb-4 text-[14px] font-semibold leading-tight text-[#00000099]">
-                    {offer.description}
+                  <p className="text-[16px] font-bold leading-snug text-black">
+                    Get this for {offer.price.toLocaleString('en-IN')} /-
                   </p>
-                  <div className="absolute bottom-[-15%] right-5 mt-auto flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => onApplyOffer(index)}
-                      className={`${brandGradient} rounded-lg px-6 py-2 text-[14px] font-semibold text-white shadow-sm transition-opacity hover:opacity-90`}
-                    >
-                      {isActive ? 'Applied' : 'Apply'}
-                    </button>
-                  </div>
                 </div>
-              );
-            })}
-          </div>
-        ) : null}
+                <p className="mb-4 text-[14px] font-semibold leading-tight text-[#00000099]">
+                  {offer.description}
+                </p>
+                <div className="mt-auto flex justify-end pt-2">
+                  <button
+                    type="button"
+                    onClick={() => onApplyOffer(index)}
+                    className={`${brandGradient} rounded-lg px-6 py-2 text-[14px] font-semibold text-white shadow-sm transition-opacity hover:opacity-90`}
+                  >
+                    {isActive ? 'Applied' : 'Apply'}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
 
         <div className="mt-4 flex flex-col gap-4 font-['Montserrat']">
           <PriceLine label="Total Price" value={`Rs.${totalOriginal.toLocaleString('en-IN')}`} />

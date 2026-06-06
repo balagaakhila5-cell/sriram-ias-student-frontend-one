@@ -2,6 +2,9 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Footer from '@/components/common/Footer';
+import PaymentReceiptSuccess, {
+  type PaymentReceiptRow,
+} from '@/components/common/PaymentReceiptSuccess';
 
 type Screen =
   | 'login'
@@ -22,11 +25,18 @@ const LOGO_40 = '/assets/40_years_experience.png';
 const LOGO_MAIN = "/assets/SRIRAM's-IAS.png";
 const SCANNER_IMAGE = '/assets/course/scanner.png';
 const GRADUATE_ICON = '/assets/course/graduate-icon.png';
-const CONFIRMED_BAG = '/assets/course/confirmed-bag.png';
 
 const ORIGINAL_PRICE = 6999;
 const COURSE_PRICE = 5999;
 const GST_PERCENT = 18;
+
+function formatPaymentDate() {
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = now.getFullYear();
+  return `${day}-${month}-${year}`;
+}
 
 const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
   const [screen, setScreen] = useState<Screen>('login');
@@ -69,6 +79,23 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
   // Receipt/invoice amount: GST added here only
   const gstAmount = Math.round((bookPriceAfterDiscount * GST_PERCENT) / 100);
   const finalPayAmount = bookPriceAfterDiscount + gstAmount;
+
+  const enrollReceiptRows: PaymentReceiptRow[] = [
+    { label: 'Book Price', amount: COURSE_PRICE },
+  ];
+
+  if (discountAmount > 0) {
+    enrollReceiptRows.push({
+      label: 'Coupon Discount',
+      amount: discountAmount,
+      isDiscount: true,
+    });
+  }
+
+  enrollReceiptRows.push(
+    { label: 'Price After Discount', amount: bookPriceAfterDiscount },
+    { label: `GST (${GST_PERCENT}%)`, amount: gstAmount },
+  );
 
   useEffect(() => {
     if (open) {
@@ -294,190 +321,6 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
     setTimeout(() => {
       setScreen('receipt');
     }, 900);
-  };
-
-  const handleDownloadInvoice = () => {
-    const receiptWindow = window.open('', '_blank', 'width=900,height=900');
-
-    if (!receiptWindow) {
-      showPopup('error', 'Please allow popup to download invoice');
-      return;
-    }
-
-    const paidStudentName = studentName || 'Student';
-
-    receiptWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Invoice</title>
-          <style>
-            body {
-              margin: 0;
-              padding: 30px;
-              font-family: Arial, sans-serif;
-              background: #ffffff;
-              color: #000000;
-            }
-
-            .receipt {
-              max-width: 850px;
-              margin: 0 auto;
-              border: 1px solid #e5e7eb;
-            }
-
-            .header {
-              background: #1e3f6d;
-              color: white;
-              padding: 20px 35px;
-              display: flex;
-              justify-content: space-between;
-            }
-
-            .header h2,
-            .header p {
-              margin: 0;
-            }
-
-            .info {
-              padding: 30px 35px;
-              display: grid;
-              grid-template-columns: repeat(3, 1fr);
-              gap: 25px;
-            }
-
-            .full {
-              grid-column: span 3;
-            }
-
-            .label {
-              color: #777;
-              font-size: 15px;
-              margin-bottom: 8px;
-            }
-
-            .value {
-              font-weight: 700;
-              font-size: 16px;
-            }
-
-            .row-head,
-            .total {
-              background: #e7eefc;
-              display: grid;
-              grid-template-columns: 1fr 180px;
-              padding: 16px 35px;
-              font-weight: 700;
-            }
-
-            .rows {
-              display: grid;
-              grid-template-columns: 1fr 180px;
-              gap: 16px;
-              padding: 24px 35px;
-              font-weight: 700;
-            }
-
-            .right {
-              text-align: right;
-            }
-
-            .note {
-              text-align: center;
-              padding: 22px;
-              font-size: 15px;
-            }
-
-            @media print {
-              body {
-                padding: 0;
-              }
-
-              .receipt {
-                border: none;
-              }
-            }
-          </style>
-        </head>
-
-        <body>
-          <div class="receipt">
-            <div class="header">
-              <div>
-                <h2>Financial Receipt</h2>
-                <p style="margin-top: 8px; font-weight: 700;">SRIRAM’s IAS</p>
-              </div>
-              <div>
-                <p style="opacity: 0.75;">Receipt No :</p>
-                <p style="margin-top: 8px; font-weight: 700;">SI-090-6536</p>
-              </div>
-            </div>
-
-            <div class="info">
-              <div>
-                <div class="label">Student Name</div>
-                <div class="value">${paidStudentName}</div>
-              </div>
-
-              <div>
-                <div class="label">Student ID</div>
-                <div class="value">STU767678</div>
-              </div>
-
-              <div>
-                <div class="label">Payment Date</div>
-                <div class="value">13-06-2026</div>
-              </div>
-
-              <div class="full">
-                <div class="label">Course Name</div>
-                <div class="value">2 Year General Studies Foundation Course</div>
-              </div>
-            </div>
-
-            <div class="row-head">
-              <span>Description</span>
-              <span class="right">Amount</span>
-            </div>
-
-            <div class="rows">
-              <span>Book Price</span>
-              <span class="right">Rs.${formatPrice(COURSE_PRICE)}</span>
-
-              ${
-                discountAmount > 0
-                  ? `<span>Coupon Discount</span><span class="right">- Rs.${formatPrice(discountAmount)}</span>`
-                  : ''
-              }
-
-              <span>Price After Discount</span>
-              <span class="right">Rs.${formatPrice(bookPriceAfterDiscount)}</span>
-
-              <span>GST (18%)</span>
-              <span class="right">Rs.${formatPrice(gstAmount)}</span>
-            </div>
-
-            <div class="total">
-              <span>Total Paid</span>
-              <span class="right">Rs.${formatPrice(finalPayAmount)}</span>
-            </div>
-
-            <div class="note">
-              This is a system generated document and does not require<br />
-              signature
-            </div>
-          </div>
-
-          <script>
-            window.onload = function () {
-              window.print();
-            };
-          </script>
-        </body>
-      </html>
-    `);
-
-    receiptWindow.document.close();
   };
 
   const paymentMethods = [
@@ -1071,158 +914,17 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
         )}
 
         {screen === 'receipt' && (
-          <div
-            className="h-screen w-full overflow-y-auto"
-            style={{
-              background:
-                'linear-gradient(115deg, #fffdf8 0%, #fff9ed 45%, #fff2d5 100%)',
-            }}
-          >
-            <div className="min-h-[calc(100vh-300px)] px-10 py-12">
-              <div className="mx-auto grid max-w-[1180px] grid-cols-1 items-center gap-10 lg:grid-cols-[0.75fr_1.25fr]">
-                <div className="flex flex-col items-start">
-                  <img
-                    src={CONFIRMED_BAG}
-                    alt="Admission Confirmed"
-                    className="mb-10 h-[180px] w-[240px] object-contain"
-                  />
-
-                  <div className="mb-8 flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#00b814] text-[28px] text-[#00b814]">
-                      ✓
-                    </div>
-
-                    <h1 className="text-[28px] font-extrabold text-[#00b814]">
-                      Admission Confirmed
-                    </h1>
-                  </div>
-
-                  <p className="max-w-[520px] text-[17px] font-medium leading-[1.6] text-black">
-                    Thank you for the payment&nbsp; the order of service and the
-                    payment is received and you will get a confirmation mail
-                  </p>
-
-                  <div className="mt-9 flex gap-5">
-                    <button
-                      type="button"
-                      onClick={handleDownloadInvoice}
-                      className="h-[40px] cursor-pointer rounded-[7px] px-6 text-[15px] font-semibold text-white"
-                      style={{
-                        background:
-                          'linear-gradient(90deg, #43a8da 0%, #003247 100%)',
-                      }}
-                    >
-                      Download Invoice
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={onClose}
-                      className="h-[40px] cursor-pointer rounded-[7px] border border-[#1a85bb] bg-white px-10 text-[15px] font-semibold text-[#1a85bb]"
-                    >
-                      Go Home
-                    </button>
-                  </div>
-                </div>
-
-                <div className="bg-white shadow-[0_10px_35px_rgba(0,0,0,0.08)]">
-                  <div className="flex items-start justify-between bg-[#1e3f6d] px-10 py-5 text-white">
-                    <div>
-                      <h2 className="text-[18px] font-bold">
-                        Financial Receipt
-                      </h2>
-                      <p className="mt-2 text-[17px] font-extrabold">
-                        SRIRAM’s IAS
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="text-[17px] font-semibold text-white/70">
-                        Receipt No :
-                      </p>
-                      <p className="mt-2 text-[17px] font-extrabold">
-                        SI-090-6536
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-6 px-10 py-8">
-                    <ReceiptInfo
-                      label="Student Name"
-                      value={studentName || 'Student'}
-                    />
-                    <ReceiptInfo label="Student ID" value="STU767678" />
-                    <ReceiptInfo label="Payment Date" value="13-06-2026" />
-
-                    <div className="col-span-3">
-                      <ReceiptInfo
-                        label="Course Name"
-                        value="2 Year General Studies Foundation Course"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-[1fr_180px] bg-[#e7eefc] px-10 py-4">
-                    <span className="text-[17px] font-bold text-[#5c6170]">
-                      Description
-                    </span>
-                    <span className="text-right text-[17px] font-bold text-[#5c6170]">
-                      Amount
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-[1fr_180px] gap-y-5 px-10 py-6">
-                    <span className="text-[17px] font-extrabold text-black">
-                      Book Price
-                    </span>
-                    <span className="text-right text-[17px] font-extrabold text-black">
-                      Rs.{formatPrice(COURSE_PRICE)}
-                    </span>
-
-                    {discountAmount > 0 && (
-                      <>
-                        <span className="text-[17px] font-extrabold text-black">
-                          Coupon Discount
-                        </span>
-                        <span className="text-right text-[17px] font-extrabold text-black">
-                          - Rs.{formatPrice(discountAmount)}
-                        </span>
-                      </>
-                    )}
-
-                    <span className="text-[17px] font-extrabold text-black">
-                      Price After Discount
-                    </span>
-                    <span className="text-right text-[17px] font-extrabold text-black">
-                      Rs.{formatPrice(bookPriceAfterDiscount)}
-                    </span>
-
-                    <span className="text-[17px] font-extrabold text-black">
-                      GST (18%)
-                    </span>
-                    <span className="text-right text-[17px] font-extrabold text-black">
-                      Rs.{formatPrice(gstAmount)}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-[1fr_180px] bg-[#e7eefc] px-10 py-5">
-                    <span className="text-[17px] font-extrabold text-black">
-                      Total Paid
-                    </span>
-                    <span className="text-right text-[17px] font-extrabold text-black">
-                      Rs.{formatPrice(finalPayAmount)}
-                    </span>
-                  </div>
-
-                  <div className="px-10 py-5 text-center text-[17px] font-medium leading-[1.5] text-black">
-                    This is a system generated document and does not require
-                    <br />
-                    signature
-                  </div>
-                </div>
-              </div>
-            </div>
-
+          <div className="h-screen w-full overflow-y-auto">
+            <PaymentReceiptSuccess
+              receiptNo="SI-090-6536"
+              customerName={studentName || 'Student'}
+              paymentDate={formatPaymentDate()}
+              detailLabel="Course Name"
+              detailValue="2 Year General Studies Foundation Course"
+              rows={enrollReceiptRows}
+              totalPaid={finalPayAmount}
+              onGoHome={onClose}
+            />
             <Footer />
           </div>
         )}
@@ -1431,20 +1133,6 @@ const PriceRow: React.FC<PriceRowProps> = ({ label, value }) => {
     <div className="flex items-center justify-between gap-4">
       <span className="text-[17px] font-extrabold text-black">{label}</span>
       <span className="text-[17px] font-extrabold text-[#1777aa]">{value}</span>
-    </div>
-  );
-};
-
-interface ReceiptInfoProps {
-  label: string;
-  value: string;
-}
-
-const ReceiptInfo: React.FC<ReceiptInfoProps> = ({ label, value }) => {
-  return (
-    <div>
-      <p className="text-[17px] font-semibold text-[#777]">{label}</p>
-      <p className="mt-3 text-[17px] font-extrabold text-black">{value}</p>
     </div>
   );
 };

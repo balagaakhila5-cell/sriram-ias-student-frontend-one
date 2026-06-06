@@ -1,42 +1,102 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useCartStore } from '@/store/cartStore';
-import OrderSuccessModal from '@/components/common/OrderSuccessModal';
-import CheckoutOrderSummary, {
-  useCheckoutFinalTotal,
-} from '@/features/books/components/CheckoutOrderSummary';
+import PaymentReceiptSuccess, {
+  type PaymentReceiptRow,
+} from '@/components/common/PaymentReceiptSuccess';
+import CheckoutOrderSummary from '@/features/books/components/CheckoutOrderSummary';
 
 type PaymentMethod = 'qr' | 'upi' | 'saved_upi' | 'card' | 'saved_card' | 'netbanking';
 
-function generateOrderId() {
-  return 'TXN' + Math.floor(100000000 + Math.random() * 900000000);
+const SCANNER_IMAGE = '/assets/course/scanner.png';
+const GST_PERCENT = 18;
+
+function generateReceiptNo() {
+  return 'SI-090-' + Math.floor(1000 + Math.random() * 9000);
+}
+
+function formatPaymentDate() {
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = now.getFullYear();
+  return `${day}-${month}-${year}`;
 }
 
 export default function PaymentPage() {
   const applyCouponCode = useCartStore((state) => state.applyCouponCode);
   const applyOfferCoupon = useCartStore((state) => state.applyOfferCoupon);
   const clearCouponMessage = useCartStore((state) => state.clearCouponMessage);
-  const finalTotal = useCheckoutFinalTotal();
+  const items = useCartStore((state) => state.items);
+  const appliedCoupon = useCartStore((state) => state.appliedCoupon);
+  const subtotal = useCartStore((state) => state.subtotal);
 
   const [method, setMethod] = useState<PaymentMethod>('qr');
   const [coupon, setCoupon] = useState('');
   const [upiId, setUpiId] = useState('');
   const [card, setCard] = useState({ number: '', name: '', expiry: '', cvv: '' });
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [orderId] = useState(generateOrderId);
+  const [showReceipt, setShowReceipt] = useState(false);
+  const [receiptNo] = useState(generateReceiptNo);
 
   const brandGradient = 'bg-gradient-to-r from-[rgba(24,151,216,0.8)] to-[#021C29]';
+
+  const receiptData = useMemo(() => {
+    const cartSubtotal = subtotal();
+    const couponDiscount = appliedCoupon?.amount ?? 0;
+    const deliveryCharge = 50;
+    const priceAfterDiscount = Math.max(cartSubtotal - couponDiscount + deliveryCharge, 0);
+    const gstAmount = Math.round((priceAfterDiscount * GST_PERCENT) / 100);
+    const totalPaid = priceAfterDiscount + gstAmount;
+
+    const rows: PaymentReceiptRow[] = [
+      { label: 'Book Price', amount: cartSubtotal },
+    ];
+
+    if (couponDiscount > 0) {
+      rows.push({ label: 'Coupon Discount', amount: couponDiscount, isDiscount: true });
+    }
+
+    if (deliveryCharge > 0) {
+      rows.push({ label: 'Delivery Charge', amount: deliveryCharge });
+    }
+
+    rows.push({ label: 'Price After Discount', amount: priceAfterDiscount });
+    rows.push({ label: `GST (${GST_PERCENT}%)`, amount: gstAmount });
+
+    const orderTitles = items.map(({ book }) => book.title).join(', ');
+
+    return {
+      rows,
+      totalPaid,
+      detailValue: orderTitles || 'Books Order',
+    };
+  }, [appliedCoupon?.amount, items, subtotal]);
 
   const handleCouponInputChange = (value: string) => {
     setCoupon(value);
     clearCouponMessage();
   };
 
+  const handlePayment = () => {
+    setShowReceipt(true);
+  };
+
+  if (showReceipt) {
+    return (
+      <PaymentReceiptSuccess
+        receiptNo={receiptNo}
+        paymentDate={formatPaymentDate()}
+        detailLabel="Order Details"
+        detailValue={receiptData.detailValue}
+        rows={receiptData.rows}
+        totalPaid={receiptData.totalPaid}
+      />
+    );
+  }
+
   return (
     <div className="flex flex-1 flex-col items-stretch lg:flex-row">
-      <OrderSuccessModal isOpen={showSuccessModal} orderId={orderId} />
-
       <div className="flex flex-1 items-start justify-center bg-white px-6 py-12 md:px-16">
         <div className="w-full flex-1 rounded-xl bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] md:p-10">
           <h2 className="mb-6 text-[16px] font-semibold text-[#374151]">
@@ -51,15 +111,12 @@ export default function PaymentPage() {
           />
           {method === 'qr' && (
             <div className="mb-4 ml-8 mt-2">
-              <div className="w-[130px] overflow-hidden rounded-xl border border-gray-200 shadow-sm">
-                <div className="relative flex h-[130px] items-center justify-center bg-[#EBF0FF]">
-                  <span className="text-xs font-semibold text-gray-400">QR Image</span>
-                </div>
-                <div className="w-full bg-black py-1.5 text-center">
-                  <span className="text-[10px] font-bold tracking-widest text-white">
-                    SCAN ME
-                  </span>
-                </div>
+              <div className="inline-block rounded-[8px] bg-white p-5 shadow-[0_10px_28px_rgba(0,0,0,0.12)]">
+                <img
+                  src={SCANNER_IMAGE}
+                  alt="QR Scanner"
+                  className="h-[155px] w-[155px] object-contain"
+                />
               </div>
             </div>
           )}
@@ -166,10 +223,10 @@ export default function PaymentPage() {
           <div className="mt-2 flex shrink-0 justify-center px-8 pb-12">
             <button
               type="button"
-              onClick={() => setShowSuccessModal(true)}
+              onClick={handlePayment}
               className={`w-[80%] rounded-full py-3.5 ${brandGradient} text-[15px] font-bold text-white shadow-lg transition-opacity hover:opacity-90`}
             >
-              Pay Rs.{finalTotal.toLocaleString('en-IN')}
+              Pay Rs.{receiptData.totalPaid.toLocaleString('en-IN')}
             </button>
           </div>
         }
