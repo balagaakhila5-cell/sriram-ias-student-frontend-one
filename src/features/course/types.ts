@@ -29,4 +29,5 @@ export interface CourseData {
   ctaImage: string;
   ctaBg?: string;
   coursedetailsbg: string;
+  brochure?: string;
 }

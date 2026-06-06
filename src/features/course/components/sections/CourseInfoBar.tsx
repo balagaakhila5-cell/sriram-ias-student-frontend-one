@@ -19,6 +19,14 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [isEnrollOpen, setIsEnrollOpen] = useState(false);
 
+  const handleBrochureClick = () => {
+    if (course.brochure) {
+      window.open(course.brochure, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    setIsEnrollOpen(true);
+  };
+
   useGSAP(
     () => {
       if (prefersReducedMotion) return;
@@ -180,7 +188,8 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
             <div className="flex w-full flex-col items-center justify-center gap-3 xl:w-auto xl:items-center">
               <button
                 type="button"
-                className="cta-button flex h-[44px] w-[200px] items-center justify-center gap-2 rounded-full text-[13px] font-extrabold uppercase tracking-wider text-white transition-transform hover:scale-[1.03] md:h-[48px] md:w-[170px] md:text-[15px]"
+                onClick={handleBrochureClick}
+                className="cta-button flex h-[44px] w-[200px] cursor-pointer items-center justify-center gap-2 rounded-full text-[13px] font-extrabold uppercase tracking-wider text-white transition-transform hover:scale-[1.03] md:h-[48px] md:w-[170px] md:text-[15px]"
                 style={{
                   background:
                     'linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)',

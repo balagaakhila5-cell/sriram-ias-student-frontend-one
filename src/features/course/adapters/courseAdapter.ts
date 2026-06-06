@@ -69,6 +69,7 @@ export function mergeCourseDetail(
       ctaImage: "/assets/course/cta-img.png",
       ctaBg: "/assets/course/cta-bg-1.png",
       coursedetailsbg: "/assets/course/course-details-bg.png",
+      brochure: detail.brochure,
     };
   }
 
@@ -99,6 +100,7 @@ export function mergeCourseDetail(
     whyChooseFeatures: mergedWhyChoose,
     helpPoints: firstNonEmpty(d.howItHelps?.howItHelpsTexts, base.helpPoints) ?? base.helpPoints,
     helpImages: firstNonEmpty(d.gallery, base.helpImages) ?? base.helpImages,
+    brochure: firstNonEmpty(d.brochure, base.brochure),
   };
 }
 
