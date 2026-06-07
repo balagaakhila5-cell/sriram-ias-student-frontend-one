@@ -5,7 +5,12 @@ import {
   resolveCatalogDocument,
   type CatalogDocumentHints,
 } from "@/features/resources/catalog/registry";
-import { resourceDownloadPath } from "@/features/resources/catalog/routes";
+import {
+  resourceBackPath,
+  resourceDownloadPath,
+  type ResourceLinkOrigin,
+} from "@/features/resources/catalog/routes";
+import type { ResourceModule } from "@/features/resources/catalog/types";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -41,10 +46,12 @@ export default async function ResourceViewPage({
 
   if (!doc) notFound();
 
-  const backHref =
-    doc.module === "current-affairs"
-      ? "/student/free-resources"
-      : "/student/free-resources";
+  const origin = pickParam(query.origin) as ResourceLinkOrigin | undefined;
+  const backHref = resourceBackPath({
+    module: (pickParam(query.module) ?? doc.module) as ResourceModule,
+    subtopic: pickParam(query.subtopic) ?? String(doc.subtopic),
+    origin,
+  });
 
   return (
     <main className="min-h-screen bg-[#f7f8fb] px-4 py-8 font-['Montserrat',sans-serif]">

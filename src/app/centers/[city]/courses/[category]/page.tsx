@@ -26,7 +26,7 @@ export default async function CenterCategoryPage({
   }
 
   return (
-    <MainLayout>
+    <MainLayout logoOnlyHeader>
       <CenterCategoryPrograms city={cityKey} category={category} />
       <JoinCTA
         city={cityKey}

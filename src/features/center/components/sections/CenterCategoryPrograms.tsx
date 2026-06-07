@@ -6,7 +6,6 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowLeft } from 'lucide-react';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import {
   formatCityLabel,
@@ -93,14 +92,6 @@ const CenterCategoryPrograms: React.FC<Props> = ({ city, category }) => {
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-[1400px]">
-        <Link
-          href={`/centers/${cityKey}`}
-          className="mb-8 inline-flex items-center gap-2 text-[15px] font-semibold text-[#044062] transition hover:text-[#065A8C]"
-        >
-          <ArrowLeft size={18} />
-          Back to {cityLabel} Center
-        </Link>
-
         <h1
           className="center-programs-heading mb-4 text-[28px] font-[900] uppercase tracking-wider md:text-[42px]"
           style={{

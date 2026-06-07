@@ -63,7 +63,7 @@ const CoursePageClient: React.FC<CoursePageClientProps> = ({ courseSlug }) => {
 
   if (!course && (isCoursesLoading || isDetailLoading)) {
     return (
-      <MainLayout>
+      <MainLayout logoOnlyHeader logoOnlyTransparent>
         <div className="min-h-screen flex items-center justify-center">
           <p className="text-gray-500 text-lg">Loading course...</p>
         </div>
@@ -76,7 +76,7 @@ const CoursePageClient: React.FC<CoursePageClientProps> = ({ courseSlug }) => {
   }
 
   return (
-    <MainLayout>
+    <MainLayout logoOnlyHeader logoOnlyTransparent>
       <CourseHero course={course} />
       <CourseInfoBar course={course} />
       <CourseDescription course={course} />
