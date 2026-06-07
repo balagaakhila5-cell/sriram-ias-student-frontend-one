@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import {
   useCenters,
@@ -68,6 +68,26 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
   const [form, setForm] = useState<FormState>(initialState);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [formKey, setFormKey] = useState(0);
+
+  useEffect(() => {
+    if (isOpen) return;
+
+    setForm(initialState);
+    setError(null);
+    setSuccess(null);
+    setFormKey((key) => key + 1);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!success || !isOpen) return;
+
+    const timer = window.setTimeout(() => {
+      onClose();
+    }, 2500);
+
+    return () => window.clearTimeout(timer);
+  }, [success, isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -114,6 +134,8 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
 
       setSuccess(res.message ?? 'Enquiry submitted. We will reach out soon.');
       setForm(initialState);
+      setError(null);
+      setFormKey((key) => key + 1);
     } catch (err) {
       const message =
         err instanceof Error ? err.message : 'Failed to submit enquiry.';
@@ -153,141 +175,168 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
             <span className="text-xl">📋</span>
           </div>
 
-          <form className="space-y-2.5" onSubmit={handleSubmit}>
-            <div className="space-y-0.5">
-              <label className="ml-1 text-sm font-normal text-gray-400">
-                Full Name
-              </label>
-              <input
-                type="text"
-                value={form.name}
-                onChange={handleChange('name')}
-                required
-                className="h-9 w-full rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
-              />
-            </div>
-
-            <div className="space-y-0.5">
-              <label className="ml-1 text-sm font-normal text-gray-400">
-                Mobile Number
-              </label>
-              <input
-                type="tel"
-                value={form.phone}
-                onChange={handleChange('phone')}
-                required
-                className="h-9 w-full rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
-              />
-            </div>
-
-            <div className="space-y-0.5">
-              <label className="ml-1 text-sm font-normal text-gray-400">
-                Email ID
-              </label>
-              <input
-                type="email"
-                value={form.email}
-                onChange={handleChange('email')}
-                required
-                className="h-9 w-full rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
-              />
-            </div>
-
-            {/* Center Dropdown */}
-            <div className="space-y-0.5">
-              <label className="ml-1 text-sm font-normal text-gray-400">
-                Center
-              </label>
-
-              <div className="relative">
-                <select
-                  value={form.centerId}
-                  onChange={handleChange('centerId')}
-                  required
-                  className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm text-gray-600 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
-                >
-                  <option value="">Choose center</option>
-
-                  {centers.map((center) => (
-                    <option key={center._id} value={center._id}>
-                      {center.name}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {/* Course Dropdown */}
-            <div className="space-y-0.5">
-              <label className="ml-1 text-sm font-normal text-gray-400">
-                Course
-              </label>
-
-              <div className="relative">
-                <select
-                  value={form.courseId}
-                  onChange={handleChange('courseId')}
-                  required
-                  className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm text-gray-600 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
-                >
-                  <option value="">Choose course</option>
-
-                  {courses.map((course) => (
-                    <option key={course._id} value={course._id}>
-                      {course.title}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {error && <p className="text-sm text-red-600">{error}</p>}
-            {success && <p className="text-sm text-green-600">{success}</p>}
-
-            <div className="pt-2">
+          {success ? (
+            <div className="flex flex-1 flex-col items-center justify-center px-2 py-8 text-center">
+              <p className="text-base font-medium text-green-600 md:text-lg">
+                {success}
+              </p>
+              <p
+                className="mt-2 text-sm text-gray-500"
+                style={{ fontFamily: 'Montserrat, sans-serif' }}
+              >
+                This window will close automatically.
+              </p>
               <button
-                type="submit"
-                disabled={isPending}
-                className="h-10 w-full rounded-xl text-sm font-medium text-white shadow-md transition-all hover:brightness-105 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                type="button"
+                onClick={onClose}
+                className="mt-6 h-10 rounded-xl px-8 text-sm font-medium text-white shadow-md transition-all hover:brightness-105"
                 style={{
                   background:
                     'linear-gradient(90deg, #37B6E9 0%, #0077B6 100%)',
                 }}
               >
-                {isPending ? 'Submitting...' : 'Submit'}
+                Close
               </button>
             </div>
-          </form>
+          ) : (
+            <form key={formKey} className="space-y-2.5" onSubmit={handleSubmit}>
+              <div className="space-y-0.5">
+                <label className="ml-1 text-sm font-normal text-gray-400">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  value={form.name}
+                  onChange={handleChange('name')}
+                  required
+                  autoComplete="off"
+                  className="h-9 w-full rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
+                />
+              </div>
+
+              <div className="space-y-0.5">
+                <label className="ml-1 text-sm font-normal text-gray-400">
+                  Mobile Number
+                </label>
+                <input
+                  type="tel"
+                  value={form.phone}
+                  onChange={handleChange('phone')}
+                  required
+                  autoComplete="off"
+                  className="h-9 w-full rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
+                />
+              </div>
+
+              <div className="space-y-0.5">
+                <label className="ml-1 text-sm font-normal text-gray-400">
+                  Email ID
+                </label>
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={handleChange('email')}
+                  required
+                  autoComplete="off"
+                  className="h-9 w-full rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
+                />
+              </div>
+
+              {/* Center Dropdown */}
+              <div className="space-y-0.5">
+                <label className="ml-1 text-sm font-normal text-gray-400">
+                  Center
+                </label>
+
+                <div className="relative">
+                  <select
+                    value={form.centerId}
+                    onChange={handleChange('centerId')}
+                    required
+                    className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm text-gray-600 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
+                  >
+                    <option value="">Choose center</option>
+
+                    {centers.map((center) => (
+                      <option key={center._id} value={center._id}>
+                        {center.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* Course Dropdown */}
+              <div className="space-y-0.5">
+                <label className="ml-1 text-sm font-normal text-gray-400">
+                  Course
+                </label>
+
+                <div className="relative">
+                  <select
+                    value={form.courseId}
+                    onChange={handleChange('courseId')}
+                    required
+                    className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm text-gray-600 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
+                  >
+                    <option value="">Choose course</option>
+
+                    {courses.map((course) => (
+                      <option key={course._id} value={course._id}>
+                        {course.title}
+                      </option>
+                    ))}
+                  </select>
+
+                  <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {error && <p className="text-sm text-red-600">{error}</p>}
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={isPending}
+                  className="h-10 w-full rounded-xl text-sm font-medium text-white shadow-md transition-all hover:brightness-105 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                  style={{
+                    background:
+                      'linear-gradient(90deg, #37B6E9 0%, #0077B6 100%)',
+                  }}
+                >
+                  {isPending ? 'Submitting...' : 'Submit'}
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
+import { useSessionBooking } from '@/features/course/hooks/useSessionBooking';
 
 type Topper = {
   name: string;
@@ -141,6 +142,37 @@ const OurToppersGalleryPage = () => {
   const [activeTab, setActiveTab] = useState<
     'All Students' | 'Top 10' | 'GS Course'
   >('All Students');
+  const [formData, setFormData] = useState({
+    fullName: '',
+    mobile: '',
+    email: '',
+    targetYear: '',
+    city: 'Delhi',
+  });
+  const [authorized, setAuthorized] = useState(false);
+  const { bookSession, error, success, isPending } = useSessionBooking();
+
+  const handleFormChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSessionSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const booked = await bookSession(formData, formData.city, authorized);
+    if (!booked) return;
+
+    setFormData({
+      fullName: '',
+      mobile: '',
+      email: '',
+      targetYear: '',
+      city: 'Delhi',
+    });
+    setAuthorized(false);
+  };
 
   const toppers = useMemo(() => {
     if (activeTab === 'Top 10') {
@@ -438,12 +470,15 @@ const OurToppersGalleryPage = () => {
               Get Your One to One Personalised Session with Our Expert Mentors
             </p>
 
-            <form className="mx-auto w-full max-w-[640px] lg:mx-0">
+            <form className="mx-auto w-full max-w-[640px] lg:mx-0" onSubmit={handleSessionSubmit}>
               <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <input
                   type="text"
                   name="fullName"
                   placeholder="Full Name"
+                  value={formData.fullName}
+                  onChange={handleFormChange}
+                  required
                   className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
                 />
 
@@ -451,6 +486,10 @@ const OurToppersGalleryPage = () => {
                   type="tel"
                   name="mobile"
                   placeholder="Mobile Number"
+                  value={formData.mobile}
+                  onChange={handleFormChange}
+                  required
+                  pattern="[0-9]{10}"
                   className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
                 />
 
@@ -458,13 +497,18 @@ const OurToppersGalleryPage = () => {
                   type="email"
                   name="email"
                   placeholder="Email Id"
+                  value={formData.email}
+                  onChange={handleFormChange}
+                  required
                   className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
                 />
 
                 <div className="relative w-full">
                   <select
                     name="targetYear"
-                    defaultValue=""
+                    value={formData.targetYear}
+                    onChange={handleFormChange}
+                    required
                     className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300"
                   >
                     <option value="" disabled>
@@ -495,7 +539,8 @@ const OurToppersGalleryPage = () => {
                 <div className="relative w-full">
                   <select
                     name="city"
-                    defaultValue="Delhi"
+                    value={formData.city}
+                    onChange={handleFormChange}
                     className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300"
                   >
                     <option value="Delhi">Delhi</option>
@@ -522,6 +567,8 @@ const OurToppersGalleryPage = () => {
               <label className="group mb-8 mt-2 flex cursor-pointer items-start gap-3 text-left">
                 <input
                   type="checkbox"
+                  checked={authorized}
+                  onChange={(e) => setAuthorized(e.target.checked)}
                   className="mt-1 h-[18px] w-[18px] shrink-0 cursor-pointer rounded-sm border-none bg-white/80 checked:bg-blue-500"
                 />
 
@@ -533,16 +580,29 @@ const OurToppersGalleryPage = () => {
                 </span>
               </label>
 
+              {error && (
+                <p className="mb-4 text-center text-[14px] font-semibold text-red-600">
+                  {error}
+                </p>
+              )}
+
+              {success && (
+                <p className="mb-4 text-center text-[14px] font-semibold text-green-700">
+                  Your session has been booked. Our team will reach out shortly.
+                </p>
+              )}
+
               <div className="mt-4 flex justify-center lg:justify-center">
                 <button
-                  type="button"
-                  className="rounded-3xl px-7 py-3.5 text-[16px] font-semibold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg sm:px-8 sm:text-[18px]"
+                  type="submit"
+                  disabled={isPending}
+                  className="rounded-3xl px-7 py-3.5 text-[16px] font-semibold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-70 sm:px-8 sm:text-[18px]"
                   style={{
                     background:
                       'linear-gradient(90deg, rgba(24, 151, 216, 0.8) 0%, #021C29 100%)',
                   }}
                 >
-                  Book your session now
+                  {isPending ? 'Booking...' : 'Book your session now'}
                 </button>
               </div>
             </form>

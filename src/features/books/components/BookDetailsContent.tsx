@@ -140,30 +140,30 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
             </div>
          </div>
 
-         <div className="book-details-promo-grid mt-10 grid min-w-0 gap-5 lg:grid-cols-[1.35fr_0.65fr] lg:items-start">
-            <div className="relative min-w-0 overflow-hidden rounded-[16px] bg-[#EEF3FF] p-4 shadow-[0_10px_28px_rgba(28,78,141,0.1)]">
-               <div className="mb-3">
+         <div className="book-details-promo-grid mt-10 flex min-w-0 w-full flex-col gap-6 lg:flex-row lg:items-stretch">
+            <div className="relative min-w-0 overflow-hidden rounded-[16px] bg-[#EEF3FF] p-5 shadow-[0_10px_28px_rgba(28,78,141,0.1)] lg:w-[50%] lg:shrink-0">
+               <div className="mb-4">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1B4B7A]">
                      Daily Learning
                   </p>
-                  <h2 className="mt-2 text-xl font-black leading-tight text-[#062A4D] sm:text-[22px]">
+                  <h2 className="mt-2 text-xl font-black leading-tight text-[#062A4D] sm:text-2xl">
                      Practice daily questions now
                   </h2>
                </div>
 
-               <div className="relative h-[220px] overflow-hidden rounded-[14px] bg-[#D5E9FF] sm:h-[240px]">
+               <div className="relative h-[220px] overflow-hidden rounded-[14px] bg-[#D5E9FF] sm:h-[260px]">
                   <Image
                      src="/assets/blogs/timer-image.png"
                      alt="Daily Learning"
                      fill
                      className="object-cover"
-                     sizes="(max-width: 640px) 100vw, 50vw"
+                     sizes="(max-width: 1024px) 100vw, 50vw"
                   />
                   <div className="absolute inset-0 bg-black/10" />
-                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
                      <Link
                         href="/current-affairs/daily-practice-questions"
-                        className="inline-flex h-[34px] items-center justify-center rounded-full border border-white bg-[#072F50]/80 px-6 text-[13px] font-semibold text-white transition duration-200 hover:bg-white/10"
+                        className="inline-flex h-[38px] items-center justify-center rounded-full border border-white bg-[#072F50]/80 px-7 text-[14px] font-semibold text-white transition duration-200 hover:bg-white/10"
                      >
                         Explore →
                      </Link>
@@ -173,7 +173,7 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
 
             <FreeResourcesCourseSlider
                compact
-               className="min-w-0 max-w-[320px] rounded-[16px] shadow-[0_10px_28px_rgba(28,78,141,0.1)] lg:max-w-none lg:justify-self-end"
+               className="book-details-course-slider min-w-0 w-full rounded-[16px] shadow-[0_10px_28px_rgba(28,78,141,0.1)] lg:ml-auto lg:w-[30%] lg:shrink-0"
             />
          </div>
       </section>

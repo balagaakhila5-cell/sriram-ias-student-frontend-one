@@ -87,9 +87,9 @@ const FloatingActions: React.FC = () => {
     <div ref={containerRef} className="relative z-[100]">
       {/* Floating Elements (Enquire Now, WhatsApp) */}
       <div 
-        className={`floating-enquire fixed right-0 top-1/2 -translate-y-1/2 z-60 transform-gpu transition-[transform] duration-500 ${
+        className={`floating-enquire fixed right-0 top-[calc(50%-2.5rem)] z-60 flex -translate-y-1/2 transform-gpu cursor-pointer items-center justify-end overflow-visible drop-shadow-2xl transition-[transform] duration-500 ${
           isScrolledSafe ? 'translate-x-[calc(100%-40px)]' : 'translate-x-[0px]'
-        } hover:translate-x-0 group cursor-pointer flex items-center justify-end overflow-visible drop-shadow-2xl`}
+        } hover:translate-x-0 group`}
         onClick={() => setIsEnquiryModalOpen(true)}
       >
          <div 
@@ -106,7 +106,7 @@ const FloatingActions: React.FC = () => {
          </div>
       </div>
       
-      <div className="floating-whatsapp fixed right-4 bottom-4 z-60 sm:right-6 sm:bottom-6">
+      <div className="floating-whatsapp fixed bottom-10 right-4 z-60 sm:bottom-12 sm:right-6">
         <a
           href="https://wa.me/919811489560"
           target="_blank"

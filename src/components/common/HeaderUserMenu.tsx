@@ -74,27 +74,17 @@ const HeaderUserMenu: React.FC = () => {
     );
   }
 
-  const initials = user.name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
+  const initial = (user.name.trim()[0] ?? user.email?.[0] ?? "S").toUpperCase();
 
   return (
     <div className="relative" ref={menuRef}>
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        aria-label="Open profile menu"
-        className="flex cursor-pointer items-center gap-2 rounded-full border-2 border-white/80 bg-white/10 px-1 py-1 pr-3 transition-colors hover:bg-white/20"
+        aria-label={`Open profile menu for ${user.name}`}
+        className="flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full border-2 border-white bg-white text-[13px] font-bold text-[#00679C] transition-colors hover:bg-white/90"
       >
-        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-[11px] font-bold text-[#00679C]">
-          {initials || "S"}
-        </span>
-        <span className="hidden max-w-[120px] truncate text-sm font-semibold text-white xl:inline">
-          {user.name}
-        </span>
+        {initial}
       </button>
 
       {open && (

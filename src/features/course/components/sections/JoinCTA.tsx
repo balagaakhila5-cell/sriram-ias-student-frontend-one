@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
+import { useSessionBooking } from '../../hooks/useSessionBooking';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,6 +26,8 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
   const [authorized, setAuthorized] = useState(false);
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const courseTitle = course?.title?.replace(/\n/g, ' ');
+  const { bookSession, error, success, isPending } = useSessionBooking({ courseTitle });
 
   useGSAP(
     () => {
@@ -111,9 +114,19 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData, 'Authorized:', authorized);
+
+    const booked = await bookSession(formData, city, authorized);
+    if (!booked) return;
+
+    setFormData({
+      fullName: '',
+      mobile: '',
+      email: '',
+      targetYear: '',
+    });
+    setAuthorized(false);
   };
 
   // ── BACKGROUNDS & BUTTON THEMES ──────────────────────────────────────────
@@ -196,6 +209,7 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
                 placeholder="Full Name"
                 value={formData.fullName}
                 onChange={handleChange}
+                required
                 className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
               />
 
@@ -206,6 +220,8 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
                 placeholder="Mobile Number"
                 value={formData.mobile}
                 onChange={handleChange}
+                required
+                pattern="[0-9]{10}"
                 className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
               />
 
@@ -216,6 +232,7 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
                 placeholder="Email Id"
                 value={formData.email}
                 onChange={handleChange}
+                required
                 className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
               />
 
@@ -225,6 +242,7 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
                   name="targetYear"
                   value={formData.targetYear}
                   onChange={handleChange}
+                  required
                   className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300"
                 >
                   <option value="" disabled>
@@ -270,17 +288,30 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
               </span>
             </label>
 
+            {error && (
+              <p className="mb-4 text-center text-[14px] font-semibold text-red-600">
+                {error}
+              </p>
+            )}
+
+            {success && (
+              <p className="mb-4 text-center text-[14px] font-semibold text-green-700">
+                Your session has been booked. Our team will reach out shortly.
+              </p>
+            )}
+
             {/* Dynamic Submit Button */}
             <div className="mt-4 flex justify-center">
               <button
                 type="submit"
-                className="rounded-3xl px-8 py-3.5 text-[18px] font-semibold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg"
+                disabled={isPending}
+                className="rounded-3xl px-8 py-3.5 text-[18px] font-semibold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-70"
                 style={{
                   background:
                     'linear-gradient(90deg, rgba(24, 151, 216, 0.8) 0%, #021C29 100%)',
                 }}
               >
-                Book your session now
+                {isPending ? 'Booking...' : 'Book your session now'}
               </button>
             </div>
           </form>

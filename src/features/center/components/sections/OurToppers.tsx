@@ -1,145 +1,148 @@
 'use client';
 
-import React, { useRef } from 'react';
-import Image from 'next/image';
+import React, { useMemo, useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
+import {
+  getTopperLayout,
+  OUR_TOPPERS,
+  OUR_TOPPERS_SUBTITLE,
+  topperImageSrc,
+} from '@/data/ourToppers';
 
 gsap.registerPlugin(ScrollTrigger);
 
 interface Props {
-  city: string;
+  city?: string;
 }
 
-const OurToppers: React.FC<Props> = ({ city }) => {
+const OurToppers: React.FC<Props> = () => {
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
-  useGSAP(() => {
-    if (prefersReducedMotion) return;
+  const displayToppers = useMemo(
+    () =>
+      OUR_TOPPERS.map((topper, index) => ({
+        ...topper,
+        description: topper.course,
+        ...getTopperLayout(index),
+      })),
+    [],
+  );
 
-    gsap.from('.our-toppers-heading', {
-      y: 70,
-      opacity: 0,
-      duration: 0.8,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top 60%',
-        once: true,
-      }
-    });
+  const duplicatedToppers = useMemo(
+    () => [...displayToppers, ...displayToppers],
+    [displayToppers],
+  );
 
-    gsap.from('.our-toppers-card', {
-      y: 50,
-      opacity: 0,
-      scale: 0.95,
-      duration: 0.8,
-      stagger: 0.15,
-      ease: 'back.out(1.2)',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top 75%',
-        once: true,
-      }
-    });
-  }, { dependencies: [prefersReducedMotion], scope: containerRef });
+  useGSAP(
+    () => {
+      if (prefersReducedMotion) return;
 
-  const toppers = [
-    { name: 'Anil Kumar', rank: 'AIR 08', course: 'GS Foundation Course', img: 'centers-person.png' },
-    { name: 'Anil Kumar', rank: 'AIR 08', course: 'GS Foundation Course', img: 'centers-person.png' },
-    { name: 'Anil Kumar', rank: 'AIR 08', course: 'GS Foundation Course', img: 'centers-person.png' },
-    { name: 'Anil Kumar', rank: 'AIR 08', course: 'GS Foundation Course', img: 'centers-person.png' },
-  ];
+      gsap.from('.our-toppers-heading', {
+        y: 50,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 65%',
+          once: true,
+        },
+      });
+    },
+    { dependencies: [prefersReducedMotion], scope: containerRef },
+  );
 
   return (
-    <section ref={containerRef} className="relative w-full py-24 flex flex-col items-center px-6 md:px-12 lg:px-24 overflow-hidden">
+    <section
+      ref={containerRef}
+      className="relative flex w-full min-h-[480px] flex-col items-center overflow-hidden pb-0 pt-0 md:min-h-[520px]"
+    >
+      <img
+        src="/assets/our-centers/centers-bg.png"
+        alt="Background"
+        className="absolute inset-0 z-0 h-full w-full object-cover"
+      />
 
-      <div className="absolute top-1/4 right-[-160px] -translate-y-1/2 w-[240px] h-[240px] bg-white rounded-l-full z-10 pointer-events-none"
-        style={{
-          boxShadow: '0px 0px 120px 20px rgba(91, 178, 229, 0.7)'
-        }}
-      ></div>
+      <div className="relative z-10 flex w-full max-w-[1900px] flex-col items-center">
+        <div className="our-toppers-heading mt-6 text-center md:mt-8">
+          <h2 className="global-section-heading">OUR TOPPERS</h2>
+        </div>
 
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/assets/our-centers/centers-bg.png"
-          alt="Background"
-          fill
-          sizes="100vw"
-          className="object-cover"
-          priority
-        />
+        <p className="our-toppers-heading mx-auto mb-0 max-w-[800px] px-6 text-center text-[13px] font-medium leading-snug text-[#2A3742] md:text-[15px]">
+          {OUR_TOPPERS_SUBTITLE}
+        </p>
 
-      </div>
+        <div className="w-full -mt-2 overflow-hidden -translate-y-10 md:-translate-y-14">
+          <div className="course-toppers-track flex w-max gap-0">
+            {duplicatedToppers.map((topper, idx) => (
+              <div
+                key={`${topper.name}-${idx}`}
+                className="-ml-16 flex shrink-0 flex-col items-center overflow-visible first:ml-0 md:-ml-20 lg:-ml-24"
+              >
+                <div className="relative flex h-[320px] w-full items-end justify-center overflow-visible sm:h-[360px] lg:h-[400px]">
+                  <img
+                    src={topperImageSrc(topper.img)}
+                    alt={topper.name}
+                    loading={idx < 6 ? 'eager' : 'lazy'}
+                    className="pointer-events-none block h-[320px] w-auto max-w-[340px] select-none object-contain object-bottom sm:h-[360px] sm:max-w-[380px] lg:h-[400px] lg:max-w-[420px]"
+                    style={{
+                      transform: `translateY(${topper.y - 28}px) scale(${topper.scale})`,
+                      transformOrigin: 'bottom center',
+                    }}
+                  />
+                </div>
 
+                <div className="relative z-20 -mt-3 flex min-h-[76px] flex-col items-center justify-start px-1 text-center sm:-mt-4">
+                  <h3 className="max-w-full truncate text-[14px] font-bold leading-tight text-white md:text-[15px]">
+                    {topper.name}
+                  </h3>
 
-      {/* Header */}
-<h2
-  className="our-toppers-heading text-[36px] md:text-[50px] font-[900] uppercase tracking-wider mb-6 relative z-10 font-['Montserrat']"
-  style={{
-    background:
-      'linear-gradient(90deg, #3C9ED5 0%, #8788A5 45%, #CE6A73 100%)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    backgroundClip: 'text',
-    color: 'transparent',
-  }}
->
-  OUR TOPPERS
-</h2>
+                  <span className="mt-1.5 rounded-full bg-[#FF9800] px-5 py-1.5 text-[13px] font-semibold text-white">
+                    {topper.rank}
+                  </span>
 
-      <p className="our-toppers-heading text-center text-[#2A3742] font-medium max-w-[900px] mx-auto text-[15px] md:text-[18px] leading-relaxed mb-20 relative z-10 font-['Montserrat']">
-        Driven by a commitment to success, we stand behind our toppers with constant support, expert mentorship, and personalized attention to help them lead the way in every phase of the UPSC process.
-      </p>
-
-      {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-16 w-full max-w-[1400px] relative z-10">
-        {toppers.map((topper, idx) => (
-          <div key={idx} className="our-toppers-card flex flex-col items-center">
-
-            {/* Photo frame */}
-            <div className="w-[220px] h-[220px] relative mb-8 flex items-center justify-center drop-shadow-xl transition-transform duration-300">
-              <svg viewBox="-20 -20 240 240" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                <defs>
-                  <clipPath id={`blobClip-center-${idx}`}>
-                    {/* The blob itself for the bottom/sides */}
-                    <path d="M 100 0 C 120 0 125 25 143.3 35 C 161.6 45 186.6 40 195 58.3 C 203.4 76.6 185 91.6 185 110 C 185 128.4 203.4 143.4 195 161.7 C 186.6 180 161.6 175 143.3 185 C 125 195 120 220 100 220 C 80 220 75 195 56.7 185 C 38.4 175 13.4 180 5 161.7 C -3.4 143.4 15 128.4 15 110 C 15 91.6 -3.4 76.6 5 58.3 C 13.4 40 38.4 45 56.7 35 C 75 25 80 0 100 0 Z" />
-                    {/* A large rectangle extending upwards from the middle of the blob to allow "pop-out" */}
-                    <rect x="-50" y="-100" width="300" height="200" />
-                  </clipPath>
-                </defs>
-
-                <path fill="#FFFFFF" d="M 100 0 C 120 0 125 25 143.3 35 C 161.6 45 186.6 40 195 58.3 C 203.4 76.6 185 91.6 185 110 C 185 128.4 203.4 143.4 195 161.7 C 186.6 180 161.6 175 143.3 185 C 125 195 120 220 100 220 C 80 220 75 195 56.7 185 C 38.4 175 13.4 180 5 161.7 C -3.4 143.4 15 128.4 15 110 C 15 91.6 -3.4 76.6 5 58.3 C 13.4 40 38.4 45 56.7 35 C 75 25 80 0 100 0 Z" />
-
-                <image
-                  href={`/assets/our-centers/${topper.img}`}
-                  clipPath={`url(#blobClip-center-${idx})`}
-                  x="-35px"
-                  y="-50px"
-                  width="270"
-                  height="270"
-                  preserveAspectRatio="xMidYMid slice"
-                />
-              </svg>
-            </div>
-
-
-            <h3 className="text-white text-[20px] font-bold font-['Montserrat'] mb-3 drop-shadow-sm">{topper.name}</h3>
-
-            <span className="bg-[#FF9800] text-white text-[13px] font-bold py-1 px-4 rounded-full mb-3 shadow-sm font-['Montserrat']">
-              {topper.rank}
-            </span>
-
-            <span className="text-white text-[15px] opacity-90 font-medium font-['Montserrat']">{topper.course}</span>
+                  <span className="mt-2.5 text-center text-[12px] text-white opacity-90">
+                    {topper.description}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
+
+      <style jsx>{`
+        .course-toppers-track {
+          animation: courseToppersScroll 55s linear infinite;
+          will-change: transform;
+        }
+
+        .course-toppers-track:hover {
+          animation-play-state: paused;
+        }
+
+        @keyframes courseToppersScroll {
+          from {
+            transform: translateX(0);
+          }
+          to {
+            transform: translateX(-50%);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .course-toppers-track {
+            animation: none;
+            transform: none;
+          }
+        }
+      `}</style>
     </section>
   );
-}
+};
 
 export default OurToppers;
