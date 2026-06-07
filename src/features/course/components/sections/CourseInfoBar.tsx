@@ -14,17 +14,31 @@ interface Props {
   course: CourseData;
 }
 
+const DEFAULT_BROCHURE_URL = '/assets/samples/sriram-sample.pdf';
+
+const getBrochureFileName = (course: CourseData) => {
+  const slug = course.slug?.replace(/[^\w-]+/g, '-') ?? 'course';
+  return `${slug}-brochure.pdf`;
+};
+
+const downloadBrochure = (url: string, fileName: string) => {
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = fileName;
+  link.rel = 'noopener noreferrer';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 const CourseInfoBar: React.FC<Props> = ({ course }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const [isEnrollOpen, setIsEnrollOpen] = useState(false);
 
   const handleBrochureClick = () => {
-    if (course.brochure) {
-      window.open(course.brochure, '_blank', 'noopener,noreferrer');
-      return;
-    }
-    setIsEnrollOpen(true);
+    const url = course.brochure?.trim() || DEFAULT_BROCHURE_URL;
+    downloadBrochure(url, getBrochureFileName(course));
   };
 
   useGSAP(

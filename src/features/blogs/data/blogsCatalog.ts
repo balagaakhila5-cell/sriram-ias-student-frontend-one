@@ -49,3 +49,17 @@ export const ALL_BLOGS: BlogBookmarkInput[] = [
     makeBlog(`blog-all-${index}`, image),
   ),
 ];
+
+export type TrendingBlogArticle = {
+  title: string;
+  href: string;
+};
+
+export function getTrendingBlogArticles(limit = 6): TrendingBlogArticle[] {
+  return ALL_BLOGS.slice(0, limit).map((blog) => ({
+    title: blog.title,
+    href: `/blogs/${blog.slug}`,
+  }));
+}
+
+export const TRENDING_BLOG_ARTICLES = getTrendingBlogArticles(6);

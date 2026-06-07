@@ -245,7 +245,7 @@ export default function DailyPracticeQuestionsPage() {
               <aside className="dpq-animate-sidebar w-full xl:mt-[65px]">
                 <div className="space-y-8">
                   <DpqTopPerformers />
-                  <TrendingArticles />
+                  <TrendingArticles viewAllHref="/blogs/all" />
                 </div>
               </aside>
             </div>

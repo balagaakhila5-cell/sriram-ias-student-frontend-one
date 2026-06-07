@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { RESOURCE_PAGE_HEADING_GRADIENT } from "@/features/resources/components/cardStyles";
+import { TRENDING_BLOG_ARTICLES } from "@/features/blogs/data/blogsCatalog";
 
 export interface TrendingArticleItem {
   title: string;
@@ -11,33 +12,6 @@ interface TrendingArticlesProps {
   articles?: TrendingArticleItem[];
   viewAllHref?: string;
 }
-
-const defaultArticles: TrendingArticleItem[] = [
-  {
-    title: "The Future of Artificial Intelligence in Everyday Life",
-    href: "#",
-  },
-  {
-    title: "How Blockchain is Transforming Industries",
-    href: "#",
-  },
-  {
-    title: "Cybersecurity in the Digital Age: Challenges and Solutions",
-    href: "#",
-  },
-  {
-    title: "The Rise of Quantum Computing",
-    href: "#",
-  },
-  {
-    title: "Impact of 5G Technology",
-    href: "#",
-  },
-  {
-    title: "Cybersecurity in the Digital Age: Challenges and Solutions",
-    href: "#",
-  },
-];
 
 const ArticleIcon = () => (
   <svg
@@ -57,8 +31,8 @@ const ArticleIcon = () => (
 );
 
 const TrendingArticles = ({
-  articles = defaultArticles,
-  viewAllHref = "/current-affairs",
+  articles = TRENDING_BLOG_ARTICLES,
+  viewAllHref = "/blogs/all",
 }: TrendingArticlesProps) => {
   return (
     <div className="rounded-[22px] bg-white px-5 py-6 shadow-[0px_10px_30px_rgba(0,0,0,0.05)]">
@@ -73,7 +47,7 @@ const TrendingArticles = ({
       {/* Article list */}
       <ul className="divide-y divide-gray-100">
         {articles.map((article, index) => (
-          <li key={index}>
+          <li key={`${article.href}-${index}`}>
             <Link
               href={article.href}
               className="flex items-start gap-3 py-3 transition-colors duration-200 hover:bg-gray-50 rounded-lg px-1"
