@@ -1,13 +1,16 @@
-import resourcesApiClient from "./resourcesApiClient";
+import {
+  getDemoMockTestDetail,
+  listDemoMockTestCards,
+} from "../catalog/demoMockTests";
+import {
+  catalogDocumentToResourceFile,
+  listFreeResourceDocuments,
+} from "../catalog/freeResources";
+import type { FreeResourcesSubtopicId } from "../catalog/types";
 
 /* ------------------------------------------------------------------ */
 /*  Shared / raw shapes                                                */
 /* ------------------------------------------------------------------ */
-
-interface CloudinaryAsset {
-  url: string;
-  public_id?: string;
-}
 
 export interface ResourceCategory {
   _id: string;
@@ -103,83 +106,6 @@ export interface MockTestResult {
   }>;
 }
 
-/* ------------------------------------------------------------------ */
-/*  Raw response envelopes                                             */
-/* ------------------------------------------------------------------ */
-
-interface RawCategoryEnvelope {
-  _id: string;
-  name: string;
-  description?: string;
-  thumbnail?: CloudinaryAsset | string;
-}
-
-interface RawFileEnvelope {
-  _id: string;
-  title: string;
-  description?: string;
-  file?: CloudinaryAsset;
-  fileUrl?: string;
-  url?: string;
-  category?: unknown;
-  subCategory?: unknown;
-  subject?: unknown;
-  class?: unknown;
-  paper?: unknown;
-  year?: unknown;
-}
-
-const unwrapList = <T,>(data: unknown, keys: string[]): T[] => {
-  if (Array.isArray(data)) return data as T[];
-  if (data && typeof data === "object") {
-    const obj = data as Record<string, unknown>;
-    for (const k of keys) {
-      const v = obj[k];
-      if (Array.isArray(v)) return v as T[];
-    }
-    if (Array.isArray(obj.data)) return obj.data as T[];
-  }
-  return [];
-};
-
-const unwrapOne = <T,>(data: unknown, keys: string[]): T | null => {
-  if (!data) return null;
-  if (typeof data !== "object") return null;
-  const obj = data as Record<string, unknown>;
-  for (const k of keys) {
-    if (obj[k] && typeof obj[k] === "object") return obj[k] as T;
-  }
-  if (obj.data && typeof obj.data === "object") return obj.data as T;
-  return data as T;
-};
-
-const normaliseCategory = (raw: RawCategoryEnvelope): ResourceCategory => ({
-  _id: raw._id,
-  name: raw.name,
-  description: raw.description,
-  thumbnail:
-    typeof raw.thumbnail === "string"
-      ? raw.thumbnail
-      : raw.thumbnail?.url,
-});
-
-const normaliseFile = (raw: RawFileEnvelope): ResourceFile => ({
-  _id: raw._id,
-  title: raw.title,
-  description: raw.description,
-  fileUrl: raw.file?.url ?? raw.fileUrl ?? raw.url,
-  category: raw.category as ResourceFile["category"],
-  subCategory: raw.subCategory as ResourceFile["subCategory"],
-  subject: raw.subject as ResourceFile["subject"],
-  class: raw.class as ResourceFile["class"],
-  paper: raw.paper as ResourceFile["paper"],
-  year: raw.year as ResourceFile["year"],
-});
-
-/* ------------------------------------------------------------------ */
-/*  Service                                                            */
-/* ------------------------------------------------------------------ */
-
 export interface FilterQuery {
   type: "SUBJECT" | "CLASS" | "PAPER" | "YEAR";
   categoryId?: string;
@@ -202,82 +128,164 @@ export interface MockTestsQuery {
   paperId?: string;
 }
 
+const delay = (ms = 120) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const MOCK_CATEGORIES: ResourceCategory[] = [
+  { _id: "mock-ncert", name: "NCERT Books" },
+  { _id: "mock-pyq", name: "Previous Year Question Papers" },
+  { _id: "mock-mock-tests", name: "Free Mock Tests" },
+  { _id: "mock-study-materials", name: "Study Materials" },
+];
+
+const MOCK_SUBCATEGORIES: ResourceSubCategory[] = [
+  { _id: "mock-prelims", name: "prelims", category: "mock-mock-tests" },
+  { _id: "mock-mains", name: "mains", category: "mock-mock-tests" },
+];
+
+const SUBTOPIC_BY_CATEGORY: Record<string, FreeResourcesSubtopicId> = {
+  "mock-ncert": "ncert-books",
+  "mock-pyq": "previous-year",
+  "mock-study-materials": "study-materials",
+};
+
+function filesForSubtopic(subtopic: FreeResourcesSubtopicId): ResourceFile[] {
+  return listFreeResourceDocuments(subtopic).map(catalogDocumentToResourceFile);
+}
+
+function evaluateDemoAttempt(
+  testId: string,
+  payload: MockTestAttemptPayload,
+): MockTestResult {
+  const test = getDemoMockTestDetail(testId);
+  if (!test) throw new Error("Mock test not found");
+
+  let correctCount = 0;
+  for (const question of test.questions) {
+    if (payload.answers[question._id] === question.correctAnswer) {
+      correctCount += 1;
+    }
+  }
+
+  const total = test.questions.length;
+  return {
+    _id: `demo-result-${testId}-${Date.now()}`,
+    score: correctCount * 2,
+    totalMarks: total * 2,
+    correctCount,
+    incorrectCount: total - correctCount,
+    unattemptedCount: 0,
+    totalQuestions: total,
+    passed: correctCount >= Math.ceil(total * 0.4),
+    percentage: Math.round((correctCount / total) * 100),
+    timeTaken: payload.timeTaken,
+    startedAt: payload.startedAt,
+    submittedAt: new Date().toISOString(),
+    answers: payload.answers,
+  };
+}
+
 export const resourcesService = {
   listCategories: async (): Promise<ResourceCategory[]> => {
-    const { data } = await resourcesApiClient.get("/api/resources/categories");
-    return unwrapList<RawCategoryEnvelope>(data, ["categories"]).map(
-      normaliseCategory,
-    );
+    await delay();
+    return MOCK_CATEGORIES;
   },
 
   listSubCategories: async (
     categoryId?: string,
   ): Promise<ResourceSubCategory[]> => {
-    const { data } = await resourcesApiClient.get("/api/resources/subcategories", {
-      params: categoryId ? { categoryId } : {},
-    });
-    return unwrapList<ResourceSubCategory>(data, ["subcategories", "subCategories"]);
+    await delay();
+    if (!categoryId) return [];
+    return MOCK_SUBCATEGORIES.filter((item) => item.category === categoryId);
   },
 
   listFilters: async (query: FilterQuery): Promise<ResourceFilter[]> => {
-    const { data } = await resourcesApiClient.get("/api/resources/filters", {
-      params: query,
-    });
-    return unwrapList<ResourceFilter>(data, ["filters"]);
+    await delay();
+    if (query.type === "SUBJECT") {
+      return [
+        { _id: "filter-history", type: "SUBJECT", value: "History" },
+        { _id: "filter-geography", type: "SUBJECT", value: "Geography" },
+        { _id: "filter-polity", type: "SUBJECT", value: "Polity" },
+      ];
+    }
+    if (query.type === "CLASS") {
+      return [
+        { _id: "filter-class-6", type: "CLASS", value: "Class 6" },
+        { _id: "filter-class-7", type: "CLASS", value: "Class 7" },
+        { _id: "filter-class-8", type: "CLASS", value: "Class 8" },
+      ];
+    }
+    if (query.type === "PAPER") {
+      return [
+        { _id: "filter-paper-1", type: "PAPER", value: "Paper 1" },
+        { _id: "filter-paper-2", type: "PAPER", value: "Paper 2" },
+      ];
+    }
+    return [
+      { _id: "filter-year-2026", type: "YEAR", value: "2026" },
+      { _id: "filter-year-2025", type: "YEAR", value: "2025" },
+      { _id: "filter-year-2024", type: "YEAR", value: "2024" },
+    ];
   },
 
   listFiles: async (query: FilesQuery = {}): Promise<ResourceFile[]> => {
-    const { data } = await resourcesApiClient.get("/api/resources/files", {
-      params: query,
-    });
-    return unwrapList<RawFileEnvelope>(data, ["files", "resources"]).map(
-      normaliseFile,
-    );
+    await delay();
+    const subtopic = query.categoryId
+      ? SUBTOPIC_BY_CATEGORY[query.categoryId]
+      : undefined;
+    return subtopic ? filesForSubtopic(subtopic) : [];
   },
 
   getFile: async (id: string): Promise<ResourceFile | null> => {
-    const { data } = await resourcesApiClient.get(`/api/resources/files/${id}`);
-    const raw = unwrapOne<RawFileEnvelope>(data, ["file", "resource"]);
-    return raw ? normaliseFile(raw) : null;
+    await delay();
+    const allFiles = [
+      ...filesForSubtopic("ncert-books"),
+      ...filesForSubtopic("previous-year"),
+      ...filesForSubtopic("study-materials"),
+    ];
+    return allFiles.find((file) => file._id === id) ?? null;
   },
-
-  /* ------------- Mock tests ------------- */
 
   listMockTests: async (
     query: MockTestsQuery = {},
   ): Promise<MockTestSummary[]> => {
-    const { data } = await resourcesApiClient.get("/api/resources/mock-tests", {
-      params: query,
-    });
-    return unwrapList<MockTestSummary>(data, ["mockTests", "tests"]);
+    await delay();
+    const examType = query.subCategoryId?.includes("mains")
+      ? "mains"
+      : "prelims";
+    return listDemoMockTestCards(examType).map((card) => ({
+      _id: card._id,
+      title: `${card.title} — ${card.subtitle}`,
+      duration: card.duration,
+      totalQuestions: card.totalQuestions,
+    }));
   },
 
   getMockTest: async (id: string): Promise<MockTestDetail | null> => {
-    const { data } = await resourcesApiClient.get(`/api/resources/mock-tests/${id}`);
-    return unwrapOne<MockTestDetail>(data, ["mockTest", "test"]);
+    await delay();
+    return getDemoMockTestDetail(id);
   },
 
   submitMockTest: async (
     id: string,
     payload: MockTestAttemptPayload,
   ): Promise<MockTestResult> => {
-    const { data } = await resourcesApiClient.post(
-      `/api/resources/mock-tests/${id}/attempt`,
-      payload,
-    );
-    const result = unwrapOne<MockTestResult>(data, ["result", "attempt"]);
-    return result ?? (data as MockTestResult);
+    await delay();
+    return evaluateDemoAttempt(id, payload);
   },
 
   getMockTestResult: async (resultId: string): Promise<MockTestResult | null> => {
-    const { data } = await resourcesApiClient.get(
-      `/api/resources/mock-tests/results/${resultId}`,
-    );
-    return unwrapOne<MockTestResult>(data, ["result", "attempt"]);
+    await delay();
+    const match = resultId.match(/^demo-result-(demo-mock-(?:prelims|mains)-\d+)-/);
+    if (!match) return null;
+    return evaluateDemoAttempt(match[1], {
+      startedAt: new Date(Date.now() - 3600000).toISOString(),
+      timeTaken: 1800,
+      answers: {},
+    });
   },
 
   listMockTestResults: async (): Promise<MockTestResult[]> => {
-    const { data } = await resourcesApiClient.get("/api/resources/mock-tests/results");
-    return unwrapList<MockTestResult>(data, ["results", "attempts"]);
+    await delay();
+    return [];
   },
 };

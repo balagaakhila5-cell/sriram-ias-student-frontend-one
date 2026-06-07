@@ -9,8 +9,7 @@ import { z } from "zod";
 import AuthPortalShell, { UserRole } from "./AuthPortalShell";
 import AuthSuccessView from "./AuthSuccessView";
 import OtpVerificationForm from "./OtpVerificationForm";
-import OtpModal from "./OtpModal";
-import { useParentLoginRequest, useStaffLogin } from "../hooks/useAuth";
+import { useParentLoginRequest, useStaffLogin, useVerifyOtp } from "../hooks/useAuth";
 import { setMockStudentAuth } from "../utils/mockAuth";
 
 type StudentScreen = "form" | "otp" | "success";
@@ -32,8 +31,11 @@ const studentSchema = z.object({
 });
 
 const parentSchema = z.object({
-  studentEmail: z.string().email("Enter a valid student email"),
-  parentEmail: z.string().email("Enter a valid parent email"),
+  mobile: z
+    .string()
+    .min(1, "Mobile number is required")
+    .regex(/^\d{10}$/, "Enter a valid 10-digit mobile number"),
+  otp: z.string().optional(),
 });
 
 const facultySchema = z.object({
@@ -44,19 +46,14 @@ const facultySchema = z.object({
 const LoginPortal: React.FC = () => {
   const router = useRouter();
   const [role, setRole] = useState<UserRole>("student");
-  const [otpEmail, setOtpEmail] = useState<string | null>(null);
+  const [parentOtpSent, setParentOtpSent] = useState(false);
   const [studentScreen, setStudentScreen] = useState<StudentScreen>("form");
   const [studentIdentifier, setStudentIdentifier] = useState("");
   const [otpError, setOtpError] = useState<string | null>(null);
 
   const parentLoginRequest = useParentLoginRequest();
+  const verifyParentOtp = useVerifyOtp();
   const staffLogin = useStaffLogin("staff");
-
-  const handleRoleChange = (newRole: UserRole) => {
-    setRole(newRole);
-    setStudentScreen("form");
-    setOtpError(null);
-  };
 
   const studentForm = useForm({
     resolver: zodResolver(studentSchema),
@@ -64,12 +61,20 @@ const LoginPortal: React.FC = () => {
   });
   const parentForm = useForm({
     resolver: zodResolver(parentSchema),
-    defaultValues: { studentEmail: "", parentEmail: "" },
+    defaultValues: { mobile: "", otp: "" },
   });
   const facultyForm = useForm({
     resolver: zodResolver(facultySchema),
     defaultValues: { email: "", password: "" },
   });
+
+  const handleRoleChange = (newRole: UserRole) => {
+    setRole(newRole);
+    setStudentScreen("form");
+    setOtpError(null);
+    setParentOtpSent(false);
+    parentForm.reset();
+  };
 
   useEffect(() => {
     if (studentScreen !== "success") return;
@@ -103,10 +108,24 @@ const LoginPortal: React.FC = () => {
     setStudentScreen("success");
   };
 
-  const onParentSubmit = parentForm.handleSubmit((values) => {
-    parentLoginRequest.mutate(values, {
-      onSuccess: () => setOtpEmail(values.parentEmail),
-    });
+  const onParentSendOtp = parentForm.handleSubmit((values) => {
+    parentLoginRequest.mutate(
+      { mobile: values.mobile.trim() },
+      { onSuccess: () => setParentOtpSent(true) },
+    );
+  });
+
+  const onParentVerifyOtp = parentForm.handleSubmit((values) => {
+    const otp = values.otp?.trim() ?? "";
+    if (!/^\d{6}$/.test(otp)) {
+      parentForm.setError("otp", { message: "Please enter 6 digit OTP" });
+      return;
+    }
+
+    verifyParentOtp.mutate(
+      { mobile: values.mobile.trim(), otp },
+      { onSuccess: () => router.push("/parent") },
+    );
   });
 
   const onFacultySubmit = facultyForm.handleSubmit((values) => {
@@ -117,14 +136,18 @@ const LoginPortal: React.FC = () => {
 
   const mutationError =
     role === "parent"
-      ? parentLoginRequest.error?.message
+      ? parentOtpSent
+        ? verifyParentOtp.error?.message
+        : parentLoginRequest.error?.message
       : role === "faculty"
         ? staffLogin.error?.message
         : null;
 
   const isPending =
     role === "parent"
-      ? parentLoginRequest.isPending
+      ? parentOtpSent
+        ? verifyParentOtp.isPending
+        : parentLoginRequest.isPending
       : role === "faculty"
         ? staffLogin.isPending
         : false;
@@ -179,21 +202,33 @@ const LoginPortal: React.FC = () => {
       )}
 
       {role === "parent" && (
-        <form onSubmit={onParentSubmit} className="flex w-full flex-col gap-5">
+        <form
+          onSubmit={parentOtpSent ? onParentVerifyOtp : onParentSendOtp}
+          className="flex w-full flex-col gap-5"
+        >
           <Field
-            label="Student Email"
-            type="email"
-            error={parentForm.formState.errors.studentEmail?.message}
-            {...parentForm.register("studentEmail")}
+            label="Mobile Number"
+            type="tel"
+            inputMode="numeric"
+            maxLength={10}
+            error={parentForm.formState.errors.mobile?.message}
+            {...parentForm.register("mobile")}
           />
-          <Field
-            label="Parent Email"
-            type="email"
-            error={parentForm.formState.errors.parentEmail?.message}
-            {...parentForm.register("parentEmail")}
-          />
+          {parentOtpSent && (
+            <Field
+              label="OTP"
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              autoComplete="one-time-code"
+              error={parentForm.formState.errors.otp?.message}
+              {...parentForm.register("otp")}
+            />
+          )}
           {mutationError && <ErrorText>{mutationError}</ErrorText>}
-          <SubmitButton loading={isPending}>Send OTP</SubmitButton>
+          <SubmitButton loading={isPending}>
+            {parentOtpSent ? "Verify OTP" : "Send OTP"}
+          </SubmitButton>
         </form>
       )}
 
@@ -216,12 +251,6 @@ const LoginPortal: React.FC = () => {
         </form>
       )}
 
-      <OtpModal
-        open={otpEmail !== null}
-        email={otpEmail ?? ""}
-        onClose={() => setOtpEmail(null)}
-        onSuccess={() => router.push("/")}
-      />
     </AuthPortalShell>
   );
 };

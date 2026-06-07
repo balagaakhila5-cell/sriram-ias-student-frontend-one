@@ -1,124 +1,47 @@
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  "https://new-sriramias.onrender.com";
+import {
+  buildCanonicalExploreCategories,
+  EXPLORE_COURSE_TAB_NAMES,
+} from "@/features/homepage/data/exploreCourseCatalog";
 
-export const getCenters = async () => {
-
-  try {
-
-    const res = await fetch(
-      `${API_BASE_URL}/api/centers`,
-      {
-        cache: "no-store",
-      }
-    );
-
-    if (!res.ok) {
-      throw new Error(
-        "Failed to fetch centers"
-      );
-    }
-
-    return res.json();
-
-  } catch (error) {
-
-    console.error("Centers API Error:", error);
-
-    return {
-      centers: [],
-    };
-  }
+const MOCK_CENTERS = {
+  success: true,
+  count: 3,
+  centers: [
+    { _id: "center-delhi", name: "New Delhi" },
+    { _id: "center-hyderabad", name: "Hyderabad" },
+    { _id: "center-pune", name: "Pune" },
+  ],
 };
 
-export const getCategories = async () => {
+export const getCenters = async () => MOCK_CENTERS;
 
-  try {
-
-    const res = await fetch(
-      `${API_BASE_URL}/api/categories`,
-      {
-        cache: "no-store",
-      }
-    );
-
-    if (!res.ok) {
-      throw new Error(
-        "Failed to fetch categories"
-      );
-    }
-
-    return res.json();
-
-  } catch (error) {
-
-    console.error("Categories API Error:", error);
-
-    return [];
-  }
-};
+export const getCategories = async () =>
+  EXPLORE_COURSE_TAB_NAMES.map((name, index) => ({
+    _id: `category-${index}`,
+    name,
+  }));
 
 export const getCourses = async () => {
-
-  try {
-
-    const res = await fetch(
-      `${API_BASE_URL}/api/courses`,
-      {
-        cache: "no-store",
-      }
-    );
-
-    if (!res.ok) {
-      throw new Error(
-        "Failed to fetch courses"
-      );
-    }
-
-    return res.json();
-
-  } catch (error) {
-
-    console.error("Courses API Error:", error);
-
-    return [];
-  }
+  const categories = buildCanonicalExploreCategories();
+  return categories.flatMap((category) =>
+    category.courses.map((course) => ({
+      _id: course._id,
+      title: course.title,
+      slug: course.slug,
+      category: { name: category.name },
+      center: { name: "New Delhi" },
+    })),
+  );
 };
 
 export const getFilteredCourses = async (
   centerName: string,
-  categoryName: string
+  categoryName: string,
 ) => {
-
-  try {
-
-    const params = new URLSearchParams({
-      centerName,
-      categoryName,
-    });
-
-    const res = await fetch(
-      `${API_BASE_URL}/api/courses?${params.toString()}`,
-      {
-        cache: "no-store",
-      }
-    );
-
-    if (!res.ok) {
-      throw new Error(
-        "Failed to fetch filtered courses"
-      );
-    }
-
-    return res.json();
-
-  } catch (error) {
-
-    console.error(
-      "Filtered Courses API Error:",
-      error
-    );
-
-    return [];
-  }
+  const courses = await getCourses();
+  return courses.filter(
+    (course) =>
+      course.center?.name === centerName &&
+      course.category?.name === categoryName,
+  );
 };

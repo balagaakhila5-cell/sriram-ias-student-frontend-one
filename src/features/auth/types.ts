@@ -40,11 +40,14 @@ export interface SendOtpPayload {
 }
 
 export interface VerifyOtpPayload {
-  email: string;
+  email?: string;
+  mobile?: string;
   otp: string;
 }
 
 export interface ParentLoginRequestPayload {
+  mobile?: string;
+  email?: string;
   studentEmail?: string;
   studentMobile?: string;
   parentEmail?: string;

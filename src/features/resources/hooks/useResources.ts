@@ -6,7 +6,6 @@ import {
   isDemoMockTestId,
   listDemoMockTestCards,
 } from "../catalog/demoMockTests";
-import { isResourcesApiConfigured } from "../services/resourcesApiClient";
 import {
   resourcesService,
   type FilesQuery,
@@ -35,7 +34,6 @@ export function useResourceCategories() {
   return useQuery({
     queryKey: resourcesKeys.categories,
     queryFn: resourcesService.listCategories,
-    enabled: isResourcesApiConfigured(),
     staleTime: 10 * 60 * 1000,
     retry: 0,
     placeholderData: [],
@@ -46,7 +44,7 @@ export function useResourceSubCategories(categoryId?: string) {
   return useQuery({
     queryKey: resourcesKeys.subcategories(categoryId),
     queryFn: () => resourcesService.listSubCategories(categoryId),
-    enabled: isResourcesApiConfigured() && !!categoryId,
+    enabled: !!categoryId,
     staleTime: 10 * 60 * 1000,
     retry: 0,
     placeholderData: [],
@@ -60,7 +58,7 @@ export function useResourceFilters(
   return useQuery({
     queryKey: resourcesKeys.filters(query),
     queryFn: () => resourcesService.listFilters(query),
-    enabled: isResourcesApiConfigured() && enabled && !!query.categoryId,
+    enabled: enabled && !!query.categoryId,
     staleTime: 10 * 60 * 1000,
     retry: 0,
     placeholderData: [],
@@ -71,7 +69,7 @@ export function useResourceFiles(query: FilesQuery, enabled = true) {
   return useQuery({
     queryKey: resourcesKeys.files(query),
     queryFn: () => resourcesService.listFiles(query),
-    enabled: isResourcesApiConfigured() && enabled && !!query.categoryId,
+    enabled: enabled && !!query.categoryId,
     retry: 0,
     placeholderData: [],
   });
@@ -94,7 +92,7 @@ export function useMockTests(
   return useQuery({
     queryKey: [...resourcesKeys.mockTests(query), examType],
     queryFn: async (): Promise<MockTestSummary[]> => {
-      if (!isResourcesApiConfigured() || !query.categoryId) {
+      if (!query.categoryId) {
         return demoMockSummaries(examType);
       }
       try {

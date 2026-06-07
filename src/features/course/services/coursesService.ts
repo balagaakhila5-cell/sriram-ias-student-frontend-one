@@ -1,14 +1,8 @@
-import apiClient from "@/services/apiClient";
-
-/* ------------------------------------------------------------------ */
-/*  Shared helpers                                                     */
-/* ------------------------------------------------------------------ */
-
-/** Cloudinary-style image/file object returned by the backend */
-interface CloudinaryAsset {
-  url: string;
-  public_id: string;
-}
+import {
+  buildCanonicalExploreCategories,
+  EXPLORE_COURSE_TAB_NAMES,
+} from "@/features/homepage/data/exploreCourseCatalog";
+import { courses as staticCourses, getCourseBySlug } from "../data/courses";
 
 /* ------------------------------------------------------------------ */
 /*  Public types (consumed by components / adapters)                   */
@@ -76,130 +70,6 @@ export interface CourseFilters {
   categoryName?: string;
 }
 
-/* ------------------------------------------------------------------ */
-/*  Raw API response shapes (private – only used inside this file)    */
-/* ------------------------------------------------------------------ */
-
-/** Shape of a single course as returned by the backend */
-interface ApiRawCourse {
-  _id: string;
-  title: string;
-  description?: string;
-  duration?: string;
-  startDate?: string;
-  slug?: string;
-  modes?: string[];
-  fees?: { online?: number; offline?: number };
-  bannerImage?: CloudinaryAsset;
-  highlightImage?: CloudinaryAsset;
-  sectionImage?: CloudinaryAsset;
-  promoVideo?: CloudinaryAsset;
-  brochure?: CloudinaryAsset;
-  galleryImages?: (CloudinaryAsset & { _id?: string })[];
-  center?: Center | string;
-  category?: Category | string;
-  keyHighlights?: KeyHighlights;
-  whyChoose?: WhyChoose;
-  howItHelps?: HowItHelps;
-  features?: unknown[];
-  isActive?: boolean;
-  isFeatured?: boolean;
-  [key: string]: unknown;
-}
-
-interface ApiCoursesResponse {
-  success: boolean;
-  count: number;
-  total: number;
-  page: number;
-  pages: number;
-  courses: ApiRawCourse[];
-}
-
-interface ApiSingleCourseResponse {
-  success: boolean;
-  course: ApiRawCourse;
-}
-
-interface ApiCentersResponse {
-  success: boolean;
-  count: number;
-  centers: Center[];
-}
-
-interface ApiCategoriesResponse {
-  success: boolean;
-  count: number;
-  categories: Category[];
-}
-
-/* ------------------------------------------------------------------ */
-/*  Normalisers                                                        */
-/* ------------------------------------------------------------------ */
-
-function normaliseSummary(raw: ApiRawCourse): CourseSummary {
-  return {
-    _id: raw._id,
-    title: raw.title,
-    description: raw.description,
-    duration: raw.duration,
-    startDate: raw.startDate,
-    slug: raw.slug,
-    modes: raw.modes,
-    onlineFees: raw.fees?.online,
-    offlineFees: raw.fees?.offline,
-    banner: raw.bannerImage?.url,
-    center: raw.center,
-    category: raw.category,
-  };
-}
-
-function normaliseDetail(raw: ApiRawCourse): CourseDetail {
-  return {
-    ...normaliseSummary(raw),
-    keyHighlights: raw.keyHighlights,
-    whyChoose: raw.whyChoose,
-    howItHelps: raw.howItHelps,
-    highlight: raw.highlightImage?.url,
-    section: raw.sectionImage?.url,
-    gallery: raw.galleryImages?.map((img) => img.url),
-    video: raw.promoVideo?.url,
-    brochure: raw.brochure?.url,
-  };
-}
-
-/* ------------------------------------------------------------------ */
-/*  Service                                                            */
-/* ------------------------------------------------------------------ */
-
-export const coursesService = {
-  listCenters: async (): Promise<Center[]> => {
-    const { data } = await apiClient.get<ApiCentersResponse>("/api/centers");
-    return data.centers ?? [];
-  },
-
-  listCategories: async (): Promise<Category[]> => {
-    const { data } = await apiClient.get<ApiCategoriesResponse>("/api/categories");
-    return data.categories ?? [];
-  },
-
-  listCourses: async (filters: CourseFilters = {}): Promise<CourseSummary[]> => {
-    const { data } = await apiClient.get<ApiCoursesResponse>("/api/courses", {
-      params: filters,
-    });
-    return (data.courses ?? []).map(normaliseSummary);
-  },
-
-  getCourse: async (id: string): Promise<CourseDetail> => {
-    const { data } = await apiClient.get<ApiSingleCourseResponse>(`/api/courses/${id}`);
-    return normaliseDetail(data.course);
-  },
-};
-
-/* ------------------------------------------------------------------ */
-/*  Enquiry                                                            */
-/* ------------------------------------------------------------------ */
-
 export interface EnquiryPayload {
   name: string;
   phone: string;
@@ -213,12 +83,155 @@ export interface EnquiryPayload {
   expectation?: string;
 }
 
+/* ------------------------------------------------------------------ */
+/*  Mock data                                                          */
+/* ------------------------------------------------------------------ */
+
+const MOCK_CENTERS: Center[] = [
+  { _id: "center-delhi", name: "New Delhi" },
+  { _id: "center-hyderabad", name: "Hyderabad" },
+  { _id: "center-pune", name: "Pune" },
+];
+
+const MOCK_CATEGORIES: Category[] = EXPLORE_COURSE_TAB_NAMES.map((name, i) => ({
+  _id: `category-${i}`,
+  name,
+}));
+
+const parseFee = (fee?: string): number | undefined => {
+  if (!fee) return undefined;
+  const digits = fee.replace(/\D/g, "");
+  const value = Number.parseInt(digits, 10);
+  return Number.isFinite(value) ? value : undefined;
+};
+
+const getCategoryName = (category: CourseSummary["category"]): string | undefined =>
+  typeof category === "string" ? category : category?.name;
+
+const getCenterName = (center: CourseSummary["center"]): string | undefined =>
+  typeof center === "string" ? center : center?.name;
+
+function buildMockCourses(): CourseSummary[] {
+  const catalog = buildCanonicalExploreCategories();
+
+  return catalog.flatMap((category) =>
+    category.courses.map((course) => {
+      const staticCourse = course.slug ? getCourseBySlug(course.slug) : undefined;
+
+      return {
+        _id: course._id,
+        title: course.title,
+        slug: course.slug,
+        description: staticCourse?.subtitle,
+        startDate: staticCourse?.startDate,
+        duration: staticCourse?.duration,
+        modes: staticCourse?.mode?.split(",").map((mode) => mode.trim()),
+        onlineFees: parseFee(staticCourse?.feesOnline),
+        offlineFees: parseFee(staticCourse?.feesOffline),
+        banner: course.bannerImage ?? staticCourse?.heroImage,
+        center: MOCK_CENTERS[0],
+        category: {
+          _id: `category-${category.name}`,
+          name: category.name,
+        },
+      };
+    }),
+  );
+}
+
+const MOCK_COURSES = buildMockCourses();
+
+function toCourseDetail(summary: CourseSummary): CourseDetail {
+  const staticCourse = summary.slug ? getCourseBySlug(summary.slug) : undefined;
+
+  return {
+    ...summary,
+    keyHighlights: staticCourse
+      ? { keyHighlightTexts: staticCourse.highlights }
+      : undefined,
+    whyChoose: staticCourse
+      ? {
+          whyChooseItems: staticCourse.whyChooseFeatures.map((item) => ({
+            whyChooseText: item.label,
+            whyChooseContent: item.description ?? "",
+          })),
+        }
+      : undefined,
+    howItHelps: staticCourse
+      ? { howItHelpsTexts: staticCourse.helpPoints }
+      : undefined,
+    gallery: staticCourse?.helpImages,
+    brochure: staticCourse?.brochure,
+  };
+}
+
+const delay = (ms = 150) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/* ------------------------------------------------------------------ */
+/*  Service                                                            */
+/* ------------------------------------------------------------------ */
+
+export const coursesService = {
+  listCenters: async (): Promise<Center[]> => {
+    await delay();
+    return MOCK_CENTERS;
+  },
+
+  listCategories: async (): Promise<Category[]> => {
+    await delay();
+    return MOCK_CATEGORIES;
+  },
+
+  listCourses: async (filters: CourseFilters = {}): Promise<CourseSummary[]> => {
+    await delay();
+    return MOCK_COURSES.filter((course) => {
+      if (
+        filters.centerName &&
+        getCenterName(course.center) !== filters.centerName
+      ) {
+        return false;
+      }
+      if (
+        filters.categoryName &&
+        getCategoryName(course.category) !== filters.categoryName
+      ) {
+        return false;
+      }
+      return true;
+    });
+  },
+
+  getCourse: async (id: string): Promise<CourseDetail> => {
+    await delay();
+    const summary =
+      MOCK_COURSES.find((course) => course._id === id) ??
+      MOCK_COURSES.find((course) => course.slug === id);
+
+    if (!summary) {
+      const bySlug = staticCourses.find((course) => course.slug === id);
+      if (!bySlug) throw new Error("Course not found");
+      return toCourseDetail({
+        _id: bySlug.slug,
+        title: bySlug.title.replace(/\n/g, " "),
+        slug: bySlug.slug,
+        startDate: bySlug.startDate,
+        duration: bySlug.duration,
+        modes: bySlug.mode?.split(",").map((mode) => mode.trim()),
+        onlineFees: parseFee(bySlug.feesOnline),
+        offlineFees: parseFee(bySlug.feesOffline),
+        banner: bySlug.heroImage,
+        center: MOCK_CENTERS[0],
+        category: MOCK_CATEGORIES[0],
+      });
+    }
+
+    return toCourseDetail(summary);
+  },
+};
+
 export const enquiryService = {
-  submit: async (payload: EnquiryPayload): Promise<{ message: string }> => {
-    const { data } = await apiClient.post<{ message: string }>(
-      "/api/enquiries",
-      payload,
-    );
-    return data;
+  submit: async (_payload: EnquiryPayload): Promise<{ message: string }> => {
+    await delay();
+    return { message: "Enquiry submitted successfully." };
   },
 };

@@ -15,7 +15,6 @@ import {
   useResourceCategories,
   useResourceSubCategories,
 } from "@/features/resources/hooks/useResources";
-import { isResourcesApiConfigured } from "@/features/resources/services/resourcesApiClient";
 import type { FreeResourcesExamType } from "../config";
 
 interface MockTestsPanelProps {
@@ -42,12 +41,9 @@ export default function MockTestsPanel({ examType }: MockTestsPanelProps) {
   );
   const subCategoryId = subCategory?._id;
 
-  const apiReady =
-    !isResourcesApiConfigured() || Boolean(categoryId && subCategoryId);
-
   const { data: mockTests = [] } = useMockTests(
     { categoryId, subCategoryId },
-    apiReady,
+    Boolean(categoryId && subCategoryId),
     examType,
   );
 

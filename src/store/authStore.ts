@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { setStoredToken, TOKEN_STORAGE_KEY } from "@/services/apiClient";
+import { setStoredToken, TOKEN_STORAGE_KEY } from "@/services/authToken";
 import type { AuthUser } from "@/features/auth/types";
 
 interface AuthState {
@@ -41,7 +41,7 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({ user: state.user, token: state.token }),
       onRehydrateStorage: () => (state) => {
         if (state?.token) {
-          // Keep apiClient token store in sync on boot.
+          // Keep token store in sync on boot.
           if (typeof window !== "undefined") {
             window.localStorage.setItem(TOKEN_STORAGE_KEY, state.token);
           }

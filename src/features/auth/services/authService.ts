@@ -1,6 +1,6 @@
-import apiClient from "@/services/apiClient";
 import type {
   AuthResponse,
+  AuthUser,
   OtpRequestResponse,
   ParentLoginRequestPayload,
   SendOtpPayload,
@@ -9,70 +9,89 @@ import type {
   VerifyOtpPayload,
 } from "../types";
 
+const delay = (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const mockToken = () => `mock-token-${Date.now()}`;
+
+const mockUser = (
+  role: AuthUser["role"],
+  overrides: Partial<AuthUser> = {},
+): AuthUser => ({
+  id: `mock-${Date.now()}`,
+  name: "User",
+  role,
+  ...overrides,
+});
+
 export const authService = {
   loginSuperAdmin: async (
     credentials: StaffLoginCredentials,
   ): Promise<AuthResponse> => {
-    const { data } = await apiClient.post<AuthResponse>(
-      "/api/auth/login-super-admin",
-      credentials,
-    );
-    return data;
+    await delay();
+    return {
+      user: mockUser("super_admin", {
+        name: credentials.email.split("@")[0],
+        email: credentials.email,
+      }),
+      token: mockToken(),
+    };
   },
 
   loginStaff: async (
     credentials: StaffLoginCredentials,
   ): Promise<AuthResponse> => {
-    const { data } = await apiClient.post<AuthResponse>(
-      "/api/auth/login",
-      credentials,
-    );
-    return data;
+    await delay();
+    return {
+      user: mockUser("employee", {
+        name: credentials.email.split("@")[0],
+        email: credentials.email,
+      }),
+      token: mockToken(),
+    };
   },
 
   studentSignup: async (
-    payload: StudentSignupPayload,
+    _payload: StudentSignupPayload,
   ): Promise<{ message: string }> => {
-    const { data } = await apiClient.post<{ message: string }>(
-      "/api/auth/student-signup",
-      payload,
-    );
-    return data;
+    await delay();
+    return { message: "Signup OTP sent successfully." };
   },
 
-  sendOtp: async (payload: SendOtpPayload): Promise<OtpRequestResponse> => {
-    const { data } = await apiClient.post<OtpRequestResponse>(
-      "/api/auth/send-otp",
-      payload,
-    );
-    return data;
+  sendOtp: async (_payload: SendOtpPayload): Promise<OtpRequestResponse> => {
+    await delay();
+    return { message: "OTP sent successfully." };
   },
 
   verifyOtp: async (payload: VerifyOtpPayload): Promise<AuthResponse> => {
-    const { data } = await apiClient.post<AuthResponse>(
-      "/api/auth/verify-otp",
-      payload,
-    );
-    return data;
+    await delay();
+    return {
+      user: mockUser("parent", {
+        name: "Parent",
+        email: payload.email,
+        mobile: payload.mobile,
+      }),
+      token: mockToken(),
+    };
   },
 
   verifyStudentSignup: async (
     payload: VerifyOtpPayload,
   ): Promise<AuthResponse> => {
-    const { data } = await apiClient.post<AuthResponse>(
-      "/api/auth/verify-student-signup",
-      payload,
-    );
-    return data;
+    await delay();
+    return {
+      user: mockUser("student", {
+        name: payload.email?.split("@")[0] ?? "Student",
+        email: payload.email,
+        mobile: payload.mobile,
+      }),
+      token: mockToken(),
+    };
   },
 
   parentLoginRequest: async (
-    payload: ParentLoginRequestPayload,
+    _payload: ParentLoginRequestPayload,
   ): Promise<OtpRequestResponse> => {
-    const { data } = await apiClient.post<OtpRequestResponse>(
-      "/api/auth/parent-login-request",
-      payload,
-    );
-    return data;
+    await delay();
+    return { message: "OTP sent successfully." };
   },
 };
