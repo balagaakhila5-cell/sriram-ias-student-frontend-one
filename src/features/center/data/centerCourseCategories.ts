@@ -241,20 +241,20 @@ export function getProgramsForCategory(
   const categoryData = getCenterCategory(city, category);
   if (!categoryData) return [];
 
-  return categoryData.programSlugs
-    .map((slug) => {
-      const course = getCourseBySlug(slug);
-      if (!course) return null;
+  return categoryData.programSlugs.flatMap((slug) => {
+    const course = getCourseBySlug(slug);
+    if (!course) return [];
 
-      return {
+    return [
+      {
         slug,
         title: formatCourseTitle(course.title),
         feesOnline: course.feesOnline,
         startDate: course.startDate,
         mode: course.mode,
-      };
-    })
-    .filter((item): item is CenterProgram => item !== null);
+      },
+    ];
+  });
 }
 
 export function getHeaderCourseLinks(

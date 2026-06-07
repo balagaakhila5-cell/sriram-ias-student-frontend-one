@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import { useSessionBooking } from '@/features/course/hooks/useSessionBooking';
+import SessionBookingDialog from '@/features/course/components/SessionBookingDialog';
 
 type Topper = {
   name: string;
@@ -150,7 +151,11 @@ const OurToppersGalleryPage = () => {
     city: 'Delhi',
   });
   const [authorized, setAuthorized] = useState(false);
-  const { bookSession, error, success, isPending } = useSessionBooking();
+  const [dialog, setDialog] = useState<{
+    variant: 'success' | 'error';
+    message: string;
+  } | null>(null);
+  const { bookSession, isPending } = useSessionBooking();
 
   const handleFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -161,17 +166,28 @@ const OurToppersGalleryPage = () => {
   const handleSessionSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const booked = await bookSession(formData, formData.city, authorized);
-    if (!booked) return;
+    const result = await bookSession(formData, formData.city, authorized);
 
-    setFormData({
-      fullName: '',
-      mobile: '',
-      email: '',
-      targetYear: '',
-      city: 'Delhi',
+    if (result.ok) {
+      setDialog({
+        variant: 'success',
+        message: 'Your session has been booked. Our team will reach out shortly.',
+      });
+      setFormData({
+        fullName: '',
+        mobile: '',
+        email: '',
+        targetYear: '',
+        city: 'Delhi',
+      });
+      setAuthorized(false);
+      return;
+    }
+
+    setDialog({
+      variant: 'error',
+      message: result.message,
     });
-    setAuthorized(false);
   };
 
   const toppers = useMemo(() => {
@@ -580,18 +596,6 @@ const OurToppersGalleryPage = () => {
                 </span>
               </label>
 
-              {error && (
-                <p className="mb-4 text-center text-[14px] font-semibold text-red-600">
-                  {error}
-                </p>
-              )}
-
-              {success && (
-                <p className="mb-4 text-center text-[14px] font-semibold text-green-700">
-                  Your session has been booked. Our team will reach out shortly.
-                </p>
-              )}
-
               <div className="mt-4 flex justify-center lg:justify-center">
                 <button
                   type="submit"
@@ -656,6 +660,13 @@ const OurToppersGalleryPage = () => {
           text-align-last: center;
         }
       `}</style>
+
+      <SessionBookingDialog
+        open={dialog !== null}
+        variant={dialog?.variant ?? 'success'}
+        message={dialog?.message ?? ''}
+        onClose={() => setDialog(null)}
+      />
     </main>
   );
 };

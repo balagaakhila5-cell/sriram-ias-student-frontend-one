@@ -13,6 +13,7 @@ import {
   FEATURED_BLOG,
   PREVIEW_BLOGS,
 } from '@/features/blogs/data/blogsCatalog';
+import type { BlogBookmarkInput } from '@/features/blogs/types';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
