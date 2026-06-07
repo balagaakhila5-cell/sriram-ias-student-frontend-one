@@ -30,43 +30,44 @@ export function normalizeCityToCenterName(city: string): string {
   return city.trim();
 }
 
-export type SessionBookingResult =
-  | { ok: true }
-  | { ok: false; message: string };
-
 export function useSessionBooking(options?: { courseTitle?: string }) {
   const { data: centers = [] } = useCenters();
   const submit = useSubmitEnquiry();
-  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   const bookSession = async (
     formData: SessionFormData,
     city: string,
     authorized: boolean,
-  ): Promise<SessionBookingResult> => {
+  ): Promise<boolean> => {
+    setError(null);
+    setSuccess(false);
+
     if (
       !formData.fullName.trim() ||
       !formData.mobile.trim() ||
       !formData.email.trim() ||
       !formData.targetYear
     ) {
-      return { ok: false, message: 'Please fill in all fields.' };
+      setError('Please fill in all fields.');
+      return false;
     }
 
     if (!/^\d{10}$/.test(formData.mobile.trim())) {
-      return { ok: false, message: 'Please enter a valid 10-digit mobile number.' };
+      setError('Please enter a valid 10-digit mobile number.');
+      return false;
     }
 
     if (!authorized) {
-      return { ok: false, message: 'Please authorize us to contact you.' };
+      setError('Please authorize us to contact you.');
+      return false;
     }
 
     const centerName = normalizeCityToCenterName(city);
     const matchedCenter = centers.find(
       (center) => center.name.toLowerCase() === centerName.toLowerCase(),
     );
-
-    setIsPending(true);
 
     try {
       await submit.mutateAsync({
@@ -79,22 +80,24 @@ export function useSessionBooking(options?: { courseTitle?: string }) {
         courseTitle: options?.courseTitle,
         expectation: 'One to one personalised session booking',
       });
-      return { ok: true };
+      setSuccess(true);
+      return true;
     } catch (err) {
-      return {
-        ok: false,
-        message:
-          err instanceof Error
-            ? err.message
-            : 'Could not book your session. Please try again.',
-      };
-    } finally {
-      setIsPending(false);
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Could not book your session. Please try again.',
+      );
+      return false;
     }
   };
 
   return {
     bookSession,
-    isPending: isPending || submit.isPending,
+    error,
+    success,
+    setError,
+    setSuccess,
+    isPending: submit.isPending,
   };
 }

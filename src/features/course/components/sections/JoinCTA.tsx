@@ -7,7 +7,6 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import { useSessionBooking } from '../../hooks/useSessionBooking';
-import SessionBookingDialog from '../SessionBookingDialog';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,14 +24,10 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
     targetYear: '',
   });
   const [authorized, setAuthorized] = useState(false);
-  const [dialog, setDialog] = useState<{
-    variant: 'success' | 'error';
-    message: string;
-  } | null>(null);
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const courseTitle = course?.title?.replace(/\n/g, ' ');
-  const { bookSession, isPending } = useSessionBooking({ courseTitle });
+  const { bookSession, error, success, isPending } = useSessionBooking({ courseTitle });
 
   useGSAP(
     () => {
@@ -122,27 +117,16 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = await bookSession(formData, city, authorized);
+    const booked = await bookSession(formData, city, authorized);
+    if (!booked) return;
 
-    if (result.ok) {
-      setDialog({
-        variant: 'success',
-        message: 'Your session has been booked. Our team will reach out shortly.',
-      });
-      setFormData({
-        fullName: '',
-        mobile: '',
-        email: '',
-        targetYear: '',
-      });
-      setAuthorized(false);
-      return;
-    }
-
-    setDialog({
-      variant: 'error',
-      message: result.message,
+    setFormData({
+      fullName: '',
+      mobile: '',
+      email: '',
+      targetYear: '',
     });
+    setAuthorized(false);
   };
 
   // ── BACKGROUNDS & BUTTON THEMES ──────────────────────────────────────────
@@ -304,6 +288,18 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
               </span>
             </label>
 
+            {error && (
+              <p className="mb-4 text-center text-[14px] font-semibold text-red-600">
+                {error}
+              </p>
+            )}
+
+            {success && (
+              <p className="mb-4 text-center text-[14px] font-semibold text-green-700">
+                Your session has been booked. Our team will reach out shortly.
+              </p>
+            )}
+
             {/* Dynamic Submit Button */}
             <div className="mt-4 flex justify-center">
               <button
@@ -340,13 +336,6 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
           </div>
         </div>
       </div>
-
-      <SessionBookingDialog
-        open={dialog !== null}
-        variant={dialog?.variant ?? 'success'}
-        message={dialog?.message ?? ''}
-        onClose={() => setDialog(null)}
-      />
 
       <style jsx>{`
         .text-center-last {
