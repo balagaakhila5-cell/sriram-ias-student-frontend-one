@@ -33,7 +33,7 @@ const FoundersMessagePage = () => {
       </section>
 
       {/* FOUNDER MESSAGE SECTION */}
-      <section className="founder-section relative overflow-x-hidden bg-[#f8fbff]">
+      <section className="founder-section relative overflow-x-hidden overflow-y-visible bg-[#f8fbff]">
         <div className="founder-page-bg absolute inset-0" />
 
         <div className="founder-moving-bg">
@@ -51,14 +51,6 @@ const FoundersMessagePage = () => {
             {/* LEFT — single message box */}
             <div className="dialog-left-col relative z-20 w-full max-w-full">
               <div className="dialog-box-wrap">
-                {/* Background stretches to text height via grid overlay */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  className="dialog-box-bg"
-                  src="/assets/about/founder's-message/dialog-box.png"
-                  alt=""
-                  aria-hidden
-                />
                 <div className="dialog-text-content">
                   <p>
                     Dear Aspiring Civil Servants, Welcome to SRIRAM&apos;s IAS,
@@ -90,6 +82,13 @@ const FoundersMessagePage = () => {
                     Welcome to SRIRAM&apos;s IAS, Let&apos;s begin!
                   </p>
                 </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className="dialog-box-bg"
+                  src="/assets/about/founder's-message/dialog-box.png"
+                  alt=""
+                  aria-hidden
+                />
               </div>
             </div>
 
@@ -216,9 +215,11 @@ const FoundersMessagePage = () => {
           justify-self: end;
           align-self: start;
           overflow: visible;
+          height: auto;
+          max-height: none;
         }
 
-        /* Text drives height; background image fills the box */
+        /* Text drives height; PNG bubble only — no fill color */
         .dialog-box-wrap {
           position: relative;
           box-sizing: border-box;
@@ -227,7 +228,7 @@ const FoundersMessagePage = () => {
           max-width: 100%;
           margin: 0 auto;
           overflow: visible;
-          background-color: #dfe8f3;
+          background: transparent;
         }
 
         .dialog-box-bg {
@@ -246,6 +247,8 @@ const FoundersMessagePage = () => {
           z-index: 2;
           box-sizing: border-box;
           width: 100%;
+          height: auto;
+          max-height: none;
           margin: 0;
           padding: 28px 24px 72px 22px;
           color: #4d5961;
@@ -375,13 +378,13 @@ const FoundersMessagePage = () => {
           align-items: center;
           justify-self: start;
           align-self: start;
-          margin-top: 0;
+          margin-top: clamp(16px, 3vw, 24px);
           overflow: visible;
         }
 
         @media (min-width: 1024px) {
           .right-founder-col {
-            margin-top: 0;
+            margin-top: 40px;
           }
         }
 
@@ -470,10 +473,6 @@ const FoundersMessagePage = () => {
           .founder-moving-bg {
             width: 72%;
             opacity: 0.75;
-          }
-
-          .right-founder-col {
-            margin-top: 0;
           }
         }
 
