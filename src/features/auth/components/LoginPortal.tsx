@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -45,6 +45,8 @@ const facultySchema = z.object({
 
 const LoginPortal: React.FC = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
   const [role, setRole] = useState<UserRole>("student");
   const [parentOtpSent, setParentOtpSent] = useState(false);
   const [studentScreen, setStudentScreen] = useState<StudentScreen>("form");
@@ -80,11 +82,11 @@ const LoginPortal: React.FC = () => {
     if (studentScreen !== "success") return;
 
     const timer = window.setTimeout(() => {
-      router.push("/");
+      router.push(redirectTo.startsWith("/") ? redirectTo : "/");
     }, 1600);
 
     return () => window.clearTimeout(timer);
-  }, [studentScreen, router]);
+  }, [redirectTo, studentScreen, router]);
 
   const onStudentSubmit = studentForm.handleSubmit((values) => {
     setStudentIdentifier(values.identifier.trim());

@@ -22,6 +22,10 @@ import { useGSAP } from '@gsap/react';
 import BookFreeDemoModal from './BookFreeDemoModal';
 import SearchPopup from './SearchPopup';
 import HeaderUserMenu from './HeaderUserMenu';
+import {
+  getHeaderCourseLinks,
+  getHeaderTabsForCity,
+} from '@/features/center/data/centerCourseCategories';
 
 const Header: React.FC = () => {
   const [isCoursesOpen, setIsCoursesOpen] = useState(false);
@@ -159,58 +163,14 @@ const Header: React.FC = () => {
     },
   ];
 
-  const tabs =
-    activeCity === 'New Delhi'
-      ? ['GS Foundation', 'Mentorship', 'Optional Foundation', 'Test Series', 'CSAT', 'Enrichment Course']
-      : ['GS Foundation', 'Mentorship', 'Optional Foundation', 'Test Series', 'Enrichment Courses'];
+  const tabs = getHeaderTabsForCity(activeCity);
+  const courseList = getHeaderCourseLinks(activeCity, activeTab);
 
-  const gsFoundationSlug =
-    activeCity === 'New Delhi'
-      ? '2-years-gs-foundation'
-      : `2-years-gs-foundation-${activeCity.toLowerCase()}`;
-
-  let courseList: { label: string; slug: string }[] = [];
-
-  if (activeCity === 'New Delhi') {
-    if (activeTab === 'GS Foundation') {
-      courseList = [
-        { label: '2 Years General Studies Foundation Course', slug: '2-years-gs-foundation' },
-        { label: '1 Year General Studies Foundation Course', slug: '1-year-gs-foundation' },
-        { label: 'NCERT Foundation Course', slug: 'ncert-foundation' },
-      ];
-    } else if (activeTab === 'Mentorship') {
-      courseList = [{ label: 'STRIDE Mentorship Program', slug: 'stride-mentorship-program' }];
-    } else if (activeTab === 'Optional Foundation') {
-      courseList = [
-        { label: 'Anthropology Optional Foundation Course', slug: 'anthropology-optional-foundation' },
-        { label: 'Geography Optional Foundation Course', slug: 'geography-optional-foundation' },
-        { label: 'PSIR Optional Foundation Course', slug: 'psir-optional-foundation' },
-        { label: 'Sociology Optional Foundation Course', slug: 'sociology-optional-foundation' },
-      ];
-    } else if (activeTab === 'Test Series') {
-      courseList = [
-        { label: 'Prelims Test Series + Mentorship', slug: 'prelims-test-series-mentorship' },
-        { label: 'Mains Test Series + Mentorship', slug: 'mains-test-series-mentorship' },
-      ];
-    } else if (activeTab === 'CSAT') {
-      courseList = [{ label: 'CSAT Foundation Course', slug: 'csat-foundation' }];
-    } else if (activeTab === 'Enrichment Course') {
-      courseList = [{ label: 'Interview Guidance Program (IGP)', slug: 'interview-guidance-program' }];
+  useEffect(() => {
+    if (!tabs.includes(activeTab)) {
+      setActiveTab(tabs[0] ?? 'GS Foundation');
     }
-  } else {
-    courseList = [
-      {
-        label: `2 Years GS Foundation Course${activeCity !== 'New Delhi' ? ` - ${activeCity}` : ''}`,
-        slug: gsFoundationSlug,
-      },
-      { label: 'Prelims Test Series 2026', slug: 'prelims-test-series-2026' },
-      { label: 'PSIR Optional Foundational Courses', slug: 'psir-optional-foundational' },
-      { label: 'Geography Optional Courses', slug: 'geography-optional' },
-      { label: 'Mains Enrichment Program 2025', slug: 'mains-enrichment-2025' },
-      { label: 'PSIR Value Enrichment Course 2025', slug: 'psir-value-enrichment-2025' },
-      { label: 'Mentorship Program', slug: 'mentorship-program' },
-    ];
-  }
+  }, [activeCity, activeTab, tabs]);
 
   const BulletArrow = () => (
     <img
@@ -849,10 +809,10 @@ const Header: React.FC = () => {
 
               <div className="grid grid-cols-[1fr_2px_1fr] gap-x-12 text-left items-start">
                 <div className="flex flex-col gap-7">
-                  {courseList.slice(0, Math.ceil(courseList.length / 2)).map((course, i) => (
+                  {courseList.slice(0, Math.ceil(courseList.length / 2)).map((course) => (
                     <Link
-                      href={`/course/${course.slug}`}
-                      key={`left-${i}`}
+                      href={course.href}
+                      key={`left-${course.slug}`}
                       onClick={() => setIsCoursesOpen(false)}
                       className="flex items-start gap-4 group/left-item w-full"
                     >
@@ -869,10 +829,10 @@ const Header: React.FC = () => {
                 <div className="h-[240px] w-[3px] bg-gradient-to-b from-transparent via-[#2184B8] to-transparent rounded-full opacity-80 mt-2"></div>
 
                 <div className="flex flex-col gap-7">
-                  {courseList.slice(Math.ceil(courseList.length / 2)).map((course, i) => (
+                  {courseList.slice(Math.ceil(courseList.length / 2)).map((course) => (
                     <Link
-                      href={`/course/${course.slug}`}
-                      key={`right-${i}`}
+                      href={course.href}
+                      key={`right-${course.slug}`}
                       onClick={() => setIsCoursesOpen(false)}
                       className="flex items-start gap-4 group/right-item w-full"
                     >

@@ -562,13 +562,15 @@ const WhyChoose: React.FC<Props> = ({ course }) => {
             </div>
           </div>
 
-          <div className="why-choose-girl mt-4 flex w-full shrink-0 items-end justify-center xl:mt-0 xl:w-[32%] xl:max-w-[440px] xl:translate-x-6 xl:self-end xl:justify-end 2xl:translate-x-10">
-            <img
-              src="/assets/course/why-choose-girl.png"
-              alt="Student"
-              className="block h-auto w-full max-w-[320px] object-contain object-bottom sm:max-w-[360px] xl:max-h-[480px] xl:max-w-[440px]"
-              draggable={false}
-            />
+          <div className="mt-4 flex w-full shrink-0 -translate-y-6 items-end justify-center md:-translate-y-12 xl:mt-0 xl:w-[32%] xl:max-w-[520px] xl:-translate-y-24 xl:translate-x-14 xl:self-end xl:justify-end 2xl:-translate-y-28 2xl:translate-x-20">
+            <div className="why-choose-girl flex w-full justify-end">
+              <img
+                src="/assets/course/why-choose-girl.png"
+                alt="Student"
+                className="block h-auto w-full max-w-[360px] object-contain object-bottom sm:max-w-[400px] xl:max-h-[540px] xl:max-w-[520px]"
+                draggable={false}
+              />
+            </div>
           </div>
         </div>
       </div>

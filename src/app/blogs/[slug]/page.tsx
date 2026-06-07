@@ -4,19 +4,20 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
+import { useEffect, useRef, useState } from 'react';
+import { useParams } from 'next/navigation';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import FreeResourcesCourseSlider from '@/components/common/FreeResourcesCourseSlider';
+import { FREE_LEARNING_EXPLORE_HREFS } from '@/features/homepage/utils/homepageLinks';
+import BlogDetailBookmarkButton from '@/features/blogs/components/BlogDetailBookmarkButton';
 import {
-  Bookmark,
   ChevronDown,
   Clock3,
   Lightbulb,
   BookOpenText,
   BarChart3,
 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import FreeResourcesCourseSlider from '@/components/common/FreeResourcesCourseSlider';
-import { FREE_LEARNING_EXPLORE_HREFS } from '@/features/homepage/utils/homepageLinks';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -32,6 +33,8 @@ const sections = [
 ];
 
 export default function BlogDetailPage() {
+  const params = useParams();
+  const slug = typeof params.slug === 'string' ? params.slug : 'discipline-beats-motivation';
   const [activeId, setActiveId] = useState('introduction');
   const [isTocOpen, setIsTocOpen] = useState(true);
   const tocRef = useRef<HTMLUListElement>(null);
@@ -214,10 +217,17 @@ export default function BlogDetailPage() {
                 </div>
               </div>
 
-              <button className="ml-auto flex h-[56px] min-w-[170px] items-center justify-center gap-3 rounded-[10px] bg-white px-7 text-[20px] font-semibold text-[#444] shadow-md">
-                <Bookmark size={25} />
-                Bookmark
-              </button>
+              <BlogDetailBookmarkButton
+                bookmark={{
+                  id: `blog-detail-${slug}`,
+                  slug,
+                  title: 'Why Discipline Beats Motivation Every Time ?',
+                  date: 'March 23 , 2026',
+                  time: '12:30 PM',
+                  image: '/assets/blogs/main-cup.png',
+                  category: 'Current Affairs',
+                }}
+              />
             </div>
 
             {/* MAIN LAYOUT: TOC + FULL RIGHT CONTENT */}

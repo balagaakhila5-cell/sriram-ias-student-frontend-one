@@ -7,6 +7,10 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
+import {
+  CENTER_CATEGORIES_BY_CITY,
+  type CenterCity,
+} from '@/features/center/data/centerCourseCategories';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,86 +18,14 @@ interface Props {
   city: string;
 }
 
-const COURSES_BY_CITY: Record<
-  string,
-  { title: string; img: string; slug: string }[]
-> = {
-  delhi: [
-    {
-      title: 'GS Foundation Course',
-      img: 'course-1.png',
-      slug: '2-years-gs-foundation',
-    },
-    {
-      title: 'Mentorship Course',
-      img: 'course-2.png',
-      slug: 'stride-mentorship-program',
-    },
-    {
-      title: 'Optional Foundation',
-      img: 'course-3.png',
-      slug: 'anthropology-optional-foundation',
-    },
-    {
-      title: 'Test Series',
-      img: 'course-4.png',
-      slug: 'prelims-test-series-mentorship',
-    },
-  ],
-  hyderabad: [
-    {
-      title: 'GS Foundation Course',
-      img: 'course-1.png',
-      slug: '2-years-gs-foundation-hyderabad',
-    },
-    {
-      title: 'Mentorship Course',
-      img: 'course-2.png',
-      slug: 'mentorship-program',
-    },
-    {
-      title: 'Optional Foundation',
-      img: 'course-3.png',
-      slug: 'psir-optional-foundational',
-    },
-    {
-      title: 'Test Series',
-      img: 'course-4.png',
-      slug: 'prelims-test-series-2026',
-    },
-  ],
-  pune: [
-    {
-      title: 'GS Foundation Course',
-      img: 'course-1.png',
-      slug: '2-years-gs-foundation-pune',
-    },
-    {
-      title: 'Mentorship Course',
-      img: 'course-2.png',
-      slug: 'mentorship-program',
-    },
-    {
-      title: 'Optional Foundation',
-      img: 'course-3.png',
-      slug: 'geography-optional',
-    },
-    {
-      title: 'Test Series',
-      img: 'course-4.png',
-      slug: 'prelims-test-series-2026',
-    },
-  ],
-};
-
 const CoursesInCity: React.FC<Props> = ({ city }) => {
-  const cityKey = city.toLowerCase();
+  const cityKey = city.toLowerCase() as CenterCity;
   const cityName = cityKey.toUpperCase();
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   const courses = useMemo(
-    () => COURSES_BY_CITY[cityKey] ?? COURSES_BY_CITY.delhi,
+    () => CENTER_CATEGORIES_BY_CITY[cityKey] ?? CENTER_CATEGORIES_BY_CITY.delhi,
     [cityKey],
   );
 
@@ -177,10 +109,10 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
         COURSES IN {cityName}
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 w-full max-w-[1400px] relative z-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 lg:gap-8 w-full max-w-[1400px] relative z-10">
         {courses.map((course) => (
           <div
-            key={course.slug}
+            key={course.key}
             className="courses-city-card bg-white rounded-[24px] shadow-[0_12px_40px_rgba(0,0,0,0.06)] overflow-hidden flex flex-col group hover:-translate-y-2 transition-transform duration-300"
           >
             {/* Image container */}
@@ -204,7 +136,7 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
               </h3>
 
               <Link
-                href={`/course/${course.slug}`}
+                href={`/centers/${cityKey}/courses/${course.key}`}
                 className="mt-auto bg-[#044062] hover:bg-[#065A8C] text-white font-semibold text-[15px] px-8 py-3 rounded-md transition-colors font-['Montserrat'] shadow-md whitespace-nowrap"
               >
                 View Courses

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import { useSessionBooking } from '@/features/course/hooks/useSessionBooking';
+import SessionBookingDialog from '@/features/course/components/SessionBookingDialog';
 
 type Topper = {
   name: string;
@@ -150,7 +151,11 @@ const OurToppersGalleryPage = () => {
     city: 'Delhi',
   });
   const [authorized, setAuthorized] = useState(false);
-  const { bookSession, error, success, isPending } = useSessionBooking();
+  const [dialog, setDialog] = useState<{
+    variant: 'success' | 'error';
+    message: string;
+  } | null>(null);
+  const { bookSession, isPending } = useSessionBooking();
 
   const handleFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
