@@ -33,17 +33,20 @@ const FoundersMessagePage = () => {
       </section>
 
       {/* FOUNDER MESSAGE SECTION */}
-      <section className="founder-section relative overflow-x-hidden overflow-y-visible bg-[#f8fbff]">
+      <section className="founder-section relative bg-[#f8fbff]">
         <div className="founder-page-bg absolute inset-0" />
 
-        <div className="founder-moving-bg">
-          <Image
-            src="/assets/about/founder's-message/background-animation-founder.png"
-            alt="Founder background animation"
-            fill
-            sizes="80vw"
-            className="object-cover object-right"
-          />
+        {/* Animated circles — clipped to section, motion preserved */}
+        <div className="founder-moving-bg-clip" aria-hidden>
+          <div className="founder-moving-bg">
+            <Image
+              src="/assets/about/founder's-message/background-animation-founder.png"
+              alt=""
+              fill
+              sizes="80vw"
+              className="founder-moving-bg-img object-cover object-right"
+            />
+          </div>
         </div>
 
         <div className="relative z-10 mx-auto w-full max-w-[1440px] box-border px-4 pb-12 pt-8 sm:px-6 sm:pb-14 sm:pt-10 lg:px-8 lg:pb-16 lg:pt-10">
@@ -82,13 +85,6 @@ const FoundersMessagePage = () => {
                     Welcome to SRIRAM&apos;s IAS, Let&apos;s begin!
                   </p>
                 </div>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  className="dialog-box-bg"
-                  src="/assets/about/founder's-message/dialog-box.png"
-                  alt=""
-                  aria-hidden
-                />
               </div>
             </div>
 
@@ -125,6 +121,7 @@ const FoundersMessagePage = () => {
           --fm-founder-photo: min(200px, 68vw);
           --fm-font-size: 16px;
           --fm-line-height: 26px;
+          overflow: hidden;
         }
 
         @media (min-width: 640px) {
@@ -168,24 +165,32 @@ const FoundersMessagePage = () => {
             linear-gradient(100deg, #fffaf2 0%, #ffffff 35%, #e8f6ff 100%);
         }
 
+        .founder-moving-bg-clip {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          overflow: hidden;
+          pointer-events: none;
+        }
+
         .founder-moving-bg {
           position: absolute;
-          right: -28px;
           top: 0;
           bottom: 0;
-          width: 68%;
+          left: 42%;
+          right: 0;
           opacity: 0.95;
-          pointer-events: none;
           animation: founderBgMove 5s ease-in-out infinite alternate;
-          transform-origin: right center;
+          transform-origin: center center;
+          will-change: transform;
         }
 
         @keyframes founderBgMove {
           0% {
-            transform: translateX(0px) translateY(0px) scale(1);
+            transform: translate3d(0, 0, 0) scale(1);
           }
           100% {
-            transform: translateX(-16px) translateY(10px) scale(1.025);
+            transform: translate3d(-14px, 8px, 0) scale(1.02);
           }
         }
 
@@ -198,12 +203,13 @@ const FoundersMessagePage = () => {
           width: 100%;
           max-width: 1411px;
           margin: 0 auto;
+          overflow: visible;
         }
 
         @media (min-width: 1024px) {
           .founder-main-grid {
-            grid-template-columns: minmax(auto, 1fr) minmax(auto, 1fr);
-            column-gap: clamp(12px, 2vw, 28px);
+            grid-template-columns: minmax(min-content, 1fr) minmax(min-content, 1fr);
+            column-gap: clamp(20px, 3vw, 40px);
             row-gap: 0;
             align-items: start;
           }
@@ -214,43 +220,40 @@ const FoundersMessagePage = () => {
           max-width: var(--fm-dialog-w);
           justify-self: end;
           align-self: start;
+          isolation: isolate;
+          z-index: 2;
           overflow: visible;
           height: auto;
           max-height: none;
         }
 
-        /* Text drives height; PNG bubble only — no fill color */
+        /* Single message card — text defines height, no inner scroll */
         .dialog-box-wrap {
           position: relative;
           box-sizing: border-box;
-          display: block;
+          display: flow-root;
           width: 100%;
           max-width: 100%;
           margin: 0 auto;
           overflow: visible;
+          height: auto;
+          max-height: none;
           background: transparent;
-        }
-
-        .dialog-box-bg {
-          position: absolute;
-          inset: 0;
-          z-index: 1;
-          width: 100%;
-          height: 100%;
-          object-fit: fill;
-          pointer-events: none;
-          user-select: none;
+          background-image: url("/assets/about/founder's-message/dialog-box.png");
+          background-repeat: no-repeat;
+          background-size: 100% 100%;
+          background-position: center;
         }
 
         .dialog-text-content {
           position: relative;
-          z-index: 2;
+          z-index: 1;
           box-sizing: border-box;
           width: 100%;
           height: auto;
           max-height: none;
           margin: 0;
-          padding: 28px 24px 72px 22px;
+          padding: 28px 24px 80px 22px;
           color: #4d5961;
           font-family: 'Montserrat', sans-serif;
           font-size: 10.5px;
@@ -282,7 +285,7 @@ const FoundersMessagePage = () => {
 
         @media (max-width: 360px) {
           .dialog-text-content {
-            padding: 26px 20px 68px 20px;
+            padding: 26px 20px 76px 20px;
             font-size: 10px;
             line-height: 15px;
           }
@@ -294,7 +297,7 @@ const FoundersMessagePage = () => {
 
         @media (min-width: 425px) {
           .dialog-text-content {
-            padding: 32px 28px 76px 26px;
+            padding: 32px 28px 84px 26px;
             font-size: 11px;
             line-height: 17px;
           }
@@ -310,7 +313,7 @@ const FoundersMessagePage = () => {
 
         @media (min-width: 640px) {
           .dialog-text-content {
-            padding: 36px 32px 84px 30px;
+            padding: 36px 32px 92px 30px;
             font-size: 12px;
             line-height: 19px;
           }
@@ -322,22 +325,20 @@ const FoundersMessagePage = () => {
 
         @media (min-width: 768px) and (max-width: 1023px) {
           .dialog-text-content {
-            padding: 40px 36px 92px 34px;
+            padding: 40px 36px 100px 34px;
             font-size: 13px;
             line-height: 21px;
           }
 
           .founder-moving-bg {
-            display: block;
-            width: 55%;
-            right: 0;
-            opacity: 0.4;
+            left: 50%;
+            opacity: 0.55;
             animation: none;
           }
         }
 
         @media (max-width: 767px) {
-          .founder-moving-bg {
+          .founder-moving-bg-clip {
             display: none;
           }
         }
@@ -348,7 +349,7 @@ const FoundersMessagePage = () => {
             width: 84%;
             max-width: none;
             margin: 0 auto;
-            padding: 40px 32px 100px 48px;
+            padding: 40px 32px 128px 48px;
             font-size: var(--fm-font-size);
             line-height: var(--fm-line-height);
           }
@@ -362,34 +363,39 @@ const FoundersMessagePage = () => {
           }
 
           .founder-moving-bg {
-            display: block;
-            width: 68%;
-            right: -28px;
+            left: 40%;
             opacity: 0.95;
             animation: founderBgMove 5s ease-in-out infinite alternate;
           }
         }
 
         .right-founder-col {
+          position: relative;
           display: flex;
           width: 100%;
           max-width: var(--fm-founder-group-w);
           flex-direction: column;
           align-items: center;
-          justify-self: start;
+          justify-content: flex-start;
+          justify-self: center;
           align-self: start;
-          margin-top: clamp(16px, 3vw, 24px);
+          margin-top: clamp(20px, 4vw, 32px);
           overflow: visible;
+          height: auto;
+          max-height: none;
         }
 
         @media (min-width: 1024px) {
           .right-founder-col {
-            margin-top: 40px;
+            margin-top: 48px;
+            justify-self: center;
           }
         }
 
         .founder-photo-wrap {
           position: relative;
+          z-index: 2;
+          flex-shrink: 0;
           width: min(var(--fm-founder-photo), 100%);
           max-width: 100%;
           aspect-ratio: 1 / 1;
@@ -407,13 +413,18 @@ const FoundersMessagePage = () => {
         .founder-details {
           position: relative;
           z-index: 12;
+          display: flex;
           width: 100%;
           max-width: 100%;
-          margin-top: clamp(10px, 1.8vw, 18px);
+          flex-direction: column;
+          align-items: center;
+          margin-top: clamp(12px, 2vw, 18px);
           text-align: center;
+          gap: clamp(10px, 1.4vw, 16px);
         }
 
         .best-wishes-text {
+          margin: 0;
           font-size: clamp(22px, 2.3vw, 33px);
           line-height: 1.05;
           font-weight: 800;
@@ -431,7 +442,7 @@ const FoundersMessagePage = () => {
         }
 
         .founder-name {
-          margin-top: clamp(12px, 1.2vw, 17px);
+          margin: 0;
           font-size: clamp(22px, 2.4vw, 34px);
           line-height: 1.1;
           font-weight: 700;
@@ -440,7 +451,7 @@ const FoundersMessagePage = () => {
         }
 
         .founder-role {
-          margin-top: clamp(14px, 1.5vw, 21px);
+          margin: 0;
           font-size: clamp(18px, 1.8vw, 26px);
           line-height: 1.15;
           font-weight: 600;
@@ -448,7 +459,7 @@ const FoundersMessagePage = () => {
         }
 
         .founder-brand {
-          margin-top: clamp(14px, 1.5vw, 22px);
+          margin: 0;
           font-size: clamp(18px, 1.7vw, 25px);
           line-height: 1.15;
           font-weight: 700;
@@ -463,7 +474,7 @@ const FoundersMessagePage = () => {
 
           .dialog-text-content {
             width: 86%;
-            padding: 36px 28px 104px 44px;
+            padding: 36px 28px 132px 44px;
           }
 
           .dialog-text-content p {
@@ -471,8 +482,8 @@ const FoundersMessagePage = () => {
           }
 
           .founder-moving-bg {
-            width: 72%;
-            opacity: 0.75;
+            left: 38%;
+            opacity: 0.8;
           }
         }
 
