@@ -1,34 +1,79 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Camera, UserRound, X } from "lucide-react";
+import { useAuthStore } from "@/store/authStore";
 
-const PROFILE_PHOTO_KEY = "student-profile-photo";
 const PROFILE_PHOTO_INPUT_ID = "student-profile-photo-upload";
+
+interface ProfileForm {
+  name: string;
+  mobile: string;
+  email: string;
+  parentName: string;
+  parentMobile: string;
+  address: string;
+}
+
+function profileDetailsKey(userId: string) {
+  return `student-profile-details-${userId}`;
+}
+
+function profilePhotoKey(userId: string) {
+  return `student-profile-photo-${userId}`;
+}
 
 function isImageFile(file: File): boolean {
   if (file.type.startsWith("image/")) return true;
   return /\.(jpe?g|png|gif|webp|bmp|heic|heif|avif|svg)$/i.test(file.name);
 }
 
+const emptyForm: ProfileForm = {
+  name: "",
+  mobile: "",
+  email: "",
+  parentName: "",
+  parentMobile: "",
+  address: "",
+};
+
 export default function ProfilePage() {
+  const router = useRouter();
+  const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isHydrated = useAuthStore((s) => s.isHydrated);
+
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
-  const [form, setForm] = useState({
-    name: "Kotla Darshan",
-    mobile: "9898989898",
-    email: "darshan@gmail.com",
-    parentName: "Kotla Lakshmana Rao",
-    parentMobile: "6767676767",
-    address: "Flat 204, Sriram Towers, Madhapur, Hyderabad, Telangana - 500081",
-  });
+  const [form, setForm] = useState<ProfileForm>(emptyForm);
+  const [isReady, setIsReady] = useState(false);
+
+  const displayName = useMemo(
+    () => (form.name.trim() || user?.name || "Student").toUpperCase(),
+    [form.name, user?.name],
+  );
+
+  const displaySubtitle = form.mobile.trim() || user?.mobile || form.email.trim() || user?.email || "Profile";
 
   const update =
-    (key: keyof typeof form) =>
+    (key: keyof ProfileForm) =>
     (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm((f) => ({
         ...f,
         [key]: e.target.value,
       }));
+
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+
+    try {
+      localStorage.setItem(profileDetailsKey(user.id), JSON.stringify(form));
+      window.alert("Profile saved successfully.");
+    } catch {
+      window.alert("Could not save profile. Please try again.");
+    }
+  };
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -51,9 +96,9 @@ export default function ProfilePage() {
       window.alert("Could not read the image. Please try another file.");
     };
     reader.onload = () => {
-      if (typeof reader.result !== "string") return;
+      if (typeof reader.result !== "string" || !user) return;
       try {
-        localStorage.setItem(PROFILE_PHOTO_KEY, reader.result);
+        localStorage.setItem(profilePhotoKey(user.id), reader.result);
       } catch {
         /* storage full — preview still works this session */
       }
@@ -70,23 +115,62 @@ export default function ProfilePage() {
       if (current?.startsWith("blob:")) URL.revokeObjectURL(current);
       return null;
     });
-    localStorage.removeItem(PROFILE_PHOTO_KEY);
+    if (user) localStorage.removeItem(profilePhotoKey(user.id));
   };
 
   useEffect(() => {
+    if (!isHydrated) return;
+
+    if (!isAuthenticated || !user) {
+      router.replace("/login");
+      return;
+    }
+
+    let savedDetails: Partial<ProfileForm> = {};
     try {
-      const saved = localStorage.getItem(PROFILE_PHOTO_KEY);
-      if (saved) setProfilePhoto(saved);
+      const raw = localStorage.getItem(profileDetailsKey(user.id));
+      if (raw) savedDetails = JSON.parse(raw) as Partial<ProfileForm>;
+    } catch {
+      /* ignore invalid saved data */
+    }
+
+    setForm({
+      name: savedDetails.name ?? user.name ?? "",
+      mobile: savedDetails.mobile ?? user.mobile ?? "",
+      email: savedDetails.email ?? user.email ?? "",
+      parentName: savedDetails.parentName ?? "",
+      parentMobile: savedDetails.parentMobile ?? "",
+      address: savedDetails.address ?? "",
+    });
+
+    try {
+      const savedPhoto = localStorage.getItem(profilePhotoKey(user.id));
+      if (savedPhoto) setProfilePhoto(savedPhoto);
     } catch {
       /* ignore */
     }
-  }, []);
+
+    setIsReady(true);
+  }, [isAuthenticated, isHydrated, router, user]);
 
   useEffect(() => {
     return () => {
       if (profilePhoto?.startsWith("blob:")) URL.revokeObjectURL(profilePhoto);
     };
   }, [profilePhoto]);
+
+  if (!isReady) {
+    return (
+      <div className="rounded-[24px] bg-[#EBF0FF] p-8 lg:p-10">
+        <p
+          className="text-center text-[16px] font-medium text-[#00000080]"
+          style={{ fontFamily: "Montserrat, sans-serif" }}
+        >
+          Loading your profile...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-[24px] bg-[#EBF0FF] p-8 lg:p-10">
@@ -156,19 +240,19 @@ export default function ProfilePage() {
         </div>
 
         <h2 className="student-portal-heading text-[20px]! font-extrabold">
-          KOTLA DARSHAN
+          {displayName}
         </h2>
 
         <p
           className="text-[18px] font-extrabold text-[#000000]"
           style={{ fontFamily: "Montserrat, sans-serif" }}
         >
-          Mobile Number
+          {displaySubtitle}
         </p>
       </div>
 
       <form
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={handleSave}
         className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2"
       >
         <FormField

@@ -2,10 +2,18 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { User, LogOut } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
+import type { ServerRole } from "@/features/auth/types";
+
+function getProfileRoute(role: ServerRole): string {
+  if (role === "parent") return "/parent/course-details";
+  return "/student/profile";
+}
 
 const HeaderUserMenu: React.FC = () => {
+  const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const isHydrated = useAuthStore((s) => s.isHydrated);
@@ -100,14 +108,17 @@ const HeaderUserMenu: React.FC = () => {
             </p>
           </div>
 
-          <Link
-            href="/student/profile"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              router.push(getProfileRoute(user.role));
+            }}
+            className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
           >
             <User size={16} />
             My Profile
-          </Link>
+          </button>
 
           <button
             type="button"

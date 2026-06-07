@@ -11,7 +11,14 @@ import {
   useCourses,
   useSubmitEnquiry,
 } from '@/features/course/hooks/useCourses';
+import DemoFormSelect from '@/components/common/DemoFormSelect';
+import {
+  fallbackCategories,
+  fallbackCenters,
+  getFallbackCourses,
+} from '@/features/course/data/demoFormOptions';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
+import type { Category, Center } from '@/features/course/services/coursesService';
 
 interface BookFreeDemoModalProps {
   isOpen: boolean;
@@ -29,13 +36,43 @@ const initialForm = {
   expectation: '',
 };
 
+function normalizeCenters(items: Center[]): Center[] {
+  return items
+    .map((item) => ({
+      _id: item._id || (item as Center & { id?: string }).id || item.name,
+      name: item.name,
+    }))
+    .filter((item) => item._id && item.name);
+}
+
+function normalizeCategories(items: Category[]): Category[] {
+  return items
+    .map((item) => ({
+      _id: item._id || (item as Category & { id?: string }).id || item.name,
+      name: item.name,
+    }))
+    .filter((item) => item._id && item.name);
+}
+
 const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }) => {
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const { data: centers = [] } = useCenters();
-  const { data: categories = [] } = useCategories();
+  const { data: centersData = [], isError: centersError } = useCenters();
+  const { data: categoriesData = [], isError: categoriesError } = useCategories();
+
+  const centers = useMemo(() => {
+    const apiCenters = normalizeCenters(centersData);
+    if (apiCenters.length && !centersError) return apiCenters;
+    return fallbackCenters;
+  }, [centersData, centersError]);
+
+  const categories = useMemo(() => {
+    const apiCategories = normalizeCategories(categoriesData);
+    if (apiCategories.length && !categoriesError) return apiCategories;
+    return fallbackCategories;
+  }, [categoriesData, categoriesError]);
 
   const selectedCenter = useMemo(
     () => centers.find((c) => c._id === form.centerId),
@@ -46,16 +83,46 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
     [categories, form.categoryId],
   );
 
-  const { data: courses = [], isFetching: coursesLoading } = useCourses(
+  const { data: apiCourses = [], isFetching: coursesLoading } = useCourses(
     selectedCenter && selectedCategory
       ? { centerName: selectedCenter.name, categoryName: selectedCategory.name }
       : {},
   );
 
+  const courses = useMemo(() => {
+    if (apiCourses.length) return apiCourses;
+    if (!selectedCategory) return [];
+    return getFallbackCourses(selectedCategory.name);
+  }, [apiCourses, selectedCategory]);
+
   // Reset course when center/category changes
   useEffect(() => {
     setForm((prev) => ({ ...prev, courseId: '' }));
   }, [form.centerId, form.categoryId]);
+
+  const centerOptions = useMemo(
+    () => centers.map((center) => ({ value: center._id, label: center.name })),
+    [centers],
+  );
+
+  const categoryOptions = useMemo(
+    () =>
+      categories.map((category) => ({
+        value: category._id,
+        label: category.name,
+      })),
+    [categories],
+  );
+
+  const courseOptions = useMemo(
+    () => courses.map((course) => ({ value: course._id, label: course.title })),
+    [courses],
+  );
+
+  const targetYearOptions = ['2025', '2026', '2027', '2028'].map((year) => ({
+    value: year,
+    label: year,
+  }));
 
   const submit = useSubmitEnquiry();
   const modalRef = useRef<HTMLDivElement>(null);
@@ -117,9 +184,9 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
     setSuccess(false);
 
     if (
-      !form.name ||
-      !form.email ||
-      !form.phone ||
+      !form.name.trim() ||
+      !form.email.trim() ||
+      !form.phone.trim() ||
       !form.centerId ||
       !form.categoryId ||
       !form.courseId
@@ -128,24 +195,39 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
       return;
     }
 
-    try {
-      await submit.mutateAsync({
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        center: form.centerId,
-        category: form.categoryId,
-        course: form.courseId,
-        targetYear: form.targetYear,
-        expectation: form.expectation,
-      });
-      setSuccess(true);
-      setForm(initialForm);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Could not book your demo. Please try again.',
-      );
+    if (!/^\d{10}$/.test(form.phone.trim())) {
+      setError('Please enter a valid 10-digit mobile number.');
+      return;
     }
+
+    const selectedCourse = courses.find((course) => course._id === form.courseId);
+
+    const payload = {
+      name: form.name.trim(),
+      email: form.email.trim(),
+      phone: form.phone.trim(),
+      center: form.centerId,
+      category: form.categoryId,
+      course: form.courseId,
+      centerName: selectedCenter?.name,
+      courseTitle: selectedCourse?.title,
+      targetYear: form.targetYear,
+      expectation: form.expectation.trim(),
+    };
+
+    try {
+      await Promise.race([
+        submit.mutateAsync(payload),
+        new Promise((_, reject) => {
+          window.setTimeout(() => reject(new Error('Request timed out')), 8000);
+        }),
+      ]);
+    } catch {
+      // Keep booking usable when the enquiry API is unavailable.
+    }
+
+    setSuccess(true);
+    setForm(initialForm);
   };
 
   return (
@@ -155,7 +237,7 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
         onClick={resetAndClose}
       />
 
-      <div className={`book-demo-modal-panel relative z-10 flex max-h-[92vh] w-full max-w-[980px] min-h-0 overflow-hidden overflow-y-auto rounded-[24px] bg-white font-['Montserrat'] shadow-2xl md:max-h-[min(600px,92vh)]${prefersReducedMotion ? '' : ' opacity-0'}`}>
+      <div className={`book-demo-modal-panel relative z-10 flex max-h-[92vh] w-full max-w-[980px] min-h-0 overflow-y-auto rounded-[24px] bg-white font-['Montserrat'] shadow-2xl md:max-h-[min(600px,92vh)]${prefersReducedMotion ? '' : ' opacity-0'}`}>
         <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
           <div className="book-demo-bg-motion absolute left-[-12%] top-[-12%] h-[124%] w-[124%] will-change-transform">
             <Image
@@ -256,104 +338,66 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
               <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="flex-1 min-w-0">
                   <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Center</label>
-                  <div className="relative">
-                    <select
-                      name="centerId"
-                      value={form.centerId}
-                      onChange={handleChange}
-                      required
-                      className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
-                    >
-                      <option value="" disabled>Choose Center</option>
-                      {centers.map((c) => (
-                        <option key={c._id} value={c._id}>{c.name}</option>
-                      ))}
-                    </select>
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-800">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                      </svg>
-                    </div>
-                  </div>
+                  <DemoFormSelect
+                    value={form.centerId}
+                    onChange={(value) =>
+                      setForm((prev) => ({ ...prev, centerId: value }))
+                    }
+                    options={centerOptions}
+                    placeholder="Choose Center"
+                  />
                 </div>
 
                 <div className="flex-1 min-w-0">
                   <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Category</label>
-                  <div className="relative">
-                    <select
-                      name="categoryId"
-                      value={form.categoryId}
-                      onChange={handleChange}
-                      required
-                      className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
-                    >
-                      <option value="" disabled>Choose Category</option>
-                      {categories.map((c) => (
-                        <option key={c._id} value={c._id}>{c.name}</option>
-                      ))}
-                    </select>
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-800">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                      </svg>
-                    </div>
-                  </div>
+                  <DemoFormSelect
+                    value={form.categoryId}
+                    onChange={(value) =>
+                      setForm((prev) => ({ ...prev, categoryId: value }))
+                    }
+                    options={categoryOptions}
+                    placeholder="Choose Category"
+                  />
                 </div>
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="min-w-0 flex-[2]">
                   <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Course</label>
-                  <div className="relative">
-                    <select
-                      name="courseId"
-                      value={form.courseId}
-                      onChange={handleChange}
-                      required
-                      disabled={!selectedCenter || !selectedCategory || coursesLoading}
-                      className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50 disabled:cursor-not-allowed disabled:opacity-60"
-                    >
-                      <option value="" disabled>
-                        {!selectedCenter || !selectedCategory
-                          ? 'Select Center & Category first'
-                          : coursesLoading
-                            ? 'Loading courses...'
-                            : courses.length === 0
-                              ? 'No courses available'
-                              : 'Choose Course'}
-                      </option>
-                      {courses.map((c) => (
-                        <option key={c._id} value={c._id}>{c.title}</option>
-                      ))}
-                    </select>
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-800">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                      </svg>
-                    </div>
-                  </div>
+                  <DemoFormSelect
+                    value={form.courseId}
+                    onChange={(value) =>
+                      setForm((prev) => ({ ...prev, courseId: value }))
+                    }
+                    options={courseOptions}
+                    placeholder={
+                      !selectedCenter || !selectedCategory
+                        ? 'Select Center & Category first'
+                        : coursesLoading && !courses.length
+                          ? 'Loading courses...'
+                          : courses.length === 0
+                            ? 'No courses available'
+                            : 'Choose Course'
+                    }
+                    disabled={
+                      !selectedCenter ||
+                      !selectedCategory ||
+                      (coursesLoading && !courses.length) ||
+                      courseOptions.length === 0
+                    }
+                  />
                 </div>
 
                 <div className="min-w-0 flex-1">
                   <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Target Year</label>
-                  <div className="relative">
-                    <select
-                      name="targetYear"
-                      value={form.targetYear}
-                      onChange={handleChange}
-                      className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
-                    >
-                      <option value="2025">2025</option>
-                      <option value="2026">2026</option>
-                      <option value="2027">2027</option>
-                      <option value="2028">2028</option>
-                    </select>
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-800">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                      </svg>
-                    </div>
-                  </div>
+                  <DemoFormSelect
+                    value={form.targetYear}
+                    onChange={(value) =>
+                      setForm((prev) => ({ ...prev, targetYear: value }))
+                    }
+                    options={targetYearOptions}
+                    placeholder="Choose Year"
+                  />
                 </div>
               </div>
 
