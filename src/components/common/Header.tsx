@@ -27,7 +27,10 @@ import {
   getHeaderTabsForCity,
 } from '@/features/center/data/centerCourseCategories';
 
-const Header: React.FC = () => {
+const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
+  variant = 'transparent',
+}) => {
+  const isLightHeader = variant === 'light';
   const [isCoursesOpen, setIsCoursesOpen] = useState(false);
   const [isCentersOpen, setIsCentersOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -180,17 +183,29 @@ const Header: React.FC = () => {
     />
   );
 
-  const topNavItemClass =
-    'px-2 xl:px-2.5 py-1.5 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer hover:text-white active:bg-transparent focus:bg-transparent';
+  const topNavItemClass = isLightHeader
+    ? 'px-2 xl:px-2.5 py-1.5 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-[#333333] font-bold cursor-pointer hover:text-black active:bg-transparent focus:bg-transparent'
+    : 'px-2 xl:px-2.5 py-1.5 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer hover:text-white active:bg-transparent focus:bg-transparent';
 
-  const secondNavItemClass =
-    'px-2 xl:px-2.5 py-1.5 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer hover:text-white active:bg-transparent focus:bg-transparent';
+  const secondNavItemClass = isLightHeader
+    ? 'px-2 xl:px-2.5 py-1.5 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-[#333333] font-bold cursor-pointer hover:text-black active:bg-transparent focus:bg-transparent'
+    : 'px-2 xl:px-2.5 py-1.5 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold cursor-pointer hover:text-white active:bg-transparent focus:bg-transparent';
+
+  const topNavActiveClass = isLightHeader ? 'text-black' : 'text-white';
+  const navMutedClass = isLightHeader
+    ? 'text-[#333333]/80 hover:text-black'
+    : 'text-white/80 hover:text-white';
+  const navActiveClass = isLightHeader ? 'text-black' : 'text-white';
 
   return (
     <>
       <header
         ref={headerRef}
-        className="absolute top-0 left-0 right-0 z-50 mx-auto w-full bg-transparent py-5 lg:py-4 px-4 md:px-6 lg:px-8 xl:px-12 font-['Montserrat']"
+        className={
+          isLightHeader
+            ? "sticky top-0 left-0 right-0 z-50 mx-auto w-full border-b border-gray-100 bg-white py-3 shadow-sm lg:py-3 px-4 md:px-6 lg:px-8 xl:px-12 font-['Montserrat']"
+            : "absolute top-0 left-0 right-0 z-50 mx-auto w-full bg-transparent py-5 lg:py-4 px-4 md:px-6 lg:px-8 xl:px-12 font-['Montserrat']"
+        }
       >
         <div className="w-full max-w-[1440px] mx-auto flex justify-between items-start relative">
         <div className="flex items-center">
@@ -216,7 +231,11 @@ const Header: React.FC = () => {
           </div>
 
           <div className="flex flex-col items-end lg:items-start gap-0.5 relative">
-            <div className="hidden lg:flex items-center gap-1.5 xl:gap-2 text-[16px] font-medium leading-[100%] tracking-normal uppercase text-white/80">
+            <div
+              className={`hidden lg:flex items-center gap-1.5 xl:gap-2 text-[16px] font-medium leading-[100%] tracking-normal uppercase ${
+                isLightHeader ? 'text-[#333333]' : 'text-white/80'
+              }`}
+            >
               <div ref={blogLangRef} className="relative">
                 <button
                   type="button"
@@ -281,7 +300,7 @@ const Header: React.FC = () => {
 
                     setIsCentersOpen((prev) => !prev);
                   }}
-                  className={`${topNavItemClass} ${isCentersOpen ? 'text-white' : ''}`}
+                  className={`${topNavItemClass} ${isCentersOpen ? topNavActiveClass : ''}`}
                 >
                   OUR CENTERS
                 </button>
@@ -293,7 +312,11 @@ const Header: React.FC = () => {
 
               <div className="relative" ref={langRef}>
                 <div
-                  className="flex items-center gap-1 cursor-pointer hover:text-white px-1.5 xl:px-2 py-1.5 rounded-[4px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-white/80 font-bold"
+                  className={`flex items-center gap-1 cursor-pointer px-1.5 xl:px-2 py-1.5 rounded-[4px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase font-bold ${
+                    isLightHeader
+                      ? 'text-[#333333] hover:text-black'
+                      : 'text-white/80 hover:text-white'
+                  }`}
                   onClick={() => setIsLangOpen(!isLangOpen)}
                 >
                   <Image
@@ -332,31 +355,55 @@ const Header: React.FC = () => {
                 className="flex items-center gap-2 border rounded-[10px] px-2.5 py-2"
                 style={{ borderColor: '#1897D8' }}
               >
-                <span className="text-white font-semibold text-[16px] leading-[100%] tracking-normal font-[Montserrat] xl:text-[14px] uppercase">
+                <span
+                  className={`font-semibold text-[16px] leading-[100%] tracking-normal font-[Montserrat] xl:text-[14px] uppercase ${
+                    isLightHeader ? 'text-[#1897D8]' : 'text-white'
+                  }`}
+                >
                   +91 8686818384
                 </span>
               </div>
 
               <button
                 onClick={() => setIsBookDemoOpen(true)}
-                className="text-white font-bold px-2.5 py-2 rounded-[10px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase bg-transparent hover:bg-transparent shadow-none"
+                className={
+                  isLightHeader
+                    ? 'rounded-[10px] bg-gradient-to-r from-[#00679C] to-[#002436] px-2.5 py-2 text-[14px] font-bold uppercase text-white shadow-sm transition-all duration-300 xl:text-[14px]'
+                    : 'text-white font-bold px-2.5 py-2 rounded-[10px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase bg-transparent hover:bg-transparent shadow-none'
+                }
               >
                 BOOK FREE DEMO
               </button>
 
               <div
                 onClick={() => setIsSearchOpen(true)}
-                className="w-[32px] h-[32px] bg-[#FFFFFF40] rounded-full flex items-center justify-center cursor-pointer flex-shrink-0"
+                className={`flex h-[32px] w-[32px] flex-shrink-0 cursor-pointer items-center justify-center rounded-full ${
+                  isLightHeader ? 'bg-gray-100' : 'bg-[#FFFFFF40]'
+                }`}
               >
                 <Image src="/assets/Search-Icon.svg" alt="search" width={20} height={20} />
               </div>
 
-              <HeaderUserMenu />
+              <HeaderUserMenu theme={isLightHeader ? 'light' : 'dark'} />
             </div>
 
-            <div className="flex lg:hidden items-center gap-3 md:gap-4 text-white">
-              <div className="hidden md:flex border border-white/20 rounded-[4px] px-3 py-1.5 items-center gap-2">
-                <span className="text-white font-bold text-sm">+ 91 8686818384</span>
+            <div
+              className={`flex lg:hidden items-center gap-3 md:gap-4 ${
+                isLightHeader ? 'text-gray-900' : 'text-white'
+              }`}
+            >
+              <div
+                className={`hidden md:flex items-center gap-2 rounded-[4px] border px-3 py-1.5 ${
+                  isLightHeader ? 'border-gray-300' : 'border-white/20'
+                }`}
+              >
+                <span
+                  className={`font-bold text-sm ${
+                    isLightHeader ? 'text-[#1897D8]' : 'text-white'
+                  }`}
+                >
+                  + 91 8686818384
+                </span>
               </div>
 
               <button
@@ -369,19 +416,33 @@ const Header: React.FC = () => {
 
               <div
                 onClick={() => setIsSearchOpen(true)}
-                className="p-2 bg-white/10 rounded-full cursor-pointer hover:bg-white/20 transition-all flex items-center justify-center"
+                className={`flex cursor-pointer items-center justify-center rounded-full p-2 transition-all ${
+                  isLightHeader
+                    ? 'bg-gray-100 hover:bg-gray-200'
+                    : 'bg-white/10 hover:bg-white/20'
+                }`}
               >
-                <Search size={18} className="md:w-5 md:h-5" />
+                <Search
+                  size={18}
+                  className={`md:h-5 md:w-5 ${isLightHeader ? 'text-gray-800' : ''}`}
+                />
               </div>
 
-              <div className="cursor-pointer hover:text-primary transition-colors" onClick={() => setIsMobileMenuOpen(true)}>
-                <Menu size={24} className="md:w-7 md:h-7" />
+              <div
+                className="cursor-pointer transition-colors hover:text-primary"
+                onClick={() => setIsMobileMenuOpen(true)}
+              >
+                <Menu size={24} className="md:h-7 md:w-7" />
               </div>
 
-              <HeaderUserMenu />
+              <HeaderUserMenu theme={isLightHeader ? 'light' : 'dark'} />
             </div>
 
-            <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2 text-[16px] uppercase text-white/80 font-medium">
+            <nav
+              className={`hidden lg:flex items-center gap-1.5 xl:gap-2 text-[16px] uppercase font-medium ${
+                isLightHeader ? 'text-[#333333]' : 'text-white/80'
+              }`}
+            >
               <div className="relative group" ref={coursesButtonRef}>
                 <button
                   type="button"
@@ -397,7 +458,7 @@ const Header: React.FC = () => {
 
                     setIsCoursesOpen((prev) => !prev);
                   }}
-                  className={`flex items-center gap-1 ${secondNavItemClass} ${isCoursesOpen ? 'text-white' : ''}`}
+                  className={`flex items-center gap-1 ${secondNavItemClass} ${isCoursesOpen ? navActiveClass : ''}`}
                 >
                   Courses
                   <ChevronDown
@@ -413,7 +474,7 @@ const Header: React.FC = () => {
                     href="/free_resources/ncert-books"
                     onClick={() => setIsFreeResourcesOpen(false)}
                     className={`pl-1.5 xl:pl-2 pr-0.5 py-1.5 uppercase text-[14px] xl:text-[14px] font-bold active:bg-transparent focus:bg-transparent ${
-                      isFreeResourcesOpen ? 'text-white' : 'text-white/80 hover:text-white'
+                      isFreeResourcesOpen ? navActiveClass : navMutedClass
                     }`}
                   >
                     Free Resources
@@ -433,7 +494,7 @@ const Header: React.FC = () => {
                       setIsFreeResourcesOpen((prev) => !prev);
                     }}
                     className={`pr-1.5 pl-0.5 py-1.5 flex items-center justify-center cursor-pointer active:bg-transparent focus:bg-transparent ${
-                      isFreeResourcesOpen ? 'text-white' : 'text-white/80 hover:text-white'
+                      isFreeResourcesOpen ? navActiveClass : navMutedClass
                     }`}
                   >
                     <ChevronDown
@@ -450,7 +511,7 @@ const Header: React.FC = () => {
                     href="/current-affairs"
                     onClick={() => setIsCurrentAffairsOpen(false)}
                     className={`pl-1.5 xl:pl-2 pr-0.5 py-1.5 uppercase text-[14px] xl:text-[14px] font-bold active:bg-transparent focus:bg-transparent ${
-                      isCurrentAffairsOpen ? 'text-white' : 'text-white/80 hover:text-white'
+                      isCurrentAffairsOpen ? navActiveClass : navMutedClass
                     }`}
                   >
                     Current Affairs
@@ -470,7 +531,7 @@ const Header: React.FC = () => {
                       setIsCurrentAffairsOpen((prev) => !prev);
                     }}
                     className={`pr-1.5 pl-0.5 py-1.5 flex items-center justify-center cursor-pointer active:bg-transparent focus:bg-transparent ${
-                      isCurrentAffairsOpen ? 'text-white' : 'text-white/80 hover:text-white'
+                      isCurrentAffairsOpen ? navActiveClass : navMutedClass
                     }`}
                   >
                     <ChevronDown
@@ -501,7 +562,7 @@ const Header: React.FC = () => {
                     setIsAboutOpen((prev) => !prev);
                   }}
                   className={`flex items-center gap-1 ${secondNavItemClass} ${
-                    isAboutOpen ? 'text-white' : ''
+                    isAboutOpen ? navActiveClass : ''
                   }`}
                 >
                   About

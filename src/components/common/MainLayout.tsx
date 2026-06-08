@@ -10,19 +10,21 @@ type MainLayoutProps = {
   children: React.ReactNode;
   logoOnlyHeader?: boolean;
   logoOnlyTransparent?: boolean;
+  headerVariant?: 'transparent' | 'light';
 };
 
 const MainLayout: React.FC<MainLayoutProps> = ({
   children,
   logoOnlyHeader = false,
   logoOnlyTransparent = false,
+  headerVariant = 'transparent',
 }) => {
   return (
     <div className="min-h-screen flex flex-col font-sans">
       {logoOnlyHeader ? (
         <HeaderLogoOnly transparent={logoOnlyTransparent} />
       ) : (
-        <Header />
+        <Header variant={headerVariant} />
       )}
       <main className="flex-grow">
         {children}
