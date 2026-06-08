@@ -1,4 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+"use client";
+
+import { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 
 interface CustomDropdownProps {
   options: string[];
@@ -41,36 +44,109 @@ const CustomDropdown = ({
   className = "",
 }: CustomDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [menuStyle, setMenuStyle] = useState<{
+    top: number;
+    left: number;
+    width: number;
+  } | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const styles = VARIANT_STYLES[variant];
   const display =
     buttonLabel ?? (value?.trim() ? value : placeholder ?? "");
+
+  const updateMenuPosition = useCallback(() => {
+    const button = buttonRef.current;
+    if (!button) return;
+
+    const rect = button.getBoundingClientRect();
+    setMenuStyle({
+      top: rect.bottom + 10,
+      left: rect.left,
+      width: rect.width,
+    });
+  }, []);
 
   useEffect(() => {
     if (options.length === 0) setIsOpen(false);
   }, [options.length]);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
+    if (!isOpen) return;
+
+    updateMenuPosition();
+
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+      const target = event.target as Node;
+      if (
+        rootRef.current?.contains(target) ||
+        menuRef.current?.contains(target)
+      ) {
+        return;
       }
+      setIsOpen(false);
     };
+
+    const onReposition = () => updateMenuPosition();
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    window.addEventListener("resize", onReposition);
+    window.addEventListener("scroll", onReposition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("resize", onReposition);
+      window.removeEventListener("scroll", onReposition, true);
+    };
+  }, [isOpen, updateMenuPosition]);
+
+  const menu =
+    isOpen && options.length > 0 && menuStyle ? (
+      <div
+        ref={menuRef}
+        className={`fixed z-[9999] overflow-hidden ${styles.menu}`}
+        style={{
+          top: menuStyle.top,
+          left: menuStyle.left,
+          width: menuStyle.width,
+        }}
+      >
+        <div className="flex max-h-[260px] flex-col overflow-y-auto px-2">
+          {options.map((opt) => (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => {
+                onChange(opt);
+                setIsOpen(false);
+              }}
+              className={`rounded-[14px] px-4 py-3 text-center text-[15px] font-bold transition-all ${
+                value === opt ? styles.optionActive : styles.optionIdle
+              }`}
+            >
+              {opt}
+            </button>
+          ))}
+        </div>
+      </div>
+    ) : null;
 
   return (
     <div
       className={`relative w-full ${styles.root} ${className}`.trim()}
-      ref={dropdownRef}
+      ref={rootRef}
     >
       <button
+        ref={buttonRef}
         type="button"
         onClick={() => {
           if (options.length === 0) return;
-          setIsOpen((open) => !open);
+          setIsOpen((open) => {
+            const next = !open;
+            if (next) updateMenuPosition();
+            return next;
+          });
         }}
         className={`${styles.button} ${
           options.length === 0
@@ -97,29 +173,9 @@ const CustomDropdown = ({
         </svg>
       </button>
 
-      {isOpen && options.length > 0 && (
-        <div
-          className={`absolute left-0 top-[calc(100%+10px)] z-50 w-full overflow-hidden ${styles.menu}`}
-        >
-          <div className="flex max-h-[260px] flex-col overflow-y-auto px-2">
-            {options.map((opt) => (
-              <button
-                key={opt}
-                type="button"
-                onClick={() => {
-                  onChange(opt);
-                  setIsOpen(false);
-                }}
-                className={`rounded-[14px] px-4 py-3 text-center text-[15px] font-bold transition-all ${
-                  value === opt ? styles.optionActive : styles.optionIdle
-                }`}
-              >
-                {opt}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      {typeof document !== "undefined" && menu
+        ? createPortal(menu, document.body)
+        : null}
     </div>
   );
 };

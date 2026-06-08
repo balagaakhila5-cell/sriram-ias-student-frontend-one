@@ -12,13 +12,8 @@ import {
   listPracticeTests,
   PORTAL_FILTER_MONTHS,
   PORTAL_FILTER_YEARS,
-  buildTextDateOptions,
+  buildDayOnlyDateOptions,
 } from "@/features/resources/catalog/currentAffairs";
-
-/** Text-only date labels for the Date filter (no digits in the closed button). */
-function getDpqDateOptions(month: string) {
-  return buildTextDateOptions(month);
-}
 import PracticeTestCard from "@/features/resources/components/PracticeTestCard";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 import {
@@ -52,8 +47,8 @@ export default function DailyPracticeQuestionsPage() {
   const [filterMonth, setFilterMonth] = useState<string>(PORTAL_FILTER_MONTHS[3]);
 
   const dateOptions = useMemo(
-    () => getDpqDateOptions(filterMonth),
-    [filterMonth],
+    () => buildDayOnlyDateOptions(filterMonth, filterYear),
+    [filterMonth, filterYear],
   );
 
   const [selectedDate, setSelectedDate] = useState<string>("");

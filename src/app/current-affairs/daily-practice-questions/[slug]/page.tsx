@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Clock3, FileText, House, X } from 'lucide-react';
+import { recordDpqExamResult } from '@/features/resources/utils/dpqLeaderboard';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -193,6 +194,14 @@ export default function DailyPracticeQuestionTestPage({
     };
 
     localStorage.setItem(`test-review-${slug}`, JSON.stringify(testData));
+
+    recordDpqExamResult({
+      slug,
+      title,
+      correctCount,
+      totalQuestions,
+      percentage,
+    });
 
     router.push(`/current-affairs/daily-practice-questions/${slug}/results`);
   };
