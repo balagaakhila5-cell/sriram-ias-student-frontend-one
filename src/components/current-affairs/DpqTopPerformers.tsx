@@ -2,44 +2,70 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import DpqTopPerformersList, {
-  DpqTopPerformersHeading,
-} from "@/components/current-affairs/DpqTopPerformersList";
+import DpqTopPerformersSkeleton from "@/components/current-affairs/DpqTopPerformersSkeleton";
+import DpqTestLeaderboardTable from "@/components/current-affairs/DpqTestLeaderboardTable";
+import { DpqTopPerformersHeading } from "@/components/current-affairs/DpqTopPerformersList";
 import {
-  DPQ_LEADERBOARD_UPDATED_EVENT,
-  getDpqLeaderboardRows,
-  type DpqLeaderboardRow,
-} from "@/features/resources/utils/dpqLeaderboard";
+  buildTestResultsHref,
+  fetchLatestTestLeaderboard,
+  type DpqExamType,
+  type DpqLatestTestLeaderboard,
+} from "@/features/currentAffairs/data/dpqTestResultsMock";
 
-const TOP_PERFORMERS_PAGE =
-  "/current-affairs/daily-practice-questions/top-performers";
+type DpqTopPerformersProps = {
+  examType: DpqExamType;
+};
 
-export default function DpqTopPerformers() {
-  const [rows, setRows] = useState<DpqLeaderboardRow[]>([]);
-
-  const loadRows = () => {
-    setRows(getDpqLeaderboardRows(4));
-  };
+export default function DpqTopPerformers({ examType }: DpqTopPerformersProps) {
+  const [loading, setLoading] = useState(true);
+  const [leaderboard, setLeaderboard] = useState<DpqLatestTestLeaderboard | null>(
+    null,
+  );
 
   useEffect(() => {
-    loadRows();
+    let active = true;
+    setLoading(true);
 
-    const sync = () => loadRows();
-    window.addEventListener(DPQ_LEADERBOARD_UPDATED_EVENT, sync);
-    return () => window.removeEventListener(DPQ_LEADERBOARD_UPDATED_EVENT, sync);
-  }, []);
+    fetchLatestTestLeaderboard(examType)
+      .then((data) => {
+        if (active) setLeaderboard(data);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [examType]);
 
   return (
     <div className="overflow-hidden rounded-[22px] bg-white px-5 py-6 shadow-[0px_10px_30px_rgba(0,0,0,0.05)]">
       <DpqTopPerformersHeading />
-      <DpqTopPerformersList rows={rows} />
+
+      {loading ? (
+        <DpqTopPerformersSkeleton />
+      ) : (
+        <>
+          {leaderboard?.testName ? (
+            <p className="mb-4 text-center text-[15px] font-semibold text-[#4D5660]">
+              Latest Test: {leaderboard.testName}
+            </p>
+          ) : null}
+
+          <DpqTestLeaderboardTable
+            entries={leaderboard?.entries ?? []}
+            variant="compact"
+          />
+        </>
+      )}
 
       <div className="mt-6 text-center">
         <Link
-          href={TOP_PERFORMERS_PAGE}
+          href={buildTestResultsHref(examType)}
           className="text-[14px] font-bold text-[#4D90D2] hover:underline"
         >
-          View All
+          View All Results
         </Link>
       </div>
     </div>

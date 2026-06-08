@@ -2,6 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { parseDpqExamType } from "@/features/currentAffairs/data/dpqTestResultsMock";
 import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -41,8 +43,15 @@ type ExamType = "prelims" | "mains";
 export default function DailyPracticeQuestionsPage() {
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const searchParams = useSearchParams();
 
-  const [activeTab, setActiveTab] = useState<ExamType>("prelims");
+  const [activeTab, setActiveTab] = useState<ExamType>(() =>
+    parseDpqExamType(searchParams.get("examType")),
+  );
+
+  useEffect(() => {
+    setActiveTab(parseDpqExamType(searchParams.get("examType")));
+  }, [searchParams]);
   const [filterYear, setFilterYear] = useState<string>(PORTAL_FILTER_YEARS[0]);
   const [filterMonth, setFilterMonth] = useState<string>(PORTAL_FILTER_MONTHS[3]);
 
@@ -239,7 +248,7 @@ export default function DailyPracticeQuestionsPage() {
 
               <aside className="dpq-animate-sidebar w-full xl:mt-[65px]">
                 <div className="space-y-8">
-                  <DpqTopPerformers />
+                  <DpqTopPerformers examType={activeTab} />
                   <TrendingArticles viewAllHref="/blogs/all" />
                 </div>
               </aside>

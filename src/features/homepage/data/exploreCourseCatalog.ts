@@ -1,11 +1,18 @@
 import { getCourseBySlug } from "@/features/course/data/courses";
+import {
+  ALLOWED_CENTER_CITIES,
+  CENTER_CATEGORIES_BY_CITY,
+  TAB_TO_CATEGORY_KEY,
+  formatCityLabel,
+  formatCourseTitle,
+} from "@/features/center/data/centerCourseCategories";
 import type {
   HomepageCourse,
   HomepageCourseCategory,
 } from "@/features/homepage/types";
 import { resolveExploreCourseImage } from "@/features/homepage/utils/exploreCourseImages";
 
-/** Same six tabs as the main site Courses mega menu (New Delhi). */
+/** Homepage category tabs — union of all center course categories. */
 export const EXPLORE_COURSE_TAB_NAMES = [
   "GS Foundation",
   "Mentorship",
@@ -17,28 +24,52 @@ export const EXPLORE_COURSE_TAB_NAMES = [
 
 export type ExploreCourseTabName = (typeof EXPLORE_COURSE_TAB_NAMES)[number];
 
-type CatalogEntry = { slug: string; title?: string };
-
-const CATALOG_BY_TAB: Record<ExploreCourseTabName, CatalogEntry[]> = {
-  "GS Foundation": [
-    { slug: "2-years-gs-foundation" },
-    { slug: "1-year-gs-foundation" },
-    { slug: "ncert-foundation" },
-  ],
-  Mentorship: [{ slug: "stride-mentorship-program" }],
-  "Optional Foundation": [
-    { slug: "anthropology-optional-foundation" },
-    { slug: "geography-optional-foundation" },
-    { slug: "psir-optional-foundation" },
-    { slug: "sociology-optional-foundation" },
-  ],
-  "Test Series": [
-    { slug: "prelims-test-series-mentorship" },
-    { slug: "mains-test-series-mentorship" },
-  ],
-  CSAT: [{ slug: "csat-foundation" }],
-  "Enrichment Course": [{ slug: "interview-guidance-program" }],
+export type ExploreCatalogCourse = {
+  _id: string;
+  title: string;
+  slug: string;
+  center: string;
+  category: string;
+  bannerImage?: string;
 };
+
+function getCategoryKeyForTab(tab: string) {
+  return TAB_TO_CATEGORY_KEY[tab];
+}
+
+/** All programs for a tab across New Delhi → Hyderabad → Pune. */
+export function buildAllCentersExploreCoursesForTab(
+  tab: string,
+): ExploreCatalogCourse[] {
+  const categoryKey = getCategoryKeyForTab(tab);
+  if (!categoryKey) return [];
+
+  const courses: ExploreCatalogCourse[] = [];
+
+  for (const cityKey of ALLOWED_CENTER_CITIES) {
+    const category = CENTER_CATEGORIES_BY_CITY[cityKey].find(
+      (item) => item.key === categoryKey,
+    );
+    if (!category) continue;
+
+    const centerLabel = formatCityLabel(cityKey);
+
+    for (const slug of category.programSlugs) {
+      const staticCourse = getCourseBySlug(slug);
+      if (!staticCourse) continue;
+
+      courses.push({
+        _id: `${cityKey}-${slug}`,
+        title: formatCourseTitle(staticCourse.title),
+        slug,
+        center: centerLabel,
+        category: tab,
+      });
+    }
+  }
+
+  return courses;
+}
 
 export function hasAllExploreCourseTabs(
   categories: HomepageCourseCategory[],
@@ -64,18 +95,14 @@ export function orderExploreCourseCategories(
   }).filter((c) => c.courses.length > 0);
 }
 
-/** Canonical home-page Explore Our Courses grid (6 tabs + course cards). */
+/** Canonical home-page Explore Our Courses grid (all centers per tab). */
 export function buildCanonicalExploreCategories(): HomepageCourseCategory[] {
   let imageIndex = 0;
 
   return EXPLORE_COURSE_TAB_NAMES.map((tabName) => ({
     name: tabName,
-    courses: CATALOG_BY_TAB[tabName].map((entry) => {
+    courses: buildAllCentersExploreCoursesForTab(tabName).map((entry) => {
       const staticCourse = getCourseBySlug(entry.slug);
-      const title =
-        entry.title ??
-        staticCourse?.title.replace(/\n/g, " ").trim() ??
-        entry.slug;
       const bannerImage = resolveExploreCourseImage(
         staticCourse?.heroImage,
         imageIndex,
@@ -84,11 +111,12 @@ export function buildCanonicalExploreCategories(): HomepageCourseCategory[] {
       imageIndex += 1;
 
       return {
-        _id: entry.slug,
-        title,
+        _id: entry._id,
+        title: entry.title,
         slug: entry.slug,
+        center: entry.center,
         bannerImage,
-      } satisfies HomepageCourse;
+      } satisfies HomepageCourse & { center?: string };
     }),
   }));
 }
