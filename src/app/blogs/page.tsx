@@ -14,6 +14,7 @@ import {
   PREVIEW_BLOGS,
 } from '@/features/blogs/data/blogsCatalog';
 import type { BlogBookmarkInput } from '@/features/blogs/types';
+import { getBlogBookmarkId } from '@/features/blogs/utils/blogBookmarks';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -31,7 +32,7 @@ const GS_CARD_META = {
 
 function gsBookmarkInput(tab: GsTab, index: number, image: string): BlogBookmarkInput {
   return {
-    id: `gs-${tab.replace(/\s+/g, '')}-${index}`,
+    id: getBlogBookmarkId(GS_CARD_META.slug),
     slug: GS_CARD_META.slug,
     title: GS_CARD_META.title,
     date: GS_CARD_META.date,

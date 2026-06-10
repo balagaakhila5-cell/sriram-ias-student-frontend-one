@@ -11,6 +11,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import FreeResourcesCourseSlider from '@/components/common/FreeResourcesCourseSlider';
 import { FREE_LEARNING_EXPLORE_HREFS } from '@/features/homepage/utils/homepageLinks';
 import BlogDetailBookmarkButton from '@/features/blogs/components/BlogDetailBookmarkButton';
+import { getBlogBookmarkId } from '@/features/blogs/utils/blogBookmarks';
 import {
   ChevronDown,
   Clock3,
@@ -219,7 +220,7 @@ export default function BlogDetailPage() {
 
               <BlogDetailBookmarkButton
                 bookmark={{
-                  id: `blog-detail-${slug}`,
+                  id: getBlogBookmarkId(slug),
                   slug,
                   title: 'Why Discipline Beats Motivation Every Time ?',
                   date: 'March 23 , 2026',

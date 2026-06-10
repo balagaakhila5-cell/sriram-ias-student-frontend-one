@@ -11,6 +11,11 @@ import {
 } from "@/features/blogs/utils/blogBookmarks";
 import type { BlogBookmark } from "@/features/blogs/types";
 import type { TestItem } from "@/features/studentPortal/data/tests";
+import {
+  getBookmarkedTests,
+  removeTestBookmark,
+  TEST_BOOKMARKS_UPDATED_EVENT,
+} from "@/features/studentPortal/utils/testBookmarks";
 import { useAuthStore } from "@/store/authStore";
 
 export default function BookmarksPage() {
@@ -27,33 +32,35 @@ export default function BookmarksPage() {
     setBlogBookmarks(getBlogBookmarks(user.id));
   }, [user?.id]);
 
-  useEffect(() => {
-    const storedTests = JSON.parse(
-      localStorage.getItem("bookmarkedTests") || "[]",
-    ) as TestItem[];
+  const loadTestBookmarks = useCallback(() => {
+    setBookmarkedTests(getBookmarkedTests());
+  }, []);
 
-    setBookmarkedTests(storedTests);
+  useEffect(() => {
+    loadTestBookmarks();
     loadBlogBookmarks();
 
+    const syncTests = () => loadTestBookmarks();
     const syncBlogs = () => loadBlogBookmarks();
+
+    window.addEventListener(TEST_BOOKMARKS_UPDATED_EVENT, syncTests);
     window.addEventListener(BLOG_BOOKMARKS_UPDATED_EVENT, syncBlogs);
 
     return () => {
+      window.removeEventListener(TEST_BOOKMARKS_UPDATED_EVENT, syncTests);
       window.removeEventListener(BLOG_BOOKMARKS_UPDATED_EVENT, syncBlogs);
     };
-  }, [loadBlogBookmarks]);
+  }, [loadBlogBookmarks, loadTestBookmarks]);
 
-  const removeTestBookmark = (id: TestItem["id"]) => {
-    const updated = bookmarkedTests.filter((item) => item.id !== id);
-
-    setBookmarkedTests(updated);
-    localStorage.setItem("bookmarkedTests", JSON.stringify(updated));
+  const removeTest = (id: TestItem["id"]) => {
+    removeTestBookmark(id);
+    loadTestBookmarks();
   };
 
-  const removeBlog = (id: string) => {
+  const removeBlog = (slug: string) => {
     if (!user?.id) return;
 
-    removeBlogBookmark(user.id, id);
+    removeBlogBookmark(user.id, slug);
     loadBlogBookmarks();
   };
 
@@ -70,9 +77,9 @@ export default function BookmarksPage() {
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             {blogBookmarks.map((bookmark) => (
               <BlogBookmarkCard
-                key={bookmark.id}
+                key={bookmark.slug}
                 bookmark={bookmark}
-                onRemove={() => removeBlog(bookmark.id)}
+                onRemove={() => removeBlog(bookmark.slug)}
               />
             ))}
           </div>
@@ -89,7 +96,7 @@ export default function BookmarksPage() {
                 key={test.id}
                 test={test}
                 bookmarked={true}
-                onToggleBookmark={() => removeTestBookmark(test.id)}
+                onToggleBookmark={() => removeTest(test.id)}
               />
             ))}
           </div>

@@ -28,17 +28,17 @@ export function useBlogBookmarkActions(bookmark: BlogBookmarkInput) {
       return;
     }
 
-    setIsBookmarked(isBlogBookmarked(user.id, bookmark.id));
+    setIsBookmarked(isBlogBookmarked(user.id, bookmark.slug));
 
     const sync = () => {
       if (user?.id) {
-        setIsBookmarked(isBlogBookmarked(user.id, bookmark.id));
+        setIsBookmarked(isBlogBookmarked(user.id, bookmark.slug));
       }
     };
 
     window.addEventListener(BLOG_BOOKMARKS_UPDATED_EVENT, sync);
     return () => window.removeEventListener(BLOG_BOOKMARKS_UPDATED_EVENT, sync);
-  }, [bookmark.id, user?.id]);
+  }, [bookmark.slug, user?.id]);
 
   const requireStudentAuth = useCallback(() => {
     if (!isHydrated) return false;
