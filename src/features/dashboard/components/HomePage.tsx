@@ -1,7 +1,8 @@
 'use client';
 
-import React, { lazy } from 'react';
+import React, { lazy, useEffect } from 'react';
 import MainLayout from '@/components/common/MainLayout';
+import { refreshScrollAnimations } from '@/utils/gsapNavigation';
 import Hero from '@/components/sections/Hero';
 import MottoSection from '@/components/sections/MottoSection';
 import ExploreCourses from '@/components/sections/ExploreCourses';
@@ -15,6 +16,10 @@ const OurStory = lazy(() => import('@/components/sections/OurStory')) as React.L
 const AppAndVideos = lazy(() => import('@/components/sections/AppAndVideos')) as React.LazyExoticComponent<React.ComponentType<any>>;
 
 const HomePage: React.FC = () => {
+  useEffect(() => {
+    refreshScrollAnimations();
+  }, []);
+
   return (
     <MainLayout>
       {/* Hero Section - Full Video */}

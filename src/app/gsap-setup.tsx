@@ -3,10 +3,14 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { refreshScrollAnimations } from '@/utils/gsapNavigation';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function GsapSetup() {
+  const pathname = usePathname();
+
   useEffect(() => {
     gsap.defaults({
       ease: 'power3.out',
@@ -32,6 +36,11 @@ export default function GsapSetup() {
       if (resizeTimeout) clearTimeout(resizeTimeout);
     };
   }, []);
+
+  useEffect(() => {
+    if (pathname !== '/') return;
+    refreshScrollAnimations();
+  }, [pathname]);
 
   return null;
 }

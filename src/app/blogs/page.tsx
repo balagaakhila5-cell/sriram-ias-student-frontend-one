@@ -8,6 +8,7 @@ import Footer from '@/components/common/Footer';
 import { ArrowRight } from 'lucide-react';
 import BlogActionButtons from '@/features/blogs/components/BlogActionButtons';
 import BlogGridCard from '@/features/blogs/components/BlogGridCard';
+import BlogsCalendar from '@/features/blogs/components/BlogsCalendar';
 import BlogsSidebar from '@/features/blogs/components/BlogsSidebar';
 import {
   FEATURED_BLOG,
@@ -139,7 +140,7 @@ export default function BlogsPage() {
           </div>
         </section>
 
-        <section className="relative overflow-hidden px-4 py-12 lg:px-6 xl:px-8">
+        <section className="relative overflow-x-hidden px-4 py-12 lg:px-6 xl:px-8">
           {/* Dotted Background */}
           <div className="pointer-events-none absolute inset-0 opacity-[0.35]">
             <div
@@ -172,6 +173,10 @@ export default function BlogsPage() {
                     </button>
                   ))}
                 </div>
+              </div>
+
+              <div className="mb-7 lg:hidden">
+                <BlogsCalendar />
               </div>
 
               {/* Main Cup Card */}
@@ -307,7 +312,7 @@ export default function BlogsPage() {
               </section>
             </div>
 
-            <aside className="space-y-6">
+            <aside className="lg:sticky lg:top-24 lg:self-start">
               <BlogsSidebar showTrendingVideos />
             </aside>
           </div>

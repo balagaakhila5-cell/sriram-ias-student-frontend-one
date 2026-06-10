@@ -1,27 +1,28 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
 import FreeResourcesCourseSlider from '@/components/common/FreeResourcesCourseSlider';
 import { FREE_LEARNING_EXPLORE_HREFS } from '@/features/homepage/utils/homepageLinks';
+import BlogsCalendar from '@/features/blogs/components/BlogsCalendar';
 import { BarChart3, BookOpenText, Lightbulb } from 'lucide-react';
-
-const DynamicCalendar = dynamic(
-  () => import('@/components/common/DynamicCalendar'),
-  { ssr: false },
-);
 
 type BlogsSidebarProps = {
   showTrendingVideos?: boolean;
+  showCalendar?: boolean;
 };
 
 export default function BlogsSidebar({
   showTrendingVideos = false,
+  showCalendar = true,
 }: BlogsSidebarProps) {
   return (
     <div className="space-y-6">
-      <DynamicCalendar variant="sidebar" />
+      {showCalendar ? (
+        <div className="hidden lg:block">
+          <BlogsCalendar />
+        </div>
+      ) : null}
 
       <div className="rounded-[10px] bg-[#EEF3FF] p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-transform duration-300 hover:scale-[1.02]">
         <h3 className="mb-3 text-center text-[30px] font-extrabold leading-none">

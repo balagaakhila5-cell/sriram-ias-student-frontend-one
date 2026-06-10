@@ -157,7 +157,7 @@ export default function DynamicCalendar({
 
   return (
     <div
-      className={`rounded-[10px] bg-white px-5 py-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] ${className}`}
+      className={`w-full overflow-visible rounded-[10px] bg-white px-5 py-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] ${className}`}
     >
       <div className="mb-6 flex gap-3">
         <CompactDropdown

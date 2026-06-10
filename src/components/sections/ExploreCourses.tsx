@@ -140,6 +140,7 @@ const ExploreCourses: React.FC = () => {
       gsap.from(headerRef.current, {
         y: 100,
         opacity: 0,
+        immediateRender: false,
         scale: 0.95,
         duration: 0.8,
         ease: 'power3.out',
@@ -155,6 +156,7 @@ const ExploreCourses: React.FC = () => {
       gsap.from(tabsRef.current, {
         y: 50,
         opacity: 0,
+        immediateRender: false,
         scale: 0.95,
         duration: 0.8,
         ease: 'power3.out',
@@ -177,7 +179,7 @@ const ExploreCourses: React.FC = () => {
       if (gridRef.current && gridRef.current.children.length > 0) {
         gsap.fromTo(
           gridRef.current.children,
-          { y: 40, opacity: 0 },
+          { y: 40, opacity: 0, immediateRender: false },
           {
             y: 0,
             opacity: 1,

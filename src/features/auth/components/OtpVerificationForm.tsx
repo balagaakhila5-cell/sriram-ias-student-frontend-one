@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
 const DEFAULT_VALIDITY_SECONDS = 60;
-const DEFAULT_RESEND_COOLDOWN_SECONDS = 60;
 
 interface OtpVerificationFormProps {
   onVerify: (otp: string) => void;
@@ -14,8 +13,7 @@ interface OtpVerificationFormProps {
   otpLength?: 4 | 6;
   resendLoading?: boolean;
   validitySeconds?: number;
-  resendCooldownSeconds?: number;
-  /** Increment when OTP is sent or resent to reset timers and inputs. */
+  /** Increment when OTP is sent or resent to reset timer and inputs. */
   otpSessionKey?: number;
 }
 
@@ -34,36 +32,31 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
   otpLength = 4,
   resendLoading = false,
   validitySeconds = DEFAULT_VALIDITY_SECONDS,
-  resendCooldownSeconds = DEFAULT_RESEND_COOLDOWN_SECONDS,
   otpSessionKey = 0,
 }) => {
   const [otpValues, setOtpValues] = useState<string[]>(
     Array.from({ length: otpLength }, () => ""),
   );
   const [validityLeft, setValidityLeft] = useState(validitySeconds);
-  const [resendLeft, setResendLeft] = useState(resendCooldownSeconds);
   const [localError, setLocalError] = useState<string | null>(null);
   const otpRefs = useRef<Array<HTMLInputElement | null>>([]);
 
   useEffect(() => {
     setOtpValues(Array.from({ length: otpLength }, () => ""));
     setValidityLeft(validitySeconds);
-    setResendLeft(resendCooldownSeconds);
     setLocalError(null);
     otpRefs.current[0]?.focus();
-  }, [otpSessionKey, otpLength, validitySeconds, resendCooldownSeconds]);
+  }, [otpSessionKey, otpLength, validitySeconds]);
 
   useEffect(() => {
     const timerId = window.setInterval(() => {
       setValidityLeft((current) => Math.max(current - 1, 0));
-      setResendLeft((current) => Math.max(current - 1, 0));
     }, 1000);
 
     return () => window.clearInterval(timerId);
   }, []);
 
   const isExpired = validityLeft === 0;
-  const canResend = resendLeft === 0 && !resendLoading;
 
   const handleOtpChange = (index: number, value: string) => {
     const onlyNumber = value.replace(/\D/g, "").slice(0, 1);
@@ -102,7 +95,7 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
   };
 
   const handleResend = () => {
-    if (!canResend) return;
+    if (!isExpired || resendLoading) return;
     onResend();
   };
 
@@ -169,18 +162,16 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
         Verify OTP
       </button>
 
-      <button
-        type="button"
-        onClick={handleResend}
-        disabled={!canResend}
-        className="mt-5 text-[13px] font-bold text-[#0074ab] transition-opacity hover:underline disabled:cursor-not-allowed disabled:text-black/35 disabled:no-underline"
-      >
-        {resendLoading
-          ? "Resending OTP..."
-          : canResend
-            ? "Resend OTP"
-            : `Resend OTP in ${formatTimer(resendLeft)}`}
-      </button>
+      {isExpired || resendLoading ? (
+        <button
+          type="button"
+          onClick={handleResend}
+          disabled={resendLoading}
+          className="mt-5 text-[13px] font-bold text-[#0074ab] transition-opacity hover:underline disabled:cursor-not-allowed disabled:text-black/35 disabled:no-underline"
+        >
+          {resendLoading ? "Resending OTP..." : "Resend OTP"}
+        </button>
+      ) : null}
 
       <button
         type="button"

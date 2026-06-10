@@ -96,6 +96,7 @@ const OfflineCentres: React.FC = () => {
     gsap.from('.offline-header', {
       y: 100,
       opacity: 0,
+      immediateRender: false,
       scale: 0.95,
       duration: 0.8,
       ease: 'power3.out',
@@ -110,7 +111,7 @@ const OfflineCentres: React.FC = () => {
 
     // Cards Stagger
     gsap.fromTo('.offline-card',
-      { y: 40, opacity: 0 },
+      { y: 40, opacity: 0, immediateRender: false },
       {
         y: 0,
         opacity: 1,

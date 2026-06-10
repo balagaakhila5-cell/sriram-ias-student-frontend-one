@@ -359,14 +359,16 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
               : 'w-full max-w-[760px] rounded-[8px]'
         }`}
       >
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute right-5 top-5 z-30 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white/95 text-[24px] font-semibold text-black shadow hover:bg-white"
-          aria-label="Close"
-        >
-          ×
-        </button>
+        {screen !== 'payment' && screen !== 'receipt' && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute right-5 top-5 z-30 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white/95 text-[24px] font-semibold text-black shadow hover:bg-white"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        )}
 
         {(screen === 'login' || screen === 'signup' || screen === 'otp') && (
           <div

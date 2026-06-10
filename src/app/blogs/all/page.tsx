@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import BlogGridCard from '@/features/blogs/components/BlogGridCard';
+import BlogsCalendar from '@/features/blogs/components/BlogsCalendar';
 import BlogsSidebar from '@/features/blogs/components/BlogsSidebar';
 import { ALL_BLOGS } from '@/features/blogs/data/blogsCatalog';
 import gsap from 'gsap';
@@ -76,7 +77,7 @@ export default function AllBlogsPage() {
           </div>
         </section>
 
-        <section className="relative overflow-hidden px-4 py-12 lg:px-6 xl:px-8">
+        <section className="relative overflow-x-hidden px-4 py-12 lg:px-6 xl:px-8">
           <div className="pointer-events-none absolute inset-0 opacity-[0.35]">
             <div
               className="h-full w-full"
@@ -98,6 +99,10 @@ export default function AllBlogsPage() {
                 </p>
               </div>
 
+              <div className="mb-8 lg:hidden">
+                <BlogsCalendar />
+              </div>
+
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {ALL_BLOGS.map((blog) => (
                   <BlogGridCard key={blog.id} blog={blog} />
@@ -105,7 +110,7 @@ export default function AllBlogsPage() {
               </div>
             </div>
 
-            <aside>
+            <aside className="lg:sticky lg:top-24 lg:self-start">
               <BlogsSidebar />
             </aside>
           </div>

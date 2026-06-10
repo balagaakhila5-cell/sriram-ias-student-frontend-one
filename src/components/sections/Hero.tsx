@@ -45,7 +45,7 @@ const Hero: React.FC = () => {
             preload="metadata"
             className="w-full h-full object-cover"
           >
-            <source src="assets/HOME PAGE_BANNER VIDEO.mp4" type="video/mp4" />
+            <source src="/assets/HOME PAGE_BANNER VIDEO.mp4" type="video/mp4" />
             {/* Fallback image if video fails or while loading */}
             <div className="w-full h-full bg-[#012439]" />
           </video>

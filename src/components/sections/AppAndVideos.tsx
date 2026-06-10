@@ -93,7 +93,7 @@ const AppAndVideos: React.FC = () => {
 
     gsap.fromTo(
       '.download-app-element',
-      { x: -200, opacity: 0 },
+      { x: -200, opacity: 0, immediateRender: false },
       {
         x: 0,
         opacity: 1,
@@ -112,7 +112,7 @@ const AppAndVideos: React.FC = () => {
 
     gsap.fromTo(
       '.download-app-hand-inner',
-      { x: 300, opacity: 0, scaleX: -1 },
+      { x: 300, opacity: 0, scaleX: -1, immediateRender: false },
       {
         x: 0,
         opacity: 1,
@@ -131,7 +131,7 @@ const AppAndVideos: React.FC = () => {
 
     gsap.fromTo(
       '.youtube-trigger h2',
-      { y: 50, opacity: 0 },
+      { y: 50, opacity: 0, immediateRender: false },
       {
         y: 0,
         opacity: 1,
@@ -148,7 +148,7 @@ const AppAndVideos: React.FC = () => {
 
     gsap.fromTo(
       '.youtube-carousel',
-      { y: 100, opacity: 0, scale: 0.95 },
+      { y: 100, opacity: 0, scale: 0.95, immediateRender: false },
       {
         y: 0,
         opacity: 1,

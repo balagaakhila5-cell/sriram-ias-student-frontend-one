@@ -159,6 +159,7 @@ export default function CheckoutPage() {
 
   const closePaymentModal = () => {
     setIsPaymentModalOpen(false);
+    window.scrollTo({ top: 0, behavior: 'instant' });
     if (searchParams.get('step') === 'payment') {
       router.replace('/checkout', { scroll: false });
     }
