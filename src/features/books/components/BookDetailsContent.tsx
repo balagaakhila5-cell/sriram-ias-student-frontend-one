@@ -8,6 +8,7 @@ import { Book } from '../types';
 import FlipBook from '@/components/common/FlipBook';
 import FreeResourcesCourseSlider from '@/components/common/FreeResourcesCourseSlider';
 import { useCartStore } from '@/store/cartStore';
+import { validatePincode } from '@/features/books/utils/checkoutFormValidation';
 
 interface BookDetailsContentProps {
    book: Book;
@@ -15,6 +16,8 @@ interface BookDetailsContentProps {
 
 const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
    const [pincode, setPincode] = useState('');
+   const [pincodeError, setPincodeError] = useState<string | null>(null);
+   const [pincodeSuccess, setPincodeSuccess] = useState<string | null>(null);
    const [shareMessage, setShareMessage] = useState<string | null>(null);
    const addItem = useCartStore((state) => state.addItem);
    const updateQuantity = useCartStore((state) => state.updateQuantity);
@@ -39,6 +42,28 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
       }
 
       updateQuantity(book.id, cartQuantity - 1);
+   };
+
+   const handlePincodeChange = (value: string) => {
+      const nextValue = value.replace(/\D/g, '').slice(0, 6);
+      setPincode(nextValue);
+      setPincodeSuccess(null);
+
+      if (pincodeError) {
+         setPincodeError(null);
+      }
+   };
+
+   const handleCheckPincode = () => {
+      const error = validatePincode(pincode);
+      if (error) {
+         setPincodeError(error);
+         setPincodeSuccess(null);
+         return;
+      }
+
+      setPincodeError(null);
+      setPincodeSuccess('Delivery is available for this pin code.');
    };
 
    const handleShare = useCallback(async () => {
@@ -187,14 +212,36 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
                {/* Delivery Options */}
                <div className="mt-4">
                   <h3 className="font-semibold text-[#000000] text-xl mb-3">Delivery Options</h3>
-                  <div className="bg-[#F2F5FF] rounded-xl p-4 flex w-[50%]">
-                     <input
-                        type="text"
-                        placeholder="Check your Pincode"
-                        className="bg-transparent border-none outline-none text-sm w-full font-medium"
-                        value={pincode}
-                        onChange={(e) => setPincode(e.target.value)}
-                     />
+                  <div className="flex w-full max-w-[420px] flex-col gap-2">
+                     <div className="flex items-center gap-3 rounded-xl bg-[#F2F5FF] p-4">
+                        <input
+                           type="text"
+                           inputMode="numeric"
+                           maxLength={6}
+                           placeholder="Check your Pincode"
+                           className="w-full border-none bg-transparent text-sm font-medium outline-none"
+                           value={pincode}
+                           onChange={(e) => handlePincodeChange(e.target.value)}
+                           onBlur={() => {
+                              if (!pincode.trim()) return;
+                              const error = validatePincode(pincode);
+                              setPincodeError(error ?? null);
+                           }}
+                        />
+                        <button
+                           type="button"
+                           onClick={handleCheckPincode}
+                           className="shrink-0 rounded-md bg-gradient-to-r from-[#1897D8CC] to-[#021C29] px-4 py-2 text-xs font-bold text-white transition-opacity hover:opacity-90"
+                        >
+                           Check
+                        </button>
+                     </div>
+                     {pincodeError ? (
+                        <p className="text-left text-xs font-medium text-red-600">{pincodeError}</p>
+                     ) : null}
+                     {pincodeSuccess ? (
+                        <p className="text-left text-xs font-medium text-[#166534]">{pincodeSuccess}</p>
+                     ) : null}
                   </div>
                </div>
 

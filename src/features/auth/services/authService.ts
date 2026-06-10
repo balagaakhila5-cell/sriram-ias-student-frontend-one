@@ -8,6 +8,11 @@ import type {
   StudentSignupPayload,
   VerifyOtpPayload,
 } from "../types";
+import {
+  DUPLICATE_SIGNUP_MESSAGE,
+  isStudentAlreadyRegistered,
+  registerStudent,
+} from "../utils/registeredStudents";
 
 const delay = (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -51,9 +56,19 @@ export const authService = {
   },
 
   studentSignup: async (
-    _payload: StudentSignupPayload,
+    payload: StudentSignupPayload,
   ): Promise<{ message: string }> => {
     await delay();
+
+    if (
+      isStudentAlreadyRegistered({
+        email: payload.email,
+        mobile: payload.mobile,
+      })
+    ) {
+      throw new Error(DUPLICATE_SIGNUP_MESSAGE);
+    }
+
     return { message: "Signup OTP sent successfully." };
   },
 
@@ -90,6 +105,13 @@ export const authService = {
     payload: VerifyOtpPayload,
   ): Promise<AuthResponse> => {
     await delay();
+
+    registerStudent({
+      name: payload.email?.split("@")[0] ?? "Student",
+      email: payload.email,
+      mobile: payload.mobile,
+    });
+
     return {
       user: mockUser("student", {
         name: payload.email?.split("@")[0] ?? "Student",

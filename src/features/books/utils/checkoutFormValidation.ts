@@ -9,6 +9,29 @@ export type CheckoutFormFields = {
 export type CheckoutFormErrors = Partial<Record<keyof CheckoutFormFields, string>>;
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PINCODE_REGEX = /^[1-9]\d{5}$/;
+
+export function validatePincode(pincode: string): string | undefined {
+  const normalized = pincode.trim();
+
+  if (!normalized) {
+    return 'Please enter pin code';
+  }
+
+  if (!/^\d+$/.test(normalized)) {
+    return 'Pin code must contain only digits';
+  }
+
+  if (normalized.length !== 6) {
+    return 'Pin code must be exactly 6 digits';
+  }
+
+  if (!PINCODE_REGEX.test(normalized)) {
+    return 'Please enter a valid 6-digit pin code';
+  }
+
+  return undefined;
+}
 
 export function validateCheckoutForm(form: CheckoutFormFields): CheckoutFormErrors {
   const errors: CheckoutFormErrors = {};
@@ -41,11 +64,9 @@ export function validateCheckoutForm(form: CheckoutFormFields): CheckoutFormErro
     errors.address = 'Address must be at least 10 characters';
   }
 
-  const pincode = form.pincode.trim();
-  if (!pincode) {
-    errors.pincode = 'Please enter pin code';
-  } else if (!/^\d{6}$/.test(pincode)) {
-    errors.pincode = 'Pin code must be exactly 6 digits';
+  const pincodeError = validatePincode(form.pincode);
+  if (pincodeError) {
+    errors.pincode = pincodeError;
   }
 
   return errors;

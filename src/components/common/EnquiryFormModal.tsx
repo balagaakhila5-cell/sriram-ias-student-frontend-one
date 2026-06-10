@@ -7,6 +7,7 @@ import {
   useCourses,
   useSubmitEnquiry,
 } from '@/features/course/hooks/useCourses';
+import FormFieldLabel from '@/components/common/FormFieldLabel';
 
 interface EnquiryFormModalProps {
   isOpen: boolean;
@@ -201,9 +202,9 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
           ) : (
             <form key={formKey} className="space-y-2.5" onSubmit={handleSubmit}>
               <div className="space-y-0.5">
-                <label className="ml-1 text-sm font-normal text-gray-400">
+                <FormFieldLabel required className="ml-1 text-sm font-normal text-gray-400">
                   Full Name
-                </label>
+                </FormFieldLabel>
                 <input
                   type="text"
                   value={form.name}
@@ -215,9 +216,9 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
               </div>
 
               <div className="space-y-0.5">
-                <label className="ml-1 text-sm font-normal text-gray-400">
+                <FormFieldLabel required className="ml-1 text-sm font-normal text-gray-400">
                   Mobile Number
-                </label>
+                </FormFieldLabel>
                 <input
                   type="tel"
                   value={form.phone}
@@ -229,9 +230,9 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
               </div>
 
               <div className="space-y-0.5">
-                <label className="ml-1 text-sm font-normal text-gray-400">
+                <FormFieldLabel required className="ml-1 text-sm font-normal text-gray-400">
                   Email ID
-                </label>
+                </FormFieldLabel>
                 <input
                   type="email"
                   value={form.email}
@@ -244,9 +245,9 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
 
               {/* Center Dropdown */}
               <div className="space-y-0.5">
-                <label className="ml-1 text-sm font-normal text-gray-400">
+                <FormFieldLabel required className="ml-1 text-sm font-normal text-gray-400">
                   Center
-                </label>
+                </FormFieldLabel>
 
                 <div className="relative">
                   <select
@@ -283,9 +284,9 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
 
               {/* Course Dropdown */}
               <div className="space-y-0.5">
-                <label className="ml-1 text-sm font-normal text-gray-400">
+                <FormFieldLabel required className="ml-1 text-sm font-normal text-gray-400">
                   Course
-                </label>
+                </FormFieldLabel>
 
                 <div className="relative">
                   <select

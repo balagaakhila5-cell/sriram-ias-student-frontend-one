@@ -12,6 +12,7 @@ import {
   useSubmitEnquiry,
 } from '@/features/course/hooks/useCourses';
 import DemoFormSelect from '@/components/common/DemoFormSelect';
+import FormFieldLabel from '@/components/common/FormFieldLabel';
 import {
   fallbackCategories,
   fallbackCenters,
@@ -299,7 +300,9 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
             <form className="space-y-3" onSubmit={handleSubmit}>
               <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="flex-1">
-                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Full Name</label>
+                  <FormFieldLabel required className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">
+                    Full Name
+                  </FormFieldLabel>
                   <input
                     type="text"
                     name="name"
@@ -310,7 +313,9 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Mobile Number</label>
+                  <FormFieldLabel required className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">
+                    Mobile Number
+                  </FormFieldLabel>
                   <input
                     type="tel"
                     name="phone"
@@ -324,7 +329,9 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
               </div>
 
               <div>
-                <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Email</label>
+                <FormFieldLabel required className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">
+                  Email
+                </FormFieldLabel>
                 <input
                   type="email"
                   name="email"
@@ -337,7 +344,9 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
 
               <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="flex-1 min-w-0">
-                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Center</label>
+                  <FormFieldLabel required className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">
+                    Center
+                  </FormFieldLabel>
                   <DemoFormSelect
                     value={form.centerId}
                     onChange={(value) =>
@@ -349,7 +358,9 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Category</label>
+                  <FormFieldLabel required className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">
+                    Category
+                  </FormFieldLabel>
                   <DemoFormSelect
                     value={form.categoryId}
                     onChange={(value) =>
@@ -363,7 +374,9 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
 
               <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="min-w-0 flex-[2]">
-                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Course</label>
+                  <FormFieldLabel required className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">
+                    Course
+                  </FormFieldLabel>
                   <DemoFormSelect
                     value={form.courseId}
                     onChange={(value) =>
@@ -389,7 +402,9 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Target Year</label>
+                  <FormFieldLabel required className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">
+                    Target Year
+                  </FormFieldLabel>
                   <DemoFormSelect
                     value={form.targetYear}
                     onChange={(value) =>
@@ -402,7 +417,9 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
               </div>
 
               <div>
-                <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">What are your expectation from the Course ?</label>
+                <FormFieldLabel className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">
+                  What are your expectation from the Course ?
+                </FormFieldLabel>
                 <textarea
                   name="expectation"
                   value={form.expectation}

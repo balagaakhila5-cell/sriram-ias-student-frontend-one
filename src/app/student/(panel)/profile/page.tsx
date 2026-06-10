@@ -1,5 +1,7 @@
 "use client";
 
+import FormFieldLabel from "@/components/common/FormFieldLabel";
+
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Camera, UserRound, X } from "lucide-react";
@@ -324,13 +326,12 @@ interface FormFieldProps {
 function FormField({ label, required, value, onChange }: FormFieldProps) {
   return (
     <label className="flex flex-col gap-2">
-      <span
+      <FormFieldLabel
+        required={required}
         className="text-[16px] font-medium text-[#00000080]"
-        style={{ fontFamily: "Montserrat, sans-serif" }}
       >
         {label}
-        {required && " *"}
-      </span>
+      </FormFieldLabel>
 
       <input
         value={value}

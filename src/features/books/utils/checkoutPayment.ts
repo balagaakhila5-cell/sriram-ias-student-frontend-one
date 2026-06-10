@@ -1,6 +1,5 @@
 import type { PaymentReceiptRow } from '@/components/common/PaymentReceiptSuccess';
-
-const GST_PERCENT = 18;
+import { CHECKOUT_DELIVERY_CHARGE } from '@/features/books/utils/checkoutTotals';
 
 export function generateReceiptNo() {
   return 'SI-090-' + Math.floor(1000 + Math.random() * 9000);
@@ -19,15 +18,13 @@ export function buildReceiptData(
   couponDiscount: number,
   orderTitles: string,
 ) {
-  const deliveryCharge = 50;
-  const priceAfterDiscount = Math.max(
+  const deliveryCharge = CHECKOUT_DELIVERY_CHARGE;
+  const totalAmount = Math.max(
     cartSubtotal - couponDiscount + deliveryCharge,
     0,
   );
-  const gstAmount = Math.round((priceAfterDiscount * GST_PERCENT) / 100);
-  const totalPaid = priceAfterDiscount + gstAmount;
 
-  const rows: PaymentReceiptRow[] = [{ label: 'Book Price', amount: cartSubtotal }];
+  const rows: PaymentReceiptRow[] = [{ label: 'Items Total', amount: cartSubtotal }];
 
   if (couponDiscount > 0) {
     rows.push({
@@ -41,12 +38,9 @@ export function buildReceiptData(
     rows.push({ label: 'Delivery Charge', amount: deliveryCharge });
   }
 
-  rows.push({ label: 'Price After Discount', amount: priceAfterDiscount });
-  rows.push({ label: `GST (${GST_PERCENT}%)`, amount: gstAmount });
-
   return {
     rows,
-    totalPaid,
+    totalPaid: totalAmount,
     detailValue: orderTitles || 'Books Order',
   };
 }

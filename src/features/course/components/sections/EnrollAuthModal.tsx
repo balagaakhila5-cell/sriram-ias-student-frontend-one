@@ -398,6 +398,10 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
                   <div className="mb-8 w-full">
                     <label className="mb-3 block text-center text-[13px] font-medium text-black/45">
                       Mobile Number / Email Id
+                      <span className="text-[#E53935]" aria-hidden="true">
+                        {' '}
+                        *
+                      </span>
                     </label>
 
                     <input
@@ -447,18 +451,21 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
                       label="Name"
                       value={signupName}
                       onChange={setSignupName}
+                      required
                     />
 
                     <AuthInput
                       label="Email Id"
                       value={signupEmail}
                       onChange={setSignupEmail}
+                      required
                     />
 
                     <AuthInput
                       label="Mobile Number"
                       value={signupMobile}
                       onChange={setSignupMobile}
+                      required
                     />
                   </div>
 
@@ -937,13 +944,25 @@ interface AuthInputProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  required?: boolean;
 }
 
-const AuthInput: React.FC<AuthInputProps> = ({ label, value, onChange }) => {
+const AuthInput: React.FC<AuthInputProps> = ({
+  label,
+  value,
+  onChange,
+  required = false,
+}) => {
   return (
     <div className="w-full">
       <label className="mb-2 block text-center text-[13px] font-medium text-black/45">
         {label}
+        {required && (
+          <span className="text-[#E53935]" aria-hidden="true">
+            {' '}
+            *
+          </span>
+        )}
       </label>
 
       <input

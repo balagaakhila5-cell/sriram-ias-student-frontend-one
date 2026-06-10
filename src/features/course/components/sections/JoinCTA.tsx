@@ -8,6 +8,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import { useSessionBooking } from '../../hooks/useSessionBooking';
 import SessionBookingDialog from '../SessionBookingDialog';
+import FormFieldLabel from '@/components/common/FormFieldLabel';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -218,48 +219,74 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
           {/* Form */}
           <form onSubmit={handleSubmit} className="join-cta-form w-full max-w-[600px]">
             <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {/* Full Name */}
-              <input
-                type="text"
-                name="fullName"
-                placeholder="Full Name"
-                value={formData.fullName}
-                onChange={handleChange}
-                required
-                className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
-              />
+              <div>
+                <FormFieldLabel
+                  required
+                  className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                >
+                  Full Name
+                </FormFieldLabel>
+                <input
+                  type="text"
+                  name="fullName"
+                  placeholder="Full Name"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  required
+                  className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300 sm:text-left sm:placeholder:text-left"
+                />
+              </div>
 
-              {/* Mobile Number */}
-              <input
-                type="tel"
-                name="mobile"
-                placeholder="Mobile Number"
-                value={formData.mobile}
-                onChange={handleChange}
-                required
-                pattern="[0-9]{10}"
-                className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
-              />
+              <div>
+                <FormFieldLabel
+                  required
+                  className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                >
+                  Mobile Number
+                </FormFieldLabel>
+                <input
+                  type="tel"
+                  name="mobile"
+                  placeholder="Mobile Number"
+                  value={formData.mobile}
+                  onChange={handleChange}
+                  required
+                  pattern="[0-9]{10}"
+                  className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300 sm:text-left sm:placeholder:text-left"
+                />
+              </div>
 
-              {/* Email Id */}
-              <input
-                type="email"
-                name="email"
-                placeholder="Email Id"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
-              />
+              <div>
+                <FormFieldLabel
+                  required
+                  className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                >
+                  Email Id
+                </FormFieldLabel>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email Id"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300 sm:text-left sm:placeholder:text-left"
+                />
+              </div>
 
-              {/* Target Year Select */}
               <div className="relative w-full">
+                <FormFieldLabel
+                  required
+                  className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                >
+                  Target UPSC Attempt Year
+                </FormFieldLabel>
                 <select
                   name="targetYear"
                   value={formData.targetYear}
                   onChange={handleChange}
                   required
-                  className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300"
+                  className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300 sm:text-left"
                 >
                   <option value="" disabled>
                     Target UPSC Attempt Year
@@ -287,8 +314,6 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
                 </svg>
               </div>
             </div>
-
-            {/* Authorization Checkbox */}
             <label className="group mb-8 mt-2 flex cursor-pointer items-start gap-3">
               <input
                 type="checkbox"

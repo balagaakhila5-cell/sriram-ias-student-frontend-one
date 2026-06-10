@@ -5,10 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/store/cartStore';
 import { mockBooks } from '../data/books';
-import {
-  bookDiscountTotal,
-  originalTotal,
-} from '@/features/books/utils/checkoutCoupons';
+import { computeCheckoutTotals } from '@/features/books/utils/checkoutTotals';
 
 const brandGradient =
   'bg-gradient-to-r from-[rgba(24,151,216,0.8)] to-[#021C29]';
@@ -34,18 +31,18 @@ export default function CheckoutOrderSummary({
   const items = useCartStore((state) => state.items);
   const appliedCoupon = useCartStore((state) => state.appliedCoupon);
   const couponMessage = useCartStore((state) => state.couponMessage);
-  const subtotal = useCartStore((state) => state.subtotal);
   const addItem = useCartStore((state) => state.addItem);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
 
-  const deliveryCharge = 50;
-  const bookDiscount = bookDiscountTotal(items);
   const couponDiscount = appliedCoupon?.amount ?? 0;
+  const {
+    cartSubtotal,
+    bookDiscount,
+    deliveryCharge,
+    totalAmount,
+  } = computeCheckoutTotals(items, couponDiscount);
   const totalDiscount = bookDiscount + couponDiscount;
-  const totalOriginal = originalTotal(items);
-  const cartSubtotal = subtotal();
-  const finalTotal = Math.max(cartSubtotal - couponDiscount + deliveryCharge, 0);
   const firstItem = items[0];
   const offerBook =
     firstItem?.book.offers?.length ? firstItem.book : mockBooks[0];
@@ -74,8 +71,8 @@ export default function CheckoutOrderSummary({
       }`}
     >
       <PriceLine
-        label="Total Price"
-        value={`Rs.${totalOriginal.toLocaleString('en-IN')}`}
+        label="Items Total"
+        value={`Rs.${cartSubtotal.toLocaleString('en-IN')}`}
       />
       <PriceLine label="Delivery Charge" value={`Rs.${deliveryCharge}`} />
       <PriceLine
@@ -83,8 +80,8 @@ export default function CheckoutOrderSummary({
         value={`Rs.${totalDiscount.toLocaleString('en-IN')}`}
       />
       <PriceLine
-        label="Sub Total"
-        value={`Rs.${finalTotal.toLocaleString('en-IN')}`}
+        label="Total Amount"
+        value={`Rs.${totalAmount.toLocaleString('en-IN')}`}
       />
     </div>
   );
@@ -253,10 +250,7 @@ function PriceLine({ label, value }: { label: string; value: string }) {
 export function useCheckoutFinalTotal() {
   const items = useCartStore((state) => state.items);
   const appliedCoupon = useCartStore((state) => state.appliedCoupon);
-  const subtotal = useCartStore((state) => state.subtotal);
-
-  const deliveryCharge = 50;
   const couponDiscount = appliedCoupon?.amount ?? 0;
 
-  return Math.max(subtotal() - couponDiscount + deliveryCharge, 0);
+  return computeCheckoutTotals(items, couponDiscount).totalAmount;
 }

@@ -16,6 +16,7 @@ import {
   useVerifyOtp,
 } from "../hooks/useAuth";
 import { setMockStudentAuth } from "../utils/mockAuth";
+import FormFieldLabel from "@/components/common/FormFieldLabel";
 
 type AuthScreen = "form" | "otp" | "success";
 
@@ -288,6 +289,7 @@ const LoginPortal: React.FC = () => {
           <Field
             label="Mobile Number / Email Id"
             type="text"
+            required
             error={studentForm.formState.errors.identifier?.message}
             {...studentForm.register("identifier")}
           />
@@ -319,6 +321,7 @@ const LoginPortal: React.FC = () => {
           <Field
             label="Mobile Number"
             type="tel"
+            required
             inputMode="numeric"
             maxLength={10}
             error={parentForm.formState.errors.mobile?.message}
@@ -350,6 +353,7 @@ const LoginPortal: React.FC = () => {
           <Field
             label="Mobile Number"
             type="tel"
+            required
             inputMode="numeric"
             maxLength={10}
             error={facultyForm.formState.errors.mobile?.message}
@@ -420,9 +424,14 @@ interface FieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Field = React.forwardRef<HTMLInputElement, FieldProps>(
-  ({ label, error, ...rest }, ref) => (
+  ({ label, error, required, ...rest }, ref) => (
     <label className="flex w-full flex-col gap-2">
-      <span className="text-[14px] font-medium text-black/50">{label}</span>
+      <FormFieldLabel
+        required={required}
+        className="text-[14px] font-medium text-black/50"
+      >
+        {label}
+      </FormFieldLabel>
       <input
         ref={ref}
         {...rest}

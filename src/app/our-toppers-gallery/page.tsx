@@ -6,6 +6,7 @@ import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import { useSessionBooking } from '@/features/course/hooks/useSessionBooking';
 import SessionBookingDialog from '@/features/course/components/SessionBookingDialog';
+import FormFieldLabel from '@/components/common/FormFieldLabel';
 
 type Topper = {
   name: string;
@@ -488,44 +489,74 @@ const OurToppersGalleryPage = () => {
 
             <form className="mx-auto w-full max-w-[640px] lg:mx-0" onSubmit={handleSessionSubmit}>
               <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <input
-                  type="text"
-                  name="fullName"
-                  placeholder="Full Name"
-                  value={formData.fullName}
-                  onChange={handleFormChange}
-                  required
-                  className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
-                />
+                <div>
+                  <FormFieldLabel
+                    required
+                    className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                  >
+                    Full Name
+                  </FormFieldLabel>
+                  <input
+                    type="text"
+                    name="fullName"
+                    placeholder="Full Name"
+                    value={formData.fullName}
+                    onChange={handleFormChange}
+                    required
+                    className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300 sm:text-left sm:placeholder:text-left"
+                  />
+                </div>
 
-                <input
-                  type="tel"
-                  name="mobile"
-                  placeholder="Mobile Number"
-                  value={formData.mobile}
-                  onChange={handleFormChange}
-                  required
-                  pattern="[0-9]{10}"
-                  className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
-                />
+                <div>
+                  <FormFieldLabel
+                    required
+                    className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                  >
+                    Mobile Number
+                  </FormFieldLabel>
+                  <input
+                    type="tel"
+                    name="mobile"
+                    placeholder="Mobile Number"
+                    value={formData.mobile}
+                    onChange={handleFormChange}
+                    required
+                    pattern="[0-9]{10}"
+                    className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300 sm:text-left sm:placeholder:text-left"
+                  />
+                </div>
 
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email Id"
-                  value={formData.email}
-                  onChange={handleFormChange}
-                  required
-                  className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
-                />
+                <div>
+                  <FormFieldLabel
+                    required
+                    className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                  >
+                    Email Id
+                  </FormFieldLabel>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email Id"
+                    value={formData.email}
+                    onChange={handleFormChange}
+                    required
+                    className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300 sm:text-left sm:placeholder:text-left"
+                  />
+                </div>
 
                 <div className="relative w-full">
+                  <FormFieldLabel
+                    required
+                    className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                  >
+                    Target UPSC Attempt Year
+                  </FormFieldLabel>
                   <select
                     name="targetYear"
                     value={formData.targetYear}
                     onChange={handleFormChange}
                     required
-                    className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300"
+                    className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300 sm:text-left"
                   >
                     <option value="" disabled>
                       Target UPSC Attempt Year
@@ -553,6 +584,9 @@ const OurToppersGalleryPage = () => {
                 </div>
 
                 <div className="relative w-full">
+                  <FormFieldLabel className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left">
+                    City
+                  </FormFieldLabel>
                   <select
                     name="city"
                     value={formData.city}

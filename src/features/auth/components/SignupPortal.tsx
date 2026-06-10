@@ -11,6 +11,12 @@ import AuthSuccessView from "./AuthSuccessView";
 import OtpVerificationForm from "./OtpVerificationForm";
 import { useSendOtp } from "../hooks/useAuth";
 import { setMockStudentAuth } from "../utils/mockAuth";
+import {
+  DUPLICATE_SIGNUP_MESSAGE,
+  isStudentAlreadyRegistered,
+  registerStudent,
+} from "../utils/registeredStudents";
+import FormFieldLabel from "@/components/common/FormFieldLabel";
 
 const mobileRegex = /^\d{10}$/;
 
@@ -29,6 +35,7 @@ const SignupPortal: React.FC = () => {
   const [role, setRole] = useState<UserRole>("student");
   const [screen, setScreen] = useState<SignupScreen>("form");
   const [signupData, setSignupData] = useState<StudentSignupForm | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
   const [otpError, setOtpError] = useState<string | null>(null);
   const [otpSessionKey, setOtpSessionKey] = useState(0);
 
@@ -55,18 +62,28 @@ const SignupPortal: React.FC = () => {
 
   const onSubmit = form.handleSubmit((values) => {
     if (role !== "student") return;
+
+    const email = values.email.trim();
+    const mobile = values.mobile.trim();
+
+    if (isStudentAlreadyRegistered({ email, mobile })) {
+      setFormError(DUPLICATE_SIGNUP_MESSAGE);
+      return;
+    }
+
     setSignupData(values);
+    setFormError(null);
     setOtpError(null);
 
     sendOtp.mutate(
-      { mobile: values.mobile.trim(), email: values.email.trim() },
+      { mobile, email },
       {
         onSuccess: () => {
           setOtpSessionKey((current) => current + 1);
           setScreen("otp");
         },
         onError: (error) => {
-          setOtpError(
+          setFormError(
             error instanceof Error ? error.message : "Failed to send OTP.",
           );
         },
@@ -103,6 +120,11 @@ const SignupPortal: React.FC = () => {
       email: signupData.email,
       mobile: signupData.mobile,
     });
+    registerStudent({
+      name: signupData.name,
+      email: signupData.email,
+      mobile: signupData.mobile,
+    });
     setOtpError(null);
     setScreen("success");
   };
@@ -110,6 +132,7 @@ const SignupPortal: React.FC = () => {
   const handleRoleChange = (newRole: UserRole) => {
     setRole(newRole);
     setScreen("form");
+    setFormError(null);
     setOtpError(null);
   };
 
@@ -167,6 +190,7 @@ const SignupPortal: React.FC = () => {
           <Field
             label="Full Name"
             type="text"
+            required
             error={form.formState.errors.name?.message}
             {...form.register("name")}
           />
@@ -174,6 +198,7 @@ const SignupPortal: React.FC = () => {
           <Field
             label="Email ID"
             type="email"
+            required
             error={form.formState.errors.email?.message}
             {...form.register("email")}
           />
@@ -181,9 +206,16 @@ const SignupPortal: React.FC = () => {
           <Field
             label="Mobile Number"
             type="tel"
+            required
             error={form.formState.errors.mobile?.message}
             {...form.register("mobile")}
           />
+
+          {formError ? (
+            <p className="rounded-[16px] bg-red-50 px-4 py-3 text-center text-sm text-red-600">
+              {formError}
+            </p>
+          ) : null}
 
           <button
             type="submit"
@@ -216,6 +248,7 @@ const SignupPortal: React.FC = () => {
           resendLoading={sendOtp.isPending}
           onBack={() => {
             setScreen("form");
+            setFormError(null);
             setOtpError(null);
           }}
           error={otpError ?? undefined}
@@ -231,9 +264,14 @@ interface FieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Field = React.forwardRef<HTMLInputElement, FieldProps>(
-  ({ label, error, ...rest }, ref) => (
+  ({ label, error, required, ...rest }, ref) => (
     <label className="flex w-full flex-col gap-2">
-      <span className="text-[14px] font-medium text-black/50">{label}</span>
+      <FormFieldLabel
+        required={required}
+        className="text-[14px] font-medium text-black/50"
+      >
+        {label}
+      </FormFieldLabel>
 
       <input
         ref={ref}
