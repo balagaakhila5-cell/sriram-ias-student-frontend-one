@@ -6,6 +6,8 @@ export type BlogBookmark = {
   time?: string;
   image: string;
   category?: string;
+  /** Listing card that was bookmarked (detail uses blog-{slug}). */
+  sourceCardId?: string;
   bookmarkedAt: string;
 };
 

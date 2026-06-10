@@ -147,13 +147,19 @@ export function useSubmitMockTest(testId: string | undefined) {
           if (payload.answers[q._id] === q.correctAnswer) correctCount += 1;
         }
         const total = test.questions.length;
+        const answeredCount = Object.values(payload.answers).filter(
+          (answer) => answer !== undefined && answer !== "",
+        ).length;
+        const incorrectCount = Math.max(answeredCount - correctCount, 0);
+        const unattemptedCount = Math.max(total - answeredCount, 0);
+
         return {
           _id: `demo-result-${testId}-${Date.now()}`,
           score: correctCount * 2,
           totalMarks: total * 2,
           correctCount,
-          incorrectCount: total - correctCount,
-          unattemptedCount: 0,
+          incorrectCount,
+          unattemptedCount,
           totalQuestions: total,
           passed: correctCount >= Math.ceil(total * 0.4),
           percentage: Math.round((correctCount / total) * 100),

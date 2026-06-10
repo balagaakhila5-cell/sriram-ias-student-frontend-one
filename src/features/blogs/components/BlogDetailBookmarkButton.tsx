@@ -11,7 +11,10 @@ type BlogDetailBookmarkButtonProps = {
 export default function BlogDetailBookmarkButton({
   bookmark,
 }: BlogDetailBookmarkButtonProps) {
-  const { isBookmarked, handleBookmark } = useBlogBookmarkActions(bookmark);
+  const { isBookmarked, handleBookmark } = useBlogBookmarkActions(
+    bookmark,
+    "detail",
+  );
 
   return (
     <button

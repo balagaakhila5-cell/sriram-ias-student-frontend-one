@@ -8,18 +8,9 @@ function storageKey(userId: string) {
   return `${STORAGE_PREFIX}_${userId}`;
 }
 
-/** Canonical bookmark id — one bookmark per blog slug across list + detail pages. */
+/** Stored entry id — one saved bookmark per blog article (by slug). */
 export function getBlogBookmarkId(slug: string): string {
   return `blog-${slug}`;
-}
-
-function normalizeBookmarkEntry(
-  bookmark: BlogBookmarkInput,
-): BlogBookmarkInput {
-  return {
-    ...bookmark,
-    id: getBlogBookmarkId(bookmark.slug),
-  };
 }
 
 function dedupeBySlug(entries: BlogBookmark[]): BlogBookmark[] {
@@ -56,26 +47,40 @@ export function getBlogBookmarks(userId: string): BlogBookmark[] {
   }
 }
 
+function findBySlug(userId: string, slug: string): BlogBookmark | undefined {
+  return getBlogBookmarks(userId).find((item) => item.slug === slug);
+}
+
+/** Detail page — bookmarked if this article slug is saved. */
 export function isBlogBookmarked(userId: string, slug: string): boolean {
-  return getBlogBookmarks(userId).some((item) => item.slug === slug);
+  return Boolean(findBySlug(userId, slug));
+}
+
+/** Listing card — filled only on the card that was bookmarked. */
+export function isBlogCardBookmarked(
+  userId: string,
+  cardId: string,
+  slug: string,
+): boolean {
+  const entry = findBySlug(userId, slug);
+  return Boolean(entry && entry.sourceCardId === cardId);
 }
 
 export function toggleBlogBookmark(
   userId: string,
   bookmark: BlogBookmarkInput,
 ): boolean {
-  const normalized = normalizeBookmarkEntry(bookmark);
   const existing = getBlogBookmarks(userId);
-  const alreadySaved = existing.some(
-    (item) => item.slug === normalized.slug,
-  );
+  const alreadySaved = existing.some((item) => item.slug === bookmark.slug);
 
   const updated = alreadySaved
-    ? existing.filter((item) => item.slug !== normalized.slug)
+    ? existing.filter((item) => item.slug !== bookmark.slug)
     : [
         ...existing,
         {
-          ...normalized,
+          ...bookmark,
+          id: getBlogBookmarkId(bookmark.slug),
+          sourceCardId: bookmark.id,
           bookmarkedAt: new Date().toISOString(),
         },
       ];

@@ -1,5 +1,4 @@
 import type { BlogBookmarkInput } from '../types';
-import { getBlogBookmarkId } from '../utils/blogBookmarks';
 
 const BLOG_META = {
   slug: 'discipline-beats-motivation',
@@ -8,20 +7,23 @@ const BLOG_META = {
   time: '12:30 PM',
 } as const;
 
-function makeBlog(image: string): BlogBookmarkInput {
+function makeBlog(cardId: string, image: string): BlogBookmarkInput {
   return {
-    id: getBlogBookmarkId(BLOG_META.slug),
+    id: cardId,
     ...BLOG_META,
     image,
   };
 }
 
-export const FEATURED_BLOG = makeBlog('/assets/blogs/main-cup.png');
+export const FEATURED_BLOG = makeBlog(
+  'blog-featured-main-cup',
+  '/assets/blogs/main-cup.png',
+);
 
 export const PREVIEW_BLOGS: BlogBookmarkInput[] = [
-  makeBlog('/assets/blogs/book1.png'),
-  makeBlog('/assets/blogs/book2.png'),
-  makeBlog('/assets/blogs/cup-image.png'),
+  makeBlog('blog-grid-1', '/assets/blogs/book1.png'),
+  makeBlog('blog-grid-2', '/assets/blogs/book2.png'),
+  makeBlog('blog-grid-3', '/assets/blogs/cup-image.png'),
 ];
 
 const EXTENDED_BLOG_IMAGES = [
@@ -43,7 +45,9 @@ const EXTENDED_BLOG_IMAGES = [
 export const ALL_BLOGS: BlogBookmarkInput[] = [
   FEATURED_BLOG,
   ...PREVIEW_BLOGS,
-  ...EXTENDED_BLOG_IMAGES.map((image) => makeBlog(image)),
+  ...EXTENDED_BLOG_IMAGES.map((image, index) =>
+    makeBlog(`blog-all-${index}`, image),
+  ),
 ];
 
 export type TrendingBlogArticle = {

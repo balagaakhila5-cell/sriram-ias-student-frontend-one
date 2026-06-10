@@ -7,10 +7,16 @@ import type { BlogBookmarkInput } from "../types";
 import {
   BLOG_BOOKMARKS_UPDATED_EVENT,
   isBlogBookmarked,
+  isBlogCardBookmarked,
   toggleBlogBookmark,
 } from "../utils/blogBookmarks";
 
-export function useBlogBookmarkActions(bookmark: BlogBookmarkInput) {
+export type BlogBookmarkMode = "listing" | "detail";
+
+export function useBlogBookmarkActions(
+  bookmark: BlogBookmarkInput,
+  mode: BlogBookmarkMode = "listing",
+) {
   const router = useRouter();
   const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
@@ -22,23 +28,31 @@ export function useBlogBookmarkActions(bookmark: BlogBookmarkInput) {
 
   const isStudent = isAuthenticated && user?.role === "student";
 
+  const readBookmarked = useCallback(() => {
+    if (!user?.id) return false;
+    if (mode === "detail") {
+      return isBlogBookmarked(user.id, bookmark.slug);
+    }
+    return isBlogCardBookmarked(user.id, bookmark.id, bookmark.slug);
+  }, [bookmark.id, bookmark.slug, mode, user?.id]);
+
   useEffect(() => {
     if (!user?.id) {
       setIsBookmarked(false);
       return;
     }
 
-    setIsBookmarked(isBlogBookmarked(user.id, bookmark.slug));
+    setIsBookmarked(readBookmarked());
 
     const sync = () => {
       if (user?.id) {
-        setIsBookmarked(isBlogBookmarked(user.id, bookmark.slug));
+        setIsBookmarked(readBookmarked());
       }
     };
 
     window.addEventListener(BLOG_BOOKMARKS_UPDATED_EVENT, sync);
     return () => window.removeEventListener(BLOG_BOOKMARKS_UPDATED_EVENT, sync);
-  }, [bookmark.slug, user?.id]);
+  }, [readBookmarked, user?.id]);
 
   const requireStudentAuth = useCallback(() => {
     if (!isHydrated) return false;
@@ -61,7 +75,7 @@ export function useBlogBookmarkActions(bookmark: BlogBookmarkInput) {
 
     const saved = toggleBlogBookmark(user.id, bookmark);
     setIsBookmarked(saved);
-  }, [bookmark, requireStudentAuth, user?.id]);
+  }, [bookmark, mode, requireStudentAuth, user?.id]);
 
   const handleShare = useCallback(async () => {
     if (!requireStudentAuth()) return;

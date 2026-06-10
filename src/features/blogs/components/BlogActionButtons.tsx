@@ -16,7 +16,7 @@ export default function BlogActionButtons({
   className = "",
 }: BlogActionButtonsProps) {
   const { isBookmarked, shareMessage, handleBookmark, handleShare } =
-    useBlogBookmarkActions(bookmark);
+    useBlogBookmarkActions(bookmark, "listing");
 
   const buttonClass =
     size === "md"
