@@ -106,17 +106,21 @@ export const authService = {
   ): Promise<AuthResponse> => {
     await delay();
 
+    const email = payload.email ?? "";
+    const mobile = payload.mobile ?? "";
+    const name = email.split("@")[0] || "Student";
+
     registerStudent({
-      name: payload.email?.split("@")[0] ?? "Student",
-      email: payload.email,
-      mobile: payload.mobile,
+      name,
+      email,
+      mobile,
     });
 
     return {
       user: mockUser("student", {
-        name: payload.email?.split("@")[0] ?? "Student",
-        email: payload.email,
-        mobile: payload.mobile,
+        name,
+        email,
+        mobile,
       }),
       token: mockToken(),
     };
