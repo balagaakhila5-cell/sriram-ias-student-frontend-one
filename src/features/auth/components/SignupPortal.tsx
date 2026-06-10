@@ -9,6 +9,7 @@ import { z } from "zod";
 import AuthPortalShell, { UserRole } from "./AuthPortalShell";
 import AuthSuccessView from "./AuthSuccessView";
 import OtpVerificationForm from "./OtpVerificationForm";
+import { useSendOtp } from "../hooks/useAuth";
 import { setMockStudentAuth } from "../utils/mockAuth";
 
 const mobileRegex = /^\d{10}$/;
@@ -29,6 +30,9 @@ const SignupPortal: React.FC = () => {
   const [screen, setScreen] = useState<SignupScreen>("form");
   const [signupData, setSignupData] = useState<StudentSignupForm | null>(null);
   const [otpError, setOtpError] = useState<string | null>(null);
+  const [otpSessionKey, setOtpSessionKey] = useState(0);
+
+  const sendOtp = useSendOtp();
 
   const form = useForm<StudentSignupForm>({
     resolver: zodResolver(studentSchema),
@@ -53,8 +57,38 @@ const SignupPortal: React.FC = () => {
     if (role !== "student") return;
     setSignupData(values);
     setOtpError(null);
-    setScreen("otp");
+
+    sendOtp.mutate(
+      { mobile: values.mobile.trim(), email: values.email.trim() },
+      {
+        onSuccess: () => {
+          setOtpSessionKey((current) => current + 1);
+          setScreen("otp");
+        },
+        onError: (error) => {
+          setOtpError(
+            error instanceof Error ? error.message : "Failed to send OTP.",
+          );
+        },
+      },
+    );
   });
+
+  const handleResendOtp = () => {
+    if (!signupData) return;
+    setOtpError(null);
+    sendOtp.mutate(
+      { mobile: signupData.mobile.trim(), email: signupData.email.trim() },
+      {
+        onSuccess: () => setOtpSessionKey((current) => current + 1),
+        onError: (error) => {
+          setOtpError(
+            error instanceof Error ? error.message : "Failed to resend OTP.",
+          );
+        },
+      },
+    );
+  };
 
   const handleOtpVerify = (otp: string) => {
     if (otp.length !== 4) {
@@ -153,7 +187,8 @@ const SignupPortal: React.FC = () => {
 
           <button
             type="submit"
-            className="mt-4 flex h-[43px] w-full items-center justify-center rounded-[24px] text-[18px] font-medium text-white shadow-[0px_4px_20px_rgba(0,103,156,0.35)] transition-opacity hover:opacity-95"
+            disabled={sendOtp.isPending}
+            className="mt-4 flex h-[43px] w-full items-center justify-center rounded-[24px] text-[18px] font-medium text-white shadow-[0px_4px_20px_rgba(0,103,156,0.35)] transition-opacity hover:opacity-95 disabled:opacity-60"
             style={{
               background:
                 "linear-gradient(90deg, rgba(24,151,216,0.85) 0%, #021C29 100%)",
@@ -174,7 +209,11 @@ const SignupPortal: React.FC = () => {
         </form>
       ) : (
         <OtpVerificationForm
+          otpSessionKey={otpSessionKey}
+          message="OTP received to your mobile number"
           onVerify={handleOtpVerify}
+          onResend={handleResendOtp}
+          resendLoading={sendOtp.isPending}
           onBack={() => {
             setScreen("form");
             setOtpError(null);

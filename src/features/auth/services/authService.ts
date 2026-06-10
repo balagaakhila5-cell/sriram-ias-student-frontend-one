@@ -74,6 +74,18 @@ export const authService = {
     };
   },
 
+  verifyFacultyOtp: async (payload: VerifyOtpPayload): Promise<AuthResponse> => {
+    await delay();
+    return {
+      user: mockUser("employee", {
+        name: "Faculty",
+        email: payload.email,
+        mobile: payload.mobile,
+      }),
+      token: mockToken(),
+    };
+  },
+
   verifyStudentSignup: async (
     payload: VerifyOtpPayload,
   ): Promise<AuthResponse> => {

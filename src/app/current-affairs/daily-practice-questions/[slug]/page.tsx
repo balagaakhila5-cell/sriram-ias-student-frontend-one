@@ -1,6 +1,6 @@
 'use client';
 
-import React, { use, useMemo, useState } from 'react';
+import React, { use, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -113,11 +113,30 @@ const correctAnswers: Record<number, number> = {
   15: 1,
 };
 
+const TEST_DURATION_SECONDS = 60 * 60;
+
 function formatTitle(slug: string) {
   return slug
     .split('-')
     .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
     .join(' ');
+}
+
+function formatCountdown(totalSeconds: number) {
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  return [h, m, s].map((value) => String(value).padStart(2, '0'));
+}
+
+function formatElapsedTime(totalSeconds: number) {
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+
+  if (h > 0) return `${h} Hr ${m} min`;
+  if (m > 0) return `${m} min ${s} sec`;
+  return `${s} sec`;
 }
 
 export default function DailyPracticeQuestionTestPage({
@@ -132,6 +151,35 @@ export default function DailyPracticeQuestionTestPage({
     {}
   );
   const [showSubmitModal, setShowSubmitModal] = useState(false);
+  const startTimeRef = useRef(Date.now());
+  const timerEndedRef = useRef(false);
+  const [secondsLeft, setSecondsLeft] = useState(TEST_DURATION_SECONDS);
+
+  useEffect(() => {
+    startTimeRef.current = Date.now();
+    timerEndedRef.current = false;
+    setSecondsLeft(TEST_DURATION_SECONDS);
+  }, [slug]);
+
+  useEffect(() => {
+    const timerId = window.setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
+      const remaining = Math.max(TEST_DURATION_SECONDS - elapsed, 0);
+      setSecondsLeft(remaining);
+
+      if (remaining === 0 && !timerEndedRef.current) {
+        timerEndedRef.current = true;
+        setShowSubmitModal(true);
+      }
+    }, 1000);
+
+    return () => window.clearInterval(timerId);
+  }, [slug]);
+
+  const [hh, mm, ss] = useMemo(
+    () => formatCountdown(secondsLeft),
+    [secondsLeft],
+  );
 
   const title = useMemo(() => formatTitle(slug), [slug]);
   const question = questions[currentQuestion];
@@ -168,8 +216,15 @@ export default function DailyPracticeQuestionTestPage({
       }
     });
 
-    const incorrectCount = answeredCount - correctCount;
-    const percentage = Math.round((correctCount / totalQuestions) * 100);
+    const wrongAnswerCount = Math.max(answeredCount - correctCount, 0);
+    const incorrectCount = wrongAnswerCount + unansweredCount;
+    const percentage =
+      totalQuestions > 0
+        ? Math.round((correctCount / totalQuestions) * 100)
+        : 0;
+    const timeTakenSeconds = Math.floor(
+      (Date.now() - startTimeRef.current) / 1000,
+    );
 
     let grade = 'D';
     if (percentage >= 75) grade = 'A';
@@ -189,7 +244,8 @@ export default function DailyPracticeQuestionTestPage({
       incorrectCount,
       percentage,
       grade,
-      time: '1 Hr',
+      time: formatElapsedTime(timeTakenSeconds),
+      timeTakenSeconds,
       rank: getRankFromCorrectAnswers(correctCount),
     };
 
@@ -238,25 +294,37 @@ export default function DailyPracticeQuestionTestPage({
             />
           </Link>
 
-          <div className="hidden items-center gap-7 lg:flex">
-            <div className="flex items-center gap-2 text-[17px] font-medium">
-              <span className="rounded-md bg-[#EFF3FF] px-3 py-2 font-bold">01:</span>
-              <span className="rounded-md bg-[#EFF3FF] px-3 py-2 font-bold">00:</span>
-              <span className="rounded-md bg-[#EFF3FF] px-3 py-2 font-bold">00</span>
+          <div className="flex flex-wrap items-center justify-end gap-4 sm:gap-7">
+            <div className="flex items-center gap-2 text-[15px] font-medium sm:text-[17px]">
+              <span className="rounded-md bg-[#EFF3FF] px-2 py-1.5 font-bold sm:px-3 sm:py-2">
+                {hh}:
+              </span>
+              <span className="rounded-md bg-[#EFF3FF] px-2 py-1.5 font-bold sm:px-3 sm:py-2">
+                {mm}:
+              </span>
+              <span
+                className={`rounded-md px-2 py-1.5 font-bold sm:px-3 sm:py-2 ${
+                  secondsLeft <= 300 ? 'bg-[#FFE8E8] text-[#D32020]' : 'bg-[#EFF3FF]'
+                }`}
+              >
+                {ss}
+              </span>
 
-              <span className="ml-2 text-[16px] font-semibold">Time Left</span>
+              <span className="ml-1 text-[14px] font-semibold sm:ml-2 sm:text-[16px]">
+                Time Left
+              </span>
             </div>
 
-            <div className="h-7 w-[1px] bg-[#D8D8D8]" />
+            <div className="hidden h-7 w-[1px] bg-[#D8D8D8] sm:block" />
 
-            <div className="flex items-center gap-2 text-[18px] font-semibold text-[#00000080]">
+            <div className="hidden items-center gap-2 text-[18px] font-semibold text-[#00000080] sm:flex">
               <Clock3 size={18} />
               1 Hour
             </div>
 
-            <div className="h-7 w-[1px] bg-[#D8D8D8]" />
+            <div className="hidden h-7 w-[1px] bg-[#D8D8D8] sm:block" />
 
-            <div className="flex items-center gap-2 text-[18px] font-semibold text-[#00000080]">
+            <div className="flex items-center gap-2 text-[16px] font-semibold text-[#00000080] sm:text-[18px]">
               <FileText size={18} />
               {totalQuestions} Questions
             </div>

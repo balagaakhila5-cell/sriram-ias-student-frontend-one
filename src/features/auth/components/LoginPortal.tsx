@@ -9,10 +9,15 @@ import { z } from "zod";
 import AuthPortalShell, { UserRole } from "./AuthPortalShell";
 import AuthSuccessView from "./AuthSuccessView";
 import OtpVerificationForm from "./OtpVerificationForm";
-import { useParentLoginRequest, useStaffLogin, useVerifyOtp } from "../hooks/useAuth";
+import {
+  useParentLoginRequest,
+  useSendOtp,
+  useVerifyFacultyOtp,
+  useVerifyOtp,
+} from "../hooks/useAuth";
 import { setMockStudentAuth } from "../utils/mockAuth";
 
-type StudentScreen = "form" | "otp" | "success";
+type AuthScreen = "form" | "otp" | "success";
 
 const titleByRole: Record<UserRole, string> = {
   student: "Login Portal",
@@ -30,17 +35,11 @@ const studentSchema = z.object({
     ),
 });
 
-const parentSchema = z.object({
+const mobileSchema = z.object({
   mobile: z
     .string()
     .min(1, "Mobile number is required")
     .regex(/^\d{10}$/, "Enter a valid 10-digit mobile number"),
-  otp: z.string().optional(),
-});
-
-const facultySchema = z.object({
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 const LoginPortal: React.FC = () => {
@@ -48,34 +47,46 @@ const LoginPortal: React.FC = () => {
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/";
   const [role, setRole] = useState<UserRole>("student");
-  const [parentOtpSent, setParentOtpSent] = useState(false);
-  const [studentScreen, setStudentScreen] = useState<StudentScreen>("form");
+  const [studentScreen, setStudentScreen] = useState<AuthScreen>("form");
+  const [parentScreen, setParentScreen] = useState<AuthScreen>("form");
+  const [facultyScreen, setFacultyScreen] = useState<AuthScreen>("form");
   const [studentIdentifier, setStudentIdentifier] = useState("");
+  const [parentMobile, setParentMobile] = useState("");
+  const [facultyMobile, setFacultyMobile] = useState("");
   const [otpError, setOtpError] = useState<string | null>(null);
+  const [otpSessionKey, setOtpSessionKey] = useState(0);
 
+  const sendOtp = useSendOtp();
   const parentLoginRequest = useParentLoginRequest();
   const verifyParentOtp = useVerifyOtp();
-  const staffLogin = useStaffLogin("staff");
+  const verifyFacultyOtp = useVerifyFacultyOtp();
 
   const studentForm = useForm({
     resolver: zodResolver(studentSchema),
     defaultValues: { identifier: "" },
   });
   const parentForm = useForm({
-    resolver: zodResolver(parentSchema),
-    defaultValues: { mobile: "", otp: "" },
+    resolver: zodResolver(mobileSchema),
+    defaultValues: { mobile: "" },
   });
   const facultyForm = useForm({
-    resolver: zodResolver(facultySchema),
-    defaultValues: { email: "", password: "" },
+    resolver: zodResolver(mobileSchema),
+    defaultValues: { mobile: "" },
   });
+
+  const resetOtpFlow = () => {
+    setOtpError(null);
+    setOtpSessionKey((current) => current + 1);
+  };
 
   const handleRoleChange = (newRole: UserRole) => {
     setRole(newRole);
     setStudentScreen("form");
+    setParentScreen("form");
+    setFacultyScreen("form");
     setOtpError(null);
-    setParentOtpSent(false);
     parentForm.reset();
+    facultyForm.reset();
   };
 
   useEffect(() => {
@@ -88,11 +99,51 @@ const LoginPortal: React.FC = () => {
     return () => window.clearTimeout(timer);
   }, [redirectTo, studentScreen, router]);
 
+  const isMobileIdentifier = (value: string) => /^\d{10}$/.test(value);
+
+  const otpMessageForIdentifier = (identifier: string) =>
+    isMobileIdentifier(identifier)
+      ? "OTP received to your mobile number"
+      : "OTP received to your email address";
+
+  const dispatchOtp = (
+    payload: { mobile?: string; email?: string },
+    onSent: () => void,
+    useParentRequest = false,
+  ) => {
+    const mutation = useParentRequest ? parentLoginRequest : sendOtp;
+    mutation.mutate(payload, {
+      onSuccess: () => {
+        resetOtpFlow();
+        onSent();
+      },
+      onError: (error) => {
+        setOtpError(
+          error instanceof Error ? error.message : "Failed to send OTP.",
+        );
+      },
+    });
+  };
+
   const onStudentSubmit = studentForm.handleSubmit((values) => {
-    setStudentIdentifier(values.identifier.trim());
+    const identifier = values.identifier.trim();
+    setStudentIdentifier(identifier);
     setOtpError(null);
-    setStudentScreen("otp");
+
+    const payload = isMobileIdentifier(identifier)
+      ? { mobile: identifier }
+      : { email: identifier };
+
+    dispatchOtp(payload, () => setStudentScreen("otp"));
   });
+
+  const handleStudentResendOtp = () => {
+    setOtpError(null);
+    const payload = isMobileIdentifier(studentIdentifier)
+      ? { mobile: studentIdentifier }
+      : { email: studentIdentifier };
+    dispatchOtp(payload, () => undefined);
+  };
 
   const handleStudentOtpVerify = (otp: string) => {
     if (otp.length !== 4) {
@@ -111,48 +162,97 @@ const LoginPortal: React.FC = () => {
   };
 
   const onParentSendOtp = parentForm.handleSubmit((values) => {
-    parentLoginRequest.mutate(
-      { mobile: values.mobile.trim() },
-      { onSuccess: () => setParentOtpSent(true) },
-    );
+    const mobile = values.mobile.trim();
+    setParentMobile(mobile);
+    setOtpError(null);
+    dispatchOtp({ mobile }, () => setParentScreen("otp"), true);
   });
 
-  const onParentVerifyOtp = parentForm.handleSubmit((values) => {
-    const otp = values.otp?.trim() ?? "";
+  const handleParentResendOtp = () => {
+    setOtpError(null);
+    dispatchOtp({ mobile: parentMobile }, () => undefined, true);
+  };
+
+  const handleParentOtpVerify = (otp: string) => {
     if (!/^\d{6}$/.test(otp)) {
-      parentForm.setError("otp", { message: "Please enter 6 digit OTP" });
+      setOtpError("Please enter 6 digit OTP");
       return;
     }
 
     verifyParentOtp.mutate(
-      { mobile: values.mobile.trim(), otp },
-      { onSuccess: () => router.push("/parent") },
+      { mobile: parentMobile, otp },
+      {
+        onSuccess: () => router.push("/parent"),
+        onError: (error) => {
+          setOtpError(
+            error instanceof Error ? error.message : "OTP verification failed.",
+          );
+        },
+      },
     );
+  };
+
+  const onFacultySendOtp = facultyForm.handleSubmit((values) => {
+    const mobile = values.mobile.trim();
+    setFacultyMobile(mobile);
+    setOtpError(null);
+    dispatchOtp({ mobile }, () => setFacultyScreen("otp"));
   });
 
-  const onFacultySubmit = facultyForm.handleSubmit((values) => {
-    staffLogin.mutate(values, {
-      onSuccess: () => router.push("/"),
-    });
-  });
+  const handleFacultyResendOtp = () => {
+    setOtpError(null);
+    dispatchOtp({ mobile: facultyMobile }, () => undefined);
+  };
+
+  const handleFacultyOtpVerify = (otp: string) => {
+    if (!/^\d{4}$/.test(otp)) {
+      setOtpError("Please enter 4 digit OTP");
+      return;
+    }
+
+    verifyFacultyOtp.mutate(
+      { mobile: facultyMobile, otp },
+      {
+        onSuccess: () => router.push("/employee"),
+        onError: (error) => {
+          setOtpError(
+            error instanceof Error ? error.message : "OTP verification failed.",
+          );
+        },
+      },
+    );
+  };
 
   const mutationError =
     role === "parent"
-      ? parentOtpSent
+      ? parentScreen === "otp"
         ? verifyParentOtp.error?.message
         : parentLoginRequest.error?.message
       : role === "faculty"
-        ? staffLogin.error?.message
-        : null;
+        ? facultyScreen === "otp"
+          ? verifyFacultyOtp.error?.message
+          : sendOtp.error?.message
+        : studentScreen === "otp"
+          ? sendOtp.error?.message
+          : null;
 
   const isPending =
     role === "parent"
-      ? parentOtpSent
+      ? parentScreen === "otp"
         ? verifyParentOtp.isPending
         : parentLoginRequest.isPending
       : role === "faculty"
-        ? staffLogin.isPending
-        : false;
+        ? facultyScreen === "otp"
+          ? verifyFacultyOtp.isPending
+          : sendOtp.isPending
+        : studentScreen === "form"
+          ? sendOtp.isPending
+          : false;
+
+  const isResendPending =
+    role === "parent"
+      ? parentLoginRequest.isPending
+      : sendOtp.isPending;
 
   if (role === "student" && studentScreen === "success") {
     return (
@@ -167,15 +267,21 @@ const LoginPortal: React.FC = () => {
     );
   }
 
-  const studentTitle =
-    studentScreen === "otp" ? "OTP Verification" : titleByRole.student;
+  const activeOtpScreen =
+    (role === "student" && studentScreen === "otp") ||
+    (role === "parent" && parentScreen === "otp") ||
+    (role === "faculty" && facultyScreen === "otp");
+
+  const portalTitle = activeOtpScreen
+    ? "OTP Verification"
+    : titleByRole[role];
 
   return (
     <AuthPortalShell
       activeRole={role}
       onRoleChange={handleRoleChange}
       loginMode
-      title={role === "student" ? studentTitle : titleByRole[role]}
+      title={portalTitle}
     >
       {role === "student" && studentScreen === "form" && (
         <form onSubmit={onStudentSubmit} className="flex w-full flex-col gap-5">
@@ -185,6 +291,7 @@ const LoginPortal: React.FC = () => {
             error={studentForm.formState.errors.identifier?.message}
             {...studentForm.register("identifier")}
           />
+          {mutationError && <ErrorText>{mutationError}</ErrorText>}
           <SubmitButton loading={isPending} variant="student">
             Send OTP
           </SubmitButton>
@@ -194,7 +301,11 @@ const LoginPortal: React.FC = () => {
 
       {role === "student" && studentScreen === "otp" && (
         <OtpVerificationForm
+          otpSessionKey={otpSessionKey}
+          message={otpMessageForIdentifier(studentIdentifier)}
           onVerify={handleStudentOtpVerify}
+          onResend={handleStudentResendOtp}
+          resendLoading={isResendPending}
           onBack={() => {
             setStudentScreen("form");
             setOtpError(null);
@@ -203,11 +314,8 @@ const LoginPortal: React.FC = () => {
         />
       )}
 
-      {role === "parent" && (
-        <form
-          onSubmit={parentOtpSent ? onParentVerifyOtp : onParentSendOtp}
-          className="flex w-full flex-col gap-5"
-        >
+      {role === "parent" && parentScreen === "form" && (
+        <form onSubmit={onParentSendOtp} className="flex w-full flex-col gap-5">
           <Field
             label="Mobile Number"
             type="tel"
@@ -216,43 +324,56 @@ const LoginPortal: React.FC = () => {
             error={parentForm.formState.errors.mobile?.message}
             {...parentForm.register("mobile")}
           />
-          {parentOtpSent && (
-            <Field
-              label="OTP"
-              type="text"
-              inputMode="numeric"
-              maxLength={6}
-              autoComplete="one-time-code"
-              error={parentForm.formState.errors.otp?.message}
-              {...parentForm.register("otp")}
-            />
-          )}
           {mutationError && <ErrorText>{mutationError}</ErrorText>}
-          <SubmitButton loading={isPending}>
-            {parentOtpSent ? "Verify OTP" : "Send OTP"}
-          </SubmitButton>
+          <SubmitButton loading={isPending}>Send OTP</SubmitButton>
         </form>
       )}
 
-      {role === "faculty" && (
-        <form onSubmit={onFacultySubmit} className="flex w-full flex-col gap-5">
+      {role === "parent" && parentScreen === "otp" && (
+        <OtpVerificationForm
+          otpLength={6}
+          otpSessionKey={otpSessionKey}
+          message="OTP received to your mobile number"
+          onVerify={handleParentOtpVerify}
+          onResend={handleParentResendOtp}
+          resendLoading={isResendPending}
+          onBack={() => {
+            setParentScreen("form");
+            setOtpError(null);
+          }}
+          error={otpError ?? mutationError ?? undefined}
+        />
+      )}
+
+      {role === "faculty" && facultyScreen === "form" && (
+        <form onSubmit={onFacultySendOtp} className="flex w-full flex-col gap-5">
           <Field
-            label="Email ID"
-            type="email"
-            error={facultyForm.formState.errors.email?.message}
-            {...facultyForm.register("email")}
-          />
-          <Field
-            label="Password"
-            type="password"
-            error={facultyForm.formState.errors.password?.message}
-            {...facultyForm.register("password")}
+            label="Mobile Number"
+            type="tel"
+            inputMode="numeric"
+            maxLength={10}
+            error={facultyForm.formState.errors.mobile?.message}
+            {...facultyForm.register("mobile")}
           />
           {mutationError && <ErrorText>{mutationError}</ErrorText>}
-          <SubmitButton loading={isPending}>Login</SubmitButton>
+          <SubmitButton loading={isPending}>Send OTP</SubmitButton>
         </form>
       )}
 
+      {role === "faculty" && facultyScreen === "otp" && (
+        <OtpVerificationForm
+          otpSessionKey={otpSessionKey}
+          message="OTP received to your mobile number"
+          onVerify={handleFacultyOtpVerify}
+          onResend={handleFacultyResendOtp}
+          resendLoading={isResendPending}
+          onBack={() => {
+            setFacultyScreen("form");
+            setOtpError(null);
+          }}
+          error={otpError ?? mutationError ?? undefined}
+        />
+      )}
     </AuthPortalShell>
   );
 };

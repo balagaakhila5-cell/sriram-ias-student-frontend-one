@@ -9,6 +9,14 @@ import { useGSAP } from '@gsap/react';
 import useInViewport from '@/hooks/useInViewport';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import BookFreeDemoModal from './BookFreeDemoModal';
+import FooterLink from './FooterLink';
+import {
+  FOOTER_BRANCHES,
+  FOOTER_COURSE_LINKS,
+  FOOTER_SOCIAL_LINKS,
+  FOOTER_WEBSITE_LINKS_PRIMARY,
+  FOOTER_WEBSITE_LINKS_SECONDARY,
+} from '@/config/footerLinks';
 
 interface FooterProps {
   /** Skip GSAP animations and parallax — use on portal layouts for faster loads. */
@@ -153,28 +161,40 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
 
           <div className="flex items-center gap-6">
             <a
-              href="#"
+              href={FOOTER_SOCIAL_LINKS.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
               className="group w-14 h-14 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:scale-110 hover:bg-gradient-to-tr hover:from-[#f9ce34] hover:via-[#ee2a7b] hover:to-[#6228d7]"
             >
               <Image src="/assets/insta1.png.svg" alt="Instagram" width={32} height={32} />
             </a>
 
             <a
-              href="#"
+              href={FOOTER_SOCIAL_LINKS.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
               className="group w-14 h-14 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:bg-[#1877F2] hover:scale-110"
             >
               <Image src="/assets/facebook.png.svg" alt="Facebook" width={32} height={32} />
             </a>
 
             <a
-              href="#"
+              href={FOOTER_SOCIAL_LINKS.twitter}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Twitter"
               className="group w-14 h-14 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:bg-red hover:scale-110"
             >
               <Image src="/assets/twitter.png.svg" alt="Twitter" width={32} height={32} />
             </a>
 
             <a
-              href="#"
+              href={FOOTER_SOCIAL_LINKS.youtube}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="YouTube"
               className="group w-14 h-14 flex items-center justify-center border border-gray-400 rounded-full transition-all duration-300 hover:bg-red-600 hover:scale-110"
             >
               <Image src="/assets/youtube.png.svg" alt="YouTube" width={32} height={32} />
@@ -194,14 +214,13 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
                 </h4>
 
                 <ul className="space-y-1.5 text-[14px] text-[#B3B3B3] font-normal leading-[1.35] tracking-[0.2px]">
-                  <li><Link href="/" className="hover:text-white transition-colors">Home</Link></li>
-                  <li><a href="/about" className="hover:text-white transition-colors">About Us</a></li>
-                  <li><a href="/director-message" className="hover:text-white transition-colors">Director&apos;s Messages</a></li>
-                  <li><a href="/why-choose-us" className="hover:text-white transition-colors">Why Choose Us</a></li>
-                  <li><a href="/contact" className="hover:text-white transition-colors">Contact Us</a></li>
-                  <li><a href="/branches" className="hover:text-white transition-colors">Our Branches</a></li>
-                  <li><a href="/referral" className="hover:text-white transition-colors">Referral Policy</a></li>
-                  <li><a href="/upsc-articles" className="hover:text-white transition-colors">UPSC Articles</a></li>
+                  {FOOTER_WEBSITE_LINKS_PRIMARY.map((item) => (
+                    <li key={`${item.label}-${item.href}`}>
+                      <FooterLink href={item.href} external={item.external}>
+                        {item.label}
+                      </FooterLink>
+                    </li>
+                  ))}
                 </ul>
               </div>
 
@@ -211,14 +230,13 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
                 </h4>
 
                 <ul className="space-y-1.5 text-[14px] text-[#B3B3B3] font-normal leading-[1.35] tracking-[0.2px]">
-                  <li><a href="/articles" className="hover:text-white transition-colors">UPSC Articles</a></li>
-                  <li><a href="/blogs" className="hover:text-white transition-colors">UPSC Blogs</a></li>
-                  <li><a href="/exploration" className="hover:text-white transition-colors">Exploration</a></li>
-                  <li><a href="/quizzes" className="hover:text-white transition-colors">Daily Quizzes</a></li>
-                  <li><a href="/faqs" className="hover:text-white transition-colors">FAQ&apos;S</a></li>
-                  <li><a href="/career" className="hover:text-white transition-colors">Career</a></li>
-                  <li><a href="/login" className="hover:text-white transition-colors">Student Login</a></li>
-                  <li><a href="/enroll" className="hover:text-white transition-colors">Enroll Now</a></li>
+                  {FOOTER_WEBSITE_LINKS_SECONDARY.map((item) => (
+                    <li key={`${item.label}-${item.href}`}>
+                      <FooterLink href={item.href} external={item.external}>
+                        {item.label}
+                      </FooterLink>
+                    </li>
+                  ))}
                 </ul>
               </div>
 
@@ -228,124 +246,67 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
                 </h4>
 
                 <ul className="space-y-1.5 text-[14px] text-[#B3B3B3] font-normal leading-[1.35] tracking-[0.2px]">
-                  <li><a href="/all-courses" className="hover:text-white transition-colors">All Courses</a></li>
-                  <li><a href="/psir" className="hover:text-white transition-colors">PSIR Test Series and Mentorship</a></li>
-                  <li><a href="/psir-optional" className="hover:text-white transition-colors">PSIR Optional Courses</a></li>
-                  <li><a href="/geography" className="hover:text-white transition-colors">Geography Optional Foundation Courses</a></li>
-                  <li><a href="/mains-enrichment" className="hover:text-white transition-colors">Mains Enrichment Program 2025</a></li>
-                  <li><a href="/mains-test-series" className="hover:text-white transition-colors">Mains Test Series CSE 2025</a></li>
-                  <li><a href="/essay-test-series" className="hover:text-white transition-colors">Essay Test Series 2025</a></li>
-                  <li><a href="/mains-test-series-alt" className="hover:text-white transition-colors">Mains Test Series CSE 2025</a></li>
+                  {FOOTER_COURSE_LINKS.map((item, index) => (
+                    <li key={`${item.label}-${index}`}>
+                      <FooterLink href={item.href} external={item.external}>
+                        {item.label}
+                      </FooterLink>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
 
             {/* Cities moved down and text spacing added */}
            <div className="footer-contacts grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20 mt-10 lg:mt-14">
-              <div className="footer-contact space-y-4">
-                <div className="flex items-center gap-3">
-                  <Image
-                    src="/assets/del-footer.png"
-                    alt="Delhi"
-                    width={26}
-                    height={26}
-                    className="w-6 h-6 object-contain"
-                  />
-                  <h4 className="text-[18px] font-bold tracking-[1.2px] uppercase text-white">
-                    NEW DELHI
-                  </h4>
-                </div>
+              {FOOTER_BRANCHES.map((branch) => (
+                <div key={branch.city} className="footer-contact space-y-4">
+                  <Link href={branch.href} className="flex items-center gap-3 hover:opacity-90">
+                    <Image
+                      src={branch.image}
+                      alt={branch.alt}
+                      width={26}
+                      height={26}
+                      className="w-6 h-6 object-contain"
+                    />
+                    <h4 className="text-[18px] font-bold tracking-[1.2px] uppercase text-white">
+                      {branch.city}
+                    </h4>
+                  </Link>
 
-                <div className="space-y-3 text-[14px] text-[#B3B3B3] leading-[1.38] tracking-[0.2px] font-normal">
-                  <p className="max-w-[315px]">
-                    SRIRAM&apos;S IAS TOWER,10 B, Pusa Road, Bada Bazar Rd, Near Metro Pillar No. 112, Old Rajinder Nagar, New Delhi - 110060
-                  </p>
+                  <div className="space-y-3 text-[14px] text-[#B3B3B3] leading-[1.38] tracking-[0.2px] font-normal">
+                    <p className="max-w-[315px]">{branch.address}</p>
 
-                  <div className="flex items-center gap-2.5">
-                    <Phone size={15} className="text-white shrink-0" />
-                    <p>
-                      <span className="text-white font-semibold">Contact Us :</span> 9811489560
-                    </p>
-                  </div>
+                    <div className="flex items-center gap-2.5">
+                      <Phone size={15} className="text-white shrink-0" />
+                      <p>
+                        <span className="text-white font-semibold">Contact Us :</span>{' '}
+                        <FooterLink
+                          href={`tel:${branch.phone}`}
+                          external
+                          className="hover:text-white transition-colors"
+                        >
+                          {branch.phone}
+                        </FooterLink>
+                      </p>
+                    </div>
 
-                  <div className="flex items-center gap-2.5">
-                    <Mail size={15} className="text-white shrink-0" />
-                    <p>
-                      <span className="text-white font-semibold">Email Id :</span> sriramsias@gmail.com
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="footer-contact space-y-4">
-                <div className="flex items-center gap-3">
-                  <Image
-                    src="/assets/hyd-footer.png"
-                    alt="Hyderabad"
-                    width={26}
-                    height={26}
-                    className="w-6 h-6 object-contain"
-                  />
-                  <h4 className="text-[18px] font-bold tracking-[1.2px] uppercase text-white">
-                    HYDERABAD
-                  </h4>
-                </div>
-
-                <div className="space-y-3 text-[14px] text-[#B3B3B3] leading-[1.38] tracking-[0.2px] font-normal">
-                  <p className="max-w-[315px]">
-                    SRIRAM&apos;S IAS, Opposite Sudharshan Theatre, Pillar No 40, Ashoka Nagar, Hyderabad, 500020
-                  </p>
-
-                  <div className="flex items-center gap-2.5">
-                    <Phone size={15} className="text-white shrink-0" />
-                    <p>
-                      <span className="text-white font-semibold">Contact Us :</span> 8121191985
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2.5">
-                    <Mail size={15} className="text-white shrink-0" />
-                    <p>
-                      <span className="text-white font-semibold">Email Id :</span> sriramsias@gmail.com
-                    </p>
+                    <div className="flex items-center gap-2.5">
+                      <Mail size={15} className="text-white shrink-0" />
+                      <p>
+                        <span className="text-white font-semibold">Email Id :</span>{' '}
+                        <FooterLink
+                          href={`mailto:${branch.email}`}
+                          external
+                          className="hover:text-white transition-colors"
+                        >
+                          {branch.email}
+                        </FooterLink>
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="footer-contact space-y-4">
-                <div className="flex items-center gap-3">
-                  <Image
-                    src="/assets/pune-footer.png"
-                    alt="Pune"
-                    width={26}
-                    height={26}
-                    className="w-6 h-6 object-contain"
-                  />
-                  <h4 className="text-[18px] font-bold tracking-[1.2px] uppercase text-white">
-                    PUNE
-                  </h4>
-                </div>
-
-                <div className="space-y-3 text-[14px] text-[#B3B3B3] leading-[1.38] tracking-[0.2px] font-normal">
-                  <p className="max-w-[315px]">
-                    SRIRAM&apos;S IAS, 385, Near Modi Ganpati Mandir, Patrya Maruti Chowk Narayan Peth, Pune 41211
-                  </p>
-
-                  <div className="flex items-center gap-2.5">
-                    <Phone size={15} className="text-white shrink-0" />
-                    <p>
-                      <span className="text-white font-semibold">Contact Us :</span> 9689000979
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2.5">
-                    <Mail size={15} className="text-white shrink-0" />
-                    <p>
-                      <span className="text-white font-semibold">Email Id :</span> sriramsias@gmail.com
-                    </p>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 

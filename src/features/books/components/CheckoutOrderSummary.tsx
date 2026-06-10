@@ -160,15 +160,19 @@ export default function CheckoutOrderSummary({
                 <button
                   type="button"
                   onClick={onApplyCoupon}
-                  className={`${brandGradient} rounded-lg px-8 py-2 text-[16px] font-semibold text-white shadow-sm transition-opacity hover:opacity-90`}
+                  className={
+                    appliedCoupon
+                      ? 'rounded-lg border border-[#DC2626] bg-white px-8 py-2 text-[16px] font-semibold text-[#DC2626] shadow-sm transition-colors hover:bg-[#FEF2F2]'
+                      : `${brandGradient} rounded-lg px-8 py-2 text-[16px] font-semibold text-white shadow-sm transition-opacity hover:opacity-90`
+                  }
                 >
-                  Apply
+                  {appliedCoupon ? 'Remove' : 'Apply'}
                 </button>
               </div>
 
               {appliedCoupon ? (
                 <div className="rounded-lg border border-[#B9E6C9] bg-[#ECFDF3] px-4 py-3 text-sm font-medium text-[#166534]">
-                  {appliedCoupon.code} applied — saved Rs.
+                  Coupon applied successfully! {appliedCoupon.code} — You saved Rs.
                   {appliedCoupon.amount.toLocaleString('en-IN')}
                 </div>
               ) : null}
@@ -208,9 +212,13 @@ export default function CheckoutOrderSummary({
                         <button
                           type="button"
                           onClick={() => onApplyOffer?.(index)}
-                          className={`${brandGradient} rounded-lg px-6 py-2 text-[14px] font-semibold text-white shadow-sm transition-opacity hover:opacity-90`}
+                          className={
+                            isActive
+                              ? 'rounded-lg border border-[#DC2626] bg-white px-6 py-2 text-[14px] font-semibold text-[#DC2626] shadow-sm transition-colors hover:bg-[#FEF2F2]'
+                              : `${brandGradient} rounded-lg px-6 py-2 text-[14px] font-semibold text-white shadow-sm transition-opacity hover:opacity-90`
+                          }
                         >
-                          {isActive ? 'Applied' : 'Apply'}
+                          {isActive ? 'Remove' : 'Apply'}
                         </button>
                       </div>
                     </div>

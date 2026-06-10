@@ -59,6 +59,15 @@ export function useVerifyOtp() {
   });
 }
 
+export function useVerifyFacultyOtp() {
+  const setAuth = useAuthStore((s) => s.setAuth);
+  return useMutation({
+    mutationFn: (payload: VerifyOtpPayload) =>
+      authService.verifyFacultyOtp(payload),
+    onSuccess: (data) => setAuth(data.user, data.token),
+  });
+}
+
 export function useLogout() {
   const clearAuth = useAuthStore((s) => s.clearAuth);
   const qc = useQueryClient();

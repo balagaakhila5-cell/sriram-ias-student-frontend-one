@@ -43,7 +43,9 @@ const computeFromStored = (data: StoredData) => {
     const correct = data.result.correctCount ?? 0;
     const answered = Object.keys(data.selectedAnswers).length;
     const incorrect =
-      data.result.incorrectCount ?? Math.max(answered - correct, 0);
+      data.result.incorrectCount != null
+        ? data.result.incorrectCount + (data.result.unattemptedCount ?? 0)
+        : Math.max(total - correct, 0);
     const percentage =
       data.result.percentage ??
       (total > 0 ? Math.round((correct / total) * 100) : 0);
@@ -67,7 +69,7 @@ const computeFromStored = (data: StoredData) => {
     if (sel !== undefined && sel === q.correctAnswer) correct += 1;
   });
   const answered = Object.keys(data.selectedAnswers).length;
-  const incorrect = Math.max(answered - correct, 0);
+  const incorrect = Math.max(total - correct, 0);
   const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
 
   return {
@@ -111,7 +113,10 @@ export default function ResultsPage({ params }: PageProps) {
     if (remoteResult) {
       const total = remoteResult.totalQuestions ?? 0;
       const correct = remoteResult.correctCount ?? 0;
-      const incorrect = remoteResult.incorrectCount ?? 0;
+      const incorrect =
+        remoteResult.incorrectCount != null
+          ? remoteResult.incorrectCount + (remoteResult.unattemptedCount ?? 0)
+          : Math.max(total - correct, 0);
       const percentage =
         remoteResult.percentage ??
         (total > 0 ? Math.round((correct / total) * 100) : 0);

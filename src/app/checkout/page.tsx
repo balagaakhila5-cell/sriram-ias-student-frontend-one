@@ -29,6 +29,7 @@ export default function CheckoutPage() {
   const subtotal = useCartStore((state) => state.subtotal);
   const applyCouponCode = useCartStore((state) => state.applyCouponCode);
   const applyOfferCoupon = useCartStore((state) => state.applyOfferCoupon);
+  const clearCoupon = useCartStore((state) => state.clearCoupon);
   const clearCouponMessage = useCartStore((state) => state.clearCouponMessage);
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -80,15 +81,38 @@ export default function CheckoutPage() {
 
   const handleCouponInputChange = (value: string) => {
     setCoupon(value);
-    clearCouponMessage();
+    if (appliedCoupon && value.trim().toUpperCase() !== appliedCoupon.code) {
+      clearCoupon();
+    } else {
+      clearCouponMessage();
+    }
   };
 
   const handleApplyCoupon = () => {
-    applyCouponCode(coupon);
+    if (appliedCoupon) {
+      clearCoupon();
+      setCoupon('');
+      return;
+    }
+
+    const ok = applyCouponCode(coupon);
+    if (ok) {
+      const nextCoupon = useCartStore.getState().appliedCoupon;
+      if (nextCoupon) setCoupon(nextCoupon.code);
+    }
   };
 
   const handleApplyOffer = (offerIndex: number) => {
-    applyOfferCoupon(offerIndex);
+    const offerCode = offerIndex === 0 ? 'OFFER5' : 'OFFER10';
+
+    if (appliedCoupon?.code === offerCode) {
+      clearCoupon();
+      setCoupon('');
+      return;
+    }
+
+    const ok = applyOfferCoupon(offerIndex);
+    if (ok) setCoupon(offerCode);
   };
 
   const openPaymentModal = () => {

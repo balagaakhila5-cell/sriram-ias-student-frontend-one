@@ -8,31 +8,36 @@ function storageKey(userId: string) {
   return `${STORAGE_PREFIX}_${userId}`;
 }
 
-/** Stored entry id — one saved bookmark per blog article (by slug). */
+/** Detail-page bookmark id for an article slug. */
 export function getBlogBookmarkId(slug: string): string {
   return `blog-${slug}`;
 }
 
-function dedupeBySlug(entries: BlogBookmark[]): BlogBookmark[] {
-  const bySlug = new Map<string, BlogBookmark>();
+function entryCardId(entry: BlogBookmark): string {
+  return entry.sourceCardId ?? entry.id;
+}
+
+function normalizeStoredBookmarks(entries: BlogBookmark[]): BlogBookmark[] {
+  const seen = new Set<string>();
+  const normalized: BlogBookmark[] = [];
 
   entries.forEach((entry) => {
-    const slug = entry.slug;
-    const existing = bySlug.get(slug);
-    if (!existing) {
-      bySlug.set(slug, { ...entry, id: getBlogBookmarkId(slug) });
-      return;
-    }
+    const cardId = entryCardId(entry);
+    if (!cardId || seen.has(cardId)) return;
 
-    bySlug.set(slug, {
-      ...existing,
+    seen.add(cardId);
+    normalized.push({
       ...entry,
-      id: getBlogBookmarkId(slug),
-      bookmarkedAt: existing.bookmarkedAt || entry.bookmarkedAt,
+      id: cardId,
+      sourceCardId: cardId,
     });
   });
 
-  return Array.from(bySlug.values());
+  return normalized;
+}
+
+function persistBookmarks(userId: string, entries: BlogBookmark[]) {
+  window.localStorage.setItem(storageKey(userId), JSON.stringify(entries));
 }
 
 export function getBlogBookmarks(userId: string): BlogBookmark[] {
@@ -41,62 +46,68 @@ export function getBlogBookmarks(userId: string): BlogBookmark[] {
   try {
     const raw = window.localStorage.getItem(storageKey(userId));
     const parsed = raw ? (JSON.parse(raw) as BlogBookmark[]) : [];
-    return dedupeBySlug(parsed);
+    const normalized = normalizeStoredBookmarks(parsed);
+
+    if (JSON.stringify(parsed) !== JSON.stringify(normalized)) {
+      persistBookmarks(userId, normalized);
+    }
+
+    return normalized;
   } catch {
     return [];
   }
 }
 
-function findBySlug(userId: string, slug: string): BlogBookmark | undefined {
-  return getBlogBookmarks(userId).find((item) => item.slug === slug);
-}
-
-/** Detail page — bookmarked if this article slug is saved. */
+/** Detail page — bookmarked if saved from detail or any listing card for this slug. */
 export function isBlogBookmarked(userId: string, slug: string): boolean {
-  return Boolean(findBySlug(userId, slug));
+  const detailId = getBlogBookmarkId(slug);
+
+  return getBlogBookmarks(userId).some(
+    (item) => item.slug === slug || entryCardId(item) === detailId,
+  );
 }
 
-/** Listing card — filled only on the card that was bookmarked. */
-export function isBlogCardBookmarked(
-  userId: string,
-  cardId: string,
-  slug: string,
-): boolean {
-  const entry = findBySlug(userId, slug);
-  return Boolean(entry && entry.sourceCardId === cardId);
+/** Listing card — filled only when this exact card was bookmarked. */
+export function isBlogCardBookmarked(userId: string, cardId: string): boolean {
+  if (!cardId) return false;
+
+  return getBlogBookmarks(userId).some(
+    (item) => entryCardId(item) === cardId,
+  );
 }
 
 export function toggleBlogBookmark(
   userId: string,
   bookmark: BlogBookmarkInput,
 ): boolean {
+  const cardId = bookmark.id;
   const existing = getBlogBookmarks(userId);
-  const alreadySaved = existing.some((item) => item.slug === bookmark.slug);
+  const index = existing.findIndex((item) => entryCardId(item) === cardId);
+  const alreadySaved = index >= 0;
 
   const updated = alreadySaved
-    ? existing.filter((item) => item.slug !== bookmark.slug)
+    ? existing.filter((item) => entryCardId(item) !== cardId)
     : [
         ...existing,
         {
           ...bookmark,
-          id: getBlogBookmarkId(bookmark.slug),
-          sourceCardId: bookmark.id,
+          id: cardId,
+          sourceCardId: cardId,
           bookmarkedAt: new Date().toISOString(),
         },
       ];
 
-  window.localStorage.setItem(storageKey(userId), JSON.stringify(updated));
+  persistBookmarks(userId, updated);
   window.dispatchEvent(new Event(BLOG_BOOKMARKS_UPDATED_EVENT));
 
   return !alreadySaved;
 }
 
-export function removeBlogBookmark(userId: string, slugOrId: string) {
-  const slug = slugOrId.startsWith("blog-")
-    ? slugOrId.slice("blog-".length)
-    : slugOrId;
-
-  const updated = getBlogBookmarks(userId).filter((item) => item.slug !== slug);
-  window.localStorage.setItem(storageKey(userId), JSON.stringify(updated));
+/** Remove one bookmark entry by its card id. */
+export function removeBlogBookmark(userId: string, cardId: string) {
+  const updated = getBlogBookmarks(userId).filter(
+    (item) => entryCardId(item) !== cardId,
+  );
+  persistBookmarks(userId, updated);
   window.dispatchEvent(new Event(BLOG_BOOKMARKS_UPDATED_EVENT));
 }

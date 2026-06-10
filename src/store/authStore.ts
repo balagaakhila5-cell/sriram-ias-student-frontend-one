@@ -39,7 +39,11 @@ export const useAuthStore = create<AuthState>()(
       name: "sriram_auth",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ user: state.user, token: state.token }),
-      onRehydrateStorage: () => (state) => {
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          console.error("Auth store rehydration failed:", error);
+        }
+
         if (state?.token) {
           // Keep token store in sync on boot.
           if (typeof window !== "undefined") {
@@ -47,7 +51,12 @@ export const useAuthStore = create<AuthState>()(
           }
           state.isAuthenticated = true;
         }
-        state?.setHydrated(true);
+
+        if (state?.setHydrated) {
+          state.setHydrated(true);
+        } else {
+          useAuthStore.setState({ isHydrated: true });
+        }
       },
     },
   ),

@@ -37,7 +37,8 @@ export default function BlogActionButtons({
       >
         <Bookmark
           size={iconSize}
-          className={isBookmarked ? "fill-white text-white" : undefined}
+          fill={isBookmarked ? "currentColor" : "none"}
+          className={isBookmarked ? "fill-white text-white" : "text-white"}
         />
       </button>
 

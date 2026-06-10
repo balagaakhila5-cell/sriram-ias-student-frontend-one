@@ -57,10 +57,10 @@ export default function BookmarksPage() {
     loadTestBookmarks();
   };
 
-  const removeBlog = (slug: string) => {
+  const removeBlog = (cardId: string) => {
     if (!user?.id) return;
 
-    removeBlogBookmark(user.id, slug);
+    removeBlogBookmark(user.id, cardId);
     loadBlogBookmarks();
   };
 
@@ -77,9 +77,11 @@ export default function BookmarksPage() {
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             {blogBookmarks.map((bookmark) => (
               <BlogBookmarkCard
-                key={bookmark.slug}
+                key={bookmark.sourceCardId ?? bookmark.id}
                 bookmark={bookmark}
-                onRemove={() => removeBlog(bookmark.slug)}
+                onRemove={() =>
+                  removeBlog(bookmark.sourceCardId ?? bookmark.id)
+                }
               />
             ))}
           </div>

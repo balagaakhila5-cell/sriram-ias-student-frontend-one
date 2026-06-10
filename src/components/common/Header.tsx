@@ -232,7 +232,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
 
           <div className="flex flex-col items-end lg:items-start gap-0.5 relative">
             <div
-              className={`hidden lg:flex items-center gap-1.5 xl:gap-2 text-[16px] font-medium leading-[100%] tracking-normal uppercase ${
+              className={`relative z-[55] hidden lg:flex items-center gap-1.5 xl:gap-2 text-[16px] font-medium leading-[100%] tracking-normal uppercase ${
                 isLightHeader ? 'text-[#333333]' : 'text-white/80'
               }`}
             >
@@ -388,7 +388,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
             </div>
 
             <div
-              className={`flex lg:hidden items-center gap-3 md:gap-4 ${
+              className={`relative z-[55] flex lg:hidden items-center gap-3 md:gap-4 ${
                 isLightHeader ? 'text-gray-900' : 'text-white'
               }`}
             >

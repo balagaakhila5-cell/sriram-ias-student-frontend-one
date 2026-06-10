@@ -33,7 +33,7 @@ export function useBlogBookmarkActions(
     if (mode === "detail") {
       return isBlogBookmarked(user.id, bookmark.slug);
     }
-    return isBlogCardBookmarked(user.id, bookmark.id, bookmark.slug);
+    return isBlogCardBookmarked(user.id, bookmark.id);
   }, [bookmark.id, bookmark.slug, mode, user?.id]);
 
   useEffect(() => {
@@ -73,8 +73,13 @@ export function useBlogBookmarkActions(
   const handleBookmark = useCallback(() => {
     if (!requireStudentAuth() || !user?.id) return;
 
-    const saved = toggleBlogBookmark(user.id, bookmark);
-    setIsBookmarked(saved);
+    toggleBlogBookmark(user.id, bookmark);
+
+    if (mode === "detail") {
+      setIsBookmarked(isBlogBookmarked(user.id, bookmark.slug));
+    } else {
+      setIsBookmarked(isBlogCardBookmarked(user.id, bookmark.id));
+    }
   }, [bookmark, mode, requireStudentAuth, user?.id]);
 
   const handleShare = useCallback(async () => {
