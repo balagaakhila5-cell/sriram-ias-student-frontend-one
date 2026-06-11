@@ -9,7 +9,7 @@ import { z } from "zod";
 import AuthPortalShell, { UserRole } from "./AuthPortalShell";
 import AuthSuccessView from "./AuthSuccessView";
 import OtpVerificationForm from "./OtpVerificationForm";
-import { setMockStudentAuth } from "../utils/mockAuth";
+import { useStudentSignup, useVerifyStudentSignup } from "../hooks/useAuth";
 
 const mobileRegex = /^\d{10}$/;
 
@@ -27,8 +27,11 @@ const SignupPortal: React.FC = () => {
 
   const [role, setRole] = useState<UserRole>("student");
   const [screen, setScreen] = useState<SignupScreen>("form");
-  const [signupData, setSignupData] = useState<StudentSignupForm | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [otpError, setOtpError] = useState<string | null>(null);
+
+  const studentSignup = useStudentSignup();
+  const verifyStudentSignup = useVerifyStudentSignup();
 
   const form = useForm<StudentSignupForm>({
     resolver: zodResolver(studentSchema),
@@ -51,32 +54,47 @@ const SignupPortal: React.FC = () => {
 
   const onSubmit = form.handleSubmit((values) => {
     if (role !== "student") return;
-    setSignupData(values);
-    setOtpError(null);
-    setScreen("otp");
+    studentSignup.mutate(
+      {
+        name: values.name.trim(),
+        email: values.email.trim(),
+        mobile: values.mobile.trim(),
+      },
+      {
+        onSuccess: (res) => {
+          setUserId(res.userId);
+          setOtpError(null);
+          setScreen("otp");
+        },
+      },
+    );
   });
 
   const handleOtpVerify = (otp: string) => {
-    if (otp.length !== 4) {
-      setOtpError("Please enter 4 digit OTP");
+    if (otp.length !== 6) {
+      setOtpError("Please enter 6 digit OTP");
       return;
     }
 
-    if (!signupData) return;
+    if (!userId) {
+      setOtpError("Something went wrong. Please sign up again.");
+      return;
+    }
 
-    setMockStudentAuth({
-      name: signupData.name,
-      email: signupData.email,
-      mobile: signupData.mobile,
-    });
     setOtpError(null);
-    setScreen("success");
+    verifyStudentSignup.mutate(
+      { userId, otp },
+      { onSuccess: () => setScreen("success") },
+    );
   };
 
   const handleRoleChange = (newRole: UserRole) => {
     setRole(newRole);
     setScreen("form");
+    setUserId(null);
     setOtpError(null);
+    studentSignup.reset();
+    verifyStudentSignup.reset();
   };
 
   if (role !== "student") {
@@ -151,15 +169,22 @@ const SignupPortal: React.FC = () => {
             {...form.register("mobile")}
           />
 
+          {studentSignup.error && (
+            <p className="text-sm text-red-600">
+              {studentSignup.error.message}
+            </p>
+          )}
+
           <button
             type="submit"
-            className="mt-4 flex h-[43px] w-full items-center justify-center rounded-[24px] text-[18px] font-medium text-white shadow-[0px_4px_20px_rgba(0,103,156,0.35)] transition-opacity hover:opacity-95"
+            disabled={studentSignup.isPending}
+            className="mt-4 flex h-[43px] w-full items-center justify-center rounded-[24px] text-[18px] font-medium text-white shadow-[0px_4px_20px_rgba(0,103,156,0.35)] transition-opacity hover:opacity-95 disabled:opacity-60"
             style={{
               background:
                 "linear-gradient(90deg, rgba(24,151,216,0.85) 0%, #021C29 100%)",
             }}
           >
-            Sign Up
+            {studentSignup.isPending ? "Please wait..." : "Sign Up"}
           </button>
 
           <p className="mt-2 text-center text-[13px] text-gray-600">
@@ -178,8 +203,10 @@ const SignupPortal: React.FC = () => {
           onBack={() => {
             setScreen("form");
             setOtpError(null);
+            verifyStudentSignup.reset();
           }}
-          error={otpError ?? undefined}
+          loading={verifyStudentSignup.isPending}
+          error={otpError ?? verifyStudentSignup.error?.message ?? undefined}
         />
       )}
     </AuthPortalShell>

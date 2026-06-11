@@ -2,11 +2,12 @@
 
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import { useSubmitEnquiry } from '@/features/course/hooks/useCourses';
 import {
-  useCenters,
-  useCourses,
-  useSubmitEnquiry,
-} from '@/features/course/hooks/useCourses';
+  useEnquiryCenters,
+  useEnquiryCourses,
+} from '@/features/enquiry/hooks/useEnquiryLookups';
+import DemoFormSelect from '@/components/common/DemoFormSelect';
 
 interface EnquiryFormModalProps {
   isOpen: boolean;
@@ -31,16 +32,6 @@ const initialState: FormState = {
   centerId: '',
 };
 
-/* Added course options */
-const fallbackCourses = [
-  { _id: 'gs-foundation', title: 'GS Foundation' },
-  { _id: 'mentorship', title: 'Mentorship' },
-  { _id: 'optional-foundation', title: 'Optional Foundation' },
-  { _id: 'test-series', title: 'Test Series' },
-  { _id: 'csat', title: 'CSAT' },
-  { _id: 'enrichment-course', title: 'Enrichment Course' },
-];
-
 /* Added center options */
 const fallbackCenters = [
   { _id: 'new-delhi', name: 'New Delhi' },
@@ -54,20 +45,20 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
   defaultCourseTitle,
   defaultCenterName,
 }) => {
-  const { data: centersData } = useCenters();
-  const { data: coursesData } = useCourses();
+  const { data: centersData } = useEnquiryCenters();
   const { mutateAsync: submitEnquiry, isPending } = useSubmitEnquiry();
-
-  /*
-    If backend courses/centers are available, it uses backend data.
-    If backend data is empty, it shows fallback static options.
-  */
-  const courses = coursesData?.length ? coursesData : fallbackCourses;
-  const centers = centersData?.length ? centersData : fallbackCenters;
 
   const [form, setForm] = useState<FormState>(initialState);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  const centers = centersData?.length ? centersData : fallbackCenters;
+  const selectedCenter = centers.find((c) => c._id === form.centerId);
+
+  // Real courses for the chosen center (no fake fallback — a placeholder course
+  // would be rejected by the backend's course lookup).
+  const { data: coursesData } = useEnquiryCourses(selectedCenter?.name);
+  const courses = coursesData ?? [];
 
   if (!isOpen) return null;
 
@@ -99,7 +90,6 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
     }
 
     const selectedCourse = courses.find((c) => c._id === form.courseId);
-    const selectedCenter = centers.find((c) => c._id === form.centerId);
 
     try {
       const res = await submitEnquiry({
@@ -199,37 +189,17 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
                 Center
               </label>
 
-              <div className="relative">
-                <select
-                  value={form.centerId}
-                  onChange={handleChange('centerId')}
-                  required
-                  className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm text-gray-600 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
-                >
-                  <option value="">Choose center</option>
-
-                  {centers.map((center) => (
-                    <option key={center._id} value={center._id}>
-                      {center.name}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </div>
-              </div>
+              <DemoFormSelect
+                value={form.centerId}
+                onChange={(value) =>
+                  setForm((f) => ({ ...f, centerId: value, courseId: '' }))
+                }
+                options={centers.map((center) => ({
+                  value: center._id,
+                  label: center.name,
+                }))}
+                placeholder="Choose center"
+              />
             </div>
 
             {/* Course Dropdown */}
@@ -238,37 +208,22 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
                 Course
               </label>
 
-              <div className="relative">
-                <select
-                  value={form.courseId}
-                  onChange={handleChange('courseId')}
-                  required
-                  className="h-9 w-full cursor-pointer appearance-none rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm text-gray-600 outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
-                >
-                  <option value="">Choose course</option>
-
-                  {courses.map((course) => (
-                    <option key={course._id} value={course._id}>
-                      {course.title}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </div>
-              </div>
+              <DemoFormSelect
+                value={form.courseId}
+                onChange={(value) => setForm((f) => ({ ...f, courseId: value }))}
+                options={courses.map((course) => ({
+                  value: course._id,
+                  label: course.title,
+                }))}
+                placeholder={
+                  !selectedCenter
+                    ? 'Select a center first'
+                    : courses.length === 0
+                      ? 'No courses available'
+                      : 'Choose course'
+                }
+                disabled={!selectedCenter || courses.length === 0}
+              />
             </div>
 
             {error && <p className="text-sm text-red-600">{error}</p>}

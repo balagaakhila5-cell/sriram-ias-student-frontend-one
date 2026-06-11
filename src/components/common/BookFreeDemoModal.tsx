@@ -7,15 +7,16 @@ import { useGSAP } from '@gsap/react';
 
 import {
   useCategories,
-  useCenters,
-  useCourses,
   useSubmitEnquiry,
 } from '@/features/course/hooks/useCourses';
+import {
+  useEnquiryCenters,
+  useEnquiryCourses,
+} from '@/features/enquiry/hooks/useEnquiryLookups';
 import DemoFormSelect from '@/components/common/DemoFormSelect';
 import {
   fallbackCategories,
   fallbackCenters,
-  getFallbackCourses,
 } from '@/features/course/data/demoFormOptions';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import type { Category, Center } from '@/features/course/services/coursesService';
@@ -59,7 +60,7 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const { data: centersData = [], isError: centersError } = useCenters();
+  const { data: centersData = [], isError: centersError } = useEnquiryCenters();
   const { data: categoriesData = [], isError: categoriesError } = useCategories();
 
   const centers = useMemo(() => {
@@ -78,22 +79,11 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
     () => centers.find((c) => c._id === form.centerId),
     [centers, form.centerId],
   );
-  const selectedCategory = useMemo(
-    () => categories.find((c) => c._id === form.categoryId),
-    [categories, form.categoryId],
+  // Courses come from the real public endpoint, filtered by the selected
+  // center only (categoryName isn't usable publicly — see lookupService).
+  const { data: courses = [], isFetching: coursesLoading } = useEnquiryCourses(
+    selectedCenter?.name,
   );
-
-  const { data: apiCourses = [], isFetching: coursesLoading } = useCourses(
-    selectedCenter && selectedCategory
-      ? { centerName: selectedCenter.name, categoryName: selectedCategory.name }
-      : {},
-  );
-
-  const courses = useMemo(() => {
-    if (apiCourses.length) return apiCourses;
-    if (!selectedCategory) return [];
-    return getFallbackCourses(selectedCategory.name);
-  }, [apiCourses, selectedCategory]);
 
   // Reset course when center/category changes
   useEffect(() => {
@@ -188,7 +178,6 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
       !form.email.trim() ||
       !form.phone.trim() ||
       !form.centerId ||
-      !form.categoryId ||
       !form.courseId
     ) {
       setError('Please fill in all required fields.');
@@ -216,18 +205,16 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
     };
 
     try {
-      await Promise.race([
-        submit.mutateAsync(payload),
-        new Promise((_, reject) => {
-          window.setTimeout(() => reject(new Error('Request timed out')), 8000);
-        }),
-      ]);
-    } catch {
-      // Keep booking usable when the enquiry API is unavailable.
+      await submit.mutateAsync(payload);
+      setSuccess(true);
+      setForm(initialForm);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Could not submit your request. Please try again.',
+      );
     }
-
-    setSuccess(true);
-    setForm(initialForm);
   };
 
   return (
@@ -371,8 +358,8 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                     }
                     options={courseOptions}
                     placeholder={
-                      !selectedCenter || !selectedCategory
-                        ? 'Select Center & Category first'
+                      !selectedCenter
+                        ? 'Select a center first'
                         : coursesLoading && !courses.length
                           ? 'Loading courses...'
                           : courses.length === 0
@@ -381,7 +368,6 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                     }
                     disabled={
                       !selectedCenter ||
-                      !selectedCategory ||
                       (coursesLoading && !courses.length) ||
                       courseOptions.length === 0
                     }

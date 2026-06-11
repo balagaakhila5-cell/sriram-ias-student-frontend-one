@@ -6,14 +6,22 @@ interface OtpVerificationFormProps {
   onVerify: (otp: string) => void;
   onBack: () => void;
   error?: string;
+  /** Number of OTP digits to collect. Defaults to 6. */
+  length?: number;
+  /** Disables the verify button and shows a pending label. */
+  loading?: boolean;
 }
 
 const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
   onVerify,
   onBack,
   error,
+  length = 6,
+  loading = false,
 }) => {
-  const [otpValues, setOtpValues] = useState(["", "", "", ""]);
+  const [otpValues, setOtpValues] = useState<string[]>(() =>
+    Array.from({ length }, () => ""),
+  );
   const otpRefs = useRef<Array<HTMLInputElement | null>>([]);
 
   const handleOtpChange = (index: number, value: string) => {
@@ -22,7 +30,7 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
     updatedOtp[index] = onlyNumber;
     setOtpValues(updatedOtp);
 
-    if (onlyNumber && index < 3) {
+    if (onlyNumber && index < length - 1) {
       otpRefs.current[index + 1]?.focus();
     }
   };
@@ -43,7 +51,7 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
   return (
     <div className="flex w-full flex-col items-center">
       <p className="mb-4 text-center text-[13px] font-medium text-black/45">
-        Enter Your 4 Digit OTP
+        Enter Your {length} Digit OTP
       </p>
 
       <div className="mb-9 flex items-center justify-center gap-4">
@@ -68,13 +76,14 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
       <button
         type="button"
         onClick={handleVerify}
-        className="h-[43px] w-[233px] rounded-[24px] text-[18px] font-medium text-white shadow-[0px_4px_20px_rgba(0,103,156,0.35)] transition-opacity hover:opacity-95"
+        disabled={loading}
+        className="h-[43px] w-[233px] rounded-[24px] text-[18px] font-medium text-white shadow-[0px_4px_20px_rgba(0,103,156,0.35)] transition-opacity hover:opacity-95 disabled:opacity-60"
         style={{
           background:
             "linear-gradient(90deg, rgba(24,151,216,0.85) 0%, #021C29 100%)",
         }}
       >
-        Verify OTP
+        {loading ? "Please wait..." : "Verify OTP"}
       </button>
 
       <button

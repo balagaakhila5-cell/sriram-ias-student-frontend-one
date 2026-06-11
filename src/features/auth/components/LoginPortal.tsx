@@ -9,8 +9,9 @@ import { z } from "zod";
 import AuthPortalShell, { UserRole } from "./AuthPortalShell";
 import AuthSuccessView from "./AuthSuccessView";
 import OtpVerificationForm from "./OtpVerificationForm";
-import { useParentLoginRequest, useStaffLogin, useVerifyOtp } from "../hooks/useAuth";
-import { setMockStudentAuth } from "../utils/mockAuth";
+import { useLoginRequest, useStaffLogin, useVerifyOtp } from "../hooks/useAuth";
+
+const isEmail = (value: string) => /.+@.+\..+/.test(value);
 
 type StudentScreen = "form" | "otp" | "success";
 
@@ -49,9 +50,12 @@ const LoginPortal: React.FC = () => {
   const [parentOtpSent, setParentOtpSent] = useState(false);
   const [studentScreen, setStudentScreen] = useState<StudentScreen>("form");
   const [studentIdentifier, setStudentIdentifier] = useState("");
+  const [studentUserId, setStudentUserId] = useState<string | null>(null);
   const [otpError, setOtpError] = useState<string | null>(null);
 
-  const parentLoginRequest = useParentLoginRequest();
+  const studentLoginRequest = useLoginRequest();
+  const verifyStudentOtp = useVerifyOtp();
+  const parentLoginRequest = useLoginRequest();
   const verifyParentOtp = useVerifyOtp();
   const staffLogin = useStaffLogin("staff");
 
@@ -71,9 +75,14 @@ const LoginPortal: React.FC = () => {
   const handleRoleChange = (newRole: UserRole) => {
     setRole(newRole);
     setStudentScreen("form");
+    setStudentUserId(null);
     setOtpError(null);
     setParentOtpSent(false);
     parentForm.reset();
+    studentLoginRequest.reset();
+    verifyStudentOtp.reset();
+    parentLoginRequest.reset();
+    verifyParentOtp.reset();
   };
 
   useEffect(() => {
@@ -87,25 +96,37 @@ const LoginPortal: React.FC = () => {
   }, [studentScreen, router]);
 
   const onStudentSubmit = studentForm.handleSubmit((values) => {
-    setStudentIdentifier(values.identifier.trim());
+    const identifier = values.identifier.trim();
+    setStudentIdentifier(identifier);
     setOtpError(null);
-    setStudentScreen("otp");
+    studentLoginRequest.mutate(
+      isEmail(identifier) ? { email: identifier } : { mobile: identifier },
+      {
+        onSuccess: (res) => {
+          setStudentUserId(res.userId ?? null);
+          setStudentScreen("otp");
+        },
+      },
+    );
   });
 
   const handleStudentOtpVerify = (otp: string) => {
-    if (otp.length !== 4) {
-      setOtpError("Please enter 4 digit OTP");
+    if (otp.length !== 6) {
+      setOtpError("Please enter 6 digit OTP");
       return;
     }
 
-    setMockStudentAuth({
-      name: studentIdentifier.includes("@")
-        ? studentIdentifier.split("@")[0]
-        : "Student",
-      identifier: studentIdentifier,
-    });
     setOtpError(null);
-    setStudentScreen("success");
+    verifyStudentOtp.mutate(
+      {
+        otp,
+        ...(studentUserId ? { userId: studentUserId } : {}),
+        ...(isEmail(studentIdentifier)
+          ? { email: studentIdentifier }
+          : { mobile: studentIdentifier }),
+      },
+      { onSuccess: () => setStudentScreen("success") },
+    );
   };
 
   const onParentSendOtp = parentForm.handleSubmit((values) => {
@@ -183,7 +204,10 @@ const LoginPortal: React.FC = () => {
             error={studentForm.formState.errors.identifier?.message}
             {...studentForm.register("identifier")}
           />
-          <SubmitButton loading={isPending} variant="student">
+          {studentLoginRequest.error && (
+            <ErrorText>{studentLoginRequest.error.message}</ErrorText>
+          )}
+          <SubmitButton loading={studentLoginRequest.isPending} variant="student">
             Send OTP
           </SubmitButton>
           <StudentSignupFooter />
@@ -196,8 +220,10 @@ const LoginPortal: React.FC = () => {
           onBack={() => {
             setStudentScreen("form");
             setOtpError(null);
+            verifyStudentOtp.reset();
           }}
-          error={otpError ?? undefined}
+          loading={verifyStudentOtp.isPending}
+          error={otpError ?? verifyStudentOtp.error?.message ?? undefined}
         />
       )}
 

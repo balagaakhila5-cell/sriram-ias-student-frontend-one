@@ -8,12 +8,14 @@ import { useGSAP } from "@gsap/react";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 
 import { FileText, ClipboardList } from "lucide-react";
+import { buildTextDateOptions } from "@/features/resources/catalog/currentAffairs";
+import { useDailyPracticeTests } from "@/features/currentAffairs/hooks/useCurrentAffairs";
 import {
-  listPracticeTests,
-  PORTAL_FILTER_MONTHS,
-  PORTAL_FILTER_YEARS,
-  buildTextDateOptions,
-} from "@/features/resources/catalog/currentAffairs";
+  ALL_FILTER,
+  CA_FILTER_MONTHS,
+  CA_FILTER_YEARS,
+  toFilterValue,
+} from "@/features/currentAffairs/filters";
 
 /** Text-only date labels for the Date filter (no digits in the closed button). */
 function getDpqDateOptions(month: string) {
@@ -48,11 +50,12 @@ export default function DailyPracticeQuestionsPage() {
   const prefersReducedMotion = usePrefersReducedMotion();
 
   const [activeTab, setActiveTab] = useState<ExamType>("prelims");
-  const [filterYear, setFilterYear] = useState<string>(PORTAL_FILTER_YEARS[0]);
-  const [filterMonth, setFilterMonth] = useState<string>(PORTAL_FILTER_MONTHS[3]);
+  const [filterYear, setFilterYear] = useState<string>(ALL_FILTER);
+  const [filterMonth, setFilterMonth] = useState<string>(ALL_FILTER);
 
   const dateOptions = useMemo(
-    () => getDpqDateOptions(filterMonth),
+    () =>
+      filterMonth === ALL_FILTER ? [ALL_FILTER] : getDpqDateOptions(filterMonth),
     [filterMonth],
   );
 
@@ -64,13 +67,15 @@ export default function DailyPracticeQuestionsPage() {
     );
   }, [dateOptions]);
 
-  const practiceTests = useMemo(
-    () =>
-      listPracticeTests(filterYear, filterMonth, activeTab, selectedDate, {
-        limit: 10,
-        mainSite: true,
-      }),
-    [filterYear, filterMonth, activeTab, selectedDate],
+  const {
+    tests: practiceTests,
+    isLoading,
+    isError,
+    error,
+  } = useDailyPracticeTests(
+    activeTab,
+    toFilterValue(filterYear),
+    toFilterValue(filterMonth),
   );
 
   useGSAP(
@@ -203,13 +208,13 @@ export default function DailyPracticeQuestionsPage() {
 
                 <div className="dpq-animate-filters mb-10 flex flex-col items-center justify-center gap-5 md:flex-row md:gap-6">
                   <CustomDropdown
-                    options={[...PORTAL_FILTER_YEARS]}
+                    options={CA_FILTER_YEARS}
                     value={filterYear}
                     onChange={setFilterYear}
                     placeholder="Year"
                   />
                   <CustomDropdown
-                    options={[...PORTAL_FILTER_MONTHS]}
+                    options={CA_FILTER_MONTHS}
                     value={filterMonth}
                     onChange={setFilterMonth}
                     placeholder="Month"
@@ -224,7 +229,15 @@ export default function DailyPracticeQuestionsPage() {
                 </div>
 
                 <div className="cards-grid">
-                  {practiceTests.length === 0 ? (
+                  {isLoading ? (
+                    <p className="text-center text-[16px] font-medium text-[#555]">
+                      Loading…
+                    </p>
+                  ) : isError ? (
+                    <p className="text-center text-[16px] font-medium text-red-600">
+                      {error?.message ?? "Failed to load practice tests."}
+                    </p>
+                  ) : practiceTests.length === 0 ? (
                     <p className="text-center text-[16px] font-medium text-[#555]">
                       No practice tests found for the selected filters.
                     </p>

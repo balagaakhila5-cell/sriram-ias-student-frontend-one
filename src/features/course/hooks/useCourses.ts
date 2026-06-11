@@ -1,11 +1,9 @@
 "use client";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   coursesService,
-  enquiryService,
   type CourseFilters,
-  type EnquiryPayload,
 } from "../services/coursesService";
 
 export const coursesKeys = {
@@ -47,8 +45,6 @@ export function useCourse(id: string | undefined) {
   });
 }
 
-export function useSubmitEnquiry() {
-  return useMutation({
-    mutationFn: (payload: EnquiryPayload) => enquiryService.submit(payload),
-  });
-}
+// Enquiry submission lives in its own feature module; re-exported here so the
+// existing modal imports (@/features/course/hooks/useCourses) keep working.
+export { useSubmitEnquiry } from "@/features/enquiry/hooks/useEnquiry";

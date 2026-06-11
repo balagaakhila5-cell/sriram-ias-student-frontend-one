@@ -70,18 +70,8 @@ export interface CourseFilters {
   categoryName?: string;
 }
 
-export interface EnquiryPayload {
-  name: string;
-  phone: string;
-  email: string;
-  centerName?: string;
-  courseTitle?: string;
-  center?: string;
-  category?: string;
-  course?: string;
-  targetYear?: string;
-  expectation?: string;
-}
+// Canonical EnquiryPayload now lives in the enquiry feature module.
+export type { EnquiryPayload } from "@/features/enquiry/types";
 
 /* ------------------------------------------------------------------ */
 /*  Mock data                                                          */
@@ -229,9 +219,3 @@ export const coursesService = {
   },
 };
 
-export const enquiryService = {
-  submit: async (_payload: EnquiryPayload): Promise<{ message: string }> => {
-    await delay();
-    return { message: "Enquiry submitted successfully." };
-  },
-};

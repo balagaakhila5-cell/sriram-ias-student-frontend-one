@@ -6,6 +6,9 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
+import { useSubmitEnquiry } from '@/features/enquiry/hooks/useEnquiry';
+import { useEnquiryCourses } from '@/features/enquiry/hooks/useEnquiryLookups';
+import DemoFormSelect from '@/components/common/DemoFormSelect';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,6 +28,13 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
   const [authorized, setAuthorized] = useState(false);
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const {
+    mutate: submitEnquiry,
+    isPending,
+    isSuccess,
+    isError,
+    error,
+  } = useSubmitEnquiry();
 
   useGSAP(
     () => {
@@ -104,6 +114,10 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
   );
 
   const city = propCity?.toLowerCase() || course?.city?.toLowerCase() || 'delhi';
+  const enquiryCenterName = city.charAt(0).toUpperCase() + city.slice(1);
+  // The backend requires a resolvable course on every enquiry; this generic CTA
+  // has no course picker, so default to the branch's first real course.
+  const { data: cityCourses = [] } = useEnquiryCourses(enquiryCenterName);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -113,7 +127,26 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData, 'Authorized:', authorized);
+    if (!formData.fullName.trim() || !formData.mobile.trim()) return;
+
+    submitEnquiry(
+      {
+        name: formData.fullName.trim(),
+        phone: formData.mobile.trim(),
+        email: formData.email.trim(),
+        targetYear: formData.targetYear || undefined,
+        centerName: enquiryCenterName,
+        course: cityCourses[0]?._id,
+        courseTitle: cityCourses[0]?.title,
+        source: course ? 'course' : 'main',
+      },
+      {
+        onSuccess: () => {
+          setFormData({ fullName: '', mobile: '', email: '', targetYear: '' });
+          setAuthorized(false);
+        },
+      },
+    );
   };
 
   // ── BACKGROUNDS & BUTTON THEMES ──────────────────────────────────────────
@@ -220,38 +253,21 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
               />
 
               {/* Target Year Select */}
-              <div className="relative w-full">
-                <select
-                  name="targetYear"
-                  value={formData.targetYear}
-                  onChange={handleChange}
-                  className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300"
-                >
-                  <option value="" disabled>
-                    Target UPSC Attempt Year
-                  </option>
-                  <option value="2025">2025</option>
-                  <option value="2026">2026</option>
-                  <option value="2027">2027</option>
-                  <option value="2028">2028</option>
-                  <option value="2029">2029</option>
-                </select>
-
-                {/* Dropdown arrow */}
-                <svg
-                  className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#999"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
-              </div>
+              <DemoFormSelect
+                value={formData.targetYear}
+                onChange={(value) =>
+                  setFormData((prev) => ({ ...prev, targetYear: value }))
+                }
+                options={[
+                  { value: '2025', label: '2025' },
+                  { value: '2026', label: '2026' },
+                  { value: '2027', label: '2027' },
+                  { value: '2028', label: '2028' },
+                  { value: '2029', label: '2029' },
+                ]}
+                placeholder="Target UPSC Attempt Year"
+                variant="pill"
+              />
             </div>
 
             {/* Authorization Checkbox */}
@@ -271,17 +287,30 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
             </label>
 
             {/* Dynamic Submit Button */}
-            <div className="mt-4 flex justify-center">
+            <div className="mt-4 flex flex-col items-center gap-3">
               <button
                 type="submit"
-                className="rounded-3xl px-8 py-3.5 text-[18px] font-semibold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg"
+                disabled={isPending}
+                className="rounded-3xl px-8 py-3.5 text-[18px] font-semibold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
                 style={{
                   background:
                     'linear-gradient(90deg, rgba(24, 151, 216, 0.8) 0%, #021C29 100%)',
                 }}
               >
-                Book your session now
+                {isPending ? 'Submitting…' : 'Book your session now'}
               </button>
+
+              {isSuccess && (
+                <p className="text-[14px] font-semibold text-green-700">
+                  Thank you! Our team will contact you shortly.
+                </p>
+              )}
+              {isError && (
+                <p className="text-[14px] font-semibold text-red-600">
+                  {(error as Error)?.message ??
+                    'Something went wrong. Please try again.'}
+                </p>
+              )}
             </div>
           </form>
         </div>
