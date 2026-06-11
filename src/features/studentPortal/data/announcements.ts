@@ -30,6 +30,8 @@ export const announcements: Announcement[] = [
     category: "General",
     title: "Anubuthi III Results are Announced Today .",
     description: "The results for Anubuthi III have been officially announced.",
+    attachmentName: "resultsanouncement.pdf",
+    attachmentUrl: ANNOUNCEMENT_PDF_URL,
   },
   {
     id: "a-3",

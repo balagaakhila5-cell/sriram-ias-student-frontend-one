@@ -21,7 +21,7 @@ export default function AnnouncementCard({
 }: AnnouncementCardProps) {
 
   return (
-    <article className="flex items-stretch gap-5 rounded-[18px] bg-white  shadow-[0_6px_22px_rgba(0,0,0,0.05)]">
+    <article className="notranslate flex items-stretch gap-5 rounded-[18px] bg-white shadow-[0_6px_22px_rgba(0,0,0,0.05)]" translate="no">
       <div
         className="flex h-[210px] w-[280px] shrink-0 items-center justify-center overflow-hidden rounded-[14px]"
       >
@@ -48,17 +48,9 @@ export default function AnnouncementCard({
           </span>
         </div>
 
-        <div className="mt-3 flex items-center gap-2">
-          <h3 className="text-[19px] font-semibold leading-snug text-[#000000]">
-            {announcement.title}
-          </h3>
-          {pinned ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#E2EEF7] px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-[#1F7AB8]">
-              <Pin size={11} className="fill-current" />
-              Pinned
-            </span>
-          ) : null}
-        </div>
+        <h3 className="mt-3 text-[19px] font-semibold leading-snug text-[#000000]">
+          {announcement.title}
+        </h3>
         <p className="mt-1 text-[16px] text-[#00000099] font-medium">
           {announcement.description}
         </p>
@@ -80,7 +72,7 @@ export default function AnnouncementCard({
             <span />
           )}
 
-          <div className="flex items-center gap-3">
+          <div className="relative z-10 flex shrink-0 items-center gap-3">
             <button
               type="button"
               onClick={onMarkAsRead}
@@ -110,16 +102,22 @@ export default function AnnouncementCard({
 
             <button
               type="button"
-              onClick={onTogglePin}
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                onTogglePin?.();
+              }}
+              onContextMenu={(event) => event.preventDefault()}
               aria-pressed={pinned}
               aria-label={pinned ? "Unpin announcement" : "Pin announcement"}
-              className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-full transition-colors ${
+              translate="no"
+              className={`notranslate flex h-9 w-9 shrink-0 select-none cursor-pointer items-center justify-center rounded-full border transition-colors ${
                 pinned
-                  ? "bg-[#E2EEF7] text-[#1F7AB8]"
-                  : "text-[#7A858E] hover:bg-[#F4F7FB]"
+                  ? "border-[#1F7AB8] bg-[#E2EEF7] text-[#1F7AB8]"
+                  : "border-transparent text-[#7A858E] hover:border-[#D7E5F0] hover:bg-[#F4F7FB]"
               }`}
             >
-              <Pin size={16} className={pinned ? "fill-current" : ""} />
+              <Pin size={16} className={pinned ? "fill-current" : ""} aria-hidden />
             </button>
           </div>
         </div>

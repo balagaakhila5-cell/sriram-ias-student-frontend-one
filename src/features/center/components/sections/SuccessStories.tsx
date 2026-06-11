@@ -8,10 +8,7 @@ import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import YouTubeVideoModal from '@/components/common/YouTubeVideoModal';
 import { getYouTubeVideoId } from '@/lib/youtube';
 import { formatCityLabel } from '@/features/center/data/centerCourseCategories';
-import {
-  SUCCESS_STORIES,
-  getSuccessStoryThumbnail,
-} from '@/features/center/data/successStories';
+import { SUCCESS_STORIES } from '@/features/center/data/successStories';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -129,7 +126,6 @@ const SuccessStories = ({ city }: { city: string }) => {
         <div className="flex w-full max-w-full flex-row items-center justify-center gap-4 overflow-x-auto pb-10 [-ms-overflow-style:none] [scrollbar-width:none] md:gap-6 lg:gap-8 [&::-webkit-scrollbar]:hidden">
           {stories.map((story, index) => {
             const isActive = index === activeIndex;
-            const thumbnail = getSuccessStoryThumbnail(story.videoUrl);
 
             return (
               <div
@@ -145,12 +141,13 @@ const SuccessStories = ({ city }: { city: string }) => {
                   }`}
                 >
                   <img
-                    src={thumbnail}
+                    src={story.image}
                     alt={`${story.name} - ${story.rank}`}
                     className="h-full w-full object-cover"
                     onError={(event) => {
                       const target = event.currentTarget;
-                      target.onerror = null;
+                      if (target.dataset.fallbackApplied === 'true') return;
+                      target.dataset.fallbackApplied = 'true';
                       target.src = '/assets/youtube_video_image.png';
                     }}
                   />

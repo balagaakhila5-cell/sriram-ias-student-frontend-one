@@ -49,6 +49,7 @@ export const authService = {
     credentials: StaffLoginCredentials,
   ): Promise<AuthResponse> => {
     await delay();
+    assertLoginCredentialAllowed("faculty", { email: credentials.email });
     const account = verifyStaffLogin(credentials);
     return {
       user: mockUser("employee", {
@@ -126,6 +127,8 @@ export const authService = {
     const email = payload.email ?? "";
     const mobile = payload.mobile ?? "";
     const name = email.split("@")[0] || "Student";
+
+    assertLoginCredentialAllowed("student", { email, mobile });
 
     registerAuthCredential("student", {
       name,

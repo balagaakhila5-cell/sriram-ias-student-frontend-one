@@ -12,22 +12,19 @@ import { useAuthStore } from '@/store/authStore';
 
 export default function AnnouncementsPage() {
   const user = useAuthStore((state) => state.user);
+  const isHydrated = useAuthStore((state) => state.isHydrated);
+  const storageUserId = user?.id ?? 'guest';
   const [pinnedIds, setPinnedIds] = useState<string[]>([]);
   const [readIds, setReadIds] = useState<string[]>([]);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    if (!user?.id) {
-      setPinnedIds([]);
-      setReadIds([]);
-      setIsReady(true);
-      return;
-    }
+    if (!isHydrated) return;
 
-    setPinnedIds(getPinnedAnnouncementIds(user.id));
-    setReadIds(getReadAnnouncementIds(user.id));
+    setPinnedIds(getPinnedAnnouncementIds(storageUserId));
+    setReadIds(getReadAnnouncementIds(storageUserId));
     setIsReady(true);
-  }, [user?.id]);
+  }, [isHydrated, storageUserId]);
 
   const pinnedSet = useMemo(() => new Set(pinnedIds), [pinnedIds]);
   const readSet = useMemo(() => new Set(readIds), [readIds]);
@@ -43,16 +40,14 @@ export default function AnnouncementsPage() {
   }, [pinnedSet]);
 
   const handleTogglePin = (announcementId: string) => {
-    if (!user?.id) return;
-
-    const next = togglePinnedAnnouncement(user.id, announcementId);
+    const next = togglePinnedAnnouncement(storageUserId, announcementId);
     setPinnedIds(next);
   };
 
   const handleMarkAsRead = (announcementId: string) => {
-    if (!user?.id || readSet.has(announcementId)) return;
+    if (readSet.has(announcementId)) return;
 
-    const next = markAnnouncementAsRead(user.id, announcementId);
+    const next = markAnnouncementAsRead(storageUserId, announcementId);
     setReadIds(next);
   };
 
@@ -66,7 +61,7 @@ export default function AnnouncementsPage() {
 
   return (
     <div>
-      <div className="mt-6 space-y-4">
+      <div className="mt-6 space-y-4 pb-6 pr-2">
         {sortedAnnouncements.map((announcement) => (
           <AnnouncementCard
             key={announcement.id}

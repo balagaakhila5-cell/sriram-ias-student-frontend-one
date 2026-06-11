@@ -21,10 +21,13 @@ export default function FooterLink({
     href.startsWith("tel:");
 
   if (isExternal) {
+    const isContactLink =
+      href.startsWith("mailto:") || href.startsWith("tel:");
+
     return (
       <a
         href={href}
-        className={className}
+        className={`${className}${isContactLink ? " cursor-pointer" : ""}`}
         target={href.startsWith("http") ? "_blank" : undefined}
         rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
       >

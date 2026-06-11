@@ -1,4 +1,5 @@
 import Footer from "@/components/common/Footer";
+import PortalRoleGuard from "@/features/auth/components/PortalRoleGuard";
 import PortalSidebar from "@/features/studentPortal/components/PortalSidebar";
 import StudentTopBar from "@/features/studentPortal/components/StudentTopBar";
 import { employeeNavItems } from "@/features/employeePortal/nav";
@@ -25,7 +26,9 @@ export default function EmployeePanelLayout({
             <PortalSidebar items={employeeNavItems} />
           </aside>
 
-          <main className="min-w-0 flex-1">{children}</main>
+          <main className="min-w-0 flex-1">
+            <PortalRoleGuard portal="employee">{children}</PortalRoleGuard>
+          </main>
         </div>
       </div>
 

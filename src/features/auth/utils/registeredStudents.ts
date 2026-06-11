@@ -1,10 +1,11 @@
 import {
   DUPLICATE_SIGNUP_MESSAGE,
+  getCredentialRegistrationError,
   isCredentialAlreadyRegistered,
   registerAuthCredential,
 } from "./registeredAuthCredentials";
 
-export { DUPLICATE_SIGNUP_MESSAGE };
+export { DUPLICATE_SIGNUP_MESSAGE, getCredentialRegistrationError };
 
 export type RegisteredStudent = {
   name: string;

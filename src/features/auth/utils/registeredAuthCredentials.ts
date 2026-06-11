@@ -1,4 +1,11 @@
 import type { UserRole } from "../types";
+import {
+  NO_SPACES_MESSAGE,
+  STRONG_PASSWORD_MESSAGE,
+  hasNoSpaces,
+  isStrongPassword,
+  stripSpaces,
+} from "./passwordValidation";
 
 export const DUPLICATE_SIGNUP_MESSAGE =
   "This email or mobile number is already registered. Please log in with the correct portal.";
@@ -148,14 +155,28 @@ export function verifyStaffLogin(credentials: {
   email: string;
   password: string;
 }) {
+  const submittedPassword = stripSpaces(credentials.password);
+
+  if (!hasNoSpaces(credentials.password)) {
+    throw new Error(NO_SPACES_MESSAGE);
+  }
+
+  if (!isStrongPassword(submittedPassword)) {
+    throw new Error(STRONG_PASSWORD_MESSAGE);
+  }
+
   const email = normalizeEmail(credentials.email);
   const credential = findCredentialByEmail(email);
 
-  if (!credential || credential.role !== "faculty") {
+  if (!credential) {
     throw new Error(INVALID_LOGIN_CREDENTIALS_MESSAGE);
   }
 
-  if (!credential.password || credential.password !== credentials.password) {
+  if (credential.role !== "faculty") {
+    throw new Error(getWrongPortalMessage(credential.role));
+  }
+
+  if (!credential.password || credential.password !== submittedPassword) {
     throw new Error(INVALID_LOGIN_CREDENTIALS_MESSAGE);
   }
 
@@ -197,17 +218,56 @@ function getConflictingCredential(
   role: UserRole,
   input: { email?: string; mobile?: string },
 ) {
-  if (input.email) {
-    const byEmail = findCredentialByEmail(input.email);
+  const email = input.email ? normalizeEmail(input.email) : undefined;
+  const mobile = input.mobile ? normalizeMobile(input.mobile) : undefined;
+
+  if (email) {
+    const byEmail = findCredentialByEmail(email);
     if (byEmail && byEmail.role !== role) return byEmail;
   }
 
-  if (input.mobile) {
-    const byMobile = findCredentialByMobile(input.mobile);
+  if (mobile) {
+    const byMobile = findCredentialByMobile(mobile);
     if (byMobile && byMobile.role !== role) return byMobile;
   }
 
+  if (email && mobile) {
+    const byEmail = findCredentialByEmail(email);
+    const byMobile = findCredentialByMobile(mobile);
+    if (byEmail && byMobile && byEmail !== byMobile) {
+      return byEmail;
+    }
+  }
+
   return undefined;
+}
+
+export function getCredentialRegistrationError(
+  role: UserRole,
+  input: { email?: string; mobile?: string },
+) {
+  const email = input.email?.trim();
+  const mobile = input.mobile?.trim();
+
+  if (email) {
+    const byEmail = findCredentialByEmail(email);
+    if (byEmail) {
+      return byEmail.role === role
+        ? DUPLICATE_SIGNUP_MESSAGE
+        : getWrongPortalMessage(byEmail.role);
+    }
+  }
+
+  if (mobile) {
+    const byMobile = findCredentialByMobile(mobile);
+    if (byMobile) {
+      return byMobile.role === role
+        ? DUPLICATE_SIGNUP_MESSAGE
+        : getWrongPortalMessage(byMobile.role);
+    }
+  }
+
+  return null;
 }
 
 function hasRegisteredCredential(
@@ -293,19 +353,38 @@ export function registerAuthCredential(
 
   if (!email && !mobile) return;
 
+  const crossRoleConflict = getConflictingCredential(role, { email, mobile });
+  if (crossRoleConflict) {
+    throw new Error(getWrongPortalMessage(crossRoleConflict.role));
+  }
+
   const existingByEmail = email ? findCredentialByEmail(email) : undefined;
   const existingByMobile = mobile ? findCredentialByMobile(mobile) : undefined;
   const existing = existingByEmail ?? existingByMobile;
 
   if (existing) {
-    if (existing.role !== role) {
-      throw new Error(getWrongPortalMessage(existing.role));
-    }
+    const credentials = getRegisteredAuthCredentials().map((credential) => {
+      const isSameRecord =
+        (existing.email &&
+          credential.email &&
+          credential.email === existing.email) ||
+        (existing.mobile &&
+          credential.mobile &&
+          normalizeMobile(credential.mobile) === normalizeMobile(existing.mobile));
+
+      if (!isSameRecord) return credential;
+
+      return {
+        ...credential,
+        name: input.name?.trim() || credential.name,
+        email: email ?? credential.email,
+        mobile: mobile ?? credential.mobile,
+      };
+    });
+
+    writeStoredCredentials(credentials);
     return;
   }
-
-  if (email && findCredentialByEmail(email)) return;
-  if (mobile && findCredentialByMobile(mobile)) return;
 
   const updated: RegisteredAuthCredential[] = [
     ...getRegisteredAuthCredentials(),

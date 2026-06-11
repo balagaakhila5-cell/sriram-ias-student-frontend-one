@@ -7,7 +7,6 @@ import { Home, LogOut, User } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import type { ServerRole } from "@/features/auth/types";
 import { EmailOrPhoneLink } from "@/components/common/ContactLinks";
-import LoggedInUserBadge from "@/features/auth/components/LoggedInUserBadge";
 import {
   getPortalHomeHref,
   getRoleBadgeStyles,
@@ -107,9 +106,7 @@ const HeaderUserMenu: React.FC<{ theme?: 'light' | 'dark' }> = ({
   const roleLabel = getRoleDisplayLabel(user.role);
 
   return (
-    <div className="relative z-[60] flex items-center gap-3" ref={menuRef}>
-      <LoggedInUserBadge variant="compact" theme={theme} />
-
+    <div className="relative z-[60]" ref={menuRef}>
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}

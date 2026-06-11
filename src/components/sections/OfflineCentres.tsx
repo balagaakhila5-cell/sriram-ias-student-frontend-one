@@ -13,8 +13,11 @@ import { heroDiamondConfig } from '../diamondConfigs';
 import { useHomepage } from '@/features/homepage/hooks/useHomepage';
 import { centerPageHref } from '@/features/homepage/utils/homepageLinks';
 import { EmailLink, PhoneLink } from '@/components/common/ContactLinks';
+import { FOOTER_BRANCHES } from '@/config/footerLinks';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const [delhiBranch, hyderabadBranch, puneBranch] = FOOTER_BRANCHES;
 
 const fallbackCentres = [
   {
@@ -22,30 +25,27 @@ const fallbackCentres = [
     name: 'New Delhi',
     rating: 4.8,
     image: '/assets/Delhi-img.png',
-    address:
-      "New Delhi: SRIRAM'S IAS TOWER, 10 B, Pusa Road, Bada Bazar Rd, Near Metro Pillar No. 112, Old Rajinder Nagar, New Delhi - 110060",
-    phone: '9811489560',
-    email: 'sriram@gmail.com',
+    address: delhiBranch.address,
+    phone: delhiBranch.phone,
+    email: delhiBranch.email,
   },
   {
     id: 'hyderabad',
     name: 'Hyderabad',
     rating: 4.8,
     image: '/assets/hyd.png',
-    address:
-      'Hyderabad: Plot No. 123, Road No. 45, Jubilee Hills, Near Metro Station, Hyderabad - 500033',
-    phone: '9811489561',
-    email: 'sriram.hyd@gmail.com',
+    address: hyderabadBranch.address,
+    phone: hyderabadBranch.phone,
+    email: hyderabadBranch.email,
   },
   {
     id: 'pune',
     name: 'Pune',
     rating: 4.8,
     image: '/assets/pune.png',
-    address:
-      'Pune: 4th Floor, City Center, MG Road, Camp Area, Near Railway Station, Pune - 411001',
-    phone: '9811489562',
-    email: 'sriram.pune@gmail.com',
+    address: puneBranch.address,
+    phone: puneBranch.phone,
+    email: puneBranch.email,
   },
 ];
 

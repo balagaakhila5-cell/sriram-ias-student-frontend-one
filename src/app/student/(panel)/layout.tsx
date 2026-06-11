@@ -1,4 +1,5 @@
 import Footer from "@/components/common/Footer";
+import PortalRoleGuard from "@/features/auth/components/PortalRoleGuard";
 import StudentSidebar from "@/features/studentPortal/components/StudentSidebar";
 import StudentTopBar from "@/features/studentPortal/components/StudentTopBar";
 
@@ -24,7 +25,9 @@ export default function StudentPanelLayout({
             <StudentSidebar />
           </aside>
 
-          <main className="min-w-0 flex-1">{children}</main>
+          <main className="min-w-0 flex-1">
+            <PortalRoleGuard portal="student">{children}</PortalRoleGuard>
+          </main>
         </div>
       </div>
 

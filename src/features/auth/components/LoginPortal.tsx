@@ -19,11 +19,15 @@ import {
 import { AUTH_FIELD_LIMITS } from "../constants";
 import { setMockStudentAuth } from "../utils/mockAuth";
 import {
+  PASSWORD_CRITERIA_HINT,
   loginStringNoSpaces,
   passwordSchema,
   stripSpaces,
 } from "../utils/passwordValidation";
-import { registerAuthCredential } from "../utils/registeredAuthCredentials";
+import {
+  assertLoginCredentialAllowed,
+  registerAuthCredential,
+} from "../utils/registeredAuthCredentials";
 import FormFieldLabel from "@/components/common/FormFieldLabel";
 
 type AuthScreen = "form" | "otp" | "success";
@@ -200,19 +204,31 @@ const LoginPortal: React.FC = () => {
     const studentName = isEmailLogin
       ? studentIdentifier.split("@")[0]
       : "Student";
+    const loginPayload = isEmailLogin
+      ? { email: studentIdentifier }
+      : { mobile: studentIdentifier };
 
-    registerAuthCredential("student", {
-      name: studentName,
-      email: isEmailLogin ? studentIdentifier : undefined,
-      mobile: isEmailLogin ? undefined : studentIdentifier,
-    });
+    try {
+      assertLoginCredentialAllowed("student", loginPayload);
+      registerAuthCredential("student", {
+        name: studentName,
+        email: isEmailLogin ? studentIdentifier : undefined,
+        mobile: isEmailLogin ? undefined : studentIdentifier,
+      });
 
-    setMockStudentAuth({
-      name: studentName,
-      identifier: studentIdentifier,
-    });
-    setOtpError(null);
-    setStudentScreen("success");
+      setMockStudentAuth({
+        name: studentName,
+        identifier: studentIdentifier,
+      });
+      setOtpError(null);
+      setStudentScreen("success");
+    } catch (error) {
+      setOtpError(
+        error instanceof Error
+          ? error.message
+          : "This email or mobile is already used in another portal.",
+      );
+    }
   };
 
   const onParentSendOtp = parentForm.handleSubmit((values) => {
@@ -256,13 +272,31 @@ const LoginPortal: React.FC = () => {
   };
 
   const onFacultySubmit = facultyForm.handleSubmit((values) => {
+    const email = values.email.trim();
+    const password = stripSpaces(values.password).slice(
+      0,
+      AUTH_FIELD_LIMITS.passwordMax,
+    );
+
+    try {
+      assertLoginCredentialAllowed("faculty", { email });
+    } catch (error) {
+      facultyForm.setError("email", {
+        message:
+          error instanceof Error
+            ? error.message
+            : "This email is registered in another portal.",
+      });
+      return;
+    }
+
     staffLogin.mutate(
+      { email, password },
       {
-        email: values.email.trim(),
-        password: values.password.slice(0, AUTH_FIELD_LIMITS.passwordMax),
-      },
-      {
-        onSuccess: () => router.push("/employee"),
+        onSuccess: () => {
+          facultyForm.clearErrors();
+          setFacultyScreen("success");
+        },
       },
     );
   });
@@ -300,7 +334,7 @@ const LoginPortal: React.FC = () => {
         loginMode
         title=""
       >
-        <AuthSuccessView title="Logged in Successfully" />
+        <AuthSuccessView title="Logged In Successfully" />
       </AuthPortalShell>
     );
   }
@@ -409,6 +443,7 @@ const LoginPortal: React.FC = () => {
             placeholder="Enter your password"
             maxLength={AUTH_FIELD_LIMITS.passwordMax}
             autoComplete="current-password"
+            hint={PASSWORD_CRITERIA_HINT}
             error={facultyForm.formState.errors.password?.message}
             {...facultyForm.register("password")}
           />
@@ -459,12 +494,13 @@ const SubmitButton: React.FC<{
 interface FieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
+  hint?: string;
   noSpaces?: boolean;
 }
 
 const Field = React.forwardRef<HTMLInputElement, FieldProps>(
   (
-    { label, error, required, type, maxLength, noSpaces, onChange, ...rest },
+    { label, error, hint, required, type, maxLength, noSpaces, onChange, ...rest },
     ref,
   ) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -486,6 +522,7 @@ const Field = React.forwardRef<HTMLInputElement, FieldProps>(
           <input
             ref={ref}
             type={inputType}
+            {...rest}
             maxLength={resolvedMaxLength}
             onChange={(event) => {
               let nextValue = event.target.value;
@@ -504,7 +541,6 @@ const Field = React.forwardRef<HTMLInputElement, FieldProps>(
 
               onChange?.(event);
             }}
-            {...rest}
             className={`h-[48px] w-full min-w-0 max-w-full rounded-[24px] bg-[#CDE7F1] px-5 text-[15px] text-black placeholder:text-black/40 outline-none transition-shadow focus:shadow-[0_0_0_2px_rgba(24,151,216,0.4)] ${
               isPasswordField ? "pr-12" : ""
             }`}
@@ -525,6 +561,9 @@ const Field = React.forwardRef<HTMLInputElement, FieldProps>(
             </button>
           ) : null}
         </div>
+        {hint && !error ? (
+          <span className="text-xs leading-relaxed text-black/45">{hint}</span>
+        ) : null}
         {error && <span className="text-xs text-red-600">{error}</span>}
       </label>
     );

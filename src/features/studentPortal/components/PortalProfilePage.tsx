@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Camera, UserRound } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
+import StudentIdCardModal from "@/features/studentPortal/components/StudentIdCardModal";
 
 const PROFILE_PHOTO_INPUT_ID = "portal-profile-photo-upload";
 
@@ -157,6 +158,7 @@ export default function PortalProfilePage({
   const [form, setForm] = useState<ProfileForm>(emptyForm);
   const [fieldErrors, setFieldErrors] = useState<ProfileFieldErrors>({});
   const [isReady, setIsReady] = useState(false);
+  const [isIdModalOpen, setIsIdModalOpen] = useState(false);
 
   const displayName = useMemo(
     () =>
@@ -327,10 +329,11 @@ export default function PortalProfilePage({
 
   return (
     <div className="min-w-0 max-w-full rounded-[24px] bg-[#EBF0FF] p-8 lg:p-10">
-      <div className="flex justify-end">
+      <div className="relative z-10 flex justify-end">
         <button
           type="button"
-          className="rounded-full px-6 py-2 text-[15px] font-semibold text-white shadow-[0_8px_20px_rgba(0,36,54,0.25)]"
+          onClick={() => setIsIdModalOpen(true)}
+          className="cursor-pointer rounded-full px-6 py-2 text-[15px] font-semibold text-white shadow-[0_8px_20px_rgba(0,36,54,0.25)] transition-opacity hover:opacity-90"
           style={{
             background: "linear-gradient(90deg, #00679C 0%, #002436 100%)",
             fontFamily: "Montserrat, sans-serif",
@@ -340,13 +343,24 @@ export default function PortalProfilePage({
         </button>
       </div>
 
-      <div className="mt-2 flex flex-col items-center gap-3">
+      <StudentIdCardModal
+        isOpen={isIdModalOpen}
+        onClose={() => setIsIdModalOpen(false)}
+        name={displayName}
+        id={user?.id ?? "—"}
+        mobile={form.mobile.trim() || user?.mobile}
+        email={form.email.trim() || user?.email}
+        role={user?.role ?? "student"}
+        photoUrl={profilePhoto}
+      />
+
+      <div className="mt-2 flex flex-col items-center gap-3 overflow-visible px-2">
         <label
           htmlFor={PROFILE_PHOTO_INPUT_ID}
-          className="group relative inline-block size-[128px] cursor-pointer"
+          className="group relative flex h-[124px] w-[136px] cursor-pointer items-start justify-center overflow-visible"
           title="Click to change profile photo"
         >
-          <span className="pointer-events-none absolute left-1/2 top-0 flex size-[120px] -translate-x-1/2 items-center justify-center overflow-hidden rounded-full bg-white shadow-[0_8px_24px_rgba(0,0,0,0.1)] transition-opacity group-hover:opacity-90">
+          <span className="pointer-events-none flex size-[120px] items-center justify-center overflow-hidden rounded-full bg-white shadow-[0_8px_24px_rgba(0,0,0,0.1)] transition-opacity group-hover:opacity-90">
             {profilePhoto ? (
               <img
                 src={profilePhoto}
@@ -439,7 +453,7 @@ export default function PortalProfilePage({
               label="Parent Name"
               required
               maxLength={FIELD_LIMITS.parentName}
-              placeholder="Letters and spaces only"
+              placeholder="Enter the name"
               value={form.parentName}
               onChange={update("parentName")}
               error={fieldErrors.parentName}

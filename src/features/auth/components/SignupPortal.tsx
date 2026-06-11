@@ -13,6 +13,7 @@ import { useSendOtp } from "../hooks/useAuth";
 import { setMockStudentAuth } from "../utils/mockAuth";
 import {
   DUPLICATE_SIGNUP_MESSAGE,
+  getCredentialRegistrationError,
   isStudentAlreadyRegistered,
   registerStudent,
 } from "../utils/registeredStudents";
@@ -66,8 +67,12 @@ const SignupPortal: React.FC = () => {
     const email = values.email.trim();
     const mobile = values.mobile.trim();
 
-    if (isStudentAlreadyRegistered({ email, mobile })) {
-      setFormError(DUPLICATE_SIGNUP_MESSAGE);
+    const registrationError = getCredentialRegistrationError("student", {
+      email,
+      mobile,
+    });
+    if (registrationError || isStudentAlreadyRegistered({ email, mobile })) {
+      setFormError(registrationError ?? DUPLICATE_SIGNUP_MESSAGE);
       return;
     }
 
@@ -119,18 +124,27 @@ const SignupPortal: React.FC = () => {
 
     if (!signupData) return;
 
-    setMockStudentAuth({
-      name: signupData.name,
-      email: signupData.email,
-      mobile: signupData.mobile,
-    });
-    registerStudent({
-      name: signupData.name,
-      email: signupData.email,
-      mobile: signupData.mobile,
-    });
-    setOtpError(null);
-    setScreen("success");
+    try {
+      registerStudent({
+        name: signupData.name,
+        email: signupData.email,
+        mobile: signupData.mobile,
+      });
+
+      setMockStudentAuth({
+        name: signupData.name,
+        email: signupData.email,
+        mobile: signupData.mobile,
+      });
+      setOtpError(null);
+      setScreen("success");
+    } catch (error) {
+      setOtpError(
+        error instanceof Error
+          ? error.message
+          : "This email or mobile is already used in another portal.",
+      );
+    }
   };
 
   const handleRoleChange = (newRole: UserRole) => {

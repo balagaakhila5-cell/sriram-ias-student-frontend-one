@@ -45,7 +45,7 @@ export default function ContactCard({
 
         <a
           href={actionHref}
-          className="relative z-10 inline-flex w-fit items-center gap-2 rounded-full px-5 py-3 text-[17px] font-bold text-white shadow-[0_8px_20px_rgba(0,36,54,0.25)]"
+          className="relative z-10 inline-flex w-fit cursor-pointer items-center gap-2 rounded-full px-5 py-3 text-[17px] font-bold text-white shadow-[0_8px_20px_rgba(0,36,54,0.25)]"
           style={{
             background: "linear-gradient(90deg, #00679C 0%, #002436 100%)",
             fontFamily: "Montserrat, sans-serif",

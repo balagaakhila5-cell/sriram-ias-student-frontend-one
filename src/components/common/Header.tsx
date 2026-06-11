@@ -23,8 +23,7 @@ import BookFreeDemoModal from './BookFreeDemoModal';
 import SearchPopup from './SearchPopup';
 import HeaderUserMenu from './HeaderUserMenu';
 import { PhoneLink } from './ContactLinks';
-
-const HEADER_SUPPORT_PHONE = '+91 8686818384';
+import { HEADER_SUPPORT_PHONE } from '@/config/supportContact';
 import {
   getHeaderCourseLinks,
   getHeaderTabsForCity,

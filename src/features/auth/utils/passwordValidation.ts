@@ -11,6 +11,9 @@ export const NO_SPACES_MESSAGE = "Spaces are not allowed";
 export const STRONG_PASSWORD_MESSAGE =
   "Password must include letters, numbers, and special characters";
 
+export const PASSWORD_CRITERIA_HINT =
+  "Use at least 6 characters with letters, numbers, and special characters. Spaces are not allowed.";
+
 export function stripSpaces(value: string) {
   return value.replace(/\s/g, "");
 }
@@ -38,6 +41,18 @@ export function passwordSchema() {
     )
     .refine(hasNoSpaces, NO_SPACES_MESSAGE)
     .refine(isStrongPassword, STRONG_PASSWORD_MESSAGE);
+}
+
+/** Login only — length limits without signup complexity rules. */
+export function loginPasswordSchema() {
+  return z
+    .string()
+    .min(1, "Password is required")
+    .max(
+      AUTH_FIELD_LIMITS.passwordMax,
+      `Password must be ${AUTH_FIELD_LIMITS.passwordMax} characters or fewer`,
+    )
+    .refine(hasNoSpaces, NO_SPACES_MESSAGE);
 }
 
 export function loginStringNoSpaces<T extends z.ZodString>(schema: T) {

@@ -10,7 +10,8 @@ type LinkProps = Omit<ComponentProps<'a'>, 'href'> & {
   value: string;
 };
 
-const linkClassName = 'hover:underline';
+const linkClassName =
+  'cursor-pointer text-inherit hover:underline underline-offset-2';
 
 export function PhoneLink({
   value,

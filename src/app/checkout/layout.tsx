@@ -7,11 +7,10 @@ export default function CheckoutLayout({ children }: { children: React.ReactNode
   return (
     <div className="min-h-screen flex flex-col font-['Montserrat'] bg-white">
 
-      {/* Header — exact same logo block as Header.tsx */}
-      <header className="w-full border-b border-gray-200 bg-white px-6 md:px-10 py-3 flex items-center shrink-0">
+      <header className="sticky top-0 z-[110] flex w-full shrink-0 items-center justify-between border-b border-gray-200 bg-white px-6 py-3 md:px-10">
         <Link
           href="/"
-          className="inline-flex items-center"
+          className="inline-flex cursor-pointer items-center transition-opacity hover:opacity-80"
           aria-label="Go to home"
         >
           <Image
@@ -31,6 +30,13 @@ export default function CheckoutLayout({ children }: { children: React.ReactNode
             className="object-contain"
             style={{ height: '48px', width: 'auto' }}
           />
+        </Link>
+
+        <Link
+          href="/"
+          className="text-[14px] font-semibold text-[#00679C] transition-colors hover:text-[#004d74] hover:underline"
+        >
+          Back to Home
         </Link>
       </header>
 

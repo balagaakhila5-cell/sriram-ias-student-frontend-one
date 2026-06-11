@@ -10,12 +10,14 @@ import useInViewport from '@/hooks/useInViewport';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import BookFreeDemoModal from './BookFreeDemoModal';
 import FooterLink from './FooterLink';
+import { EmailLink, PhoneLink } from './ContactLinks';
 import {
   FOOTER_BRANCHES,
   FOOTER_COURSE_LINKS,
   FOOTER_SOCIAL_LINKS,
   FOOTER_WEBSITE_LINKS_PRIMARY,
   FOOTER_WEBSITE_LINKS_SECONDARY,
+  getFooterCopyrightText,
 } from '@/config/footerLinks';
 
 interface FooterProps {
@@ -281,13 +283,10 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
                       <Phone size={15} className="text-white shrink-0" />
                       <p>
                         <span className="text-white font-semibold">Contact Us :</span>{' '}
-                        <FooterLink
-                          href={`tel:${branch.phone}`}
-                          external
+                        <PhoneLink
+                          value={branch.phone}
                           className="hover:text-white transition-colors"
-                        >
-                          {branch.phone}
-                        </FooterLink>
+                        />
                       </p>
                     </div>
 
@@ -295,13 +294,10 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
                       <Mail size={15} className="text-white shrink-0" />
                       <p>
                         <span className="text-white font-semibold">Email Id :</span>{' '}
-                        <FooterLink
-                          href={`mailto:${branch.email}`}
-                          external
+                        <EmailLink
+                          value={branch.email}
                           className="hover:text-white transition-colors"
-                        >
-                          {branch.email}
-                        </FooterLink>
+                        />
                       </p>
                     </div>
                   </div>
@@ -350,6 +346,12 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="footer-copyright border-t border-white/10 pt-6 text-center">
+          <p className="text-[13px] font-medium leading-relaxed tracking-[0.2px] text-[#B3B3B3]">
+            {getFooterCopyrightText()}
+          </p>
         </div>
       </div>
 
