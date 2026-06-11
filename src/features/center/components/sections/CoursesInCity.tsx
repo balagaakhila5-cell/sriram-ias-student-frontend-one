@@ -11,6 +11,8 @@ import {
   CENTER_CATEGORIES_BY_CITY,
   type CenterCity,
 } from '@/features/center/data/centerCourseCategories';
+import { PhoneLink } from '@/components/common/ContactLinks';
+import { getCenterBranchContact } from '@/utils/centerContact';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -28,6 +30,7 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
     () => CENTER_CATEGORIES_BY_CITY[cityKey] ?? CENTER_CATEGORIES_BY_CITY.delhi,
     [cityKey],
   );
+  const branchContact = getCenterBranchContact(city);
 
   useGSAP(
     () => {
@@ -148,9 +151,10 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
 
       <div className="mt-20 font-['Montserrat'] font-semibold text-[16px] md:text-[20px] text-[#4A4A4A] relative z-10">
         For More details contact us at{' '}
-        <span className="text-[#111] font-bold border-b-2 border-black pb-0.5 ml-1 inline-block leading-none">
-          9811489560
-        </span>
+        <PhoneLink
+          value={branchContact.phone}
+          className="text-[#111] font-bold border-b-2 border-black pb-0.5 ml-1 inline-block leading-none hover:opacity-80"
+        />
       </div>
     </section>
   );

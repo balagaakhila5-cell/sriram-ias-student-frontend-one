@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { GraduationCap, Users, UserRound } from 'lucide-react';
 
@@ -106,7 +107,11 @@ const AuthPortalShell: React.FC<AuthPortalShellProps> = ({
               }}
             >
               <div className="relative z-10 flex w-full max-w-[445px] flex-col items-center">
-                <div className="mb-5 flex h-[40px] w-[212px] items-center justify-center">
+                <Link
+                  href="/"
+                  className="mb-5 flex h-[40px] w-[212px] items-center justify-center"
+                  aria-label="Go to home"
+                >
                   <Image
                     src="/assets/SRIRAM's-IAS.png"
                     alt="SRIRAM's IAS"
@@ -115,7 +120,7 @@ const AuthPortalShell: React.FC<AuthPortalShellProps> = ({
                     className="h-auto w-full object-contain"
                     priority
                   />
-                </div>
+                </Link>
                 {title ? (
                   <h2 className="mb-8 text-[16px] font-semibold text-black">
                     {title}

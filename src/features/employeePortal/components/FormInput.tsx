@@ -24,7 +24,7 @@ export default function FormInput({
   className = "",
 }: FormInputProps) {
   return (
-    <label className={`flex w-full flex-col gap-2 ${className}`}>
+    <label className={`flex w-full min-w-0 max-w-full flex-col gap-2 ${className}`}>
       {label && (
         <span
           className="text-[15px] font-semibold text-[#1F2A37]"
@@ -34,14 +34,14 @@ export default function FormInput({
           {required && <span className="text-[#E16165]"> *</span>}
         </span>
       )}
-      <div className="relative">
+      <div className="relative min-w-0 max-w-full">
         {rows ? (
           <textarea
             value={value}
             onChange={(e) => onChange?.(e.target.value)}
             placeholder={placeholder}
             rows={rows}
-            className="w-full rounded-[10px] bg-[#D7E5F4] px-4 py-3 text-[15px] font-medium text-[#1F2A37] outline-none placeholder:text-[#00000066]"
+            className="box-border w-full min-w-0 max-w-full resize-y overflow-x-hidden overflow-y-auto break-words rounded-[10px] bg-[#D7E5F4] px-4 py-3 text-[15px] font-medium text-[#1F2A37] outline-none placeholder:text-[#00000066]"
             style={{ fontFamily: "Montserrat, sans-serif" }}
           />
         ) : (
@@ -50,7 +50,7 @@ export default function FormInput({
             value={value}
             onChange={(e) => onChange?.(e.target.value)}
             placeholder={placeholder}
-            className="h-[44px] w-full rounded-[10px] bg-[#D7E5F4] px-4 text-[15px] font-medium text-[#1F2A37] outline-none placeholder:text-[#00000066]"
+            className="box-border h-[44px] w-full min-w-0 max-w-full overflow-x-auto overflow-y-hidden text-ellipsis whitespace-nowrap rounded-[10px] bg-[#D7E5F4] px-4 text-[15px] font-medium text-[#1F2A37] outline-none placeholder:text-[#00000066]"
             style={{ fontFamily: "Montserrat, sans-serif" }}
           />
         )}

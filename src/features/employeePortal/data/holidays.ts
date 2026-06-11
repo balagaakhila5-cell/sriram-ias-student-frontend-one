@@ -1,19 +1,17 @@
-export interface Holiday {
-  id: string;
-  name: string;
-  date: string;
-  type: string;
-}
+import { holidaysMaster } from '@/features/attendance/data/holidaysMaster';
+
+export type { HolidayMasterEntry as Holiday } from '@/features/attendance/data/holidaysMaster';
+export { holidaysMaster, weeklyOffDays } from '@/features/attendance/data/holidaysMaster';
 
 export const leaveBalance = {
   casualLeavesLeft: 14,
   sickLeavesLeft: 14,
 };
 
-export const holidays: Holiday[] = [
-  { id: "1", name: "Independence day", date: "August 15 , Monday", type: "National Holiday" },
-  { id: "2", name: "Independence day", date: "August 15 , Monday", type: "National Holiday" },
-  { id: "3", name: "Independence day", date: "August 15 , Monday", type: "National Holiday" },
-  { id: "4", name: "Independence day", date: "August 15 , Monday", type: "National Holiday" },
-  { id: "5", name: "Independence day", date: "August 15 , Monday", type: "National Holiday" },
-];
+/** Employee holidays listing (mapped from holidays master). */
+export const holidays = holidaysMaster.map((holiday) => ({
+  id: holiday.id,
+  name: holiday.name,
+  date: holiday.displayDate,
+  type: holiday.type,
+}));

@@ -22,6 +22,9 @@ import { useGSAP } from '@gsap/react';
 import BookFreeDemoModal from './BookFreeDemoModal';
 import SearchPopup from './SearchPopup';
 import HeaderUserMenu from './HeaderUserMenu';
+import { PhoneLink } from './ContactLinks';
+
+const HEADER_SUPPORT_PHONE = '+91 8686818384';
 import {
   getHeaderCourseLinks,
   getHeaderTabsForCity,
@@ -355,13 +358,12 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                 className="flex items-center gap-2 border rounded-[10px] px-2.5 py-2"
                 style={{ borderColor: '#1897D8' }}
               >
-                <span
-                  className={`font-semibold text-[16px] leading-[100%] tracking-normal font-[Montserrat] xl:text-[14px] uppercase ${
+                <PhoneLink
+                  value={HEADER_SUPPORT_PHONE}
+                  className={`font-semibold text-[16px] leading-[100%] tracking-normal font-[Montserrat] xl:text-[14px] uppercase hover:underline ${
                     isLightHeader ? 'text-[#1897D8]' : 'text-white'
                   }`}
-                >
-                  +91 8686818384
-                </span>
+                />
               </div>
 
               <button
@@ -397,13 +399,12 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                   isLightHeader ? 'border-gray-300' : 'border-white/20'
                 }`}
               >
-                <span
-                  className={`font-bold text-sm ${
+                <PhoneLink
+                  value={HEADER_SUPPORT_PHONE}
+                  className={`font-bold text-sm hover:underline ${
                     isLightHeader ? 'text-[#1897D8]' : 'text-white'
                   }`}
-                >
-                  + 91 8686818384
-                </span>
+                />
               </div>
 
               <button
@@ -1014,6 +1015,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
         <SearchPopup
           isOpen={isSearchOpen}
           onClose={() => setIsSearchOpen(false)}
+          onBookMentorship={() => setIsBookDemoOpen(true)}
         />
       </header>
 

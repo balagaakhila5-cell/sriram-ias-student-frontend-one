@@ -3,6 +3,7 @@ import type { PortalNavItem } from "@/features/studentPortal/nav";
 const EMPLOYEE_BASE = "/employee";
 
 export const employeeNavItems: PortalNavItem[] = [
+  { label: "My Profile", href: `${EMPLOYEE_BASE}/profile` },
   { label: "My Classes", href: `${EMPLOYEE_BASE}/my-classes` },
   { label: "Student List", href: `${EMPLOYEE_BASE}/student-list` },
   { label: "Student Feedback", href: `${EMPLOYEE_BASE}/student-feedback` },

@@ -129,12 +129,12 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
   return (
     <footer
       ref={footerRef}
-      className="bg-[#1a1a18] text-white pt-12 pb-10 px-4 md:px-8 overflow-hidden"
+      className="w-full min-w-0 overflow-x-clip bg-[#1a1a18] px-4 pt-12 pb-10 text-white md:px-8"
     >
-      <div className="max-w-[1500px] mx-auto space-y-9">
+      <div className="mx-auto w-full min-w-0 max-w-[1500px] space-y-9">
         {/* Top CTA & Social Bar */}
-        <div className="footer-top-bar flex flex-col lg:flex-row items-center justify-between gap-6 -mt-2">
-          <div className="flex flex-wrap items-center gap-4 -mt-3">
+        <div className="footer-top-bar -mt-2 flex flex-col items-start justify-between gap-6 xl:flex-row xl:items-center">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <button
               type="button"
               onClick={() => setIsBookDemoOpen(true)}
@@ -159,7 +159,7 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
             </Link>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center justify-start gap-4 sm:gap-6 xl:justify-end">
             <a
               href={FOOTER_SOCIAL_LINKS.instagram}
               target="_blank"
@@ -203,11 +203,11 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
         </div>
 
         {/* Links & Vertical Text Section */}
-        <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 relative items-start">
+        <div className="relative flex w-full min-w-0 flex-col items-start gap-10 xl:flex-row xl:gap-12 2xl:gap-16">
           {/* Left Side */}
-          <div className="flex-1">
+          <div className="min-w-0 w-full flex-1">
             {/* Website Links */}
-            <div className="footer-links grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-20 -mt-1">
+            <div className="footer-links -mt-1 grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3 md:gap-10 xl:gap-12">
               <div className="footer-link-group space-y-3">
                 <h4 className="text-[18px] font-semibold tracking-[0.3px] text-white">
                   Website Links
@@ -258,7 +258,7 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
             </div>
 
             {/* Cities moved down and text spacing added */}
-           <div className="footer-contacts grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20 mt-10 lg:mt-14">
+           <div className="footer-contacts mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 md:gap-10 xl:mt-14 xl:grid-cols-3 xl:gap-12">
               {FOOTER_BRANCHES.map((branch) => (
                 <div key={branch.city} className="footer-contact space-y-4">
                   <Link href={branch.href} className="flex items-center gap-3 hover:opacity-90">
@@ -275,7 +275,7 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
                   </Link>
 
                   <div className="space-y-3 text-[14px] text-[#B3B3B3] leading-[1.38] tracking-[0.2px] font-normal">
-                    <p className="max-w-[315px]">{branch.address}</p>
+                    <p className="max-w-full break-words xl:max-w-[315px]">{branch.address}</p>
 
                     <div className="flex items-center gap-2.5">
                       <Phone size={15} className="text-white shrink-0" />
@@ -311,7 +311,7 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
           </div>
 
           {/* Right Side: Masked Sliced Effect Zone */}
-          <div className="footer-vertical-text-container hidden lg:flex items-start select-none pr-4 shrink-0 justify-end h-[520px] pointer-events-none gap-2 lg:gap-3 mt-5">
+          <div className="footer-vertical-text-container pointer-events-none mt-5 hidden h-[420px] shrink-0 select-none items-start justify-end gap-2 pr-2 sm:pr-4 xl:flex xl:h-[520px] xl:gap-3">
             {/* IFS */}
             <div className="relative w-[42px] h-full overflow-hidden z-10">
               <div className="moving-col absolute inset-0 flex flex-col gap-5 text-[38px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">

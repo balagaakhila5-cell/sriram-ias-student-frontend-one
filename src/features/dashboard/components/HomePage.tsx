@@ -2,6 +2,7 @@
 
 import React, { lazy, useEffect } from 'react';
 import MainLayout from '@/components/common/MainLayout';
+import LoggedInWelcomeBanner from '@/features/auth/components/LoggedInWelcomeBanner';
 import { refreshScrollAnimations } from '@/utils/gsapNavigation';
 import Hero from '@/components/sections/Hero';
 import MottoSection from '@/components/sections/MottoSection';
@@ -22,6 +23,8 @@ const HomePage: React.FC = () => {
 
   return (
     <MainLayout>
+      <LoggedInWelcomeBanner />
+
       {/* Hero Section - Full Video */}
       <Hero />
 

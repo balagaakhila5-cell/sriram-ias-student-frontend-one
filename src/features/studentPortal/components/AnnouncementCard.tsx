@@ -1,17 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import { Clock, Megaphone, Pin } from "lucide-react";
+import { Pin } from "lucide-react";
 import type { Announcement } from "../data/announcements";
 import Image from "next/image";
 
 interface AnnouncementCardProps {
   announcement: Announcement;
+  pinned?: boolean;
+  read?: boolean;
+  onTogglePin?: () => void;
+  onMarkAsRead?: () => void;
 }
 
-export default function AnnouncementCard({ announcement }: AnnouncementCardProps) {
-  const [pinned, setPinned] = useState(!!announcement.pinned);
-  const [read, setRead] = useState(!!announcement.read);
+export default function AnnouncementCard({
+  announcement,
+  pinned = false,
+  read = false,
+  onTogglePin,
+  onMarkAsRead,
+}: AnnouncementCardProps) {
 
   return (
     <article className="flex items-stretch gap-5 rounded-[18px] bg-white  shadow-[0_6px_22px_rgba(0,0,0,0.05)]">
@@ -41,9 +48,17 @@ export default function AnnouncementCard({ announcement }: AnnouncementCardProps
           </span>
         </div>
 
-        <h3 className="mt-3 text-[19px] font-semibold leading-snug text-[#000000]">
-          {announcement.title}
-        </h3>
+        <div className="mt-3 flex items-center gap-2">
+          <h3 className="text-[19px] font-semibold leading-snug text-[#000000]">
+            {announcement.title}
+          </h3>
+          {pinned ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#E2EEF7] px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-[#1F7AB8]">
+              <Pin size={11} className="fill-current" />
+              Pinned
+            </span>
+          ) : null}
+        </div>
         <p className="mt-1 text-[16px] text-[#00000099] font-medium">
           {announcement.description}
         </p>
@@ -52,7 +67,9 @@ export default function AnnouncementCard({ announcement }: AnnouncementCardProps
           {announcement.attachmentUrl ? (
             <a
               href={announcement.attachmentUrl}
-              className="inline-flex items-center gap-3 rounded-[10px] bg-[#F4F7FB] px-3 py-2"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 rounded-[10px] bg-[#F4F7FB] px-3 py-2 transition-colors hover:bg-[#E8EEF6]"
             >
               <PdfIcon />
               <span className="text-[14px] font-medium text-[#0000FF]">
@@ -66,29 +83,37 @@ export default function AnnouncementCard({ announcement }: AnnouncementCardProps
           <div className="flex items-center gap-3">
             <button
               type="button"
-              onClick={() => setRead((v) => !v)}
-              className="inline-flex items-center justify-center text-white shadow-[0_6px_16px_rgba(0,91,136,0.25)] transition-transform hover:-translate-y-0.5"
+              onClick={onMarkAsRead}
+              disabled={read}
+              aria-disabled={read}
+              className={`inline-flex items-center justify-center shadow-[0_6px_16px_rgba(0,91,136,0.25)] transition-transform ${
+                read
+                  ? "cursor-default bg-[#D7E5F0] text-[#5C6B7A]"
+                  : "cursor-pointer text-white hover:-translate-y-0.5"
+              }`}
               style={{
                 height: 40,
                 paddingLeft: 22,
                 paddingRight: 22,
                 borderRadius: 24,
-                background:
-                  "linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)",
+                background: read
+                  ? undefined
+                  : "linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)",
                 fontFamily: "Montserrat, sans-serif",
                 fontWeight: 600,
                 fontSize: 14,
                 lineHeight: "100%",
               }}
             >
-              {read ? "Marked" : "Mark as read"}
+              {read ? "Marked as read" : "Mark as read"}
             </button>
 
             <button
               type="button"
-              onClick={() => setPinned((v) => !v)}
-              aria-label={pinned ? "Unpin" : "Pin"}
-              className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors ${
+              onClick={onTogglePin}
+              aria-pressed={pinned}
+              aria-label={pinned ? "Unpin announcement" : "Pin announcement"}
+              className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-full transition-colors ${
                 pinned
                   ? "bg-[#E2EEF7] text-[#1F7AB8]"
                   : "text-[#7A858E] hover:bg-[#F4F7FB]"

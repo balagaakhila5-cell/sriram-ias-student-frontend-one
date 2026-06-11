@@ -1,3 +1,5 @@
+export const ANNOUNCEMENT_PDF_URL = '/assets/samples/sriram-sample.pdf';
+
 export type AnnouncementCategory = "Exam" | "General";
 
 export interface Announcement {
@@ -20,7 +22,7 @@ export const announcements: Announcement[] = [
     title: "Anubuthi III Results are Announced Today .",
     description: "The results for Anubuthi III have been officially announced.",
     attachmentName: "resultsanouncement.pdf",
-    attachmentUrl: "#",
+    attachmentUrl: ANNOUNCEMENT_PDF_URL,
   },
   {
     id: "a-2",
@@ -36,6 +38,6 @@ export const announcements: Announcement[] = [
     title: "Anubuthi III Results are Announced Today .",
     description: "The results for Anubuthi III have been officially announced.",
     attachmentName: "resultsanouncement.pdf",
-    attachmentUrl: "#",
+    attachmentUrl: ANNOUNCEMENT_PDF_URL,
   },
 ];

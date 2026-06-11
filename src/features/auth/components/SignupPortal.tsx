@@ -76,7 +76,7 @@ const SignupPortal: React.FC = () => {
     setOtpError(null);
 
     sendOtp.mutate(
-      { mobile, email },
+      { mobile, email, role: "student" },
       {
         onSuccess: () => {
           setOtpSessionKey((current) => current + 1);
@@ -95,7 +95,11 @@ const SignupPortal: React.FC = () => {
     if (!signupData) return;
     setOtpError(null);
     sendOtp.mutate(
-      { mobile: signupData.mobile.trim(), email: signupData.email.trim() },
+      {
+        mobile: signupData.mobile.trim(),
+        email: signupData.email.trim(),
+        role: "student",
+      },
       {
         onSuccess: () => setOtpSessionKey((current) => current + 1),
         onError: (error) => {
@@ -265,7 +269,7 @@ interface FieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const Field = React.forwardRef<HTMLInputElement, FieldProps>(
   ({ label, error, required, ...rest }, ref) => (
-    <label className="flex w-full flex-col gap-2">
+    <label className="flex w-full min-w-0 max-w-full flex-col gap-2">
       <FormFieldLabel
         required={required}
         className="text-[14px] font-medium text-black/50"
@@ -276,7 +280,7 @@ const Field = React.forwardRef<HTMLInputElement, FieldProps>(
       <input
         ref={ref}
         {...rest}
-        className="h-[48px] w-full rounded-[24px] bg-[#CDE7F1] px-5 text-[15px] text-black outline-none transition-shadow focus:shadow-[0_0_0_2px_rgba(24,151,216,0.4)]"
+        className="h-[48px] w-full min-w-0 max-w-full rounded-[24px] bg-[#CDE7F1] px-5 text-[15px] text-black outline-none transition-shadow focus:shadow-[0_0_0_2px_rgba(24,151,216,0.4)]"
       />
 
       {error && <span className="text-xs text-red-600">{error}</span>}

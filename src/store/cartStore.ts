@@ -17,6 +17,7 @@ export interface CartItem {
 interface CartState {
   items: CartItem[];
   isOpen: boolean;
+  isHydrated: boolean;
   appliedCoupon: AppliedCoupon | null;
   couponMessage: string | null;
   addItem: (book: Book, options?: { openSidebar?: boolean }) => void;
@@ -36,6 +37,7 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
       isOpen: false,
+      isHydrated: false,
       appliedCoupon: null,
       couponMessage: null,
 
@@ -128,10 +130,22 @@ export const useCartStore = create<CartState>()(
     {
       name: 'sriram_cart',
       storage: createJSONStorage(() => localStorage),
+      skipHydration: true,
       partialize: (state) => ({
         items: state.items,
         appliedCoupon: state.appliedCoupon,
       }),
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          console.error('Cart store rehydration failed:', error);
+        }
+
+        useCartStore.setState({ isHydrated: true });
+      },
     },
   ),
 );
+
+if (typeof window !== 'undefined') {
+  void useCartStore.persist.rehydrate();
+}

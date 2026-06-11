@@ -34,7 +34,9 @@ export default function StatCard({
         >
           {label}
         </p>
-        <div className="shrink-0">{icon}</div>
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden">
+          {icon}
+        </div>
       </div>
     </div>
   );

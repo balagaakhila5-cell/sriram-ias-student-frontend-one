@@ -192,8 +192,8 @@ export default function CheckoutPage() {
               Contact Details
             </h2>
 
-            <div className="mb-4 flex flex-col gap-4 sm:flex-row">
-              <div className="flex flex-1 flex-col">
+            <div className="mb-4 flex min-w-0 flex-col gap-4 sm:flex-row">
+              <div className="flex min-w-0 flex-1 flex-col">
                 <input
                   name="name"
                   value={form.name}
@@ -205,7 +205,7 @@ export default function CheckoutPage() {
                   <p className="mt-1.5 text-left text-xs font-medium text-red-600">{errors.name}</p>
                 ) : null}
               </div>
-              <div className="flex flex-1 flex-col">
+              <div className="flex min-w-0 flex-1 flex-col">
                 <input
                   name="mobile"
                   value={form.mobile}
@@ -221,7 +221,7 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            <div className="mb-8">
+            <div className="mb-8 min-w-0">
               <input
                 name="email"
                 value={form.email}
@@ -239,7 +239,7 @@ export default function CheckoutPage() {
               Address Details
             </h2>
 
-            <div className="mb-4">
+            <div className="mb-4 min-w-0">
               <textarea
                 name="address"
                 value={form.address}

@@ -3,9 +3,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { User, LogOut } from "lucide-react";
+import { Home, LogOut, User } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import type { ServerRole } from "@/features/auth/types";
+import { EmailOrPhoneLink } from "@/components/common/ContactLinks";
+import LoggedInUserBadge from "@/features/auth/components/LoggedInUserBadge";
+import {
+  getPortalHomeHref,
+  getRoleBadgeStyles,
+  getRoleDisplayLabel,
+} from "@/features/auth/utils/roleDisplay";
 
 function ProfileIcon({
   theme = "dark",
@@ -42,6 +49,7 @@ function ProfileIcon({
 
 function getProfileRoute(role: ServerRole): string {
   if (role === "parent") return "/parent/course-details";
+  if (role === "employee") return "/employee/profile";
   return "/student/profile";
 }
 
@@ -96,8 +104,12 @@ const HeaderUserMenu: React.FC<{ theme?: 'light' | 'dark' }> = ({
 
   const initial = (user.name.trim()[0] ?? user.email?.[0] ?? "S").toUpperCase();
 
+  const roleLabel = getRoleDisplayLabel(user.role);
+
   return (
-    <div className="relative z-[60]" ref={menuRef}>
+    <div className="relative z-[60] flex items-center gap-3" ref={menuRef}>
+      <LoggedInUserBadge variant="compact" theme={theme} />
+
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
@@ -112,15 +124,36 @@ const HeaderUserMenu: React.FC<{ theme?: 'light' | 'dark' }> = ({
       </button>
 
       {open && (
-        <div className="absolute right-0 top-[calc(100%+8px)] z-[100] min-w-[180px] overflow-hidden rounded-lg border border-gray-100 bg-white shadow-xl">
+        <div className="absolute right-0 top-[calc(100%+8px)] z-[100] min-w-[220px] overflow-hidden rounded-lg border border-gray-100 bg-white shadow-xl">
           <div className="border-b border-gray-100 px-4 py-3">
             <p className="truncate text-sm font-semibold text-[#021C29]">
               {user.name}
             </p>
-            <p className="truncate text-xs text-gray-500">
-              {user.email ?? user.mobile}
+            <span
+              className={`mt-1 inline-flex rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${getRoleBadgeStyles(user.role)}`}
+            >
+              {roleLabel}
+            </span>
+            <p className="mt-2 truncate text-xs text-gray-500">
+              <EmailOrPhoneLink
+                email={user.email}
+                phone={user.mobile}
+                className="truncate text-xs text-gray-500 hover:text-[#00679C] hover:underline"
+              />
             </p>
           </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              router.push(getPortalHomeHref(user.role));
+            }}
+            className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+          >
+            <Home size={16} />
+            {roleLabel} Portal
+          </button>
 
           <button
             type="button"

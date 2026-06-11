@@ -9,10 +9,10 @@ export default function EmployeePanelLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen w-full min-w-0 flex-col overflow-x-clip bg-white">
       <StudentTopBar />
 
-      <div className="relative flex-1">
+      <div className="relative min-w-0 flex-1">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 overflow-hidden"
@@ -29,7 +29,9 @@ export default function EmployeePanelLayout({
         </div>
       </div>
 
-      <Footer lightweight />
+      <div className="w-full min-w-0 shrink-0">
+        <Footer lightweight />
+      </div>
     </div>
   );
 }
