@@ -2,8 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { parseDpqExamType } from "@/features/currentAffairs/data/dpqTestResultsMock";
 import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -13,11 +11,16 @@ import { FileText, ClipboardList } from "lucide-react";
 import { buildTextDateOptions } from "@/features/resources/catalog/currentAffairs";
 import { useDailyPracticeTests } from "@/features/currentAffairs/hooks/useCurrentAffairs";
 import {
-  listPracticeTests,
-  PORTAL_FILTER_MONTHS,
-  PORTAL_FILTER_YEARS,
-  buildDayOnlyDateOptions,
-} from "@/features/resources/catalog/currentAffairs";
+  ALL_FILTER,
+  CA_FILTER_MONTHS,
+  CA_FILTER_YEARS,
+  toFilterValue,
+} from "@/features/currentAffairs/filters";
+
+/** Text-only date labels for the Date filter (no digits in the closed button). */
+function getDpqDateOptions(month: string) {
+  return buildTextDateOptions(month);
+}
 import PracticeTestCard from "@/features/resources/components/PracticeTestCard";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 import {
@@ -45,21 +48,15 @@ type ExamType = "prelims" | "mains";
 export default function DailyPracticeQuestionsPage() {
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
-  const searchParams = useSearchParams();
 
-  const [activeTab, setActiveTab] = useState<ExamType>(() =>
-    parseDpqExamType(searchParams.get("examType")),
-  );
-
-  useEffect(() => {
-    setActiveTab(parseDpqExamType(searchParams.get("examType")));
-  }, [searchParams]);
-  const [filterYear, setFilterYear] = useState<string>(PORTAL_FILTER_YEARS[0]);
-  const [filterMonth, setFilterMonth] = useState<string>(PORTAL_FILTER_MONTHS[3]);
+  const [activeTab, setActiveTab] = useState<ExamType>("prelims");
+  const [filterYear, setFilterYear] = useState<string>(ALL_FILTER);
+  const [filterMonth, setFilterMonth] = useState<string>(ALL_FILTER);
 
   const dateOptions = useMemo(
-    () => buildDayOnlyDateOptions(filterMonth, filterYear),
-    [filterMonth, filterYear],
+    () =>
+      filterMonth === ALL_FILTER ? [ALL_FILTER] : getDpqDateOptions(filterMonth),
+    [filterMonth],
   );
 
   const [selectedDate, setSelectedDate] = useState<string>("");
@@ -261,7 +258,7 @@ export default function DailyPracticeQuestionsPage() {
               <aside className="dpq-animate-sidebar w-full xl:mt-[65px]">
                 <div className="space-y-8">
                   <DpqTopPerformers examType={activeTab} />
-                  <TrendingArticles viewAllHref="/blogs/all" />
+                  <TrendingArticles />
                 </div>
               </aside>
             </div>
