@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useMemo, useRef } from 'react';
 import Image from 'next/image';
@@ -12,8 +12,12 @@ import DiamondLayer from '../DiamondLayer';
 import { heroDiamondConfig } from '../diamondConfigs';
 import { useHomepage } from '@/features/homepage/hooks/useHomepage';
 import { centerPageHref } from '@/features/homepage/utils/homepageLinks';
+import { EmailLink, PhoneLink } from '@/components/common/ContactLinks';
+import { FOOTER_BRANCHES } from '@/config/footerLinks';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const [delhiBranch, hyderabadBranch, puneBranch] = FOOTER_BRANCHES;
 
 const fallbackCentres = [
   {
@@ -21,30 +25,27 @@ const fallbackCentres = [
     name: 'New Delhi',
     rating: 4.8,
     image: '/assets/Delhi-img.png',
-    address:
-      "New Delhi: SRIRAM'S IAS TOWER, 10 B, Pusa Road, Bada Bazar Rd, Near Metro Pillar No. 112, Old Rajinder Nagar, New Delhi - 110060",
-    phone: '9811489560',
-    email: 'sriram@gmail.com',
+    address: delhiBranch.address,
+    phone: delhiBranch.phone,
+    email: delhiBranch.email,
   },
   {
     id: 'hyderabad',
     name: 'Hyderabad',
     rating: 4.8,
     image: '/assets/hyd.png',
-    address:
-      'Hyderabad: Plot No. 123, Road No. 45, Jubilee Hills, Near Metro Station, Hyderabad - 500033',
-    phone: '9811489561',
-    email: 'sriram.hyd@gmail.com',
+    address: hyderabadBranch.address,
+    phone: hyderabadBranch.phone,
+    email: hyderabadBranch.email,
   },
   {
     id: 'pune',
     name: 'Pune',
     rating: 4.8,
     image: '/assets/pune.png',
-    address:
-      'Pune: 4th Floor, City Center, MG Road, Camp Area, Near Railway Station, Pune - 411001',
-    phone: '9811489562',
-    email: 'sriram.pune@gmail.com',
+    address: puneBranch.address,
+    phone: puneBranch.phone,
+    email: puneBranch.email,
   },
 ];
 
@@ -96,6 +97,7 @@ const OfflineCentres: React.FC = () => {
     gsap.from('.offline-header', {
       y: 100,
       opacity: 0,
+      immediateRender: false,
       scale: 0.95,
       duration: 0.8,
       ease: 'power3.out',
@@ -110,7 +112,7 @@ const OfflineCentres: React.FC = () => {
 
     // Cards Stagger
     gsap.fromTo('.offline-card',
-      { y: 40, opacity: 0 },
+      { y: 40, opacity: 0, immediateRender: false },
       {
         y: 0,
         opacity: 1,
@@ -226,14 +228,20 @@ const OfflineCentres: React.FC = () => {
                     <div className="bg-white/10 p-2 rounded-lg">
                       <Phone size={18} />
                     </div>
-                    <span className="text-base font-semibold">{center.phone}</span>
+                    <PhoneLink
+                      value={center.phone}
+                      className="text-base font-semibold hover:underline"
+                    />
                   </div>
 
                   <div className="flex items-center gap-3 transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-[transform,opacity] duration-500 delay-[400ms]">
                     <div className="bg-white/10 p-2 rounded-lg">
                       <Mail size={18} />
                     </div>
-                    <span className="text-base font-semibold">{center.email}</span>
+                    <EmailLink
+                      value={center.email}
+                      className="text-base font-semibold hover:underline"
+                    />
                   </div>
                 </div>
 

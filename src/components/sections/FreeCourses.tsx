@@ -117,6 +117,7 @@ const FreeCourses: React.FC = () => {
       gsap.from('.section-header h2', {
         y: 100,
         opacity: 0,
+        immediateRender: false,
         scale: 0.95,
         duration: 0.8,
         ease: 'power3.out',

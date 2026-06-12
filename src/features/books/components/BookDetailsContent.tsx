@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Share2 } from 'lucide-react';
@@ -8,6 +8,7 @@ import { Book } from '../types';
 import FlipBook from '@/components/common/FlipBook';
 import FreeResourcesCourseSlider from '@/components/common/FreeResourcesCourseSlider';
 import { useCartStore } from '@/store/cartStore';
+import { validatePincode } from '@/features/books/utils/checkoutFormValidation';
 
 interface BookDetailsContentProps {
    book: Book;
@@ -15,7 +16,87 @@ interface BookDetailsContentProps {
 
 const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
    const [pincode, setPincode] = useState('');
-   const { addItem } = useCartStore();
+   const [pincodeError, setPincodeError] = useState<string | null>(null);
+   const [pincodeSuccess, setPincodeSuccess] = useState<string | null>(null);
+   const [shareMessage, setShareMessage] = useState<string | null>(null);
+   const addItem = useCartStore((state) => state.addItem);
+   const updateQuantity = useCartStore((state) => state.updateQuantity);
+   const removeItem = useCartStore((state) => state.removeItem);
+   const cartQuantity = useCartStore(
+      (state) =>
+         state.items.find((item) => item.book.id === book.id)?.quantity ?? 0,
+   );
+
+   const priceQuantity = cartQuantity > 0 ? cartQuantity : 1;
+   const totalDiscountedPrice = book.discountedPrice * priceQuantity;
+   const totalOriginalPrice = book.originalPrice * priceQuantity;
+
+   const handleIncrement = () => {
+      addItem(book, { openSidebar: false });
+   };
+
+   const handleDecrement = () => {
+      if (cartQuantity <= 1) {
+         removeItem(book.id);
+         return;
+      }
+
+      updateQuantity(book.id, cartQuantity - 1);
+   };
+
+   const handlePincodeChange = (value: string) => {
+      const nextValue = value.replace(/\D/g, '').slice(0, 6);
+      setPincode(nextValue);
+      setPincodeSuccess(null);
+
+      if (pincodeError) {
+         setPincodeError(null);
+      }
+   };
+
+   const handleCheckPincode = () => {
+      const error = validatePincode(pincode);
+      if (error) {
+         setPincodeError(error);
+         setPincodeSuccess(null);
+         return;
+      }
+
+      setPincodeError(null);
+      setPincodeSuccess('Delivery is available for this pin code.');
+   };
+
+   const handleShare = useCallback(async () => {
+      const url = window.location.href;
+      const sharePayload = {
+         title: book.title,
+         text: `Check out ${book.title} on Sriram's IAS`,
+         url,
+      };
+
+      try {
+         if (typeof navigator !== 'undefined' && navigator.share) {
+            await navigator.share(sharePayload);
+            return;
+         }
+
+         await navigator.clipboard.writeText(url);
+         setShareMessage('Link copied to clipboard');
+      } catch (error) {
+         if (error instanceof Error && error.name === 'AbortError') {
+            return;
+         }
+
+         try {
+            await navigator.clipboard.writeText(url);
+            setShareMessage('Link copied to clipboard');
+         } catch {
+            setShareMessage('Unable to share right now');
+         }
+      }
+
+      window.setTimeout(() => setShareMessage(null), 2500);
+   }, [book.title]);
 
    return (
       <section className="relative w-full max-w-[1400px] mx-auto px-6 md:px-12 py-16 pb-32">
@@ -34,9 +115,21 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
                   <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight">
                      {book.title}
                   </h1>
-                  <button className="p-3 bg-gray-50 hover:bg-gray-100 rounded-full transition-colors shrink-0">
-                     <Share2 size={22} className="text-gray-600" />
-                  </button>
+                  <div className="relative shrink-0">
+                     <button
+                        type="button"
+                        onClick={handleShare}
+                        aria-label="Share this book"
+                        className="rounded-full bg-gray-50 p-3 transition-colors hover:bg-gray-100"
+                     >
+                        <Share2 size={22} className="text-gray-600" />
+                     </button>
+                     {shareMessage ? (
+                        <span className="absolute right-0 top-full z-10 mt-2 whitespace-nowrap rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white shadow-lg">
+                           {shareMessage}
+                        </span>
+                     ) : null}
+                  </div>
                </div>
 
                <p className="text-xl font-bold text-[#207CA5]">
@@ -51,46 +144,49 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
                   ))}
                </div>
 
-               <div className="flex items-end gap-3 mt-4">
-                  <span className="text-gray-500 font-medium pb-1">MRP : Rs . <span className="line-through">{book.originalPrice.toLocaleString('en-IN')}</span></span>
-                  <span className="text-[32px] font-black text-gray-900">Rs {book.discountedPrice.toLocaleString('en-IN')}</span>
-                  <span className="bg-[#B9F6A0] text-[#34791E] font-bold text-xs px-2 py-1 rounded mb-2 ml-2">
+               <div className="mt-4 flex flex-wrap items-end gap-3">
+                  <span className="pb-1 font-medium text-gray-500">
+                     MRP : Rs .{' '}
+                     <span className="line-through">
+                        {totalOriginalPrice.toLocaleString('en-IN')}
+                     </span>
+                  </span>
+                  <span className="text-[32px] font-black text-gray-900">
+                     Rs {totalDiscountedPrice.toLocaleString('en-IN')}
+                  </span>
+                  <span className="mb-2 ml-2 rounded bg-[#B9F6A0] px-2 py-1 text-xs font-bold text-[#34791E]">
                      {book.discountPercentage}
                   </span>
+                  {cartQuantity > 1 ? (
+                     <span className="mb-2 text-sm font-semibold text-gray-500">
+                        ({cartQuantity} × Rs {book.discountedPrice.toLocaleString('en-IN')})
+                     </span>
+                  ) : null}
                </div>
 
-               <div className="flex gap-4 mt-2">
-                  <button onClick={() => addItem(book)} className="group flex items-center justify-center gap-4 py-4 px-10 border-2 border-[#106A96] rounded-3xl font-bold text-xl transition-all duration-300
-    hover:bg-gradient-to-r hover:from-[rgba(24,151,216,0.8)] hover:to-[#021C29] hover:text-white">
-                     <svg width="19" height="21" viewBox="0 0 19 21" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-all duration-300 [&_path]:group-hover:fill-white!">
-                        <path fillRule="evenodd" clipRule="evenodd" d="M5.50633 4.765V3.75C5.50633 2.75544 5.90142 1.80161 6.60468 1.09835C7.30795 0.395088 8.26177 0 9.25634 0C10.2509 0 11.2047 0.395088 11.908 1.09835C12.6112 1.80161 13.0063 2.75544 13.0063 3.75V4.765C14.2933 4.804 15.0813 4.942 15.6823 5.441C16.5153 6.133 16.7353 7.303 17.1743 9.644L17.9243 13.644C18.5413 16.936 18.8493 18.582 17.9503 19.666C17.0503 20.75 15.3753 20.75 12.0263 20.75H6.48633C3.13633 20.75 1.46233 20.75 0.562335 19.666C-0.337665 18.582 -0.0276651 16.936 0.588335 13.644L1.33833 9.644C1.77833 7.304 1.99733 6.133 2.83033 5.441C3.43133 4.942 4.21933 4.804 5.50633 4.765ZM7.00633 3.75C7.00633 3.15326 7.24339 2.58097 7.66534 2.15901C8.0873 1.73705 8.6596 1.5 9.25634 1.5C9.85307 1.5 10.4254 1.73705 10.8473 2.15901C11.2693 2.58097 11.5063 3.15326 11.5063 3.75V4.75H7.00633V3.75Z" fill="url(#paint0_linear_3145_4227)"/>
-                        <defs>
-                           <linearGradient id="paint0_linear_3145_4227" x1="0" y1="10.375" x2="18.5126" y2="10.375" gradientUnits="userSpaceOnUse">
-                              <stop stopColor="#1897D8" stopOpacity="0.8"/>
-                              <stop offset="1" stopColor="#021C29"/>
-                           </linearGradient>
-                        </defs>
-                     </svg>
-                     <span className="transition-colors duration-300">
-                        Add to Bag
+               <div className="mt-2 flex items-center">
+                  <div className="flex items-center gap-3 rounded-2xl border-2 border-[#106A96] px-4 py-1.5">
+                     <button
+                        type="button"
+                        onClick={handleDecrement}
+                        disabled={cartQuantity === 0}
+                        aria-label="Decrease quantity"
+                        className="flex h-7 w-7 items-center justify-center rounded-md text-xl font-bold leading-none text-[#106A96] transition-colors hover:bg-[#EAF7FF] disabled:cursor-not-allowed disabled:opacity-40"
+                     >
+                        −
+                     </button>
+                     <span className="min-w-[2ch] text-center text-lg font-bold text-gray-900">
+                        {cartQuantity}
                      </span>
-                  </button>
-
-                  <button className="group flex items-center justify-center gap-4 py-4 px-10 border-2 border-[#106A96] rounded-3xl font-bold text-xl transition-all duration-300
-    hover:bg-gradient-to-r hover:from-[rgba(24,151,216,0.8)] hover:to-[#021C29] hover:text-white">
-                     <svg width="19" height="21" viewBox="0 0 19 21" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-all duration-300 [&_path]:group-hover:fill-white!">
-                        <path fillRule="evenodd" clipRule="evenodd" d="M5.50633 4.765V3.75C5.50633 2.75544 5.90142 1.80161 6.60468 1.09835C7.30795 0.395088 8.26177 0 9.25634 0C10.2509 0 11.2047 0.395088 11.908 1.09835C12.6112 1.80161 13.0063 2.75544 13.0063 3.75V4.765C14.2933 4.804 15.0813 4.942 15.6823 5.441C16.5153 6.133 16.7353 7.303 17.1743 9.644L17.9243 13.644C18.5413 16.936 18.8493 18.582 17.9503 19.666C17.0503 20.75 15.3753 20.75 12.0263 20.75H6.48633C3.13633 20.75 1.46233 20.75 0.562335 19.666C-0.337665 18.582 -0.0276651 16.936 0.588335 13.644L1.33833 9.644C1.77833 7.304 1.99733 6.133 2.83033 5.441C3.43133 4.942 4.21933 4.804 5.50633 4.765ZM7.00633 3.75C7.00633 3.15326 7.24339 2.58097 7.66534 2.15901C8.0873 1.73705 8.6596 1.5 9.25634 1.5C9.85307 1.5 10.4254 1.73705 10.8473 2.15901C11.2693 2.58097 11.5063 3.15326 11.5063 3.75V4.75H7.00633V3.75Z" fill="url(#paint1_linear_3145_4227)"/>
-                        <defs>
-                           <linearGradient id="paint1_linear_3145_4227" x1="0" y1="10.375" x2="18.5126" y2="10.375" gradientUnits="userSpaceOnUse">
-                              <stop stopColor="#1897D8" stopOpacity="0.8"/>
-                              <stop offset="1" stopColor="#021C29"/>
-                           </linearGradient>
-                        </defs>
-                     </svg>
-                     <span className="transition-colors duration-300">
-                        Buy Now
-                     </span>
-                  </button>
+                     <button
+                        type="button"
+                        onClick={handleIncrement}
+                        aria-label="Increase quantity"
+                        className="flex h-7 w-7 items-center justify-center rounded-md text-xl font-bold leading-none text-[#106A96] transition-colors hover:bg-[#EAF7FF]"
+                     >
+                        +
+                     </button>
+                  </div>
                </div>
 
                {/* Offers */}
@@ -116,14 +212,36 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
                {/* Delivery Options */}
                <div className="mt-4">
                   <h3 className="font-semibold text-[#000000] text-xl mb-3">Delivery Options</h3>
-                  <div className="bg-[#F2F5FF] rounded-xl p-4 flex w-[50%]">
-                     <input
-                        type="text"
-                        placeholder="Check your Pincode"
-                        className="bg-transparent border-none outline-none text-sm w-full font-medium"
-                        value={pincode}
-                        onChange={(e) => setPincode(e.target.value)}
-                     />
+                  <div className="flex w-full max-w-[420px] flex-col gap-2">
+                     <div className="flex items-center gap-3 rounded-xl bg-[#F2F5FF] p-4">
+                        <input
+                           type="text"
+                           inputMode="numeric"
+                           maxLength={6}
+                           placeholder="Check your Pincode"
+                           className="w-full border-none bg-transparent text-sm font-medium outline-none"
+                           value={pincode}
+                           onChange={(e) => handlePincodeChange(e.target.value)}
+                           onBlur={() => {
+                              if (!pincode.trim()) return;
+                              const error = validatePincode(pincode);
+                              setPincodeError(error ?? null);
+                           }}
+                        />
+                        <button
+                           type="button"
+                           onClick={handleCheckPincode}
+                           className="shrink-0 rounded-md bg-gradient-to-r from-[#1897D8CC] to-[#021C29] px-4 py-2 text-xs font-bold text-white transition-opacity hover:opacity-90"
+                        >
+                           Check
+                        </button>
+                     </div>
+                     {pincodeError ? (
+                        <p className="text-left text-xs font-medium text-red-600">{pincodeError}</p>
+                     ) : null}
+                     {pincodeSuccess ? (
+                        <p className="text-left text-xs font-medium text-[#166534]">{pincodeSuccess}</p>
+                     ) : null}
                   </div>
                </div>
 
@@ -140,30 +258,27 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
             </div>
          </div>
 
-         <div className="book-details-promo-grid mt-10 grid min-w-0 gap-5 lg:grid-cols-[1.35fr_0.65fr] lg:items-start">
-            <div className="relative min-w-0 overflow-hidden rounded-[16px] bg-[#EEF3FF] p-4 shadow-[0_10px_28px_rgba(28,78,141,0.1)]">
-               <div className="mb-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1B4B7A]">
+         <div className="book-details-promo-grid mt-10 grid min-w-0 w-full grid-cols-1 gap-4 lg:grid-cols-12 lg:items-stretch lg:gap-5">
+            <div className="relative min-w-0 overflow-hidden rounded-[10px] bg-[#EEF3FF] p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-transform duration-300 hover:scale-[1.02] lg:col-span-8">
+               <h3 className="mb-3 text-center text-[30px] font-extrabold leading-none">
+                  <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
                      Daily Learning
-                  </p>
-                  <h2 className="mt-2 text-xl font-black leading-tight text-[#062A4D] sm:text-[22px]">
-                     Practice daily questions now
-                  </h2>
-               </div>
+                  </span>
+               </h3>
 
-               <div className="relative h-[220px] overflow-hidden rounded-[14px] bg-[#D5E9FF] sm:h-[240px]">
+               <div className="relative h-[225px] overflow-hidden rounded-[8px]">
                   <Image
                      src="/assets/blogs/timer-image.png"
                      alt="Daily Learning"
                      fill
                      className="object-cover"
-                     sizes="(max-width: 640px) 100vw, 50vw"
+                     sizes="(max-width: 1024px) 100vw, 66vw"
                   />
-                  <div className="absolute inset-0 bg-black/10" />
-                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
+
+                  <div className="absolute bottom-5 left-1/2 -translate-x-1/2">
                      <Link
                         href="/current-affairs/daily-practice-questions"
-                        className="inline-flex h-[34px] items-center justify-center rounded-full border border-white bg-[#072F50]/80 px-6 text-[13px] font-semibold text-white transition duration-200 hover:bg-white/10"
+                        className="inline-flex h-[38px] items-center justify-center rounded-full border border-white px-8 text-[14px] font-semibold text-white transition hover:bg-white/10"
                      >
                         Explore →
                      </Link>
@@ -171,10 +286,9 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
                </div>
             </div>
 
-            <FreeResourcesCourseSlider
-               compact
-               className="min-w-0 max-w-[320px] rounded-[16px] shadow-[0_10px_28px_rgba(28,78,141,0.1)] lg:max-w-none lg:justify-self-end"
-            />
+            <div className="book-details-course-slider min-w-0 w-full rounded-[10px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] lg:col-span-4">
+               <FreeResourcesCourseSlider />
+            </div>
          </div>
       </section>
    );

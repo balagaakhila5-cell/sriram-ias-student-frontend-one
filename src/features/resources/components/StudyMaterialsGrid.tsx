@@ -38,7 +38,7 @@ export default function StudyMaterialsGrid({
 
               <div className={STUDY_MATERIAL_CARD.actionsCentered}>
                 <Link
-                  href={resourceViewPath(item)}
+                  href={resourceViewPath(item, variant === "portal" ? "portal" : "public")}
                   className={STUDY_MATERIAL_CARD.viewButton}
                   prefetch={false}
                   target={variant === "portal" ? "_blank" : undefined}

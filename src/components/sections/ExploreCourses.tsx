@@ -9,7 +9,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import { useCategories, useCourses } from '@/features/course/hooks/useCourses';
 import { findStaticMatch } from '@/features/course/adapters/courseAdapter';
-import { buildCanonicalExploreCategories } from '@/features/homepage/data/exploreCourseCatalog';
+import { buildAllCentersExploreCoursesForTab } from '@/features/homepage/data/exploreCourseCatalog';
 import type { CourseSummary } from '@/features/course/services/coursesService';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -78,18 +78,15 @@ const toExploreCardCourse = (c: CourseSummary): ExploreCardCourse => ({
   center: getCenterName(c),
 });
 
-const catalogFallbackByTab = buildCanonicalExploreCategories();
-
-function catalogCoursesForTab(tab: string): ExploreCardCourse[] {
-  const category = catalogFallbackByTab.find((c) => c.name === tab);
-  return (category?.courses ?? []).map((course) => ({
+const catalogCoursesForTab = (tab: string): ExploreCardCourse[] =>
+  buildAllCentersExploreCoursesForTab(tab).map((course) => ({
     _id: course._id,
     title: course.title,
     slug: course.slug,
     category: tab,
+    center: course.center,
     banner: EXPLORE_COURSE_CARD_IMAGE,
   }));
-}
 
 const ExploreCourses: React.FC = () => {
   const { data: categories } = useCategories();
@@ -127,14 +124,13 @@ const ExploreCourses: React.FC = () => {
   }, [tabs, activeTab]);
 
   const visibleCourses = useMemo((): ExploreCardCourse[] => {
+    const fromCatalog = catalogCoursesForTab(activeTab);
+    if (fromCatalog.length > 0) return fromCatalog;
+
     const courses = Array.isArray(allCourses) ? allCourses : [];
-    const fromApi = courses
+    return courses
       .filter((c) => categoryMatchesTab(getCategoryName(c), activeTab))
       .map(toExploreCardCourse);
-
-    if (fromApi.length > 0) return fromApi;
-
-    return catalogCoursesForTab(activeTab);
   }, [allCourses, activeTab]);
 
   useGSAP(
@@ -144,6 +140,7 @@ const ExploreCourses: React.FC = () => {
       gsap.from(headerRef.current, {
         y: 100,
         opacity: 0,
+        immediateRender: false,
         scale: 0.95,
         duration: 0.8,
         ease: 'power3.out',
@@ -159,6 +156,7 @@ const ExploreCourses: React.FC = () => {
       gsap.from(tabsRef.current, {
         y: 50,
         opacity: 0,
+        immediateRender: false,
         scale: 0.95,
         duration: 0.8,
         ease: 'power3.out',
@@ -181,7 +179,7 @@ const ExploreCourses: React.FC = () => {
       if (gridRef.current && gridRef.current.children.length > 0) {
         gsap.fromTo(
           gridRef.current.children,
-          { y: 40, opacity: 0 },
+          { y: 40, opacity: 0, immediateRender: false },
           {
             y: 0,
             opacity: 1,
@@ -284,9 +282,10 @@ const ExploreCourses: React.FC = () => {
                 const staticMatch = findStaticMatch(course);
                 const href = `/course/${staticMatch?.slug ?? course.slug ?? course._id}`;
                 const center =
+                  course.center ??
                   getCenterName(course as CourseSummary) ??
                   staticMatch?.city ??
-                  'Delhi';
+                  'New Delhi';
                 const fee = formatFee(
                   course.onlineFees ?? parseStaticFee(staticMatch?.feesOnline),
                 );

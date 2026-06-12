@@ -89,7 +89,7 @@ export default function FreeResourcesCourseSlider({
                 alt={slide.title}
                 fill
                 sizes="310px"
-                className="course-img"
+                className="course-img object-cover object-center"
               />
             </div>
           ))}

@@ -12,6 +12,7 @@ import {
 import CourseHero from '@/features/course/components/sections/CourseHero';
 import CourseInfoBar from '@/features/course/components/sections/CourseInfoBar';
 import CourseDescription from '@/features/course/components/sections/CourseDescription';
+import { isCenterCity } from '@/data/ourToppers';
 
 const CourseDetails = lazy(() =>
   import('@/features/course/components/sections/CourseDetails'),
@@ -23,6 +24,10 @@ const WhyChoose = lazy(() =>
 
 const HowWillHelp = lazy(() =>
   import('@/features/course/components/sections/HowWillHelp'),
+);
+
+const OurToppers = lazy(() =>
+  import('@/features/center/components/sections/OurToppers'),
 );
 
 const JoinCTA = lazy(() =>
@@ -58,7 +63,7 @@ const CoursePageClient: React.FC<CoursePageClientProps> = ({ courseSlug }) => {
 
   if (!course && (isCoursesLoading || isDetailLoading)) {
     return (
-      <MainLayout>
+      <MainLayout logoOnlyHeader logoOnlyTransparent>
         <div className="min-h-screen flex items-center justify-center">
           <p className="text-gray-500 text-lg">Loading course...</p>
         </div>
@@ -71,7 +76,7 @@ const CoursePageClient: React.FC<CoursePageClientProps> = ({ courseSlug }) => {
   }
 
   return (
-    <MainLayout>
+    <MainLayout logoOnlyHeader logoOnlyTransparent>
       <CourseHero course={course} />
       <CourseInfoBar course={course} />
       <CourseDescription course={course} />
@@ -87,6 +92,12 @@ const CoursePageClient: React.FC<CoursePageClientProps> = ({ courseSlug }) => {
       <Suspense fallback={sectionFallback}>
         <HowWillHelp course={course} />
       </Suspense>
+
+      {isCenterCity(course.city ?? 'delhi') && (
+        <Suspense fallback={sectionFallback}>
+          <OurToppers city={course.city ?? 'delhi'} />
+        </Suspense>
+      )}
 
       <Suspense fallback={sectionFallback}>
         <JoinCTA course={course} />

@@ -24,7 +24,44 @@ type StoredData = {
   result?: MockTestResult;
 };
 
+const gradeFromPercentage = (percentage: number) => {
+  if (percentage >= 75) return 'A';
+  if (percentage >= 60) return 'B';
+  if (percentage >= 45) return 'C';
+  return 'D';
+};
+
+const formatTimeTaken = (timeTaken?: number) => {
+  if (timeTaken == null || timeTaken <= 0) return '—';
+  const minutes = Math.max(1, Math.floor(timeTaken / 60));
+  return `${minutes} min`;
+};
+
 const computeFromStored = (data: StoredData) => {
+  if (data.result) {
+    const total = data.result.totalQuestions ?? data.test.questions.length;
+    const correct = data.result.correctCount ?? 0;
+    const answered = Object.keys(data.selectedAnswers).length;
+    const incorrect =
+      data.result.incorrectCount != null
+        ? data.result.incorrectCount + (data.result.unattemptedCount ?? 0)
+        : Math.max(total - correct, 0);
+    const percentage =
+      data.result.percentage ??
+      (total > 0 ? Math.round((correct / total) * 100) : 0);
+
+    return {
+      title: data.test.title,
+      total,
+      correct,
+      incorrect,
+      percentage,
+      grade: gradeFromPercentage(percentage),
+      time: formatTimeTaken(data.result.timeTaken),
+      rank: '—',
+    };
+  }
+
   const total = data.test.questions.length;
   let correct = 0;
   data.test.questions.forEach((q) => {
@@ -32,13 +69,19 @@ const computeFromStored = (data: StoredData) => {
     if (sel !== undefined && sel === q.correctAnswer) correct += 1;
   });
   const answered = Object.keys(data.selectedAnswers).length;
-  const incorrect = answered - correct;
+  const incorrect = Math.max(total - correct, 0);
   const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
-  let grade = 'D';
-  if (percentage >= 75) grade = 'A';
-  else if (percentage >= 60) grade = 'B';
-  else if (percentage >= 45) grade = 'C';
-  return { total, correct, incorrect, answered, percentage, grade };
+
+  return {
+    title: data.test.title,
+    total,
+    correct,
+    incorrect,
+    percentage,
+    grade: gradeFromPercentage(percentage),
+    time: '—',
+    rank: '—',
+  };
 };
 
 export default function ResultsPage({ params }: PageProps) {
@@ -63,46 +106,33 @@ export default function ResultsPage({ params }: PageProps) {
   }, [slug]);
 
   const display = useMemo(() => {
+    if (stored) {
+      return computeFromStored(stored);
+    }
+
     if (remoteResult) {
-      const total =
-        remoteResult.totalQuestions ??
-        stored?.test.questions.length ??
-        0;
+      const total = remoteResult.totalQuestions ?? 0;
       const correct = remoteResult.correctCount ?? 0;
-      const incorrect = remoteResult.incorrectCount ?? 0;
+      const incorrect =
+        remoteResult.incorrectCount != null
+          ? remoteResult.incorrectCount + (remoteResult.unattemptedCount ?? 0)
+          : Math.max(total - correct, 0);
       const percentage =
         remoteResult.percentage ??
         (total > 0 ? Math.round((correct / total) * 100) : 0);
-      let grade = 'D';
-      if (percentage >= 75) grade = 'A';
-      else if (percentage >= 60) grade = 'B';
-      else if (percentage >= 45) grade = 'C';
-      const timeTaken = remoteResult.timeTaken ?? 0;
-      const time = `${Math.floor(timeTaken / 60)} min`;
+
       return {
-        title: stored?.test.title ?? 'Mock Test',
+        title: 'Mock Test',
         total,
         correct,
         incorrect,
         percentage,
-        grade,
-        time,
+        grade: gradeFromPercentage(percentage),
+        time: formatTimeTaken(remoteResult.timeTaken),
         rank: '—',
       };
     }
-    if (stored) {
-      const c = computeFromStored(stored);
-      return {
-        title: stored.test.title,
-        total: c.total,
-        correct: c.correct,
-        incorrect: c.incorrect,
-        percentage: c.percentage,
-        grade: c.grade,
-        time: '—',
-        rank: '—',
-      };
-    }
+
     return null;
   }, [remoteResult, stored]);
 

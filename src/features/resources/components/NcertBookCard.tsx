@@ -27,7 +27,7 @@ export default function NcertBookCard({
         <h3 className={NCERT_BOOK_CARD.title}>{item.title}</h3>
         <div className={NCERT_BOOK_CARD.actionsCentered}>
           <Link
-            href={resourceViewPath(item)}
+            href={resourceViewPath(item, variant === "portal" ? "portal" : "public")}
             className={NCERT_BOOK_CARD.button}
             prefetch={false}
             target={variant === "portal" ? "_blank" : undefined}

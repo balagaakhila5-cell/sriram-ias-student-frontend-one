@@ -285,7 +285,7 @@ export default function NcertBooksPage() {
                               src={topper.image}
                               alt={topper.name}
                               fill
-                              sizes="330px"
+                              sizes="220px"
                               className="topper-img"
                             />
                           </div>
@@ -322,17 +322,17 @@ export default function NcertBooksPage() {
         .toppers-card {
           width: 100%;
           overflow: hidden;
-          border-radius: 18px;
+          border-radius: 16px;
           background: #dfe9f8;
-          padding: 12px;
+          padding: 10px;
           box-shadow: 0px 8px 22px rgba(0, 0, 0, 0.05);
           cursor: pointer;
         }
 
         .toppers-title {
-          margin-bottom: 10px;
+          margin-bottom: 8px;
           text-align: center;
-          font-size: 27px;
+          font-size: 24px;
           font-weight: 900;
           line-height: 1;
         }
@@ -352,10 +352,10 @@ export default function NcertBooksPage() {
 
         .toppers-image-area {
           position: relative;
-          height: 330px;
+          height: 278px;
           width: 100%;
           overflow: hidden;
-          border-radius: 14px;
+          border-radius: 12px;
         }
 
         .topper-slide {
@@ -364,8 +364,9 @@ export default function NcertBooksPage() {
           opacity: 0;
           transform: translateX(100%);
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           justify-content: center;
+          padding-top: 4px;
           will-change: transform, opacity;
         }
 
@@ -376,9 +377,9 @@ export default function NcertBooksPage() {
 
         .topper-inner-card {
           width: 100%;
-          max-width: 248px;
-          height: 310px;
-          border-radius: 16px;
+          max-width: 220px;
+          height: 258px;
+          border-radius: 14px;
           background: linear-gradient(
             180deg,
             rgba(233, 243, 255, 0.98) 0%,
@@ -387,18 +388,17 @@ export default function NcertBooksPage() {
           );
           overflow: hidden;
           box-shadow:
-            inset 0px 0px 18px rgba(255, 255, 255, 0.55),
-            0px 10px 26px rgba(60, 100, 150, 0.14);
+            inset 0px 0px 14px rgba(255, 255, 255, 0.55),
+            0px 8px 20px rgba(60, 100, 150, 0.12);
           display: flex;
           flex-direction: column;
           align-items: center;
         }
 
-        /* IMAGE SIZE INCREASED, MAIN CARD SAME */
         .topper-image-wrap {
           position: relative;
           width: 100%;
-          height: 248px;
+          height: 200px;
           overflow: hidden;
           background: linear-gradient(
             180deg,
@@ -410,66 +410,66 @@ export default function NcertBooksPage() {
         .topper-img {
           object-fit: contain;
           object-position: center bottom;
-          transform: scale(1.08);
+          transform: scale(1.02);
         }
 
         .topper-info {
-          padding: 5px 8px 8px;
+          padding: 4px 6px 8px;
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 4px;
+          gap: 3px;
           text-align: center;
         }
 
         .topper-rank {
           border-radius: 999px;
           background: #ff9800;
-          padding: 3px 11px;
-          font-size: 10px;
+          padding: 2px 9px;
+          font-size: 9px;
           font-weight: 900;
           line-height: 1;
           color: #ffffff;
         }
 
         .topper-info h3 {
-          font-size: 14px;
+          font-size: 12px;
           font-weight: 900;
           line-height: 1.1;
           color: #333333;
         }
 
         .topper-info p {
-          font-size: 10px;
+          font-size: 9px;
           font-weight: 500;
           color: #555555;
         }
 
-        .toppers-card:hover .topper-slide-1 {
+        .toppers-card .topper-slide-1 {
           animation: topperMove1 28s infinite ease-in-out;
         }
 
-        .toppers-card:hover .topper-slide-2 {
+        .toppers-card .topper-slide-2 {
           animation: topperMove2 28s infinite ease-in-out;
         }
 
-        .toppers-card:hover .topper-slide-3 {
+        .toppers-card .topper-slide-3 {
           animation: topperMove3 28s infinite ease-in-out;
         }
 
-        .toppers-card:hover .topper-slide-4 {
+        .toppers-card .topper-slide-4 {
           animation: topperMove4 28s infinite ease-in-out;
         }
 
-        .toppers-card:hover .topper-slide-5 {
+        .toppers-card .topper-slide-5 {
           animation: topperMove5 28s infinite ease-in-out;
         }
 
-        .toppers-card:hover .topper-slide-6 {
+        .toppers-card .topper-slide-6 {
           animation: topperMove6 28s infinite ease-in-out;
         }
 
-        .toppers-card:hover .topper-slide-7 {
+        .toppers-card .topper-slide-7 {
           animation: topperMove7 28s infinite ease-in-out;
         }
 
@@ -609,7 +609,7 @@ export default function NcertBooksPage() {
         .toppers-dots {
           position: absolute;
           left: 50%;
-          bottom: 8px;
+          bottom: 4px;
           z-index: 10;
           display: flex;
           gap: 7px;
@@ -623,31 +623,31 @@ export default function NcertBooksPage() {
           background: rgba(255, 255, 255, 0.85);
         }
 
-        .toppers-card:hover .topper-dot-1 {
+        .toppers-card .topper-dot-1 {
           animation: activeTopperDot1 28s infinite;
         }
 
-        .toppers-card:hover .topper-dot-2 {
+        .toppers-card .topper-dot-2 {
           animation: activeTopperDot2 28s infinite;
         }
 
-        .toppers-card:hover .topper-dot-3 {
+        .toppers-card .topper-dot-3 {
           animation: activeTopperDot3 28s infinite;
         }
 
-        .toppers-card:hover .topper-dot-4 {
+        .toppers-card .topper-dot-4 {
           animation: activeTopperDot4 28s infinite;
         }
 
-        .toppers-card:hover .topper-dot-5 {
+        .toppers-card .topper-dot-5 {
           animation: activeTopperDot5 28s infinite;
         }
 
-        .toppers-card:hover .topper-dot-6 {
+        .toppers-card .topper-dot-6 {
           animation: activeTopperDot6 28s infinite;
         }
 
-        .toppers-card:hover .topper-dot-7 {
+        .toppers-card .topper-dot-7 {
           animation: activeTopperDot7 28s infinite;
         }
 
@@ -786,41 +786,41 @@ export default function NcertBooksPage() {
 
         @media (max-width: 1023px) {
           .toppers-card {
-            padding: 12px;
+            padding: 10px;
           }
 
           .toppers-title {
-            font-size: 24px;
+            font-size: 22px;
           }
 
           .toppers-image-area {
-            height: 300px;
+            height: 258px;
           }
 
           .topper-inner-card {
-            max-width: 230px;
-            height: 285px;
+            max-width: 200px;
+            height: 238px;
           }
 
           .topper-image-wrap {
-            height: 228px;
+            height: 182px;
           }
 
           .topper-img {
-            transform: scale(1.05);
+            transform: scale(1);
           }
 
           .topper-info {
-            padding-top: 4px;
-            gap: 3px;
+            padding-top: 3px;
+            gap: 2px;
           }
 
           .topper-info h3 {
-            font-size: 16px;
+            font-size: 13px;
           }
 
           .topper-info p {
-            font-size: 12px;
+            font-size: 10px;
           }
         }
       `}</style>

@@ -101,7 +101,7 @@ const OurStory: React.FC = () => {
 
     // Header Animation
     gsap.fromTo('.our-story-header',
-      { y: 30, opacity: 0 },
+      { y: 30, opacity: 0, immediateRender: false },
       {
         y: 0,
         opacity: 1,
@@ -117,7 +117,7 @@ const OurStory: React.FC = () => {
     );
 
     gsap.fromTo('.our-story-visual',
-      { x: -100, opacity: 0, scale: 0.95 },
+      { x: -100, opacity: 0, scale: 0.95, immediateRender: false },
       {
         x: 0,
         opacity: 1,
@@ -135,7 +135,7 @@ const OurStory: React.FC = () => {
     );
 
     gsap.fromTo('.our-story-stat',
-      { x: 100, opacity: 0, scale: 0.9 },
+      { x: 100, opacity: 0, scale: 0.9, immediateRender: false },
       {
         x: 0,
         opacity: 1,
@@ -154,7 +154,7 @@ const OurStory: React.FC = () => {
     );
 
     gsap.fromTo('.our-story-quote',
-      { y: 100, opacity: 0 },
+      { y: 100, opacity: 0, immediateRender: false },
       {
         y: 0,
         opacity: 1,

@@ -33,9 +33,21 @@ const AppAndVideos: React.FC = () => {
   const section7 = homepage?.section7;
 
   const fallbackVideos = [
-    { id: 1, title: 'The Hindu Daily Current Affairs', image: '/assets/youtube_video_image.png', author: 'Saurabh Tripathi', url: undefined },
+    {
+      id: 1,
+      title: 'The Hindu Daily Current Affairs',
+      image: FEATURED_YOUTUBE_VIDEO.image,
+      author: 'Saurabh Tripathi',
+      url: FEATURED_YOUTUBE_VIDEO.url,
+    },
     FEATURED_YOUTUBE_VIDEO,
-    { id: 3, title: 'Complete Modern History', image: '/assets/youtube_video_image.png', author: 'Expert Faculty', url: undefined },
+    {
+      id: 3,
+      title: 'Complete Modern History',
+      image: FEATURED_YOUTUBE_VIDEO.image,
+      author: 'Expert Faculty',
+      url: FEATURED_YOUTUBE_VIDEO.url,
+    },
   ];
 
   const videos = useMemo(() => {
@@ -43,13 +55,22 @@ const AppAndVideos: React.FC = () => {
     const mapped =
       apiVideos.length === 0
         ? fallbackVideos
-        : apiVideos.map((video, index) => ({
-            id: video._id ?? `video-${index}`,
-            title: `Video ${index + 1}`,
-            image: video.videoThumbnail ?? '/assets/youtube_video_image.png',
-            author: 'Sriram IAS',
-            url: video.videoUrl,
-          }));
+        : apiVideos
+            .filter((video) => Boolean(getYouTubeVideoId(video.videoUrl)))
+            .map((video, index) => {
+              const videoId = getYouTubeVideoId(video.videoUrl);
+              return {
+                id: video._id ?? `video-${index}`,
+                title: `Video ${index + 1}`,
+                image:
+                  video.videoThumbnail
+                  ?? (videoId
+                    ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+                    : '/assets/youtube_video_image.png'),
+                author: 'Sriram IAS',
+                url: video.videoUrl,
+              };
+            });
 
     const hasFeaturedVideo = mapped.some((video) => video.url?.includes('8aLYn6C9n8I'));
     if (hasFeaturedVideo) return mapped;
@@ -67,7 +88,8 @@ const AppAndVideos: React.FC = () => {
   }, [activeIndex, videos.length]);
 
   const openVideo = (url?: string, title?: string) => {
-    const videoId = getYouTubeVideoId(url);
+    const videoId =
+      getYouTubeVideoId(url) ?? getYouTubeVideoId(FEATURED_YOUTUBE_VIDEO.url);
     if (!videoId) return;
     setPlayingVideo({ videoId, title: title ?? 'YouTube video' });
   };
@@ -93,7 +115,7 @@ const AppAndVideos: React.FC = () => {
 
     gsap.fromTo(
       '.download-app-element',
-      { x: -200, opacity: 0 },
+      { x: -200, opacity: 0, immediateRender: false },
       {
         x: 0,
         opacity: 1,
@@ -112,7 +134,7 @@ const AppAndVideos: React.FC = () => {
 
     gsap.fromTo(
       '.download-app-hand-inner',
-      { x: 300, opacity: 0, scaleX: -1 },
+      { x: 300, opacity: 0, scaleX: -1, immediateRender: false },
       {
         x: 0,
         opacity: 1,
@@ -131,7 +153,7 @@ const AppAndVideos: React.FC = () => {
 
     gsap.fromTo(
       '.youtube-trigger h2',
-      { y: 50, opacity: 0 },
+      { y: 50, opacity: 0, immediateRender: false },
       {
         y: 0,
         opacity: 1,
@@ -148,7 +170,7 @@ const AppAndVideos: React.FC = () => {
 
     gsap.fromTo(
       '.youtube-carousel',
-      { y: 100, opacity: 0, scale: 0.95 },
+      { y: 100, opacity: 0, scale: 0.95, immediateRender: false },
       {
         y: 0,
         opacity: 1,

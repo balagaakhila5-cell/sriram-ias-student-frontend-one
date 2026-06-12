@@ -1,11 +1,18 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
+import {
+  CENTER_CATEGORIES_BY_CITY,
+  type CenterCity,
+} from '@/features/center/data/centerCourseCategories';
+import { PhoneLink } from '@/components/common/ContactLinks';
+import { getCenterBranchContact } from '@/utils/centerContact';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,9 +21,16 @@ interface Props {
 }
 
 const CoursesInCity: React.FC<Props> = ({ city }) => {
-  const cityName = city.toUpperCase();
+  const cityKey = city.toLowerCase() as CenterCity;
+  const cityName = cityKey.toUpperCase();
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+
+  const courses = useMemo(
+    () => CENTER_CATEGORIES_BY_CITY[cityKey] ?? CENTER_CATEGORIES_BY_CITY.delhi,
+    [cityKey],
+  );
+  const branchContact = getCenterBranchContact(city);
 
   useGSAP(
     () => {
@@ -53,13 +67,6 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
     },
     { dependencies: [prefersReducedMotion], scope: containerRef },
   );
-
-  const courses = [
-    { title: 'GS Foundation Course', img: 'course-1.png', link: '#' },
-    { title: 'Mentorship Course', img: 'course-2.png', link: '#' },
-    { title: 'Optional Foundation', img: 'course-3.png', link: '#' },
-    { title: 'Test Series', img: 'course-4.png', link: '#' },
-  ];
 
   return (
     <section
@@ -105,10 +112,10 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
         COURSES IN {cityName}
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 w-full max-w-[1400px] relative z-10">
-        {courses.map((course, idx) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 lg:gap-8 w-full max-w-[1400px] relative z-10">
+        {courses.map((course) => (
           <div
-            key={idx}
+            key={course.key}
             className="courses-city-card bg-white rounded-[24px] shadow-[0_12px_40px_rgba(0,0,0,0.06)] overflow-hidden flex flex-col group hover:-translate-y-2 transition-transform duration-300"
           >
             {/* Image container */}
@@ -131,12 +138,12 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
                 {course.title}
               </h3>
 
-              <a
-                href={course.link}
+              <Link
+                href={`/centers/${cityKey}/courses/${course.key}`}
                 className="mt-auto bg-[#044062] hover:bg-[#065A8C] text-white font-semibold text-[15px] px-8 py-3 rounded-md transition-colors font-['Montserrat'] shadow-md whitespace-nowrap"
               >
                 View Courses
-              </a>
+              </Link>
             </div>
           </div>
         ))}
@@ -144,9 +151,10 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
 
       <div className="mt-20 font-['Montserrat'] font-semibold text-[16px] md:text-[20px] text-[#4A4A4A] relative z-10">
         For More details contact us at{' '}
-        <span className="text-[#111] font-bold border-b-2 border-black pb-0.5 ml-1 inline-block leading-none">
-          9811489560
-        </span>
+        <PhoneLink
+          value={branchContact.phone}
+          className="text-[#111] font-bold border-b-2 border-black pb-0.5 ml-1 inline-block leading-none hover:opacity-80"
+        />
       </div>
     </section>
   );

@@ -2,73 +2,16 @@
 
 import React, { useMemo } from 'react';
 import { useHomepage } from '@/features/homepage/hooks/useHomepage';
+import { OUR_TOPPERS, topperImageSrc } from '@/data/ourToppers';
 
-const fallbackToppers = [
-  {
-    name: 'AAKASH GARG',
-    rank: 'AIR 5',
-    description: 'GS Foundation Course',
-    img: 'AAKASH GARG(AIR-5) .png',
-    y: 35,
-    scale: 1,
-  },
-  {
-    name: 'ABHI JAIN',
-    rank: 'AIR 34',
-    description: 'GS Foundation Course',
-    img: 'ABHI-JAIN(AIR-34).png',
-    y: 15,
-    scale: 1.03,
-  },
-  {
-    name: 'ABHISHEK SHARMA',
-    rank: 'AIR 38',
-    description: 'GS Foundation Course',
-    img: 'ABHISHEK-SHARMA-(AIR-38) .png',
-    y: 45,
-    scale: 1.01,
-  },
-  {
-    name: 'DIKSHA RAI',
-    rank: 'AIR 40',
-    description: 'GS Foundation Course',
-    img: 'DIKSHA-RAI(AIR-40).png',
-    y: 28,
-    scale: 0.98,
-  },
-  {
-    name: 'NABIYA PARVEZ',
-    rank: 'AIR 29',
-    description: 'GS Foundation Course',
-    img: 'NABIYA-PARVEZ(AIR-29).png',
-    y: 18,
-    scale: 0.92,
-  },
-  {
-    name: 'RAGHAV JHUNJHUNWALA',
-    rank: 'AIR 4',
-    description: 'GS Foundation Course',
-    img: 'RAGHAV-JHUNJWALA(AIR-4).png',
-    y: 10,
-    scale: 1,
-  },
-  {
-    name: 'RAJ KRISHNA JHA',
-    rank: 'AIR 8',
-    description: 'GS Foundation Course',
-    img: 'RAJ-KRISHNA JHA(AIR-8).png',
-    y: 5,
-    scale: 1,
-  },
-  {
-    name: 'ROHIN KUMAR',
-    rank: 'AIR 39',
-    description: 'GS Foundation Course',
-    img: 'ROHIN-KUMAR(AIR-39).png',
-    y: 12,
-    scale: 1,
-  },
-];
+const fallbackToppers = OUR_TOPPERS.map((topper, index) => ({
+  name: topper.name,
+  rank: topper.rank,
+  description: topper.course,
+  img: topper.img,
+  y: [35, 15, 45, 28, 18, 10, 5, 12][index] ?? 20,
+  scale: [1, 1.03, 1.01, 0.98, 0.92, 1, 1, 1][index] ?? 1,
+}));
 
 const OurToppers: React.FC = () => {
   const { data: homepage } = useHomepage();
@@ -129,7 +72,7 @@ const OurToppers: React.FC = () => {
                 {/* IMAGE AREA */}
                 <div className="relative flex h-[360px] w-full items-end justify-center overflow-visible sm:h-[400px] lg:h-[440px]">
                   <img
-                    src={`/assets/ourtoppers/_originals/${topper.img}`}
+                    src={topperImageSrc(topper.img)}
                     alt={topper.name}
                     loading={idx < 5 ? 'eager' : 'lazy'}
                     className="block h-[360px] w-auto max-w-[400px] select-none object-contain object-bottom pointer-events-none sm:h-[400px] sm:max-w-[440px] lg:h-[460px] lg:max-w-[500px]"

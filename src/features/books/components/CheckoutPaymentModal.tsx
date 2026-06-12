@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { X } from 'lucide-react';
 import CheckoutPaymentMethods, {
   type PaymentMethod,
@@ -56,17 +57,18 @@ const CheckoutPaymentModal: React.FC<CheckoutPaymentModalProps> = ({
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', handleKeyDown);
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+
+    document.addEventListener('keydown', handleEscape);
 
     return () => {
       document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keydown', handleEscape);
     };
   }, [isOpen, onClose]);
 
@@ -74,7 +76,7 @@ const CheckoutPaymentModal: React.FC<CheckoutPaymentModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 pt-24 sm:p-6 sm:pt-28"
       role="presentation"
     >
       <button
@@ -82,33 +84,42 @@ const CheckoutPaymentModal: React.FC<CheckoutPaymentModalProps> = ({
         className={`absolute inset-0 bg-black/60 backdrop-blur-[2px] transition-opacity duration-200 ease-out ${
           isActive ? 'opacity-100' : 'opacity-0'
         }`}
-        onClick={onClose}
         aria-label="Close payment dialog"
+        onClick={onClose}
       />
 
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="checkout-payment-title"
-        className={`relative z-10 flex max-h-[92vh] w-full max-w-[700px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl transition-all duration-200 ease-out ${
+        className={`relative z-10 flex max-h-[calc(100vh-7rem)] w-full max-w-[700px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl transition-all duration-200 ease-out ${
           isActive ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-3 scale-[0.98] opacity-0'
         }`}
       >
-        <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4 md:px-8">
+        <div className="flex items-center justify-between gap-4 border-b border-gray-100 px-6 py-4 md:px-8">
           <h2
             id="checkout-payment-title"
             className="text-[18px] font-semibold text-[#374151] md:text-[20px]"
           >
             Payment
           </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800"
-            aria-label="Close payment dialog"
-          >
-            <X size={20} />
-          </button>
+
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="text-[13px] font-semibold text-[#00679C] hover:underline"
+            >
+              Home
+            </Link>
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex h-9 w-9 items-center justify-center rounded-full text-[#374151] transition-colors hover:bg-gray-100"
+              aria-label="Close payment"
+            >
+              <X size={20} aria-hidden />
+            </button>
+          </div>
         </div>
 
         <div className="overflow-y-auto px-6 py-6 md:px-8 md:py-8">

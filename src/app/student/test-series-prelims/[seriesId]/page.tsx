@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 
 import DetailTabs, {
   type DetailTab,
@@ -30,6 +30,12 @@ import {
   type TestCategory,
   type TestItem,
 } from "@/features/studentPortal/data/tests";
+
+import {
+  getBookmarkedTests,
+  TEST_BOOKMARKS_UPDATED_EVENT,
+  toggleTestBookmark,
+} from "@/features/studentPortal/utils/testBookmarks";
 
 type SeriesTab =
   | "test-schedule"
@@ -62,24 +68,23 @@ export default function TestSeriesDetailPage({
   const [bookmarkedTests, setBookmarkedTests] =
     useState<TestItem[]>([]);
 
+  const loadBookmarkedTests = useCallback(() => {
+    setBookmarkedTests(getBookmarkedTests());
+  }, []);
+
+  useEffect(() => {
+    loadBookmarkedTests();
+
+    const sync = () => loadBookmarkedTests();
+    window.addEventListener(TEST_BOOKMARKS_UPDATED_EVENT, sync);
+    return () => window.removeEventListener(TEST_BOOKMARKS_UPDATED_EVENT, sync);
+  }, [loadBookmarkedTests]);
+
   const series = getTestSeries(seriesId);
 
   const toggleBookmark = (test: TestItem) => {
-
-    setBookmarkedTests((prev) => {
-
-      const alreadyBookmarked = prev.some(
-        (t) => t.id === test.id
-      );
-
-      if (alreadyBookmarked) {
-        return prev.filter(
-          (t) => t.id !== test.id
-        );
-      }
-
-      return [...prev, test];
-    });
+    toggleTestBookmark(test);
+    loadBookmarkedTests();
   };
 
   return (

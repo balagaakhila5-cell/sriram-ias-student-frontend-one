@@ -95,7 +95,7 @@ export default function ResourceDocumentCard({
         ) : null}
         <div className={actionsClass}>
           <Link
-            href={resourceViewPath(item)}
+            href={resourceViewPath(item, variant === "portal" ? "portal" : "public")}
             className={buttonClass}
             prefetch={false}
             target={variant === "portal" ? "_blank" : undefined}
@@ -105,7 +105,7 @@ export default function ResourceDocumentCard({
           </Link>
           {item.hasSample ? (
             <Link
-              href={resourceSamplePath(item)}
+              href={resourceSamplePath(item, variant === "portal" ? "portal" : "public")}
               className={buttonClass}
               prefetch={false}
             >

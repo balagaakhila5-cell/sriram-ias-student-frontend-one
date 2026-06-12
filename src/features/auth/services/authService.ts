@@ -13,6 +13,14 @@ import type {
   VerifyOtpPayload,
   VerifyStudentSignupPayload,
 } from "../types";
+import {
+  assertLoginCredentialAllowed,
+  findCredentialByMobile,
+  isCredentialAlreadyRegistered,
+  registerAuthCredential,
+  verifyStaffLogin,
+} from "../utils/registeredAuthCredentials";
+import { DUPLICATE_SIGNUP_MESSAGE } from "../utils/registeredStudents";
 
 const delay = (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -91,9 +99,11 @@ export const authService = {
     credentials: StaffLoginCredentials,
   ): Promise<AuthResponse> => {
     await delay();
+    assertLoginCredentialAllowed("faculty", { email: credentials.email });
+    const account = verifyStaffLogin(credentials);
     return {
       user: mockUser("employee", {
-        name: credentials.email.split("@")[0],
+        name: account.name ?? credentials.email.split("@")[0],
         email: credentials.email,
       }),
       token: mockToken(),
@@ -102,39 +112,95 @@ export const authService = {
 
   studentSignup: async (
     payload: StudentSignupPayload,
-  ): Promise<StudentSignupResponse> => {
-    const { data } = await httpClient.post("/api/auth/student-signup", payload);
+  ): Promise<{ message: string }> => {
+    await delay();
+
+    if (
+      isCredentialAlreadyRegistered({
+        email: payload.email,
+        mobile: payload.mobile,
+      })
+    ) {
+      throw new Error(DUPLICATE_SIGNUP_MESSAGE);
+    }
+
+    return { message: "Signup OTP sent successfully." };
+  },
+
+  sendOtp: async (payload: SendOtpPayload): Promise<OtpRequestResponse> => {
+    await delay();
+    assertLoginCredentialAllowed(payload.role ?? "student", payload);
+    return { message: "OTP sent successfully." };
+  },
+
+  verifyOtp: async (payload: VerifyOtpPayload): Promise<AuthResponse> => {
+    await delay();
+    assertLoginCredentialAllowed(payload.role ?? "parent", {
+      email: payload.email,
+      mobile: payload.mobile,
+    });
+    const credential = payload.mobile
+      ? findCredentialByMobile(payload.mobile)
+      : undefined;
+
     return {
-      userId: String(data?.userId ?? data?.user?.id ?? data?.user?._id ?? ""),
-      message: data?.message,
+      user: mockUser("parent", {
+        name: credential?.name ?? "Parent",
+        email: payload.email,
+        mobile: payload.mobile,
+      }),
+      token: mockToken(),
+    };
+  },
+
+  verifyFacultyOtp: async (payload: VerifyOtpPayload): Promise<AuthResponse> => {
+    await delay();
+    assertLoginCredentialAllowed(payload.role ?? "faculty", {
+      email: payload.email,
+      mobile: payload.mobile,
+    });
+    return {
+      user: mockUser("employee", {
+        name: "Faculty",
+        email: payload.email,
+        mobile: payload.mobile,
+      }),
+      token: mockToken(),
     };
   },
 
   verifyStudentSignup: async (
     payload: VerifyStudentSignupPayload,
   ): Promise<AuthResponse> => {
-    const { data } = await httpClient.post(
-      "/api/auth/verify-student-signup",
-      payload,
-    );
-    return normalizeAuthResponse(data, "student");
-  },
+    await delay();
 
-  login: async (payload: LoginPayload): Promise<LoginRequestResponse> => {
-    const { data } = await httpClient.post("/api/auth/login", payload);
+    const email = payload.email ?? "";
+    const mobile = payload.mobile ?? "";
+    const name = email.split("@")[0] || "Student";
+
+    assertLoginCredentialAllowed("student", { email, mobile });
+
+    registerAuthCredential("student", {
+      name,
+      email,
+      mobile,
+    });
+
     return {
-      userId: data?.userId ? String(data.userId) : undefined,
-      message: data?.message,
+      user: mockUser("student", {
+        name,
+        email,
+        mobile,
+      }),
+      token: mockToken(),
     };
   },
 
-  verifyOtp: async (payload: VerifyOtpPayload): Promise<AuthResponse> => {
-    const { data } = await httpClient.post("/api/auth/verify-otp", payload);
-    return normalizeAuthResponse(data, "student");
-  },
-
-  sendOtp: async (_payload: SendOtpPayload): Promise<OtpRequestResponse> => {
+  parentLoginRequest: async (
+    payload: ParentLoginRequestPayload,
+  ): Promise<OtpRequestResponse> => {
     await delay();
+    assertLoginCredentialAllowed(payload.role ?? "parent", payload);
     return { message: "OTP sent successfully." };
   },
 };

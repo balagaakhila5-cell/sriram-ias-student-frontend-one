@@ -5,6 +5,11 @@ import { RESOURCE_CARD_TITLE } from "@/features/resources/components/cardStyles"
 import { useEffect, useState } from "react";
 import { ArrowRight, Bookmark } from "lucide-react";
 import type { TestItem } from "../data/tests";
+import {
+  isTestBookmarked,
+  TEST_BOOKMARKS_UPDATED_EVENT,
+  toggleTestBookmark,
+} from "../utils/testBookmarks";
 
 interface TestCardProps {
   test: TestItem;
@@ -12,7 +17,7 @@ interface TestCardProps {
   attemptHref?: string;
   /** Override the default action button label */
   actionLabel?: string;
-  /** Bookmark state from parent */
+  /** @deprecated Bookmark state is read from persistent storage. */
   bookmarked?: boolean;
   /** Toggle bookmark callback */
   onToggleBookmark?: () => void;
@@ -22,36 +27,22 @@ export default function TestCard({
   test,
   attemptHref,
   actionLabel = "Attempt Test",
-  bookmarked: initialBookmarked = false,
+  bookmarked: _bookmarkedOverride,
   onToggleBookmark,
 }: TestCardProps) {
-  const [bookmarked, setBookmarked] = useState(initialBookmarked);
+  const [bookmarked, setBookmarked] = useState(false);
 
   useEffect(() => {
-    setBookmarked(initialBookmarked);
-  }, [initialBookmarked]);
+    const sync = () => setBookmarked(isTestBookmarked(test.id));
+
+    sync();
+    window.addEventListener(TEST_BOOKMARKS_UPDATED_EVENT, sync);
+    return () => window.removeEventListener(TEST_BOOKMARKS_UPDATED_EVENT, sync);
+  }, [test.id]);
 
   const handleBookmark = () => {
-    const updatedBookmark = !bookmarked;
-    setBookmarked(updatedBookmark);
+    toggleTestBookmark(test);
     onToggleBookmark?.();
-
-    const savedBookmarks = JSON.parse(
-      localStorage.getItem("bookmarkedTests") || "[]",
-    );
-
-    const alreadyExists = savedBookmarks.some(
-      (item: TestItem) => item.id === test.id,
-    );
-
-    const updatedBookmarks = alreadyExists
-      ? savedBookmarks.filter((item: TestItem) => item.id !== test.id)
-      : [...savedBookmarks, test];
-
-    localStorage.setItem(
-      "bookmarkedTests",
-      JSON.stringify(updatedBookmarks),
-    );
   };
 
   return (
@@ -60,6 +51,8 @@ export default function TestCard({
         type="button"
         onClick={handleBookmark}
         className="absolute right-4 top-4 transition-all duration-300"
+        aria-label={bookmarked ? "Remove bookmark" : "Bookmark this test"}
+        aria-pressed={bookmarked}
       >
         <Bookmark
           size={20}

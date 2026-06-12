@@ -1,4 +1,5 @@
 import Footer from "@/components/common/Footer";
+import PortalRoleGuard from "@/features/auth/components/PortalRoleGuard";
 import PortalSidebar from "@/features/studentPortal/components/PortalSidebar";
 import StudentTopBar from "@/features/studentPortal/components/StudentTopBar";
 import { parentNavItems } from "@/features/parentPortal/nav";
@@ -9,10 +10,10 @@ export default function ParentPanelLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen w-full min-w-0 flex-col overflow-x-clip bg-white">
       <StudentTopBar />
 
-      <div className="relative flex-1">
+      <div className="relative min-w-0 flex-1">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 overflow-hidden"
@@ -25,11 +26,15 @@ export default function ParentPanelLayout({
             <PortalSidebar items={parentNavItems} />
           </aside>
 
-          <main className="min-w-0 flex-1">{children}</main>
+          <main className="min-w-0 flex-1">
+            <PortalRoleGuard portal="parent">{children}</PortalRoleGuard>
+          </main>
         </div>
       </div>
 
-      <Footer lightweight />
+      <div className="w-full min-w-0 shrink-0">
+        <Footer lightweight />
+      </div>
     </div>
   );
 }

@@ -1,7 +1,8 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { ReactNode } from "react";
+import { useLayoutEffect, type ReactNode } from "react";
+import { useCartStore } from "@/store/cartStore";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,6 +22,12 @@ interface AppProvidersProps {
 }
 
 export function AppProviders({ children }: AppProvidersProps) {
+  useLayoutEffect(() => {
+    if (!useCartStore.persist.hasHydrated()) {
+      void useCartStore.persist.rehydrate();
+    }
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );

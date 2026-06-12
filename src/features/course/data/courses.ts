@@ -865,10 +865,10 @@ export const courses: CourseData[] = [
     title: 'PSIR Value Enrichment\nCourse 2025',
     heroImage: '/assets/course/course-hero-bg.jpg',
     startDate: '2025',
-    mode: 'Online',
+    mode: 'Online , Offline',
     duration: '3 Months',
     feesOnline: '5000/-',
-    feesOffline: '—',
+    feesOffline: '7000/-',
     coursedetailsbg: '/assets/course/course-details-bg.png',
     helpPoints: [
       'Build a strong foundation with NCERTs and conceptual lectures.',

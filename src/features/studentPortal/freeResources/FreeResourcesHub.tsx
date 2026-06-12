@@ -1,10 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import StudyMaterialsExamTabs from "@/components/common/StudyMaterialsExamTabs";
 import DpqExamTabs from "@/features/studentPortal/components/DpqExamTabs";
 import FilterBar from "@/features/studentPortal/components/FilterBar";
 import SubNavToggle from "@/features/studentPortal/components/SubNavToggle";
+import {
+  isStudentResourceTab,
+  resolvePortalSubtopic,
+} from "@/features/resources/catalog/routes";
 import type { CurrentAffairsSubtopicId } from "@/features/currentAffairs/data/portalResources";
 import CurrentAffairsResourceGrid from "./components/CurrentAffairsResourceGrid";
 import FreeResourcesSubtopicPanel from "./components/FreeResourcesSubtopicPanel";
@@ -41,7 +46,17 @@ interface FreeResourcesHubProps {
 export default function FreeResourcesHub({
   initialTab = "current-affairs",
 }: FreeResourcesHubProps) {
-  const [tab, setTab] = useState<StudentResourceTab>(initialTab);
+  const searchParams = useSearchParams();
+  const urlTab = searchParams.get("tab");
+  const urlSubtopic = searchParams.get("subtopic");
+
+  const resolvedInitialTab = isStudentResourceTab(urlTab) ? urlTab : initialTab;
+  const resolvedInitialSubtopic = resolvePortalSubtopic(
+    resolvedInitialTab,
+    urlSubtopic,
+  ) as StudentSubtopicId;
+
+  const [tab, setTab] = useState<StudentResourceTab>(resolvedInitialTab);
   const [year, setYear] = useState<string>(CA_FILTER_YEARS[0]);
   const [month, setMonth] = useState<string>("April");
   const [date, setDate] = useState<string>(PORTAL_DPQ_DEFAULT_DAY);
@@ -56,8 +71,14 @@ export default function FreeResourcesHub({
   const [studyExamType, setStudyExamType] =
     useState<StudyMaterialsExamType>("prelims");
   const [subtopic, setSubtopic] = useState<StudentSubtopicId>(
-    DEFAULT_SUBTOPIC_BY_TAB[initialTab],
+    resolvedInitialSubtopic,
   );
+
+  useEffect(() => {
+    if (!isStudentResourceTab(urlTab)) return;
+    setTab(urlTab);
+    setSubtopic(resolvePortalSubtopic(urlTab, urlSubtopic) as StudentSubtopicId);
+  }, [urlTab, urlSubtopic]);
 
   const subtopicOptions = useMemo(() => getSubtopicsForTab(tab), [tab]);
 

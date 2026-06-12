@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import Footer from '@/components/common/Footer';
 import PaymentReceiptSuccess, {
   type PaymentReceiptRow,
@@ -359,14 +360,16 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
               : 'w-full max-w-[760px] rounded-[8px]'
         }`}
       >
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute right-5 top-5 z-30 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white/95 text-[24px] font-semibold text-black shadow hover:bg-white"
-          aria-label="Close"
-        >
-          ×
-        </button>
+        {screen !== 'payment' && screen !== 'receipt' && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute right-5 top-5 z-30 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white/95 text-[24px] font-semibold text-black shadow hover:bg-white"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        )}
 
         {(screen === 'login' || screen === 'signup' || screen === 'otp') && (
           <div
@@ -398,13 +401,17 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
                   <div className="mb-8 w-full">
                     <label className="mb-3 block text-center text-[13px] font-medium text-black/45">
                       Mobile Number / Email Id
+                      <span className="text-[#E53935]" aria-hidden="true">
+                        {' '}
+                        *
+                      </span>
                     </label>
 
                     <input
                       type="text"
                       value={loginValue}
                       onChange={(e) => setLoginValue(e.target.value)}
-                      className="h-[42px] w-full rounded-full bg-[#cde8f2] px-5 text-center text-[14px] font-medium text-black outline-none focus:shadow-[0_0_0_2px_rgba(42,157,216,0.35)]"
+                      className="h-[42px] w-full min-w-0 max-w-full rounded-full bg-[#cde8f2] px-5 text-center text-[14px] font-medium text-black outline-none focus:shadow-[0_0_0_2px_rgba(42,157,216,0.35)]"
                     />
                   </div>
 
@@ -447,18 +454,21 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
                       label="Name"
                       value={signupName}
                       onChange={setSignupName}
+                      required
                     />
 
                     <AuthInput
                       label="Email Id"
                       value={signupEmail}
                       onChange={setSignupEmail}
+                      required
                     />
 
                     <AuthInput
                       label="Mobile Number"
                       value={signupMobile}
                       onChange={setSignupMobile}
+                      required
                     />
                   </div>
 
@@ -647,20 +657,27 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
 
         {screen === 'payment' && (
           <div className="h-screen w-full overflow-y-auto bg-white">
-            <div className="flex h-[120px] items-center gap-5 border-b border-black/10 bg-white px-10">
-              <img
-                src={LOGO_40}
-                alt="40 Years"
-                className="h-[78px] w-auto object-contain"
-              />
+            <div className="flex h-[120px] items-center border-b border-black/10 bg-white px-10">
+              <Link
+                href="/"
+                onClick={onClose}
+                className="inline-flex items-center gap-5"
+                aria-label="Go to home"
+              >
+                <img
+                  src={LOGO_40}
+                  alt="40 Years"
+                  className="h-[78px] w-auto object-contain"
+                />
 
-              <span className="h-[58px] w-[1px] bg-black/25" />
+                <span className="h-[58px] w-[1px] bg-black/25" />
 
-              <img
-                src={LOGO_MAIN}
-                alt="SRIRAM's IAS"
-                className="h-[72px] w-auto object-contain"
-              />
+                <img
+                  src={LOGO_MAIN}
+                  alt="SRIRAM's IAS"
+                  className="h-[72px] w-auto object-contain"
+                />
+              </Link>
             </div>
 
             <div className="grid min-h-[calc(100vh-120px)] grid-cols-1 lg:grid-cols-[1fr_1.08fr]">
@@ -937,20 +954,32 @@ interface AuthInputProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  required?: boolean;
 }
 
-const AuthInput: React.FC<AuthInputProps> = ({ label, value, onChange }) => {
+const AuthInput: React.FC<AuthInputProps> = ({
+  label,
+  value,
+  onChange,
+  required = false,
+}) => {
   return (
-    <div className="w-full">
+    <div className="w-full min-w-0 max-w-full">
       <label className="mb-2 block text-center text-[13px] font-medium text-black/45">
         {label}
+        {required && (
+          <span className="text-[#E53935]" aria-hidden="true">
+            {' '}
+            *
+          </span>
+        )}
       </label>
 
       <input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-[42px] w-full rounded-full bg-[#cde8f2] px-5 text-center text-[14px] font-medium text-black outline-none focus:shadow-[0_0_0_2px_rgba(42,157,216,0.35)]"
+        className="h-[42px] w-full min-w-0 max-w-full rounded-full bg-[#cde8f2] px-5 text-center text-[14px] font-medium text-black outline-none focus:shadow-[0_0_0_2px_rgba(42,157,216,0.35)]"
       />
     </div>
   );

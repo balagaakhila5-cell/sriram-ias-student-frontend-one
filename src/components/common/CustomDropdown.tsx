@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 
 interface CustomDropdownProps {
@@ -55,133 +55,36 @@ const CustomDropdown = ({
   className = "",
 }: CustomDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [position, setPosition] = useState<MenuPosition | null>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [menuStyle, setMenuStyle] = useState<{
+    top: number;
+    left: number;
+    width: number;
+  } | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const styles = VARIANT_STYLES[variant];
   const display = buttonLabel ?? (value?.trim() ? value : placeholder ?? "");
+
+  const updateMenuPosition = useCallback(() => {
+    const button = buttonRef.current;
+    if (!button) return;
+
+    const rect = button.getBoundingClientRect();
+    setMenuStyle({
+      top: rect.bottom + 10,
+      left: rect.left,
+      width: rect.width,
+    });
+  }, []);
 
   useEffect(() => {
     if (options.length === 0) setIsOpen(false);
   }, [options.length]);
 
-  const computePosition = () => {
-    const el = triggerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - rect.bottom;
-    // Flip up when there isn't room below and there's more room above.
-    const openUp = spaceBelow < MENU_MAX_HEIGHT && rect.top > spaceBelow;
-    setPosition({
-      left: rect.left,
-      width: rect.width,
-      ...(openUp
-        ? { bottom: window.innerHeight - rect.top + GAP }
-        : { top: rect.bottom + GAP }),
-    });
-  };
-
-  const toggleOpen = () => {
-    if (options.length === 0) return;
-    if (!isOpen) computePosition();
-    setIsOpen((open) => !open);
-  };
-
-  // Close on outside click; close on scroll/resize so the fixed menu can't
-  // detach from its trigger.
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handlePointerDown = (event: MouseEvent) => {
-      const target = event.target as Node;
-      if (
-        triggerRef.current?.contains(target) ||
-        menuRef.current?.contains(target)
-      ) {
-        return;
-      }
-      setIsOpen(false);
-    };
-    const handleDismiss = () => setIsOpen(false);
-
-    document.addEventListener("mousedown", handlePointerDown);
-    window.addEventListener("resize", handleDismiss);
-    window.addEventListener("scroll", handleDismiss, true);
-    return () => {
-      document.removeEventListener("mousedown", handlePointerDown);
-      window.removeEventListener("resize", handleDismiss);
-      window.removeEventListener("scroll", handleDismiss, true);
-    };
-  }, [isOpen]);
-
-  return (
-    <div className={`relative w-full ${styles.root} ${className}`.trim()}>
-      <button
-        ref={triggerRef}
-        type="button"
-        onClick={toggleOpen}
-        className={`${styles.button} ${
-          options.length === 0
-            ? "cursor-default hover:!bg-[#E8EAF6]"
-            : "cursor-pointer"
-        }`}
-        aria-expanded={isOpen && options.length > 0}
-        aria-haspopup={options.length > 0 ? "listbox" : undefined}
-      >
-        <span className="min-w-0 flex-1 truncate text-center">{display}</span>
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={`shrink-0 text-[#1F1F1F] transition-transform ${isOpen ? "rotate-180" : ""}`}
-          aria-hidden
-        >
-          <path d="M6 9l6 6 6-6" />
-        </svg>
-      </button>
-
-      {isOpen &&
-        options.length > 0 &&
-        position &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <div
-            ref={menuRef}
-            style={{
-              position: "fixed",
-              left: position.left,
-              width: position.width,
-              top: position.top,
-              bottom: position.bottom,
-              zIndex: 9999,
-            }}
-            className={`overflow-hidden ${styles.menu}`}
-          >
-            <div className="flex max-h-[260px] flex-col overflow-y-auto px-2">
-              {options.map((opt) => (
-                <button
-                  key={opt}
-                  type="button"
-                  onClick={() => {
-                    onChange(opt);
-                    setIsOpen(false);
-                  }}
-                  className={`rounded-[14px] px-4 py-3 text-center text-[15px] font-bold transition-all ${
-                    value === opt ? styles.optionActive : styles.optionIdle
-                  }`}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
-          </div>,
-          document.body,
-        )}
+      {typeof document !== "undefined" && menu
+        ? createPortal(menu, document.body)
+        : null}
     </div>
   );
 };

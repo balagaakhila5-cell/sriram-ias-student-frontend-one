@@ -9,7 +9,15 @@ import { z } from "zod";
 import AuthPortalShell, { UserRole } from "./AuthPortalShell";
 import AuthSuccessView from "./AuthSuccessView";
 import OtpVerificationForm from "./OtpVerificationForm";
-import { useStudentSignup, useVerifyStudentSignup } from "../hooks/useAuth";
+import { useSendOtp } from "../hooks/useAuth";
+import { setMockStudentAuth } from "../utils/mockAuth";
+import {
+  DUPLICATE_SIGNUP_MESSAGE,
+  getCredentialRegistrationError,
+  isStudentAlreadyRegistered,
+  registerStudent,
+} from "../utils/registeredStudents";
+import FormFieldLabel from "@/components/common/FormFieldLabel";
 
 const mobileRegex = /^\d{10}$/;
 
@@ -27,8 +35,12 @@ const SignupPortal: React.FC = () => {
 
   const [role, setRole] = useState<UserRole>("student");
   const [screen, setScreen] = useState<SignupScreen>("form");
-  const [userId, setUserId] = useState<string | null>(null);
+  const [signupData, setSignupData] = useState<StudentSignupForm | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
   const [otpError, setOtpError] = useState<string | null>(null);
+  const [otpSessionKey, setOtpSessionKey] = useState(0);
+
+  const sendOtp = useSendOtp();
 
   const studentSignup = useStudentSignup();
   const verifyStudentSignup = useVerifyStudentSignup();
@@ -54,21 +66,58 @@ const SignupPortal: React.FC = () => {
 
   const onSubmit = form.handleSubmit((values) => {
     if (role !== "student") return;
-    studentSignup.mutate(
+
+    const email = values.email.trim();
+    const mobile = values.mobile.trim();
+
+    const registrationError = getCredentialRegistrationError("student", {
+      email,
+      mobile,
+    });
+    if (registrationError || isStudentAlreadyRegistered({ email, mobile })) {
+      setFormError(registrationError ?? DUPLICATE_SIGNUP_MESSAGE);
+      return;
+    }
+
+    setSignupData(values);
+    setFormError(null);
+    setOtpError(null);
+
+    sendOtp.mutate(
+      { mobile, email, role: "student" },
       {
-        name: values.name.trim(),
-        email: values.email.trim(),
-        mobile: values.mobile.trim(),
-      },
-      {
-        onSuccess: (res) => {
-          setUserId(res.userId);
-          setOtpError(null);
+        onSuccess: () => {
+          setOtpSessionKey((current) => current + 1);
           setScreen("otp");
+        },
+        onError: (error) => {
+          setFormError(
+            error instanceof Error ? error.message : "Failed to send OTP.",
+          );
         },
       },
     );
   });
+
+  const handleResendOtp = () => {
+    if (!signupData) return;
+    setOtpError(null);
+    sendOtp.mutate(
+      {
+        mobile: signupData.mobile.trim(),
+        email: signupData.email.trim(),
+        role: "student",
+      },
+      {
+        onSuccess: () => setOtpSessionKey((current) => current + 1),
+        onError: (error) => {
+          setOtpError(
+            error instanceof Error ? error.message : "Failed to resend OTP.",
+          );
+        },
+      },
+    );
+  };
 
   const handleOtpVerify = (otp: string) => {
     if (otp.length !== 6) {
@@ -81,17 +130,33 @@ const SignupPortal: React.FC = () => {
       return;
     }
 
-    setOtpError(null);
-    verifyStudentSignup.mutate(
-      { userId, otp },
-      { onSuccess: () => setScreen("success") },
-    );
+    try {
+      registerStudent({
+        name: signupData.name,
+        email: signupData.email,
+        mobile: signupData.mobile,
+      });
+
+      setMockStudentAuth({
+        name: signupData.name,
+        email: signupData.email,
+        mobile: signupData.mobile,
+      });
+      setOtpError(null);
+      setScreen("success");
+    } catch (error) {
+      setOtpError(
+        error instanceof Error
+          ? error.message
+          : "This email or mobile is already used in another portal.",
+      );
+    }
   };
 
   const handleRoleChange = (newRole: UserRole) => {
     setRole(newRole);
     setScreen("form");
-    setUserId(null);
+    setFormError(null);
     setOtpError(null);
     studentSignup.reset();
     verifyStudentSignup.reset();
@@ -151,6 +216,7 @@ const SignupPortal: React.FC = () => {
           <Field
             label="Full Name"
             type="text"
+            required
             error={form.formState.errors.name?.message}
             {...form.register("name")}
           />
@@ -158,6 +224,7 @@ const SignupPortal: React.FC = () => {
           <Field
             label="Email ID"
             type="email"
+            required
             error={form.formState.errors.email?.message}
             {...form.register("email")}
           />
@@ -165,19 +232,20 @@ const SignupPortal: React.FC = () => {
           <Field
             label="Mobile Number"
             type="tel"
+            required
             error={form.formState.errors.mobile?.message}
             {...form.register("mobile")}
           />
 
-          {studentSignup.error && (
-            <p className="text-sm text-red-600">
-              {studentSignup.error.message}
+          {formError ? (
+            <p className="rounded-[16px] bg-red-50 px-4 py-3 text-center text-sm text-red-600">
+              {formError}
             </p>
-          )}
+          ) : null}
 
           <button
             type="submit"
-            disabled={studentSignup.isPending}
+            disabled={sendOtp.isPending}
             className="mt-4 flex h-[43px] w-full items-center justify-center rounded-[24px] text-[18px] font-medium text-white shadow-[0px_4px_20px_rgba(0,103,156,0.35)] transition-opacity hover:opacity-95 disabled:opacity-60"
             style={{
               background:
@@ -199,9 +267,14 @@ const SignupPortal: React.FC = () => {
         </form>
       ) : (
         <OtpVerificationForm
+          otpSessionKey={otpSessionKey}
+          message="OTP received to your mobile number"
           onVerify={handleOtpVerify}
+          onResend={handleResendOtp}
+          resendLoading={sendOtp.isPending}
           onBack={() => {
             setScreen("form");
+            setFormError(null);
             setOtpError(null);
             verifyStudentSignup.reset();
           }}
@@ -219,14 +292,19 @@ interface FieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Field = React.forwardRef<HTMLInputElement, FieldProps>(
-  ({ label, error, ...rest }, ref) => (
-    <label className="flex w-full flex-col gap-2">
-      <span className="text-[14px] font-medium text-black/50">{label}</span>
+  ({ label, error, required, ...rest }, ref) => (
+    <label className="flex w-full min-w-0 max-w-full flex-col gap-2">
+      <FormFieldLabel
+        required={required}
+        className="text-[14px] font-medium text-black/50"
+      >
+        {label}
+      </FormFieldLabel>
 
       <input
         ref={ref}
         {...rest}
-        className="h-[48px] w-full rounded-[24px] bg-[#CDE7F1] px-5 text-[15px] text-black outline-none transition-shadow focus:shadow-[0_0_0_2px_rgba(24,151,216,0.4)]"
+        className="h-[48px] w-full min-w-0 max-w-full rounded-[24px] bg-[#CDE7F1] px-5 text-[15px] text-black outline-none transition-shadow focus:shadow-[0_0_0_2px_rgba(24,151,216,0.4)]"
       />
 
       {error && <span className="text-xs text-red-600">{error}</span>}

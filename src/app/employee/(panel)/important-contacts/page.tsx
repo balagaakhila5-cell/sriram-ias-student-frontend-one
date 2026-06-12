@@ -1,5 +1,10 @@
 import { Mail, Phone } from "lucide-react";
 import ContactCard from "@/features/studentPortal/components/ContactCard";
+import {
+  PORTAL_SUPPORT_EMAIL,
+  PORTAL_SUPPORT_PHONE,
+} from "@/config/supportContact";
+import { emailHref, phoneHref } from "@/utils/contactLinks";
 import Image from "next/image";
 
 export default function EmployeeImportantContactsPage() {
@@ -8,8 +13,8 @@ export default function EmployeeImportantContactsPage() {
       <ContactCard
         title="Support Mobile Number"
         description="Primary point of contact for all employee enquiries and other related matters"
-        actionLabel="9898989898"
-        actionHref="tel:9898989898"
+        actionLabel={PORTAL_SUPPORT_PHONE}
+        actionHref={phoneHref(PORTAL_SUPPORT_PHONE)}
         actionIcon={<Phone size={18} />}
         bg="linear-gradient(135deg, #FCE7D0 0%, #F8D4B5 100%)"
         titleColor="#20A0E0"
@@ -28,8 +33,8 @@ export default function EmployeeImportantContactsPage() {
       <ContactCard
         title="Support Email ID"
         description="Primary point of email for all employee enquiries and other related matters"
-        actionLabel="sriramias@gmail.com"
-        actionHref="mailto:sriramias@gmail.com"
+        actionLabel={PORTAL_SUPPORT_EMAIL}
+        actionHref={emailHref(PORTAL_SUPPORT_EMAIL)}
         actionIcon={<Mail size={18} />}
         bg="linear-gradient(135deg, #DDEAF7 0%, #BFD7EE 100%)"
         titleColor="#20A0E0"

@@ -256,17 +256,21 @@ export default function MockTestRunnerPage({ params }: PageProps) {
                   Previous
                 </button>
 
-                <button
-                  onClick={handleSaveNext}
-                  disabled={currentQuestion === totalQuestions - 1}
-                  className={`rounded-[12px] px-6 py-2 text-[18px] font-bold text-white ${
-                    currentQuestion === totalQuestions - 1
-                      ? 'cursor-not-allowed bg-[#B8C4CF]'
-                      : 'bg-gradient-to-r from-[#40B7F6] to-[#045A84]'
-                  }`}
-                >
-                  Save & Next
-                </button>
+                {currentQuestion === totalQuestions - 1 ? (
+                  <button
+                    onClick={() => setShowSubmitModal(true)}
+                    className="rounded-[12px] bg-gradient-to-r from-[#40B7F6] to-[#045A84] px-6 py-2 text-[18px] font-bold text-white"
+                  >
+                    Submit
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleSaveNext}
+                    className="rounded-[12px] bg-gradient-to-r from-[#40B7F6] to-[#045A84] px-6 py-2 text-[18px] font-bold text-white"
+                  >
+                    Save & Next
+                  </button>
+                )}
               </div>
 
               <div className="mt-4 text-center">
@@ -306,7 +310,7 @@ export default function MockTestRunnerPage({ params }: PageProps) {
 
             <div className="mt-5 grid grid-cols-4 items-center rounded-[18px] bg-white px-4 py-5 text-center font-['Montserrat'] text-[16px] font-semibold leading-none text-[#000000CC] shadow-[0_6px_18px_rgba(0,0,0,0.12)]">
               <div>Test</div>
-              <div>{totalQuestions}</div>
+              <div>{String(totalQuestions).padStart(2, '0')}</div>
               <div>{String(answeredCount).padStart(2, '0')}</div>
               <div>{String(unansweredCount).padStart(2, '0')}</div>
             </div>

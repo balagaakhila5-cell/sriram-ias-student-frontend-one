@@ -46,7 +46,7 @@ export default function PyqPaperCard({
         <h3 className={PYQ_PAPER_CARD.title}>{item.title}</h3>
         <div className={PYQ_PAPER_CARD.actions}>
           <Link
-            href={resourceViewPath(item)}
+            href={resourceViewPath(item, variant === "portal" ? "portal" : "public")}
             className={PYQ_PAPER_CARD.viewButton}
             prefetch={false}
             target={variant === "portal" ? "_blank" : undefined}

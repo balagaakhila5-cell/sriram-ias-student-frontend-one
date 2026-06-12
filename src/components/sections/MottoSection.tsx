@@ -31,6 +31,7 @@ const MottoSection: React.FC = () => {
       gsap.from('.motto-text-line', {
         x: -100,
         opacity: 0,
+        immediateRender: false,
         duration: 1.2,
         stagger: 0.12,
         ease: 'power3.out',
@@ -44,7 +45,7 @@ const MottoSection: React.FC = () => {
 
       gsap.fromTo(
         '.motto-wall',
-        { x: '100%', opacity: 0 },
+        { x: '100%', opacity: 0, immediateRender: false },
         {
           x: '0%',
           opacity: 1,

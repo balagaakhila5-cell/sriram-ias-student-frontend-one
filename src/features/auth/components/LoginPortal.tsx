@@ -2,18 +2,35 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import AuthPortalShell, { UserRole } from "./AuthPortalShell";
 import AuthSuccessView from "./AuthSuccessView";
 import OtpVerificationForm from "./OtpVerificationForm";
-import { useLoginRequest, useStaffLogin, useVerifyOtp } from "../hooks/useAuth";
+import {
+  useParentLoginRequest,
+  useSendOtp,
+  useStaffLogin,
+  useVerifyOtp,
+} from "../hooks/useAuth";
+import { AUTH_FIELD_LIMITS } from "../constants";
+import { setMockStudentAuth } from "../utils/mockAuth";
+import {
+  PASSWORD_CRITERIA_HINT,
+  loginStringNoSpaces,
+  passwordSchema,
+  stripSpaces,
+} from "../utils/passwordValidation";
+import {
+  assertLoginCredentialAllowed,
+  registerAuthCredential,
+} from "../utils/registeredAuthCredentials";
+import FormFieldLabel from "@/components/common/FormFieldLabel";
 
-const isEmail = (value: string) => /.+@.+\..+/.test(value);
-
-type StudentScreen = "form" | "otp" | "success";
+type AuthScreen = "form" | "otp" | "success";
 
 const titleByRole: Record<UserRole, string> = {
   student: "Login Portal",
@@ -22,40 +39,58 @@ const titleByRole: Record<UserRole, string> = {
 };
 
 const studentSchema = z.object({
-  identifier: z
-    .string()
-    .min(1, "Mobile number or email is required")
-    .refine(
-      (v) => /^\d{10}$/.test(v) || /.+@.+\..+/.test(v),
-      "Enter a valid email or 10-digit mobile",
-    ),
+  identifier: loginStringNoSpaces(
+    z
+      .string()
+      .min(1, "Mobile number or email is required")
+      .max(
+        AUTH_FIELD_LIMITS.identifierMax,
+        `Must be ${AUTH_FIELD_LIMITS.identifierMax} characters or fewer`,
+      ),
+  ).refine(
+    (v) => /^\d{10}$/.test(v) || /.+@.+\..+/.test(v),
+    "Enter a valid email or 10-digit mobile",
+  ),
 });
 
-const parentSchema = z.object({
-  mobile: z
-    .string()
-    .min(1, "Mobile number is required")
-    .regex(/^\d{10}$/, "Enter a valid 10-digit mobile number"),
-  otp: z.string().optional(),
+const mobileSchema = z.object({
+  mobile: loginStringNoSpaces(
+    z
+      .string()
+      .min(1, "Mobile number is required")
+      .regex(/^\d{10}$/, "Enter a valid 10-digit mobile number"),
+  ),
 });
 
 const facultySchema = z.object({
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: loginStringNoSpaces(
+    z
+      .string()
+      .min(1, "Email is required")
+      .email("Enter a valid email")
+      .max(
+        AUTH_FIELD_LIMITS.emailMax,
+        `Email must be ${AUTH_FIELD_LIMITS.emailMax} characters or fewer`,
+      ),
+  ),
+  password: passwordSchema(),
 });
 
 const LoginPortal: React.FC = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
   const [role, setRole] = useState<UserRole>("student");
-  const [parentOtpSent, setParentOtpSent] = useState(false);
-  const [studentScreen, setStudentScreen] = useState<StudentScreen>("form");
+  const [studentScreen, setStudentScreen] = useState<AuthScreen>("form");
+  const [parentScreen, setParentScreen] = useState<AuthScreen>("form");
+  const [facultyScreen, setFacultyScreen] = useState<AuthScreen>("form");
   const [studentIdentifier, setStudentIdentifier] = useState("");
-  const [studentUserId, setStudentUserId] = useState<string | null>(null);
+  const [parentMobile, setParentMobile] = useState("");
   const [otpError, setOtpError] = useState<string | null>(null);
+  const [otpSessionKey, setOtpSessionKey] = useState(0);
 
-  const studentLoginRequest = useLoginRequest();
-  const verifyStudentOtp = useVerifyOtp();
-  const parentLoginRequest = useLoginRequest();
+  const sendOtp = useSendOtp();
+  const parentLoginRequest = useParentLoginRequest();
   const verifyParentOtp = useVerifyOtp();
   const staffLogin = useStaffLogin("staff");
 
@@ -64,51 +99,100 @@ const LoginPortal: React.FC = () => {
     defaultValues: { identifier: "" },
   });
   const parentForm = useForm({
-    resolver: zodResolver(parentSchema),
-    defaultValues: { mobile: "", otp: "" },
+    resolver: zodResolver(mobileSchema),
+    defaultValues: { mobile: "" },
   });
   const facultyForm = useForm({
     resolver: zodResolver(facultySchema),
     defaultValues: { email: "", password: "" },
   });
 
+  const resetOtpFlow = () => {
+    setOtpError(null);
+    setOtpSessionKey((current) => current + 1);
+  };
+
   const handleRoleChange = (newRole: UserRole) => {
     setRole(newRole);
     setStudentScreen("form");
-    setStudentUserId(null);
+    setParentScreen("form");
+    setFacultyScreen("form");
     setOtpError(null);
-    setParentOtpSent(false);
     parentForm.reset();
-    studentLoginRequest.reset();
-    verifyStudentOtp.reset();
-    parentLoginRequest.reset();
-    verifyParentOtp.reset();
+    facultyForm.reset();
   };
 
+  const showSuccessScreen =
+    (role === "student" && studentScreen === "success") ||
+    (role === "parent" && parentScreen === "success") ||
+    (role === "faculty" && facultyScreen === "success");
+
   useEffect(() => {
-    if (studentScreen !== "success") return;
+    if (!showSuccessScreen) return;
+
+    const destination =
+      role === "parent"
+        ? "/parent"
+        : role === "faculty"
+          ? "/employee"
+          : redirectTo.startsWith("/")
+            ? redirectTo
+            : "/";
 
     const timer = window.setTimeout(() => {
-      router.push("/");
-    }, 1600);
+      router.push(destination);
+    }, 1800);
 
     return () => window.clearTimeout(timer);
-  }, [studentScreen, router]);
+  }, [redirectTo, role, router, showSuccessScreen]);
+
+  const isMobileIdentifier = (value: string) => /^\d{10}$/.test(value);
+
+  const otpMessageForIdentifier = (identifier: string) =>
+    isMobileIdentifier(identifier)
+      ? "OTP received to your mobile number"
+      : "OTP received to your email address";
+
+  const dispatchOtp = (
+    payload: { mobile?: string; email?: string },
+    onSent: () => void,
+    options: { useParentRequest?: boolean; role: UserRole } = {
+      role: "student",
+    },
+  ) => {
+    const mutation = options.useParentRequest ? parentLoginRequest : sendOtp;
+    mutation.mutate({ ...payload, role: options.role }, {
+      onSuccess: () => {
+        resetOtpFlow();
+        onSent();
+      },
+      onError: (error) => {
+        setOtpError(
+          error instanceof Error ? error.message : "Failed to send OTP.",
+        );
+      },
+    });
+  };
 
   const onStudentSubmit = studentForm.handleSubmit((values) => {
     const identifier = values.identifier.trim();
     setStudentIdentifier(identifier);
     setOtpError(null);
-    studentLoginRequest.mutate(
-      isEmail(identifier) ? { email: identifier } : { mobile: identifier },
-      {
-        onSuccess: (res) => {
-          setStudentUserId(res.userId ?? null);
-          setStudentScreen("otp");
-        },
-      },
-    );
+
+    const payload = isMobileIdentifier(identifier)
+      ? { mobile: identifier }
+      : { email: identifier };
+
+    dispatchOtp(payload, () => setStudentScreen("otp"), { role: "student" });
   });
+
+  const handleStudentResendOtp = () => {
+    setOtpError(null);
+    const payload = isMobileIdentifier(studentIdentifier)
+      ? { mobile: studentIdentifier }
+      : { email: studentIdentifier };
+    dispatchOtp(payload, () => undefined, { role: "student" });
+  };
 
   const handleStudentOtpVerify = (otp: string) => {
     if (otp.length !== 6) {
@@ -116,64 +200,133 @@ const LoginPortal: React.FC = () => {
       return;
     }
 
-    setOtpError(null);
-    verifyStudentOtp.mutate(
-      {
-        otp,
-        ...(studentUserId ? { userId: studentUserId } : {}),
-        ...(isEmail(studentIdentifier)
-          ? { email: studentIdentifier }
-          : { mobile: studentIdentifier }),
-      },
-      { onSuccess: () => setStudentScreen("success") },
-    );
+    const isEmailLogin = studentIdentifier.includes("@");
+    const studentName = isEmailLogin
+      ? studentIdentifier.split("@")[0]
+      : "Student";
+    const loginPayload = isEmailLogin
+      ? { email: studentIdentifier }
+      : { mobile: studentIdentifier };
+
+    try {
+      assertLoginCredentialAllowed("student", loginPayload);
+      registerAuthCredential("student", {
+        name: studentName,
+        email: isEmailLogin ? studentIdentifier : undefined,
+        mobile: isEmailLogin ? undefined : studentIdentifier,
+      });
+
+      setMockStudentAuth({
+        name: studentName,
+        identifier: studentIdentifier,
+      });
+      setOtpError(null);
+      setStudentScreen("success");
+    } catch (error) {
+      setOtpError(
+        error instanceof Error
+          ? error.message
+          : "This email or mobile is already used in another portal.",
+      );
+    }
   };
 
   const onParentSendOtp = parentForm.handleSubmit((values) => {
-    parentLoginRequest.mutate(
-      { mobile: values.mobile.trim() },
-      { onSuccess: () => setParentOtpSent(true) },
-    );
+    const mobile = values.mobile.trim();
+    setParentMobile(mobile);
+    setOtpError(null);
+    dispatchOtp({ mobile }, () => setParentScreen("otp"), {
+      useParentRequest: true,
+      role: "parent",
+    });
   });
 
-  const onParentVerifyOtp = parentForm.handleSubmit((values) => {
-    const otp = values.otp?.trim() ?? "";
+  const handleParentResendOtp = () => {
+    setOtpError(null);
+    dispatchOtp({ mobile: parentMobile }, () => undefined, {
+      useParentRequest: true,
+      role: "parent",
+    });
+  };
+
+  const handleParentOtpVerify = (otp: string) => {
     if (!/^\d{6}$/.test(otp)) {
-      parentForm.setError("otp", { message: "Please enter 6 digit OTP" });
+      setOtpError("Please enter 6 digit OTP");
       return;
     }
 
     verifyParentOtp.mutate(
-      { mobile: values.mobile.trim(), otp },
-      { onSuccess: () => router.push("/parent") },
+      { mobile: parentMobile, otp, role: "parent" },
+      {
+        onSuccess: () => {
+          setOtpError(null);
+          setParentScreen("success");
+        },
+        onError: (error) => {
+          setOtpError(
+            error instanceof Error ? error.message : "OTP verification failed.",
+          );
+        },
+      },
     );
-  });
+  };
 
   const onFacultySubmit = facultyForm.handleSubmit((values) => {
-    staffLogin.mutate(values, {
-      onSuccess: () => router.push("/"),
-    });
+    const email = values.email.trim();
+    const password = stripSpaces(values.password).slice(
+      0,
+      AUTH_FIELD_LIMITS.passwordMax,
+    );
+
+    try {
+      assertLoginCredentialAllowed("faculty", { email });
+    } catch (error) {
+      facultyForm.setError("email", {
+        message:
+          error instanceof Error
+            ? error.message
+            : "This email is registered in another portal.",
+      });
+      return;
+    }
+
+    staffLogin.mutate(
+      { email, password },
+      {
+        onSuccess: () => {
+          facultyForm.clearErrors();
+          setFacultyScreen("success");
+        },
+      },
+    );
   });
 
   const mutationError =
     role === "parent"
-      ? parentOtpSent
+      ? parentScreen === "otp"
         ? verifyParentOtp.error?.message
         : parentLoginRequest.error?.message
       : role === "faculty"
         ? staffLogin.error?.message
-        : null;
+        : sendOtp.error?.message ?? null;
 
   const isPending =
     role === "parent"
-      ? parentOtpSent
+      ? parentScreen === "otp"
         ? verifyParentOtp.isPending
         : parentLoginRequest.isPending
       : role === "faculty"
         ? staffLogin.isPending
-        : false;
+        : studentScreen === "form"
+          ? sendOtp.isPending
+          : false;
 
-  if (role === "student" && studentScreen === "success") {
+  const isResendPending =
+    role === "parent"
+      ? parentLoginRequest.isPending
+      : sendOtp.isPending;
+
+  if (showSuccessScreen) {
     return (
       <AuthPortalShell
         activeRole={role}
@@ -181,33 +334,40 @@ const LoginPortal: React.FC = () => {
         loginMode
         title=""
       >
-        <AuthSuccessView title="Log In Successful" />
+        <AuthSuccessView title="Logged In Successfully" />
       </AuthPortalShell>
     );
   }
 
-  const studentTitle =
-    studentScreen === "otp" ? "OTP Verification" : titleByRole.student;
+  const activeOtpScreen =
+    (role === "student" && studentScreen === "otp") ||
+    (role === "parent" && parentScreen === "otp");
+
+  const portalTitle = activeOtpScreen
+    ? "OTP Verification"
+    : titleByRole[role];
 
   return (
     <AuthPortalShell
       activeRole={role}
       onRoleChange={handleRoleChange}
       loginMode
-      title={role === "student" ? studentTitle : titleByRole[role]}
+      title={portalTitle}
     >
       {role === "student" && studentScreen === "form" && (
         <form onSubmit={onStudentSubmit} className="flex w-full flex-col gap-5">
           <Field
             label="Mobile Number / Email Id"
             type="text"
+            required
+            noSpaces
+            placeholder="Enter your mobile number or email id"
+            maxLength={AUTH_FIELD_LIMITS.identifierMax}
             error={studentForm.formState.errors.identifier?.message}
             {...studentForm.register("identifier")}
           />
-          {studentLoginRequest.error && (
-            <ErrorText>{studentLoginRequest.error.message}</ErrorText>
-          )}
-          <SubmitButton loading={studentLoginRequest.isPending} variant="student">
+          {mutationError && <ErrorText>{mutationError}</ErrorText>}
+          <SubmitButton loading={isPending} variant="student">
             Send OTP
           </SubmitButton>
           <StudentSignupFooter />
@@ -216,7 +376,11 @@ const LoginPortal: React.FC = () => {
 
       {role === "student" && studentScreen === "otp" && (
         <OtpVerificationForm
+          otpSessionKey={otpSessionKey}
+          message={otpMessageForIdentifier(studentIdentifier)}
           onVerify={handleStudentOtpVerify}
+          onResend={handleStudentResendOtp}
+          resendLoading={isResendPending}
           onBack={() => {
             setStudentScreen("form");
             setOtpError(null);
@@ -227,35 +391,38 @@ const LoginPortal: React.FC = () => {
         />
       )}
 
-      {role === "parent" && (
-        <form
-          onSubmit={parentOtpSent ? onParentVerifyOtp : onParentSendOtp}
-          className="flex w-full flex-col gap-5"
-        >
+      {role === "parent" && parentScreen === "form" && (
+        <form onSubmit={onParentSendOtp} className="flex w-full flex-col gap-5">
           <Field
             label="Mobile Number"
             type="tel"
+            required
+            noSpaces
             inputMode="numeric"
+            placeholder="Enter your mobile number"
             maxLength={10}
             error={parentForm.formState.errors.mobile?.message}
             {...parentForm.register("mobile")}
           />
-          {parentOtpSent && (
-            <Field
-              label="OTP"
-              type="text"
-              inputMode="numeric"
-              maxLength={6}
-              autoComplete="one-time-code"
-              error={parentForm.formState.errors.otp?.message}
-              {...parentForm.register("otp")}
-            />
-          )}
           {mutationError && <ErrorText>{mutationError}</ErrorText>}
-          <SubmitButton loading={isPending}>
-            {parentOtpSent ? "Verify OTP" : "Send OTP"}
-          </SubmitButton>
+          <SubmitButton loading={isPending}>Send OTP</SubmitButton>
         </form>
+      )}
+
+      {role === "parent" && parentScreen === "otp" && (
+        <OtpVerificationForm
+          otpLength={6}
+          otpSessionKey={otpSessionKey}
+          message="OTP received to your mobile number"
+          onVerify={handleParentOtpVerify}
+          onResend={handleParentResendOtp}
+          resendLoading={isResendPending}
+          onBack={() => {
+            setParentScreen("form");
+            setOtpError(null);
+          }}
+          error={otpError ?? mutationError ?? undefined}
+        />
       )}
 
       {role === "faculty" && (
@@ -263,12 +430,22 @@ const LoginPortal: React.FC = () => {
           <Field
             label="Email ID"
             type="email"
+            required
+            noSpaces
+            placeholder="Enter your email id"
+            maxLength={AUTH_FIELD_LIMITS.emailMax}
             error={facultyForm.formState.errors.email?.message}
             {...facultyForm.register("email")}
           />
           <Field
             label="Password"
             type="password"
+            required
+            noSpaces
+            placeholder="Enter your password"
+            maxLength={AUTH_FIELD_LIMITS.passwordMax}
+            autoComplete="current-password"
+            hint={PASSWORD_CRITERIA_HINT}
             error={facultyForm.formState.errors.password?.message}
             {...facultyForm.register("password")}
           />
@@ -276,7 +453,6 @@ const LoginPortal: React.FC = () => {
           <SubmitButton loading={isPending}>Login</SubmitButton>
         </form>
       )}
-
     </AuthPortalShell>
   );
 };
@@ -320,20 +496,80 @@ const SubmitButton: React.FC<{
 interface FieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
+  hint?: string;
+  noSpaces?: boolean;
 }
 
 const Field = React.forwardRef<HTMLInputElement, FieldProps>(
-  ({ label, error, ...rest }, ref) => (
-    <label className="flex w-full flex-col gap-2">
-      <span className="text-[14px] font-medium text-black/50">{label}</span>
-      <input
-        ref={ref}
-        {...rest}
-        className="h-[48px] w-full rounded-[24px] bg-[#CDE7F1] px-5 text-[15px] text-black outline-none transition-shadow focus:shadow-[0_0_0_2px_rgba(24,151,216,0.4)]"
-      />
-      {error && <span className="text-xs text-red-600">{error}</span>}
-    </label>
-  ),
+  (
+    { label, error, hint, required, type, maxLength, noSpaces, onChange, ...rest },
+    ref,
+  ) => {
+    const [showPassword, setShowPassword] = useState(false);
+    const isPasswordField = type === "password";
+    const resolvedMaxLength =
+      maxLength ??
+      (isPasswordField ? AUTH_FIELD_LIMITS.passwordMax : undefined);
+    const inputType = isPasswordField && showPassword ? "text" : type;
+
+    return (
+      <label className="flex w-full min-w-0 max-w-full flex-col gap-2">
+        <FormFieldLabel
+          required={required}
+          className="text-[14px] font-medium text-black/50"
+        >
+          {label}
+        </FormFieldLabel>
+        <div className="relative w-full">
+          <input
+            ref={ref}
+            type={inputType}
+            {...rest}
+            maxLength={resolvedMaxLength}
+            onChange={(event) => {
+              let nextValue = event.target.value;
+
+              if (noSpaces) {
+                nextValue = stripSpaces(nextValue);
+              }
+
+              if (resolvedMaxLength && nextValue.length > resolvedMaxLength) {
+                nextValue = nextValue.slice(0, resolvedMaxLength);
+              }
+
+              if (nextValue !== event.target.value) {
+                event.target.value = nextValue;
+              }
+
+              onChange?.(event);
+            }}
+            className={`h-[48px] w-full min-w-0 max-w-full rounded-[24px] bg-[#CDE7F1] px-5 text-[15px] text-black placeholder:text-black/40 outline-none transition-shadow focus:shadow-[0_0_0_2px_rgba(24,151,216,0.4)] ${
+              isPasswordField ? "pr-12" : ""
+            }`}
+          />
+          {isPasswordField ? (
+            <button
+              type="button"
+              onClick={() => setShowPassword((current) => !current)}
+              className="absolute right-4 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-[#0A73B7] transition-colors hover:bg-[#B8DCEC]/60"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-pressed={showPassword}
+            >
+              {showPassword ? (
+                <EyeOff size={20} strokeWidth={2} aria-hidden />
+              ) : (
+                <Eye size={20} strokeWidth={2} aria-hidden />
+              )}
+            </button>
+          ) : null}
+        </div>
+        {hint && !error ? (
+          <span className="text-xs leading-relaxed text-black/45">{hint}</span>
+        ) : null}
+        {error && <span className="text-xs text-red-600">{error}</span>}
+      </label>
+    );
+  },
 );
 Field.displayName = "Field";
 

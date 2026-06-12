@@ -392,7 +392,7 @@ export default function MonthlyRecapPage() {
               {/* Right Sidebar */}
               <aside className="animate-sidebar w-full xl:mt-[95px]">
                 <div className="space-y-8">
-                  <TrendingArticles />
+                  <TrendingArticles viewAllHref="/blogs/all" />
                   <QuickLinks />
                 </div>
               </aside>

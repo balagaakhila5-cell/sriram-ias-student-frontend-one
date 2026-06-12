@@ -4,6 +4,9 @@ import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
+import { useSessionBooking } from '@/features/course/hooks/useSessionBooking';
+import SessionBookingDialog from '@/features/course/components/SessionBookingDialog';
+import FormFieldLabel from '@/components/common/FormFieldLabel';
 
 type Topper = {
   name: string;
@@ -141,6 +144,52 @@ const OurToppersGalleryPage = () => {
   const [activeTab, setActiveTab] = useState<
     'All Students' | 'Top 10' | 'GS Course'
   >('All Students');
+  const [formData, setFormData] = useState({
+    fullName: '',
+    mobile: '',
+    email: '',
+    targetYear: '',
+    city: 'Delhi',
+  });
+  const [authorized, setAuthorized] = useState(false);
+  const [dialog, setDialog] = useState<{
+    variant: 'success' | 'error';
+    message: string;
+  } | null>(null);
+  const { bookSession, isPending } = useSessionBooking();
+
+  const handleFormChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSessionSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const result = await bookSession(formData, formData.city, authorized);
+
+    if (result.ok) {
+      setDialog({
+        variant: 'success',
+        message: 'Your session has been booked. Our team will reach out shortly.',
+      });
+      setFormData({
+        fullName: '',
+        mobile: '',
+        email: '',
+        targetYear: '',
+        city: 'Delhi',
+      });
+      setAuthorized(false);
+      return;
+    }
+
+    setDialog({
+      variant: 'error',
+      message: result.message,
+    });
+  };
 
   const toppers = useMemo(() => {
     if (activeTab === 'Top 10') {
@@ -438,34 +487,76 @@ const OurToppersGalleryPage = () => {
               Get Your One to One Personalised Session with Our Expert Mentors
             </p>
 
-            <form className="mx-auto w-full max-w-[640px] lg:mx-0">
+            <form className="mx-auto w-full max-w-[640px] lg:mx-0" onSubmit={handleSessionSubmit}>
               <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <input
-                  type="text"
-                  name="fullName"
-                  placeholder="Full Name"
-                  className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
-                />
+                <div>
+                  <FormFieldLabel
+                    required
+                    className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                  >
+                    Full Name
+                  </FormFieldLabel>
+                  <input
+                    type="text"
+                    name="fullName"
+                    placeholder="Full Name"
+                    value={formData.fullName}
+                    onChange={handleFormChange}
+                    required
+                    className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300 sm:text-left sm:placeholder:text-left"
+                  />
+                </div>
 
-                <input
-                  type="tel"
-                  name="mobile"
-                  placeholder="Mobile Number"
-                  className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
-                />
+                <div>
+                  <FormFieldLabel
+                    required
+                    className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                  >
+                    Mobile Number
+                  </FormFieldLabel>
+                  <input
+                    type="tel"
+                    name="mobile"
+                    placeholder="Mobile Number"
+                    value={formData.mobile}
+                    onChange={handleFormChange}
+                    required
+                    pattern="[0-9]{10}"
+                    className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300 sm:text-left sm:placeholder:text-left"
+                  />
+                </div>
 
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email Id"
-                  className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
-                />
+                <div>
+                  <FormFieldLabel
+                    required
+                    className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                  >
+                    Email Id
+                  </FormFieldLabel>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email Id"
+                    value={formData.email}
+                    onChange={handleFormChange}
+                    required
+                    className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300 sm:text-left sm:placeholder:text-left"
+                  />
+                </div>
 
                 <div className="relative w-full">
+                  <FormFieldLabel
+                    required
+                    className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                  >
+                    Target UPSC Attempt Year
+                  </FormFieldLabel>
                   <select
                     name="targetYear"
-                    defaultValue=""
-                    className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300"
+                    value={formData.targetYear}
+                    onChange={handleFormChange}
+                    required
+                    className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300 sm:text-left"
                   >
                     <option value="" disabled>
                       Target UPSC Attempt Year
@@ -493,9 +584,13 @@ const OurToppersGalleryPage = () => {
                 </div>
 
                 <div className="relative w-full">
+                  <FormFieldLabel className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left">
+                    City
+                  </FormFieldLabel>
                   <select
                     name="city"
-                    defaultValue="Delhi"
+                    value={formData.city}
+                    onChange={handleFormChange}
                     className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300"
                   >
                     <option value="Delhi">Delhi</option>
@@ -522,6 +617,8 @@ const OurToppersGalleryPage = () => {
               <label className="group mb-8 mt-2 flex cursor-pointer items-start gap-3 text-left">
                 <input
                   type="checkbox"
+                  checked={authorized}
+                  onChange={(e) => setAuthorized(e.target.checked)}
                   className="mt-1 h-[18px] w-[18px] shrink-0 cursor-pointer rounded-sm border-none bg-white/80 checked:bg-blue-500"
                 />
 
@@ -535,14 +632,15 @@ const OurToppersGalleryPage = () => {
 
               <div className="mt-4 flex justify-center lg:justify-center">
                 <button
-                  type="button"
-                  className="rounded-3xl px-7 py-3.5 text-[16px] font-semibold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg sm:px-8 sm:text-[18px]"
+                  type="submit"
+                  disabled={isPending}
+                  className="rounded-3xl px-7 py-3.5 text-[16px] font-semibold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-70 sm:px-8 sm:text-[18px]"
                   style={{
                     background:
                       'linear-gradient(90deg, rgba(24, 151, 216, 0.8) 0%, #021C29 100%)',
                   }}
                 >
-                  Book your session now
+                  {isPending ? 'Booking...' : 'Book your session now'}
                 </button>
               </div>
             </form>
@@ -596,6 +694,13 @@ const OurToppersGalleryPage = () => {
           text-align-last: center;
         }
       `}</style>
+
+      <SessionBookingDialog
+        open={dialog !== null}
+        variant={dialog?.variant ?? 'success'}
+        message={dialog?.message ?? ''}
+        onClose={() => setDialog(null)}
+      />
     </main>
   );
 };

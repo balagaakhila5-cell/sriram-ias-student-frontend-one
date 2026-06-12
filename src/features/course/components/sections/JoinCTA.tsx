@@ -6,9 +6,9 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
-import { useSubmitEnquiry } from '@/features/enquiry/hooks/useEnquiry';
-import { useEnquiryCourses } from '@/features/enquiry/hooks/useEnquiryLookups';
-import DemoFormSelect from '@/components/common/DemoFormSelect';
+import { useSessionBooking } from '../../hooks/useSessionBooking';
+import SessionBookingDialog from '../SessionBookingDialog';
+import FormFieldLabel from '@/components/common/FormFieldLabel';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,15 +26,14 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
     targetYear: '',
   });
   const [authorized, setAuthorized] = useState(false);
+  const [dialog, setDialog] = useState<{
+    variant: 'success' | 'error';
+    message: string;
+  } | null>(null);
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
-  const {
-    mutate: submitEnquiry,
-    isPending,
-    isSuccess,
-    isError,
-    error,
-  } = useSubmitEnquiry();
+  const courseTitle = course?.title?.replace(/\n/g, ' ');
+  const { bookSession, isPending } = useSessionBooking({ courseTitle });
 
   useGSAP(
     () => {
@@ -125,28 +124,30 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.fullName.trim() || !formData.mobile.trim()) return;
 
-    submitEnquiry(
-      {
-        name: formData.fullName.trim(),
-        phone: formData.mobile.trim(),
-        email: formData.email.trim(),
-        targetYear: formData.targetYear || undefined,
-        centerName: enquiryCenterName,
-        course: cityCourses[0]?._id,
-        courseTitle: cityCourses[0]?.title,
-        source: course ? 'course' : 'main',
-      },
-      {
-        onSuccess: () => {
-          setFormData({ fullName: '', mobile: '', email: '', targetYear: '' });
-          setAuthorized(false);
-        },
-      },
-    );
+    const result = await bookSession(formData, city, authorized);
+
+    if (result.ok) {
+      setDialog({
+        variant: 'success',
+        message: 'Your session has been booked. Our team will reach out shortly.',
+      });
+      setFormData({
+        fullName: '',
+        mobile: '',
+        email: '',
+        targetYear: '',
+      });
+      setAuthorized(false);
+      return;
+    }
+
+    setDialog({
+      variant: 'error',
+      message: result.message,
+    });
   };
 
   // ── BACKGROUNDS & BUTTON THEMES ──────────────────────────────────────────
@@ -222,55 +223,101 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
           {/* Form */}
           <form onSubmit={handleSubmit} className="join-cta-form w-full max-w-[600px]">
             <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {/* Full Name */}
-              <input
-                type="text"
-                name="fullName"
-                placeholder="Full Name"
-                value={formData.fullName}
-                onChange={handleChange}
-                className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
-              />
+              <div>
+                <FormFieldLabel
+                  required
+                  className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                >
+                  Full Name
+                </FormFieldLabel>
+                <input
+                  type="text"
+                  name="fullName"
+                  placeholder="Full Name"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  required
+                  className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300 sm:text-left sm:placeholder:text-left"
+                />
+              </div>
 
-              {/* Mobile Number */}
-              <input
-                type="tel"
-                name="mobile"
-                placeholder="Mobile Number"
-                value={formData.mobile}
-                onChange={handleChange}
-                className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
-              />
+              <div>
+                <FormFieldLabel
+                  required
+                  className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                >
+                  Mobile Number
+                </FormFieldLabel>
+                <input
+                  type="tel"
+                  name="mobile"
+                  placeholder="Mobile Number"
+                  value={formData.mobile}
+                  onChange={handleChange}
+                  required
+                  pattern="[0-9]{10}"
+                  className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300 sm:text-left sm:placeholder:text-left"
+                />
+              </div>
 
-              {/* Email Id */}
-              <input
-                type="email"
-                name="email"
-                placeholder="Email Id"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
-              />
+              <div>
+                <FormFieldLabel
+                  required
+                  className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                >
+                  Email Id
+                </FormFieldLabel>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email Id"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300 sm:text-left sm:placeholder:text-left"
+                />
+              </div>
 
-              {/* Target Year Select */}
-              <DemoFormSelect
-                value={formData.targetYear}
-                onChange={(value) =>
-                  setFormData((prev) => ({ ...prev, targetYear: value }))
-                }
-                options={[
-                  { value: '2025', label: '2025' },
-                  { value: '2026', label: '2026' },
-                  { value: '2027', label: '2027' },
-                  { value: '2028', label: '2028' },
-                  { value: '2029', label: '2029' },
-                ]}
-                placeholder="Target UPSC Attempt Year"
-                variant="pill"
-              />
+              <div className="relative w-full">
+                <FormFieldLabel
+                  required
+                  className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                >
+                  Target UPSC Attempt Year
+                </FormFieldLabel>
+                <select
+                  name="targetYear"
+                  value={formData.targetYear}
+                  onChange={handleChange}
+                  required
+                  className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300 sm:text-left"
+                >
+                  <option value="" disabled>
+                    Target UPSC Attempt Year
+                  </option>
+                  <option value="2025">2025</option>
+                  <option value="2026">2026</option>
+                  <option value="2027">2027</option>
+                  <option value="2028">2028</option>
+                  <option value="2029">2029</option>
+                </select>
+
+                {/* Dropdown arrow */}
+                <svg
+                  className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#999"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </div>
             </div>
-
-            {/* Authorization Checkbox */}
             <label className="group mb-8 mt-2 flex cursor-pointer items-start gap-3">
               <input
                 type="checkbox"
@@ -291,13 +338,13 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
               <button
                 type="submit"
                 disabled={isPending}
-                className="rounded-3xl px-8 py-3.5 text-[18px] font-semibold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded-3xl px-8 py-3.5 text-[18px] font-semibold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-70"
                 style={{
                   background:
                     'linear-gradient(90deg, rgba(24, 151, 216, 0.8) 0%, #021C29 100%)',
                 }}
               >
-                {isPending ? 'Submitting…' : 'Book your session now'}
+                {isPending ? 'Booking...' : 'Book your session now'}
               </button>
 
               {isSuccess && (
@@ -334,6 +381,13 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
           </div>
         </div>
       </div>
+
+      <SessionBookingDialog
+        open={dialog !== null}
+        variant={dialog?.variant ?? 'success'}
+        message={dialog?.message ?? ''}
+        onClose={() => setDialog(null)}
+      />
 
       <style jsx>{`
         .text-center-last {

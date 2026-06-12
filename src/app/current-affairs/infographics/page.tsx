@@ -245,12 +245,20 @@ export default function InfographicsPage() {
                 </div>
 
                 <div className="animate-cards-container">
-                  <DocumentsGrid
-                    documents={documents}
-                    isLoading={isLoading}
-                    isError={isError}
-                    error={error}
-                  />
+                  {documents.length > 0 ? (
+                    <ResourceCardGrid>
+                      {documents.map((item) => (
+                        <ResourceDocumentCard key={item.id} item={item} />
+                      ))}
+                    </ResourceCardGrid>
+                  ) : (
+                    <div className="flex min-h-[220px] items-center justify-center rounded-[20px] border border-dashed border-[#C5D9E8] bg-white/70 px-6 py-12 text-center shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
+                      <p className="max-w-md text-[16px] font-semibold leading-relaxed text-[#5C6B7A] md:text-[18px]">
+                        No data available for the selected year and month (
+                        {selectedMonth} {selectedYear}).
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 

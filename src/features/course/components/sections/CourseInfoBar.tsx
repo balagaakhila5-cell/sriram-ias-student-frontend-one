@@ -14,17 +14,36 @@ interface Props {
   course: CourseData;
 }
 
+const DEFAULT_BROCHURE_URL = '/assets/samples/sriram-sample.pdf';
+
+const getBrochureFileName = (course: CourseData) => {
+  const slug = course.slug?.replace(/[^\w-]+/g, '-') ?? 'course';
+  return `${slug}-brochure.pdf`;
+};
+
+const getFeeDisplay = (fee?: string, fallback?: string) => {
+  if (!fee || fee === '—' || fee === '-') return fallback ?? '';
+  return fee;
+};
+
+const downloadBrochure = (url: string, fileName: string) => {
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = fileName;
+  link.rel = 'noopener noreferrer';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 const CourseInfoBar: React.FC<Props> = ({ course }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const [isEnrollOpen, setIsEnrollOpen] = useState(false);
 
   const handleBrochureClick = () => {
-    if (course.brochure) {
-      window.open(course.brochure, '_blank', 'noopener,noreferrer');
-      return;
-    }
-    setIsEnrollOpen(true);
+    const url = course.brochure?.trim() || DEFAULT_BROCHURE_URL;
+    downloadBrochure(url, getBrochureFileName(course));
   };
 
   useGSAP(
@@ -170,11 +189,11 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
 
                 <div className="flex min-w-0 flex-col gap-1">
                   <span className="text-[16px] font-extrabold leading-tight text-[#000000] md:text-[18px]">
-                    {course.feesOnline || 'Rs.2,10,000'} | ONLINE
+                    {getFeeDisplay(course.feesOnline, 'Rs.2,10,000')} | ONLINE
                   </span>
 
                   <span className="text-[16px] font-extrabold leading-tight text-[#000000] md:text-[18px]">
-                    {course.feesOffline || 'Rs.1,75,000'} | OFFLINE
+                    {getFeeDisplay(course.feesOffline, 'Rs.1,75,000')} | OFFLINE
                   </span>
 
                   <span className="mt-2 text-[13px] font-semibold text-[#00000099] md:text-[16px]">

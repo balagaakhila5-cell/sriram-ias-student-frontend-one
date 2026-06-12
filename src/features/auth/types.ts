@@ -57,6 +57,7 @@ export interface LoginRequestResponse {
 export interface SendOtpPayload {
   email?: string;
   mobile?: string;
+  role?: UserRole;
 }
 
 export interface VerifyOtpPayload {
@@ -64,11 +65,13 @@ export interface VerifyOtpPayload {
   email?: string;
   mobile?: string;
   otp: string;
+  role?: UserRole;
 }
 
 export interface ParentLoginRequestPayload {
   mobile?: string;
   email?: string;
+  role?: UserRole;
   studentEmail?: string;
   studentMobile?: string;
   parentEmail?: string;

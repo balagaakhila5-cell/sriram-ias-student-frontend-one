@@ -167,13 +167,19 @@ function evaluateDemoAttempt(
   }
 
   const total = test.questions.length;
+  const answeredCount = Object.values(payload.answers).filter(
+    (answer) => answer !== undefined && answer !== "",
+  ).length;
+  const incorrectCount = Math.max(answeredCount - correctCount, 0);
+  const unattemptedCount = Math.max(total - answeredCount, 0);
+
   return {
     _id: `demo-result-${testId}-${Date.now()}`,
     score: correctCount * 2,
     totalMarks: total * 2,
     correctCount,
-    incorrectCount: total - correctCount,
-    unattemptedCount: 0,
+    incorrectCount,
+    unattemptedCount,
     totalQuestions: total,
     passed: correctCount >= Math.ceil(total * 0.4),
     percentage: Math.round((correctCount / total) * 100),
@@ -277,11 +283,25 @@ export const resourcesService = {
     await delay();
     const match = resultId.match(/^demo-result-(demo-mock-(?:prelims|mains)-\d+)-/);
     if (!match) return null;
-    return evaluateDemoAttempt(match[1], {
-      startedAt: new Date(Date.now() - 3600000).toISOString(),
-      timeTaken: 1800,
-      answers: {},
-    });
+
+    const testId = match[1];
+    if (typeof window !== "undefined") {
+      const saved = window.localStorage.getItem(`test-review-${testId}`);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved) as {
+            result?: MockTestResult;
+          };
+          if (parsed.result) {
+            return parsed.result;
+          }
+        } catch {
+          /* ignore invalid stored payload */
+        }
+      }
+    }
+
+    return null;
   },
 
   listMockTestResults: async (): Promise<MockTestResult[]> => {

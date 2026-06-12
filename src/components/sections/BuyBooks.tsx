@@ -226,6 +226,7 @@ const BuyBooks: React.FC = () => {
       gsap.from('.buy-books-header', {
         y: 100,
         opacity: 0,
+        immediateRender: false,
         scale: 0.95,
         duration: 0.8,
         ease: 'power3.out',

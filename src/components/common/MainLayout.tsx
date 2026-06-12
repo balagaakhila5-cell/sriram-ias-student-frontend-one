@@ -2,13 +2,30 @@
 
 import React from 'react';
 import Header from '@/components/common/Header';
+import HeaderLogoOnly from '@/components/common/HeaderLogoOnly';
 import Footer from '@/components/common/Footer';
 import FloatingActions from '@/components/common/FloatingActions';
 
-const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+type MainLayoutProps = {
+  children: React.ReactNode;
+  logoOnlyHeader?: boolean;
+  logoOnlyTransparent?: boolean;
+  headerVariant?: 'transparent' | 'light';
+};
+
+const MainLayout: React.FC<MainLayoutProps> = ({
+  children,
+  logoOnlyHeader = false,
+  logoOnlyTransparent = false,
+  headerVariant = 'transparent',
+}) => {
   return (
     <div className="min-h-screen flex flex-col font-sans">
-      <Header />
+      {logoOnlyHeader ? (
+        <HeaderLogoOnly transparent={logoOnlyTransparent} />
+      ) : (
+        <Header variant={headerVariant} />
+      )}
       <main className="flex-grow">
         {children}
       </main>

@@ -1,20 +1,27 @@
 "use client";
 
-import { useState } from "react";
-import { Clock, Megaphone, Pin } from "lucide-react";
+import { Pin } from "lucide-react";
 import type { Announcement } from "../data/announcements";
 import Image from "next/image";
 
 interface AnnouncementCardProps {
   announcement: Announcement;
+  pinned?: boolean;
+  read?: boolean;
+  onTogglePin?: () => void;
+  onMarkAsRead?: () => void;
 }
 
-export default function AnnouncementCard({ announcement }: AnnouncementCardProps) {
-  const [pinned, setPinned] = useState(!!announcement.pinned);
-  const [read, setRead] = useState(!!announcement.read);
+export default function AnnouncementCard({
+  announcement,
+  pinned = false,
+  read = false,
+  onTogglePin,
+  onMarkAsRead,
+}: AnnouncementCardProps) {
 
   return (
-    <article className="flex items-stretch gap-5 rounded-[18px] bg-white  shadow-[0_6px_22px_rgba(0,0,0,0.05)]">
+    <article className="notranslate flex items-stretch gap-5 rounded-[18px] bg-white shadow-[0_6px_22px_rgba(0,0,0,0.05)]" translate="no">
       <div
         className="flex h-[210px] w-[280px] shrink-0 items-center justify-center overflow-hidden rounded-[14px]"
       >
@@ -52,7 +59,9 @@ export default function AnnouncementCard({ announcement }: AnnouncementCardProps
           {announcement.attachmentUrl ? (
             <a
               href={announcement.attachmentUrl}
-              className="inline-flex items-center gap-3 rounded-[10px] bg-[#F4F7FB] px-3 py-2"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 rounded-[10px] bg-[#F4F7FB] px-3 py-2 transition-colors hover:bg-[#E8EEF6]"
             >
               <PdfIcon />
               <span className="text-[14px] font-medium text-[#0000FF]">
@@ -63,38 +72,52 @@ export default function AnnouncementCard({ announcement }: AnnouncementCardProps
             <span />
           )}
 
-          <div className="flex items-center gap-3">
+          <div className="relative z-10 flex shrink-0 items-center gap-3">
             <button
               type="button"
-              onClick={() => setRead((v) => !v)}
-              className="inline-flex items-center justify-center text-white shadow-[0_6px_16px_rgba(0,91,136,0.25)] transition-transform hover:-translate-y-0.5"
+              onClick={onMarkAsRead}
+              disabled={read}
+              aria-disabled={read}
+              className={`inline-flex items-center justify-center shadow-[0_6px_16px_rgba(0,91,136,0.25)] transition-transform ${
+                read
+                  ? "cursor-default bg-[#D7E5F0] text-[#5C6B7A]"
+                  : "cursor-pointer text-white hover:-translate-y-0.5"
+              }`}
               style={{
                 height: 40,
                 paddingLeft: 22,
                 paddingRight: 22,
                 borderRadius: 24,
-                background:
-                  "linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)",
+                background: read
+                  ? undefined
+                  : "linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)",
                 fontFamily: "Montserrat, sans-serif",
                 fontWeight: 600,
                 fontSize: 14,
                 lineHeight: "100%",
               }}
             >
-              {read ? "Marked" : "Mark as read"}
+              {read ? "Marked as read" : "Mark as read"}
             </button>
 
             <button
               type="button"
-              onClick={() => setPinned((v) => !v)}
-              aria-label={pinned ? "Unpin" : "Pin"}
-              className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors ${
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                onTogglePin?.();
+              }}
+              onContextMenu={(event) => event.preventDefault()}
+              aria-pressed={pinned}
+              aria-label={pinned ? "Unpin announcement" : "Pin announcement"}
+              translate="no"
+              className={`notranslate flex h-9 w-9 shrink-0 select-none cursor-pointer items-center justify-center rounded-full border transition-colors ${
                 pinned
-                  ? "bg-[#E2EEF7] text-[#1F7AB8]"
-                  : "text-[#7A858E] hover:bg-[#F4F7FB]"
+                  ? "border-[#1F7AB8] bg-[#E2EEF7] text-[#1F7AB8]"
+                  : "border-transparent text-[#7A858E] hover:border-[#D7E5F0] hover:bg-[#F4F7FB]"
               }`}
             >
-              <Pin size={16} className={pinned ? "fill-current" : ""} />
+              <Pin size={16} className={pinned ? "fill-current" : ""} aria-hidden />
             </button>
           </div>
         </div>

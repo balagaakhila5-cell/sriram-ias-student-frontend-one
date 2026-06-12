@@ -33,35 +33,27 @@ const FoundersMessagePage = () => {
       </section>
 
       {/* FOUNDER MESSAGE SECTION */}
-      <section className="founder-section relative overflow-x-hidden bg-[#f8fbff]">
+      <section className="founder-section relative bg-[#f8fbff]">
         <div className="founder-page-bg absolute inset-0" />
 
-        <div className="founder-moving-bg">
-          <Image
-            src="/assets/about/founder's-message/background-animation-founder.png"
-            alt="Founder background animation"
-            fill
-            sizes="80vw"
-            className="object-cover object-right"
-          />
+        {/* Animated circles — clipped to section, motion preserved */}
+        <div className="founder-moving-bg-clip" aria-hidden>
+          <div className="founder-moving-bg">
+            <Image
+              src="/assets/about/founder's-message/background-animation-founder.png"
+              alt=""
+              fill
+              sizes="80vw"
+              className="founder-moving-bg-img object-cover object-right"
+            />
+          </div>
         </div>
 
-        <div className="relative z-10 mx-auto w-full min-w-0 max-w-[1440px] box-border px-4 pb-16 pt-10 sm:px-6 sm:pb-20 sm:pt-12 lg:px-8 lg:pb-[110px] lg:pt-[62px]">
+        <div className="relative z-10 mx-auto w-full max-w-[1440px] box-border px-4 pb-12 pt-8 sm:px-6 sm:pb-14 sm:pt-10 lg:px-8 lg:pb-16 lg:pt-10">
           <div className="founder-main-grid">
             {/* LEFT — single message box */}
-            <div className="dialog-left-col relative z-20 w-full min-w-0 max-w-full">
+            <div className="dialog-left-col relative z-20 w-full max-w-full">
               <div className="dialog-box-wrap">
-                <div className="dialog-box-bg" aria-hidden>
-                  <Image
-                    src="/assets/about/founder's-message/dialog-box.png"
-                    alt=""
-                    fill
-                    priority
-                    sizes="(max-width: 1023px) 100vw, 803px"
-                    className="object-fill"
-                  />
-                </div>
-
                 <div className="dialog-text-content">
                   <p>
                     Dear Aspiring Civil Servants, Welcome to SRIRAM&apos;s IAS,
@@ -97,7 +89,7 @@ const FoundersMessagePage = () => {
             </div>
 
             {/* RIGHT FOUNDER */}
-            <div className="right-founder-col relative z-30 w-full min-w-0 max-w-full">
+            <div className="right-founder-col relative z-30 w-full max-w-full">
               <div className="founder-photo-wrap">
                 <Image
                   src="/assets/about/founder's-message/sriram-founder.png"
@@ -126,20 +118,21 @@ const FoundersMessagePage = () => {
         .founder-section {
           --fm-dialog-w: min(803px, 100%);
           --fm-founder-group-w: min(608px, 100%);
-          --fm-founder-photo: min(290px, 78vw);
+          --fm-founder-photo: min(200px, 68vw);
           --fm-font-size: 16px;
           --fm-line-height: 26px;
+          overflow: hidden;
         }
 
         @media (min-width: 640px) {
           .founder-section {
-            --fm-founder-photo: min(340px, 72vw);
+            --fm-founder-photo: min(260px, 58vw);
           }
         }
 
         @media (min-width: 1024px) {
           .founder-section {
-            --fm-founder-photo: min(460px, 92%);
+            --fm-founder-photo: min(340px, 88%);
           }
         }
 
@@ -172,24 +165,32 @@ const FoundersMessagePage = () => {
             linear-gradient(100deg, #fffaf2 0%, #ffffff 35%, #e8f6ff 100%);
         }
 
+        .founder-moving-bg-clip {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          overflow: hidden;
+          pointer-events: none;
+        }
+
         .founder-moving-bg {
           position: absolute;
-          right: -28px;
           top: 0;
           bottom: 0;
-          width: 68%;
+          left: 42%;
+          right: 0;
           opacity: 0.95;
-          pointer-events: none;
           animation: founderBgMove 5s ease-in-out infinite alternate;
-          transform-origin: right center;
+          transform-origin: center center;
+          will-change: transform;
         }
 
         @keyframes founderBgMove {
           0% {
-            transform: translateX(0px) translateY(0px) scale(1);
+            transform: translate3d(0, 0, 0) scale(1);
           }
           100% {
-            transform: translateX(-16px) translateY(10px) scale(1.025);
+            transform: translate3d(-14px, 8px, 0) scale(1.02);
           }
         }
 
@@ -202,14 +203,15 @@ const FoundersMessagePage = () => {
           width: 100%;
           max-width: 1411px;
           margin: 0 auto;
-          min-width: 0;
+          overflow: visible;
         }
 
         @media (min-width: 1024px) {
           .founder-main-grid {
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-            column-gap: clamp(12px, 2vw, 28px);
+            grid-template-columns: minmax(min-content, 1fr) minmax(min-content, 1fr);
+            column-gap: clamp(20px, 3vw, 40px);
             row-gap: 0;
+            align-items: start;
           }
         }
 
@@ -217,48 +219,49 @@ const FoundersMessagePage = () => {
           width: 100%;
           max-width: var(--fm-dialog-w);
           justify-self: end;
-          min-width: 0;
+          align-self: start;
+          isolation: isolate;
+          z-index: 2;
+          overflow: visible;
+          height: auto;
+          max-height: none;
         }
 
-        /* Speech bubble — mobile-first: PNG stretches to text height */
+        /* Single message card — text defines height, no inner scroll */
         .dialog-box-wrap {
           position: relative;
           box-sizing: border-box;
+          display: flow-root;
           width: 100%;
           max-width: 100%;
-          min-width: 0;
           margin: 0 auto;
-          display: block;
-          overflow: hidden;
-        }
-
-        .dialog-box-bg {
-          position: absolute;
-          inset: 0;
-          z-index: 1;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
+          overflow: visible;
+          height: auto;
+          max-height: none;
+          background: transparent;
+          background-image: url("/assets/about/founder's-message/dialog-box.png");
+          background-repeat: no-repeat;
+          background-size: 100% 100%;
+          background-position: center;
         }
 
         .dialog-text-content {
           position: relative;
-          z-index: 2;
-          display: block;
+          z-index: 1;
           box-sizing: border-box;
           width: 100%;
-          max-width: 100%;
-          min-width: 0;
+          height: auto;
+          max-height: none;
           margin: 0;
-          padding: 26px 22px 50px 20px;
+          padding: 28px 24px 80px 22px;
           color: #4d5961;
           font-family: 'Montserrat', sans-serif;
           font-size: 10.5px;
           line-height: 16px;
           font-weight: 600;
+          overflow: visible;
           overflow-wrap: break-word;
           word-break: break-word;
-          hyphens: none;
         }
 
         .dialog-text-content p {
@@ -276,14 +279,13 @@ const FoundersMessagePage = () => {
         }
 
         .welcome-text {
-          margin-top: 10px !important;
+          margin-top: 12px !important;
           text-align: center;
-          white-space: normal;
         }
 
         @media (max-width: 360px) {
           .dialog-text-content {
-            padding: 24px 18px 46px 18px;
+            padding: 26px 20px 76px 20px;
             font-size: 10px;
             line-height: 15px;
           }
@@ -295,7 +297,7 @@ const FoundersMessagePage = () => {
 
         @media (min-width: 425px) {
           .dialog-text-content {
-            padding: 28px 24px 54px 22px;
+            padding: 32px 28px 84px 26px;
             font-size: 11px;
             line-height: 17px;
           }
@@ -311,7 +313,7 @@ const FoundersMessagePage = () => {
 
         @media (min-width: 640px) {
           .dialog-text-content {
-            padding: 32px 28px 60px 26px;
+            padding: 36px 32px 92px 30px;
             font-size: 12px;
             line-height: 19px;
           }
@@ -323,123 +325,106 @@ const FoundersMessagePage = () => {
 
         @media (min-width: 768px) and (max-width: 1023px) {
           .dialog-text-content {
-            padding: 36px 32px 68px 30px;
+            padding: 40px 36px 100px 34px;
             font-size: 13px;
             line-height: 21px;
           }
 
           .founder-moving-bg {
-            display: block;
-            width: 55%;
-            right: 0;
-            opacity: 0.4;
+            left: 50%;
+            opacity: 0.55;
             animation: none;
           }
         }
 
         @media (max-width: 767px) {
-          .founder-moving-bg {
+          .founder-moving-bg-clip {
             display: none;
           }
         }
 
-        /* Desktop: grid overlay, text + PNG share cell */
+        /* Desktop */
         @media (min-width: 1024px) {
-          .dialog-box-wrap {
-            display: grid;
-            grid-template: 1fr / 1fr;
-          }
-
-          .dialog-box-wrap::before {
-            content: '';
-            grid-area: 1 / 1;
-            width: 100%;
-            padding-bottom: 92.53%;
-            visibility: hidden;
-            pointer-events: none;
-          }
-
-          .dialog-box-bg {
-            position: relative;
-            grid-area: 1 / 1;
-            inset: auto;
-            height: 100%;
-            min-height: 100%;
-            align-self: stretch;
-            justify-self: stretch;
-          }
-
           .dialog-text-content {
-            grid-area: 1 / 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            width: 84.4%;
+            width: 84%;
+            max-width: none;
             margin: 0 auto;
-            padding: clamp(28px, 9.2%, 68px) clamp(16px, 5%, 32px)
-              clamp(48px, 22%, 164px) clamp(20px, 9%, 72px);
+            padding: 40px 32px 128px 48px;
             font-size: var(--fm-font-size);
             line-height: var(--fm-line-height);
           }
 
           .dialog-text-content p {
-            margin: 0 0 clamp(12px, 2.5%, 20px);
+            margin: 0 0 14px;
           }
 
           .welcome-text {
-            margin-top: auto !important;
+            margin-top: 10px !important;
           }
 
           .founder-moving-bg {
-            display: block;
-            width: 68%;
-            right: -28px;
+            left: 40%;
             opacity: 0.95;
             animation: founderBgMove 5s ease-in-out infinite alternate;
           }
         }
 
         .right-founder-col {
+          position: relative;
           display: flex;
           width: 100%;
           max-width: var(--fm-founder-group-w);
           flex-direction: column;
           align-items: center;
-          justify-self: start;
-          margin-top: 0;
-          min-width: 0;
+          justify-content: flex-start;
+          justify-self: center;
+          align-self: start;
+          margin-top: clamp(20px, 4vw, 32px);
+          overflow: visible;
+          height: auto;
+          max-height: none;
         }
 
         @media (min-width: 1024px) {
           .right-founder-col {
-            margin-top: clamp(24px, 4vw, 48px);
+            margin-top: 48px;
+            justify-self: center;
           }
         }
 
         .founder-photo-wrap {
           position: relative;
+          z-index: 2;
+          flex-shrink: 0;
           width: min(var(--fm-founder-photo), 100%);
           max-width: 100%;
           aspect-ratio: 1 / 1;
           height: auto;
+          margin-inline: auto;
+          border-radius: 50%;
           overflow: hidden;
         }
 
         .founder-main-img {
-          object-fit: contain;
+          object-fit: cover;
           object-position: center center;
         }
 
         .founder-details {
           position: relative;
           z-index: 12;
+          display: flex;
           width: 100%;
           max-width: 100%;
-          margin-top: clamp(16px, 2.5vw, 28px);
+          flex-direction: column;
+          align-items: center;
+          margin-top: clamp(12px, 2vw, 18px);
           text-align: center;
+          gap: clamp(10px, 1.4vw, 16px);
         }
 
         .best-wishes-text {
+          margin: 0;
           font-size: clamp(22px, 2.3vw, 33px);
           line-height: 1.05;
           font-weight: 800;
@@ -457,7 +442,7 @@ const FoundersMessagePage = () => {
         }
 
         .founder-name {
-          margin-top: clamp(12px, 1.2vw, 17px);
+          margin: 0;
           font-size: clamp(22px, 2.4vw, 34px);
           line-height: 1.1;
           font-weight: 700;
@@ -466,7 +451,7 @@ const FoundersMessagePage = () => {
         }
 
         .founder-role {
-          margin-top: clamp(14px, 1.5vw, 21px);
+          margin: 0;
           font-size: clamp(18px, 1.8vw, 26px);
           line-height: 1.15;
           font-weight: 600;
@@ -474,7 +459,7 @@ const FoundersMessagePage = () => {
         }
 
         .founder-brand {
-          margin-top: clamp(14px, 1.5vw, 22px);
+          margin: 0;
           font-size: clamp(18px, 1.7vw, 25px);
           line-height: 1.15;
           font-weight: 700;
@@ -489,20 +474,16 @@ const FoundersMessagePage = () => {
 
           .dialog-text-content {
             width: 86%;
-            padding-bottom: clamp(40px, 18%, 120px);
+            padding: 36px 28px 132px 44px;
           }
 
           .dialog-text-content p {
-            margin-bottom: clamp(10px, 1.8%, 14px);
+            margin-bottom: 12px;
           }
 
           .founder-moving-bg {
-            width: 72%;
-            opacity: 0.75;
-          }
-
-          .right-founder-col {
-            margin-top: clamp(20px, 3vw, 36px);
+            left: 38%;
+            opacity: 0.8;
           }
         }
 

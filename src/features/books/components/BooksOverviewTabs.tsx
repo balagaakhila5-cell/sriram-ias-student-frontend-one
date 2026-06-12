@@ -52,7 +52,7 @@ const BooksOverviewTabs: React.FC = () => {
     {
       id: 'toppers',
       label: "Topper's Recommendations",
-      icon: <GraduationCap size={34} strokeWidth={2.2} />,
+      icon: <GraduationCap size={30} strokeWidth={2.2} />,
     },
     {
       id: 'sample',
@@ -84,16 +84,18 @@ const BooksOverviewTabs: React.FC = () => {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full rounded-full flex items-center gap-5 px-10 py-6 transition-all duration-300 ${
+                className={`w-full rounded-[40px] flex items-center gap-4 px-6 md:px-8 py-5 md:py-6 transition-all duration-300 ${
                   activeTab === tab.id
                     ? 'bg-[linear-gradient(90deg,#43A9E7_0%,#001C2D_100%)] text-white shadow-lg'
                     : 'bg-[#EDEFFC] text-[#6D7484] hover:bg-[#E2E6F8]'
                 }`}
               >
-                <span className={activeTab === tab.id ? 'text-white' : 'text-[#7A7F8B]'}>
+                <span
+                  className={`shrink-0 ${activeTab === tab.id ? 'text-white' : 'text-[#7A7F8B]'}`}
+                >
                   {tab.icon}
                 </span>
-                <span className="font-semibold text-[18px] leading-none tracking-[-0.3px] whitespace-nowrap">
+                <span className="min-w-0 flex-1 text-left font-semibold text-[15px] md:text-[17px] leading-snug tracking-[-0.2px]">
                   {tab.label}
                 </span>
               </button>

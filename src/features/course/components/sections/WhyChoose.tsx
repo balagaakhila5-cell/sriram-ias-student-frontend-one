@@ -57,12 +57,12 @@ const CardItem: React.FC<CardItemProps> = ({
 
   return (
     <div
-      className="why-choose-card w-full relative pb-1"
+      className={`why-choose-card relative w-full ${isActive ? "z-50" : "z-0"}`}
       onMouseEnter={() => setActiveId(card.id)}
       onMouseLeave={() => setActiveId(null)}
     >
       <div
-        className={`w-full rounded-[22px] px-5 md:px-6 py-5 transition-all duration-300 cursor-pointer bg-white ${
+        className={`w-full rounded-[22px] px-6 md:px-7 py-3.5 transition-all duration-300 cursor-pointer bg-white ${
           isActive
             ? "shadow-[0_16px_35px_rgba(0,0,0,0.08)]"
             : "shadow-[0_8px_24px_rgba(0,0,0,0.06)]"
@@ -71,35 +71,35 @@ const CardItem: React.FC<CardItemProps> = ({
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div
-              className={`w-[54px] h-[54px] rounded-full flex items-center justify-center shrink-0 ${card.iconBg} ${card.iconColor}`}
+              className={`flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full ${card.iconBg} ${card.iconColor}`}
             >
               {card.icon}
             </div>
 
-            <h3 className="text-[18px] md:text-[18px] leading-[1.3] font-medium text-[#000000] max-w-[250px]">
+            <h3 className="text-[16px] font-medium leading-[1.35] text-[#000000] md:text-[17px]">
               {card.title}
             </h3>
           </div>
 
-          <div className="shrink-0 flex items-center justify-center">
+          <div className="flex shrink-0 items-center justify-center">
             <img
               src="/assets/why-choose/ri_cursor-hand.png"
               alt="cursor"
-              className="w-6 h-6 object-contain opacity-70 transition-all duration-300"
+              className="h-6 w-6 object-contain opacity-70 transition-all duration-300"
             />
           </div>
         </div>
       </div>
 
       <div
-        className={`absolute left-0 right-0 top-full mt-2 z-30 transition-all duration-300 ease-in-out ${
+        className={`absolute left-0 right-0 top-full z-50 mt-2 transition-all duration-300 ease-in-out ${
           isActive
-            ? "opacity-100 pointer-events-auto translate-y-0"
-            : "opacity-0 pointer-events-none -translate-y-2"
+            ? "pointer-events-auto translate-y-0 opacity-100"
+            : "pointer-events-none -translate-y-2 opacity-0"
         }`}
       >
         <div
-          className={`rounded-[20px] px-5 md:px-6 py-4 text-[15px] md:text-[16px] font-semibold leading-[1.7] shadow-[0_10px_25px_rgba(0,0,0,0.07)] ${card.lightBg} ${card.darkText}`}
+          className={`rounded-[20px] px-5 py-3.5 text-[14px] font-semibold leading-[1.65] shadow-[0_12px_30px_rgba(0,0,0,0.1)] md:text-[15px] ${card.lightBg} ${card.darkText}`}
         >
           {card.info}
         </div>
@@ -489,7 +489,7 @@ const WhyChoose: React.FC<Props> = ({ course }) => {
   return (
     <section
       ref={sectionRef}
-      className="w-full bg-[#F7F7F8] px-6 md:px-10 lg:px-14 xl:px-20 py-12 md:py-16 overflow-x-hidden overflow-y-visible relative font-['Montserrat',sans-serif]"
+      className="relative w-full overflow-hidden bg-[#F7F7F8] px-6 py-10 font-['Montserrat',sans-serif] md:px-10 md:py-12 lg:px-14 xl:px-20"
     >
       <style>{`
         @keyframes svgFloat {
@@ -523,18 +523,11 @@ const WhyChoose: React.FC<Props> = ({ course }) => {
         src="/assets/why-choose/background-anime.png"
         alt=""
         className="bg-drift absolute inset-0 w-full h-full object-cover z-0 pointer-events-none select-none mix-blend-multiply opacity-90 brightness-105"
+        draggable={false}
       />
 
-      <div className="why-choose-girl hidden xl:block absolute bottom-0 right-0 w-[560px] pointer-events-none z-10">
-        <img
-          src="/assets/course/why-choose-girl.png"
-          alt="Student"
-          className="w-full h-auto object-contain object-bottom block"
-        />
-      </div>
-
-      <div className="max-w-[1400px] mx-auto relative z-2">
-        <h2 className="font-['Montserrat'] font-extrabold text-[40px] md:text-[40px] leading-[1.2] mb-8 md:mb-12 max-w-[1200px]">
+      <div className="relative z-[2] mx-auto max-w-[1400px] min-w-0">
+        <h2 className="font-['Montserrat'] font-extrabold text-[40px] md:text-[40px] leading-[1.2] mb-5 md:mb-6 max-w-[1200px]">
           <span className="text-[rgba(0,0,0,0.8)]">Why Choose the </span>
 
           <span className={headingGradientClass}>
@@ -542,28 +535,41 @@ const WhyChoose: React.FC<Props> = ({ course }) => {
           </span>
         </h2>
 
-        <div className="xl:pr-[420px] pb-8 md:pb-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-6 items-start overflow-visible">
-            <div className="flex flex-col gap-6 overflow-visible pb-28 md:pb-32">
-              {leftCards.map((card) => (
-                <CardItem
-                  key={card.id}
-                  card={card}
-                  activeId={activeLeftId}
-                  setActiveId={setActiveLeftId}
-                />
-              ))}
-            </div>
+        <div className="flex min-w-0 flex-col xl:flex-row xl:items-start xl:justify-between">
+          <div className="min-w-0 w-full shrink-0 xl:w-[68%] xl:max-w-[880px]">
+            <div className="grid grid-cols-1 items-start gap-4 pb-16 md:grid-cols-2 md:gap-x-5 md:gap-y-4 md:pb-20">
+              <div className="flex min-w-0 flex-col gap-4">
+                {leftCards.map((card) => (
+                  <CardItem
+                    key={card.id}
+                    card={card}
+                    activeId={activeLeftId}
+                    setActiveId={setActiveLeftId}
+                  />
+                ))}
+              </div>
 
-            <div className="flex flex-col gap-6 overflow-visible pb-28 md:pb-32">
-              {rightCards.map((card) => (
-                <CardItem
-                  key={card.id}
-                  card={card}
-                  activeId={activeRightId}
-                  setActiveId={setActiveRightId}
-                />
-              ))}
+              <div className="flex min-w-0 flex-col gap-4">
+                {rightCards.map((card) => (
+                  <CardItem
+                    key={card.id}
+                    card={card}
+                    activeId={activeRightId}
+                    setActiveId={setActiveRightId}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 flex w-full shrink-0 -translate-y-6 items-end justify-center md:-translate-y-12 xl:mt-0 xl:w-[32%] xl:max-w-[520px] xl:-translate-y-24 xl:translate-x-14 xl:self-end xl:justify-end 2xl:-translate-y-28 2xl:translate-x-20">
+            <div className="why-choose-girl flex w-full justify-end">
+              <img
+                src="/assets/course/why-choose-girl.png"
+                alt="Student"
+                className="block h-auto w-full max-w-[360px] object-contain object-bottom sm:max-w-[400px] xl:max-h-[540px] xl:max-w-[520px]"
+                draggable={false}
+              />
             </div>
           </div>
         </div>
