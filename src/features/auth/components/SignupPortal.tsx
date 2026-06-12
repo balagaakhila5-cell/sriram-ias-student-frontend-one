@@ -42,6 +42,9 @@ const SignupPortal: React.FC = () => {
 
   const sendOtp = useSendOtp();
 
+  const studentSignup = useStudentSignup();
+  const verifyStudentSignup = useVerifyStudentSignup();
+
   const form = useForm<StudentSignupForm>({
     resolver: zodResolver(studentSchema),
     defaultValues: {
@@ -117,12 +120,15 @@ const SignupPortal: React.FC = () => {
   };
 
   const handleOtpVerify = (otp: string) => {
-    if (otp.length !== 4) {
-      setOtpError("Please enter 4 digit OTP");
+    if (otp.length !== 6) {
+      setOtpError("Please enter 6 digit OTP");
       return;
     }
 
-    if (!signupData) return;
+    if (!userId) {
+      setOtpError("Something went wrong. Please sign up again.");
+      return;
+    }
 
     try {
       registerStudent({
@@ -152,6 +158,8 @@ const SignupPortal: React.FC = () => {
     setScreen("form");
     setFormError(null);
     setOtpError(null);
+    studentSignup.reset();
+    verifyStudentSignup.reset();
   };
 
   if (role !== "student") {
@@ -244,7 +252,7 @@ const SignupPortal: React.FC = () => {
                 "linear-gradient(90deg, rgba(24,151,216,0.85) 0%, #021C29 100%)",
             }}
           >
-            Sign Up
+            {studentSignup.isPending ? "Please wait..." : "Sign Up"}
           </button>
 
           <p className="mt-2 text-center text-[13px] text-gray-600">
@@ -268,8 +276,10 @@ const SignupPortal: React.FC = () => {
             setScreen("form");
             setFormError(null);
             setOtpError(null);
+            verifyStudentSignup.reset();
           }}
-          error={otpError ?? undefined}
+          loading={verifyStudentSignup.isPending}
+          error={otpError ?? verifyStudentSignup.error?.message ?? undefined}
         />
       )}
     </AuthPortalShell>

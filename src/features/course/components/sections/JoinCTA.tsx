@@ -113,6 +113,10 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
   );
 
   const city = propCity?.toLowerCase() || course?.city?.toLowerCase() || 'delhi';
+  const enquiryCenterName = city.charAt(0).toUpperCase() + city.slice(1);
+  // The backend requires a resolvable course on every enquiry; this generic CTA
+  // has no course picker, so default to the branch's first real course.
+  const { data: cityCourses = [] } = useEnquiryCourses(enquiryCenterName);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -330,7 +334,7 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
             </label>
 
             {/* Dynamic Submit Button */}
-            <div className="mt-4 flex justify-center">
+            <div className="mt-4 flex flex-col items-center gap-3">
               <button
                 type="submit"
                 disabled={isPending}
@@ -342,6 +346,18 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
               >
                 {isPending ? 'Booking...' : 'Book your session now'}
               </button>
+
+              {isSuccess && (
+                <p className="text-[14px] font-semibold text-green-700">
+                  Thank you! Our team will contact you shortly.
+                </p>
+              )}
+              {isError && (
+                <p className="text-[14px] font-semibold text-red-600">
+                  {(error as Error)?.message ??
+                    'Something went wrong. Please try again.'}
+                </p>
+              )}
             </div>
           </form>
         </div>

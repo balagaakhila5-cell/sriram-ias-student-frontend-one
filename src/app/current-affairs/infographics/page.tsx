@@ -12,12 +12,17 @@ import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 import { revealResourceCards } from "@/features/resources/utils/resourceCardGsap";
-import { listCurrentAffairsDocuments } from "@/features/resources/catalog/currentAffairs";
-import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
-import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
+import { useCurrentAffairsDocuments } from "@/features/currentAffairs/hooks/useCurrentAffairs";
+import DocumentsGrid from "@/features/currentAffairs/components/DocumentsGrid";
+import {
+  ALL_FILTER,
+  CA_FILTER_MONTHS,
+  CA_FILTER_YEARS,
+  toFilterValue,
+} from "@/features/currentAffairs/filters";
 
 import Header from "@/components/common/Header";
 import { RESOURCE_PAGE_HEADING_GRADIENT } from "@/features/resources/components/cardStyles";
@@ -136,13 +141,13 @@ function QuickLinksCard() {
 export default function InfographicsPage() {
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
-  const [selectedYear, setSelectedYear] = useState<string>("2026");
-  const [selectedMonth, setSelectedMonth] = useState<string>("April");
+  const [selectedYear, setSelectedYear] = useState<string>(ALL_FILTER);
+  const [selectedMonth, setSelectedMonth] = useState<string>(ALL_FILTER);
 
-  const documents = useMemo(
-    () =>
-      listCurrentAffairsDocuments("infographics", selectedYear, selectedMonth),
-    [selectedYear, selectedMonth],
+  const { documents, isLoading, isError, error } = useCurrentAffairsDocuments(
+    "INFOGRAPHICS",
+    toFilterValue(selectedYear),
+    toFilterValue(selectedMonth),
   );
 
   useGSAP(
@@ -226,13 +231,13 @@ export default function InfographicsPage() {
 
                 <div className="animate-filters mb-12 flex flex-col items-center justify-center gap-5 md:flex-row md:gap-6">
                   <CustomDropdown
-                    options={["2026", "2025", "2024"]}
+                    options={CA_FILTER_YEARS}
                     value={selectedYear}
                     onChange={setSelectedYear}
                     placeholder="Year"
                   />
                   <CustomDropdown
-                    options={["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]}
+                    options={CA_FILTER_MONTHS}
                     value={selectedMonth}
                     onChange={setSelectedMonth}
                     placeholder="Month"

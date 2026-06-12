@@ -159,7 +159,7 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
             "linear-gradient(90deg, rgba(24,151,216,0.85) 0%, #021C29 100%)",
         }}
       >
-        Verify OTP
+        {loading ? "Please wait..." : "Verify OTP"}
       </button>
 
       {isExpired || resendLoading ? (

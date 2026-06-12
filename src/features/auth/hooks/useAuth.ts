@@ -4,11 +4,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authService } from "../services/authService";
 import { useAuthStore } from "@/store/authStore";
 import type {
-  ParentLoginRequestPayload,
+  LoginPayload,
   SendOtpPayload,
   StaffLoginCredentials,
   StudentSignupPayload,
   VerifyOtpPayload,
+  VerifyStudentSignupPayload,
 } from "../types";
 
 export function useStaffLogin(variant: "staff" | "super_admin" = "staff") {
@@ -35,17 +36,16 @@ export function useSendOtp() {
   });
 }
 
-export function useParentLoginRequest() {
+export function useLoginRequest() {
   return useMutation({
-    mutationFn: (payload: ParentLoginRequestPayload) =>
-      authService.parentLoginRequest(payload),
+    mutationFn: (payload: LoginPayload) => authService.login(payload),
   });
 }
 
 export function useVerifyStudentSignup() {
   const setAuth = useAuthStore((s) => s.setAuth);
   return useMutation({
-    mutationFn: (payload: VerifyOtpPayload) =>
+    mutationFn: (payload: VerifyStudentSignupPayload) =>
       authService.verifyStudentSignup(payload),
     onSuccess: (data) => setAuth(data.user, data.token),
   });

@@ -195,8 +195,8 @@ const LoginPortal: React.FC = () => {
   };
 
   const handleStudentOtpVerify = (otp: string) => {
-    if (otp.length !== 4) {
-      setOtpError("Please enter 4 digit OTP");
+    if (otp.length !== 6) {
+      setOtpError("Please enter 6 digit OTP");
       return;
     }
 
@@ -384,8 +384,10 @@ const LoginPortal: React.FC = () => {
           onBack={() => {
             setStudentScreen("form");
             setOtpError(null);
+            verifyStudentOtp.reset();
           }}
-          error={otpError ?? undefined}
+          loading={verifyStudentOtp.isPending}
+          error={otpError ?? verifyStudentOtp.error?.message ?? undefined}
         />
       )}
 

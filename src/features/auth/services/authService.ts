@@ -1,12 +1,17 @@
+import { httpClient } from "@/lib/httpClient";
 import type {
   AuthResponse,
   AuthUser,
+  LoginPayload,
+  LoginRequestResponse,
   OtpRequestResponse,
-  ParentLoginRequestPayload,
   SendOtpPayload,
+  ServerRole,
   StaffLoginCredentials,
   StudentSignupPayload,
+  StudentSignupResponse,
   VerifyOtpPayload,
+  VerifyStudentSignupPayload,
 } from "../types";
 import {
   assertLoginCredentialAllowed,
@@ -30,6 +35,51 @@ const mockUser = (
   role,
   ...overrides,
 });
+
+/**
+ * Maps a raw verify-OTP / verify-signup response into our AuthResponse shape.
+ *
+ * The exact backend payload is not finalised yet, so this tolerates the common
+ * shapes: `{ token, user }`, `{ token, student }`, `{ data: { token, user } }`,
+ * and token-only responses. This is the single place to adjust once the live
+ * response is confirmed.
+ */
+const normalizeAuthResponse = (
+  raw: unknown,
+  fallbackRole: ServerRole = "student",
+): AuthResponse => {
+  const data = (raw ?? {}) as Record<string, unknown>;
+  const payload = (data.data ?? data) as Record<string, unknown>;
+
+  const token = (payload.token ??
+    payload.accessToken ??
+    payload.access_token ??
+    "") as string;
+
+  const rawUser = (payload.user ??
+    payload.student ??
+    payload.parent ??
+    payload.profile ??
+    null) as Record<string, unknown> | null;
+
+  const user: AuthUser = rawUser
+    ? {
+        id: String(rawUser._id ?? rawUser.id ?? payload.userId ?? ""),
+        name: String(rawUser.name ?? rawUser.fullName ?? ""),
+        email: (rawUser.email as string | undefined) ?? undefined,
+        mobile: (rawUser.mobile as string | undefined) ?? undefined,
+        role: (rawUser.role as ServerRole | undefined) ?? fallbackRole,
+        center: (rawUser.center as string | undefined) ?? undefined,
+        permissions: (rawUser.permissions as string[] | undefined) ?? undefined,
+      }
+    : {
+        id: String(payload.userId ?? ""),
+        name: "",
+        role: fallbackRole,
+      };
+
+  return { user, token };
+};
 
 export const authService = {
   loginSuperAdmin: async (
@@ -120,7 +170,7 @@ export const authService = {
   },
 
   verifyStudentSignup: async (
-    payload: VerifyOtpPayload,
+    payload: VerifyStudentSignupPayload,
   ): Promise<AuthResponse> => {
     await delay();
 

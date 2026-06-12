@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
+import { useSubmitEnquiry } from '@/features/course/hooks/useCourses';
 import {
   useCenters,
   useCourses,
@@ -32,16 +33,6 @@ const initialState: FormState = {
   centerId: '',
 };
 
-/* Added course options */
-const fallbackCourses = [
-  { _id: 'gs-foundation', title: 'GS Foundation' },
-  { _id: 'mentorship', title: 'Mentorship' },
-  { _id: 'optional-foundation', title: 'Optional Foundation' },
-  { _id: 'test-series', title: 'Test Series' },
-  { _id: 'csat', title: 'CSAT' },
-  { _id: 'enrichment-course', title: 'Enrichment Course' },
-];
-
 /* Added center options */
 const fallbackCenters = [
   { _id: 'new-delhi', name: 'New Delhi' },
@@ -55,16 +46,8 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
   defaultCourseTitle,
   defaultCenterName,
 }) => {
-  const { data: centersData } = useCenters();
-  const { data: coursesData } = useCourses();
+  const { data: centersData } = useEnquiryCenters();
   const { mutateAsync: submitEnquiry, isPending } = useSubmitEnquiry();
-
-  /*
-    If backend courses/centers are available, it uses backend data.
-    If backend data is empty, it shows fallback static options.
-  */
-  const courses = coursesData?.length ? coursesData : fallbackCourses;
-  const centers = centersData?.length ? centersData : fallbackCenters;
 
   const [form, setForm] = useState<FormState>(initialState);
   const [error, setError] = useState<string | null>(null);
@@ -89,6 +72,14 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
 
     return () => window.clearTimeout(timer);
   }, [success, isOpen, onClose]);
+
+  const centers = centersData?.length ? centersData : fallbackCenters;
+  const selectedCenter = centers.find((c) => c._id === form.centerId);
+
+  // Real courses for the chosen center (no fake fallback — a placeholder course
+  // would be rejected by the backend's course lookup).
+  const { data: coursesData } = useEnquiryCourses(selectedCenter?.name);
+  const courses = coursesData ?? [];
 
   if (!isOpen) return null;
 
@@ -120,7 +111,6 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
     }
 
     const selectedCourse = courses.find((c) => c._id === form.courseId);
-    const selectedCenter = centers.find((c) => c._id === form.centerId);
 
     try {
       const res = await submitEnquiry({

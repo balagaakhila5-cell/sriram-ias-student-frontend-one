@@ -31,7 +31,27 @@ export interface StudentSignupPayload {
   name: string;
   mobile: string;
   email: string;
-  centerId: string;
+  centerId?: string;
+}
+
+export interface StudentSignupResponse {
+  userId: string;
+  message?: string;
+}
+
+export interface VerifyStudentSignupPayload {
+  userId: string;
+  otp: string;
+}
+
+export interface LoginPayload {
+  mobile?: string;
+  email?: string;
+}
+
+export interface LoginRequestResponse {
+  userId?: string;
+  message?: string;
 }
 
 export interface SendOtpPayload {
@@ -41,6 +61,7 @@ export interface SendOtpPayload {
 }
 
 export interface VerifyOtpPayload {
+  userId?: string;
   email?: string;
   mobile?: string;
   otp: string;
