@@ -27,12 +27,28 @@ httpClient.interceptors.request.use((config) => {
 httpClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    const data = error?.response?.data;
+    const data = error?.response?.data as
+      | {
+          message?: string;
+          error?: string;
+          errors?: Array<{ field?: string; message?: string }>;
+        }
+      | undefined;
+
+    const fieldMessages = Array.isArray(data?.errors)
+      ? data.errors
+          .map((item) => item.message?.trim())
+          .filter((item): item is string => Boolean(item))
+      : [];
+
     const message =
-      data?.message ??
-      data?.error ??
-      error?.message ??
-      "Something went wrong. Please try again.";
+      fieldMessages.length > 0
+        ? fieldMessages.join(" ")
+        : (data?.message ??
+          data?.error ??
+          error?.message ??
+          "Something went wrong. Please try again.");
+
     return Promise.reject(new Error(message));
   },
 );

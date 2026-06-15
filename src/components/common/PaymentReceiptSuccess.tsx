@@ -147,13 +147,7 @@ export default function PaymentReceiptSuccess({
       <div className="min-h-[calc(100vh-140px)] px-6 py-6 md:px-10 md:py-8">
         <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-10 lg:flex-row lg:items-start lg:justify-between xl:px-4">
           <div className="flex flex-col items-start mt-4 lg:mt-10 lg:max-w-[580px]">
-            <img
-              src={CONFIRMED_BAG}
-              alt="Order Confirmed"
-              className="mb-8 h-[280px] w-[360px] object-contain md:h-[320px] md:w-[420px] lg:h-[360px] lg:w-[480px]"
-            />
-
-            <div className="mb-8 flex items-center gap-3">
+            <div className="mb-6 flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#00b814] text-[28px] text-[#00b814]">
                 ✓
               </div>
@@ -162,12 +156,18 @@ export default function PaymentReceiptSuccess({
               </h1>
             </div>
 
-            <p className="max-w-[520px] text-[17px] font-medium leading-[1.6] text-black">
+            <p className="mb-6 max-w-[520px] text-[17px] font-medium leading-[1.6] text-black">
               Thank you for the payment&nbsp; the order of service and the payment is
               received and you will get a confirmation mail
             </p>
 
-            <div className="mt-9 flex flex-wrap gap-5">
+            <img
+              src={CONFIRMED_BAG}
+              alt="Order Confirmed"
+              className="mb-8 h-[220px] w-[300px] object-contain md:h-[250px] md:w-[340px] lg:h-[270px] lg:w-[360px]"
+            />
+
+            <div className="mt-2 flex flex-wrap gap-5">
               <button
                 type="button"
                 onClick={handleDownloadInvoice}

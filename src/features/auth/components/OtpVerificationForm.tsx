@@ -6,18 +6,27 @@ interface OtpVerificationFormProps {
   onVerify: (otp: string) => void;
   onBack: () => void;
   error?: string;
+  /** Shown above the OTP inputs — e.g. where the code was sent. */
+  subtitle?: string;
   /** Number of OTP digits to collect. Defaults to 6. */
   length?: number;
   /** Disables the verify button and shows a pending label. */
   loading?: boolean;
+  onResend?: () => void;
+  resendLoading?: boolean;
+  resendMessage?: string | null;
 }
 
 const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
   onVerify,
   onBack,
   error,
+  subtitle,
   length = 6,
   loading = false,
+  onResend,
+  resendLoading = false,
+  resendMessage,
 }) => {
   const [otpValues, setOtpValues] = useState<string[]>(() =>
     Array.from({ length }, () => ""),
@@ -50,6 +59,12 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
 
   return (
     <div className="flex w-full flex-col items-center">
+      {subtitle ? (
+        <p className="mb-3 text-center text-[13px] leading-relaxed text-black/55">
+          {subtitle}
+        </p>
+      ) : null}
+
       <p className="mb-4 text-center text-[13px] font-medium text-black/45">
         Enter Your {length} Digit OTP
       </p>
@@ -86,6 +101,12 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
         {loading ? "Please wait..." : "Verify OTP"}
       </button>
 
+      {resendMessage ? (
+        <p className="mb-4 text-center text-xs font-medium text-[#0A73B7]">
+          {resendMessage}
+        </p>
+      ) : null}
+
       <button
         type="button"
         onClick={onBack}
@@ -93,6 +114,17 @@ const OtpVerificationForm: React.FC<OtpVerificationFormProps> = ({
       >
         Change mobile / email
       </button>
+
+      {onResend ? (
+        <button
+          type="button"
+          onClick={onResend}
+          disabled={resendLoading || loading}
+          className="mt-3 text-[13px] font-semibold text-[#0074ab] hover:underline disabled:opacity-60"
+        >
+          {resendLoading ? "Sending OTP..." : "Resend OTP"}
+        </button>
+      ) : null}
     </div>
   );
 };
