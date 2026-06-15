@@ -1,6 +1,6 @@
 'use client';
 
-import React, { use, useEffect, useMemo, useRef, useState } from 'react';
+import React, { use, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Clock3, FileText, House, X } from 'lucide-react';
@@ -36,35 +36,6 @@ export default function DailyPracticeQuestionTestPage({ params }: PageProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selected, setSelected] = useState<Record<string, string>>({});
   const [showSubmitModal, setShowSubmitModal] = useState(false);
-  const startTimeRef = useRef(Date.now());
-  const timerEndedRef = useRef(false);
-  const [secondsLeft, setSecondsLeft] = useState(TEST_DURATION_SECONDS);
-
-  useEffect(() => {
-    startTimeRef.current = Date.now();
-    timerEndedRef.current = false;
-    setSecondsLeft(TEST_DURATION_SECONDS);
-  }, [slug]);
-
-  useEffect(() => {
-    const timerId = window.setInterval(() => {
-      const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
-      const remaining = Math.max(TEST_DURATION_SECONDS - elapsed, 0);
-      setSecondsLeft(remaining);
-
-      if (remaining === 0 && !timerEndedRef.current) {
-        timerEndedRef.current = true;
-        setShowSubmitModal(true);
-      }
-    }, 1000);
-
-    return () => window.clearInterval(timerId);
-  }, [slug]);
-
-  const [hh, mm, ss] = useMemo(
-    () => formatCountdown(secondsLeft),
-    [secondsLeft],
-  );
 
   const totalQuestions = questions.length;
   const answeredCount = Object.keys(selected).length;
@@ -130,37 +101,25 @@ export default function DailyPracticeQuestionTestPage({ params }: PageProps) {
             />
           </Link>
 
-          <div className="flex flex-wrap items-center justify-end gap-4 sm:gap-7">
-            <div className="flex items-center gap-2 text-[15px] font-medium sm:text-[17px]">
-              <span className="rounded-md bg-[#EFF3FF] px-2 py-1.5 font-bold sm:px-3 sm:py-2">
-                {hh}:
-              </span>
-              <span className="rounded-md bg-[#EFF3FF] px-2 py-1.5 font-bold sm:px-3 sm:py-2">
-                {mm}:
-              </span>
-              <span
-                className={`rounded-md px-2 py-1.5 font-bold sm:px-3 sm:py-2 ${
-                  secondsLeft <= 300 ? 'bg-[#FFE8E8] text-[#D32020]' : 'bg-[#EFF3FF]'
-                }`}
-              >
-                {ss}
-              </span>
+          <div className="hidden items-center gap-7 lg:flex">
+            <div className="flex items-center gap-2 text-[17px] font-medium">
+              <span className="rounded-md bg-[#EFF3FF] px-3 py-2 font-bold">01:</span>
+              <span className="rounded-md bg-[#EFF3FF] px-3 py-2 font-bold">00:</span>
+              <span className="rounded-md bg-[#EFF3FF] px-3 py-2 font-bold">00</span>
 
-              <span className="ml-1 text-[14px] font-semibold sm:ml-2 sm:text-[16px]">
-                Time Left
-              </span>
+              <span className="ml-2 text-[16px] font-semibold">Time Left</span>
             </div>
 
-            <div className="hidden h-7 w-[1px] bg-[#D8D8D8] sm:block" />
+            <div className="h-7 w-[1px] bg-[#D8D8D8]" />
 
-            <div className="hidden items-center gap-2 text-[18px] font-semibold text-[#00000080] sm:flex">
+            <div className="flex items-center gap-2 text-[18px] font-semibold text-[#00000080]">
               <Clock3 size={18} />
               1 Hour
             </div>
 
-            <div className="hidden h-7 w-[1px] bg-[#D8D8D8] sm:block" />
+            <div className="h-7 w-[1px] bg-[#D8D8D8]" />
 
-            <div className="flex items-center gap-2 text-[16px] font-semibold text-[#00000080] sm:text-[18px]">
+            <div className="flex items-center gap-2 text-[18px] font-semibold text-[#00000080]">
               <FileText size={18} />
               {totalQuestions} Questions
             </div>
@@ -244,21 +203,17 @@ export default function DailyPracticeQuestionTestPage({ params }: PageProps) {
                 Previous
               </button>
 
-              {currentQuestion === questions.length - 1 ? (
-                <button
-                  onClick={() => setShowSubmitModal(true)}
-                  className="rounded-[12px] bg-gradient-to-r from-[#40B7F6] to-[#045A84] px-6 py-2 text-[18px] font-bold text-white"
-                >
-                  Submit
-                </button>
-              ) : (
-                <button
-                  onClick={handleSaveNext}
-                  className="rounded-[12px] bg-gradient-to-r from-[#40B7F6] to-[#045A84] px-6 py-2 text-[18px] font-bold text-white"
-                >
-                  Save & Next
-                </button>
-              )}
+              <button
+                onClick={handleSaveNext}
+                disabled={currentQuestion === totalQuestions - 1}
+                className={`rounded-[12px] px-6 py-2 text-[18px] font-bold text-white ${
+                  currentQuestion === totalQuestions - 1
+                    ? 'cursor-not-allowed bg-[#B8C4CF]'
+                    : 'bg-gradient-to-r from-[#40B7F6] to-[#045A84]'
+                }`}
+              >
+                Save & Next
+              </button>
             </div>
 
             <div className="mt-4 text-center">
@@ -297,7 +252,7 @@ export default function DailyPracticeQuestionTestPage({ params }: PageProps) {
 
             <div className="mt-5 grid grid-cols-4 items-center rounded-[18px] bg-white px-4 py-5 text-center font-['Montserrat'] text-[16px] font-semibold leading-none text-[#000000CC] shadow-[0_6px_18px_rgba(0,0,0,0.12)]">
               <div>Test</div>
-              <div>{String(totalQuestions).padStart(2, '0')}</div>
+              <div>{totalQuestions}</div>
               <div>{String(answeredCount).padStart(2, '0')}</div>
               <div>{String(unansweredCount).padStart(2, '0')}</div>
             </div>

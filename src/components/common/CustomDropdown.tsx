@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 interface CustomDropdownProps {
@@ -34,6 +34,17 @@ const VARIANT_STYLES = {
   },
 } as const;
 
+/** Approx. max menu height — used to decide whether to open up or down. */
+const MENU_MAX_HEIGHT = 300;
+const GAP = 10;
+
+type MenuPosition = {
+  left: number;
+  width: number;
+  top?: number;
+  bottom?: number;
+};
+
 const CustomDropdown = ({
   options,
   value,
@@ -44,110 +55,71 @@ const CustomDropdown = ({
   className = "",
 }: CustomDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [menuStyle, setMenuStyle] = useState<{
-    top: number;
-    left: number;
-    width: number;
-  } | null>(null);
-  const rootRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [position, setPosition] = useState<MenuPosition | null>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const styles = VARIANT_STYLES[variant];
-  const display =
-    buttonLabel ?? (value?.trim() ? value : placeholder ?? "");
-
-  const updateMenuPosition = useCallback(() => {
-    const button = buttonRef.current;
-    if (!button) return;
-
-    const rect = button.getBoundingClientRect();
-    setMenuStyle({
-      top: rect.bottom + 10,
-      left: rect.left,
-      width: rect.width,
-    });
-  }, []);
+  const display = buttonLabel ?? (value?.trim() ? value : placeholder ?? "");
 
   useEffect(() => {
     if (options.length === 0) setIsOpen(false);
   }, [options.length]);
 
+  const computePosition = () => {
+    const el = triggerRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    // Flip up when there isn't room below and there's more room above.
+    const openUp = spaceBelow < MENU_MAX_HEIGHT && rect.top > spaceBelow;
+    setPosition({
+      left: rect.left,
+      width: rect.width,
+      ...(openUp
+        ? { bottom: window.innerHeight - rect.top + GAP }
+        : { top: rect.bottom + GAP }),
+    });
+  };
+
+  const toggleOpen = () => {
+    if (options.length === 0) return;
+    if (!isOpen) computePosition();
+    setIsOpen((open) => !open);
+  };
+
+  // Close on outside click; close on scroll/resize so the fixed menu can't
+  // detach from its trigger.
   useEffect(() => {
     if (!isOpen) return;
 
-    updateMenuPosition();
-
-    const handleClickOutside = (event: MouseEvent) => {
+    const handlePointerDown = (event: MouseEvent) => {
       const target = event.target as Node;
       if (
-        rootRef.current?.contains(target) ||
+        triggerRef.current?.contains(target) ||
         menuRef.current?.contains(target)
       ) {
         return;
       }
       setIsOpen(false);
     };
+    const handleDismiss = () => setIsOpen(false);
 
-    const onReposition = () => updateMenuPosition();
-
-    document.addEventListener("mousedown", handleClickOutside);
-    window.addEventListener("resize", onReposition);
-    window.addEventListener("scroll", onReposition, true);
-
+    document.addEventListener("mousedown", handlePointerDown);
+    window.addEventListener("resize", handleDismiss);
+    window.addEventListener("scroll", handleDismiss, true);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      window.removeEventListener("resize", onReposition);
-      window.removeEventListener("scroll", onReposition, true);
+      document.removeEventListener("mousedown", handlePointerDown);
+      window.removeEventListener("resize", handleDismiss);
+      window.removeEventListener("scroll", handleDismiss, true);
     };
-  }, [isOpen, updateMenuPosition]);
-
-  const menu =
-    isOpen && options.length > 0 && menuStyle ? (
-      <div
-        ref={menuRef}
-        className={`fixed z-[9999] overflow-hidden ${styles.menu}`}
-        style={{
-          top: menuStyle.top,
-          left: menuStyle.left,
-          width: menuStyle.width,
-        }}
-      >
-        <div className="flex max-h-[260px] flex-col overflow-y-auto px-2">
-          {options.map((opt) => (
-            <button
-              key={opt}
-              type="button"
-              onClick={() => {
-                onChange(opt);
-                setIsOpen(false);
-              }}
-              className={`rounded-[14px] px-4 py-3 text-center text-[15px] font-bold transition-all ${
-                value === opt ? styles.optionActive : styles.optionIdle
-              }`}
-            >
-              {opt}
-            </button>
-          ))}
-        </div>
-      </div>
-    ) : null;
+  }, [isOpen]);
 
   return (
-    <div
-      className={`relative w-full ${styles.root} ${className}`.trim()}
-      ref={rootRef}
-    >
+    <div className={`relative w-full ${styles.root} ${className}`.trim()}>
       <button
-        ref={buttonRef}
+        ref={triggerRef}
         type="button"
-        onClick={() => {
-          if (options.length === 0) return;
-          setIsOpen((open) => {
-            const next = !open;
-            if (next) updateMenuPosition();
-            return next;
-          });
-        }}
+        onClick={toggleOpen}
         className={`${styles.button} ${
           options.length === 0
             ? "cursor-default hover:!bg-[#E8EAF6]"
@@ -173,9 +145,43 @@ const CustomDropdown = ({
         </svg>
       </button>
 
-      {typeof document !== "undefined" && menu
-        ? createPortal(menu, document.body)
-        : null}
+      {isOpen &&
+        options.length > 0 &&
+        position &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            ref={menuRef}
+            style={{
+              position: "fixed",
+              left: position.left,
+              width: position.width,
+              top: position.top,
+              bottom: position.bottom,
+              zIndex: 9999,
+            }}
+            className={`overflow-hidden ${styles.menu}`}
+          >
+            <div className="flex max-h-[260px] flex-col overflow-y-auto px-2">
+              {options.map((opt) => (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => {
+                    onChange(opt);
+                    setIsOpen(false);
+                  }}
+                  className={`rounded-[14px] px-4 py-3 text-center text-[15px] font-bold transition-all ${
+                    value === opt ? styles.optionActive : styles.optionIdle
+                  }`}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };
