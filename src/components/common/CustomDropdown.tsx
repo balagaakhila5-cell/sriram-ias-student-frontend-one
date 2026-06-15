@@ -34,17 +34,6 @@ const VARIANT_STYLES = {
   },
 } as const;
 
-/** Approx. max menu height — used to decide whether to open up or down. */
-const MENU_MAX_HEIGHT = 300;
-const GAP = 10;
-
-type MenuPosition = {
-  left: number;
-  width: number;
-  top?: number;
-  bottom?: number;
-};
-
 const CustomDropdown = ({
   options,
   value,
@@ -64,7 +53,8 @@ const CustomDropdown = ({
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const styles = VARIANT_STYLES[variant];
-  const display = buttonLabel ?? (value?.trim() ? value : placeholder ?? "");
+  const display =
+    buttonLabel ?? (value?.trim() ? value : placeholder ?? "");
 
   const updateMenuPosition = useCallback(() => {
     const button = buttonRef.current;
@@ -81,6 +71,107 @@ const CustomDropdown = ({
   useEffect(() => {
     if (options.length === 0) setIsOpen(false);
   }, [options.length]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    updateMenuPosition();
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (
+        rootRef.current?.contains(target) ||
+        menuRef.current?.contains(target)
+      ) {
+        return;
+      }
+      setIsOpen(false);
+    };
+
+    const onReposition = () => updateMenuPosition();
+
+    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("resize", onReposition);
+    window.addEventListener("scroll", onReposition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("resize", onReposition);
+      window.removeEventListener("scroll", onReposition, true);
+    };
+  }, [isOpen, updateMenuPosition]);
+
+  const menu =
+    isOpen && options.length > 0 && menuStyle ? (
+      <div
+        ref={menuRef}
+        className={`fixed z-[9999] overflow-hidden ${styles.menu}`}
+        style={{
+          top: menuStyle.top,
+          left: menuStyle.left,
+          width: menuStyle.width,
+        }}
+      >
+        <div className="flex max-h-[260px] flex-col overflow-y-auto px-2">
+          {options.map((opt) => (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => {
+                onChange(opt);
+                setIsOpen(false);
+              }}
+              className={`rounded-[14px] px-4 py-3 text-center text-[15px] font-bold transition-all ${
+                value === opt ? styles.optionActive : styles.optionIdle
+              }`}
+            >
+              {opt}
+            </button>
+          ))}
+        </div>
+      </div>
+    ) : null;
+
+  return (
+    <div
+      className={`relative w-full ${styles.root} ${className}`.trim()}
+      ref={rootRef}
+    >
+      <button
+        ref={buttonRef}
+        type="button"
+        onClick={() => {
+          if (options.length === 0) return;
+          setIsOpen((open) => {
+            const next = !open;
+            if (next) updateMenuPosition();
+            return next;
+          });
+        }}
+        className={`${styles.button} ${
+          options.length === 0
+            ? "cursor-default hover:!bg-[#E8EAF6]"
+            : "cursor-pointer"
+        }`}
+        aria-expanded={isOpen && options.length > 0}
+        aria-haspopup={options.length > 0 ? "listbox" : undefined}
+      >
+        <span className="min-w-0 flex-1 truncate text-center">{display}</span>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={`shrink-0 text-[#1F1F1F] transition-transform ${isOpen ? "rotate-180" : ""}`}
+          aria-hidden
+        >
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
 
       {typeof document !== "undefined" && menu
         ? createPortal(menu, document.body)

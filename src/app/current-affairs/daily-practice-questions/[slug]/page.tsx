@@ -1,15 +1,28 @@
 'use client';
 
 import React, { use, useEffect, useMemo, useRef, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Clock3, FileText, House, X } from 'lucide-react';
-import { recordDpqExamResult } from '@/features/resources/utils/dpqLeaderboard';
+import {
+  useCurrentAffairsQuestions,
+  useSubmitCurrentAffairsAnswers,
+} from '@/features/currentAffairs/hooks/useCurrentAffairs';
+import { saveTestReview } from '@/features/currentAffairs/reviewStorage';
+import type { SubmitAnswerInput } from '@/features/currentAffairs/types';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
+
+const TEST_DURATION_SECONDS = 60 * 60;
+
+function formatCountdown(totalSeconds: number) {
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  return [h, m, s].map((value) => String(value).padStart(2, '0'));
+}
 
 export default function DailyPracticeQuestionTestPage({ params }: PageProps) {
   const { slug } = use(params);
@@ -19,41 +32,8 @@ export default function DailyPracticeQuestionTestPage({ params }: PageProps) {
   const submit = useSubmitCurrentAffairsAnswers(slug);
 
   const questions = data?.questions ?? [];
-const TEST_DURATION_SECONDS = 60 * 60;
-
-function formatTitle(slug: string) {
-  return slug
-    .split('-')
-    .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
-    .join(' ');
-}
-
-function formatCountdown(totalSeconds: number) {
-  const h = Math.floor(totalSeconds / 3600);
-  const m = Math.floor((totalSeconds % 3600) / 60);
-  const s = totalSeconds % 60;
-  return [h, m, s].map((value) => String(value).padStart(2, '0'));
-}
-
-function formatElapsedTime(totalSeconds: number) {
-  const h = Math.floor(totalSeconds / 3600);
-  const m = Math.floor((totalSeconds % 3600) / 60);
-  const s = totalSeconds % 60;
-
-  if (h > 0) return `${h} Hr ${m} min`;
-  if (m > 0) return `${m} min ${s} sec`;
-  return `${s} sec`;
-}
-
-export default function DailyPracticeQuestionTestPage({
-  params,
-}: PageProps) {
-  const resolved = use(params);
-  const slug = resolved.slug;
-  const router = useRouter();
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  // questionId (_id) -> selected option key (e.g. "B")
   const [selected, setSelected] = useState<Record<string, string>>({});
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const startTimeRef = useRef(Date.now());
@@ -114,51 +94,6 @@ export default function DailyPracticeQuestionTestPage({
         router.push(`/current-affairs/daily-practice-questions/${slug}/results`);
       },
     });
-
-    const wrongAnswerCount = Math.max(answeredCount - correctCount, 0);
-    const incorrectCount = wrongAnswerCount + unansweredCount;
-    const percentage =
-      totalQuestions > 0
-        ? Math.round((correctCount / totalQuestions) * 100)
-        : 0;
-    const timeTakenSeconds = Math.floor(
-      (Date.now() - startTimeRef.current) / 1000,
-    );
-
-    let grade = 'D';
-    if (percentage >= 75) grade = 'A';
-    else if (percentage >= 60) grade = 'B';
-    else if (percentage >= 45) grade = 'C';
-
-    const testData = {
-      slug,
-      title,
-      questions,
-      correctAnswers,
-      selectedAnswers,
-      totalQuestions,
-      answeredCount,
-      unansweredCount,
-      correctCount,
-      incorrectCount,
-      percentage,
-      grade,
-      time: formatElapsedTime(timeTakenSeconds),
-      timeTakenSeconds,
-      rank: getRankFromCorrectAnswers(correctCount),
-    };
-
-    localStorage.setItem(`test-review-${slug}`, JSON.stringify(testData));
-
-    recordDpqExamResult({
-      slug,
-      title,
-      correctCount,
-      totalQuestions,
-      percentage,
-    });
-
-    router.push(`/current-affairs/daily-practice-questions/${slug}/results`);
   };
 
   if (isLoading) {
@@ -185,14 +120,13 @@ export default function DailyPracticeQuestionTestPage({
             <img
               src="/assets/40_years_experience.png"
               alt="40 Years of Excellence"
-              className="h-10 md:h-12 lg:h-[56px] object-contain hidden md:block transition-transform hover:scale-105 mr-1 md:mr-1.5"
+              className="mr-1 hidden h-10 object-contain transition-transform hover:scale-105 md:mr-1.5 md:block md:h-12 lg:h-[56px]"
             />
-            {/* Orange Divider imitating the emblem layout */}
-            <div className="w-[1px] md:w-[2px] h-8 md:h-10 lg:h-[48px] bg-[#FF6B00] hidden md:block"></div>
+            <div className="hidden h-8 w-[1px] bg-[#FF6B00] md:block md:h-10 lg:h-[48px]" />
             <img
               src="/assets/Logo.png"
               alt="SRIRAM's IAS"
-              className="h-10 md:h-12 lg:h-[68px] object-contain transition-transform hover:scale-105 -ml-1.5 md:-ml-4"
+              className="-ml-1.5 h-10 object-contain transition-transform hover:scale-105 md:-ml-4 md:h-12 lg:h-[68px]"
             />
           </Link>
 
@@ -256,8 +190,8 @@ export default function DailyPracticeQuestionTestPage({
                     active
                       ? 'bg-gradient-to-r from-[#37ACEE] to-[#045B84] text-white shadow-lg'
                       : isAnswered
-                      ? 'bg-[#EAF6FF] text-[#045B84] shadow'
-                      : 'bg-white text-black shadow'
+                        ? 'bg-[#EAF6FF] text-[#045B84] shadow'
+                        : 'bg-white text-black shadow'
                   }`}
                 >
                   {item.questionNumber ?? index + 1}
@@ -378,7 +312,10 @@ export default function DailyPracticeQuestionTestPage({
               <button
                 onClick={handleFinalSubmit}
                 disabled={submit.isPending}
-                style={{ background: 'linear-gradient(90deg, rgba(24, 151, 216, 0.8) 0%, #021C29 100%)' }}
+                style={{
+                  background:
+                    'linear-gradient(90deg, rgba(24, 151, 216, 0.8) 0%, #021C29 100%)',
+                }}
                 className="min-w-[150px] rounded-full px-8 py-4 font-['Poppins'] text-[18px] font-semibold leading-none text-white transition-opacity hover:opacity-95 disabled:opacity-60 md:min-w-[180px]"
               >
                 {submit.isPending ? 'Submitting…' : 'Submit'}

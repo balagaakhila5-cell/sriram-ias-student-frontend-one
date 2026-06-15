@@ -62,8 +62,7 @@ export function useVerifyOtp() {
 export function useVerifyFacultyOtp() {
   const setAuth = useAuthStore((s) => s.setAuth);
   return useMutation({
-    mutationFn: (payload: VerifyOtpPayload) =>
-      authService.verifyFacultyOtp(payload),
+    mutationFn: (payload: VerifyOtpPayload) => authService.verifyOtp(payload),
     onSuccess: (data) => setAuth(data.user, data.token),
   });
 }
