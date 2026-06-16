@@ -33,8 +33,9 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
-# Public (non-secret) production API base URL — committed so Vercel builds get it.
+# Public (non-secret) API base URLs — committed so CI/Vercel builds get them.
 !.env.production
+!.env.uat
 
 # vercel
 .vercel

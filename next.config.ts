@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 import os from "os";
 import path from "path";
 import { fileURLToPath } from "url";
+import { API_PROXY_TARGET } from "./src/config/env";
 
 const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 
@@ -12,11 +13,10 @@ const distDir = isDevServer ? localDevCache : ".next";
 
 /**
  * Backend the API proxy forwards to. Requests from the browser hit this Next
- * server same-origin (see `rewrites` below) and are proxied server-side, which
- * sidesteps browser CORS entirely. Override with API_PROXY_TARGET if needed.
+ * server same-origin (see `rewrites` below) and are proxied server-side.
+ * Configured via `.env.uat` / `.env.production` (see src/config/env.ts).
  */
-const apiProxyTarget =
-  process.env.API_PROXY_TARGET ?? process.env.NEXT_PUBLIC_API_URL;
+const apiProxyTarget = API_PROXY_TARGET;
 
 const nextConfig: NextConfig = {
   distDir,
