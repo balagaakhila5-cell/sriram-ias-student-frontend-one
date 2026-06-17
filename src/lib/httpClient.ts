@@ -1,19 +1,17 @@
 import axios from "axios";
-import { API_BASE_URL } from "@/config/env";
 import { getStoredToken } from "@/services/authToken";
 
 /**
  * Single configured axios instance used for all real backend calls.
  *
- * Browser requests use same-origin `/api/...` paths (proxied by Next.js).
- * `API_BASE_URL` is exported from env config for direct/server usage when needed.
+ * Requests are made same-origin (relative `/api/...`) and proxied to the real
+ * backend by Next.js rewrites (see next.config.ts). This avoids browser CORS
+ * entirely — the backend's allow-list no longer has to match the dev origin.
  */
 export const httpClient = axios.create({
   baseURL: "",
   headers: { "Content-Type": "application/json" },
 });
-
-export { API_BASE_URL };
 
 // Attach the bearer token (when present) to every request.
 httpClient.interceptors.request.use((config) => {
