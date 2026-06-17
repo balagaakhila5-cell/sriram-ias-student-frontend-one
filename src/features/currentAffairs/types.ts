@@ -1,7 +1,8 @@
 /**
  * Types for the public Current Affairs portal API.
  *
- * Endpoints (proxied same-origin via next.config.ts rewrites):
+ * Endpoints are expressed as same-origin relative paths and can be
+ * proxied or forwarded to the Node backend at runtime.
  *   GET  /api/portal/current-affairs
  *   GET  /api/portal/current-affairs/:id/questions
  *   POST /api/portal/current-affairs/:id/submit

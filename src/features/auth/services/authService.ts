@@ -1,4 +1,9 @@
-import { httpClient } from "@/lib/httpClient";
+import {
+  authLogin,
+  authStudentSignup,
+  authVerifyOtp,
+  authVerifyStudentSignup,
+} from "@/lib/allApi";
 import type {
   AuthResponse,
   AuthUser,
@@ -32,14 +37,6 @@ const mockUser = (
   ...overrides,
 });
 
-/**
- * Maps a raw verify-OTP / verify-signup response into our AuthResponse shape.
- *
- * The exact backend payload is not finalised yet, so this tolerates the common
- * shapes: `{ token, user }`, `{ token, student }`, `{ data: { token, user } }`,
- * and token-only responses. This is the single place to adjust once the live
- * response is confirmed.
- */
 const normalizeAuthResponse = (
   raw: unknown,
   fallbackRole: ServerRole = "student",
@@ -109,33 +106,31 @@ export const authService = {
   studentSignup: async (
     payload: StudentSignupPayload,
   ): Promise<StudentSignupResponse> => {
-    const { data } = await httpClient.post("/api/auth/student-signup", payload);
+    const data = (await authStudentSignup(payload)) as Record<string, unknown>;
+    const user = data.user as Record<string, unknown> | undefined;
     return {
-      userId: String(data?.userId ?? data?.user?.id ?? data?.user?._id ?? ""),
-      message: data?.message,
+      userId: String(data.userId ?? user?.id ?? user?._id ?? ""),
+      message: data.message as string | undefined,
     };
   },
 
   verifyStudentSignup: async (
     payload: VerifyStudentSignupPayload,
   ): Promise<AuthResponse> => {
-    const { data } = await httpClient.post(
-      "/api/auth/verify-student-signup",
-      payload,
-    );
+    const data = await authVerifyStudentSignup(payload);
     return normalizeAuthResponse(data, "student");
   },
 
   login: async (payload: LoginPayload): Promise<LoginRequestResponse> => {
-    const { data } = await httpClient.post("/api/auth/login", payload);
+    const data = (await authLogin(payload)) as Record<string, unknown>;
     return {
-      userId: data?.userId ? String(data.userId) : undefined,
-      message: data?.message,
+      userId: data.userId ? String(data.userId) : undefined,
+      message: data.message as string | undefined,
     };
   },
 
   verifyOtp: async (payload: VerifyOtpPayload): Promise<AuthResponse> => {
-    const { data } = await httpClient.post("/api/auth/verify-otp", payload);
+    const data = await authVerifyOtp(payload);
     return normalizeAuthResponse(data, "student");
   },
 

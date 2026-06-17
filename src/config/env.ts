@@ -9,17 +9,17 @@ function normalizeBaseUrl(value: string | undefined): string {
 }
 
 /** Public API base URL — safe to use in client components. */
-export const API_BASE_URL = normalizeBaseUrl(
-  process.env.NEXT_PUBLIC_API_BASE_URL,
-);
+export const API_BASE_URL = import.meta.env.DEV
+  ? ""
+  : normalizeBaseUrl(import.meta.env.VITE_API_BASE_URL);
 
-/** Server-side proxy target (Next.js rewrites in next.config.ts). */
+/** Optional proxy target for Vite dev server or same-origin API routing. */
 export const API_PROXY_TARGET = normalizeBaseUrl(
-  process.env.API_PROXY_TARGET ?? process.env.NEXT_PUBLIC_API_BASE_URL,
+  import.meta.env.VITE_API_PROXY_TARGET ?? import.meta.env.VITE_API_BASE_URL,
 );
 
 export const APP_ENV =
-  process.env.NEXT_PUBLIC_APP_ENV ?? process.env.NODE_ENV ?? "development";
+  (import.meta.env.VITE_APP_ENV ?? import.meta.env.MODE ?? "development").trim();
 
 export const IS_UAT = APP_ENV === "uat";
 export const IS_PRODUCTION = APP_ENV === "production";

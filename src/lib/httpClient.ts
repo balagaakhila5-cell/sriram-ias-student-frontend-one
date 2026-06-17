@@ -2,14 +2,21 @@ import axios from "axios";
 import { API_BASE_URL } from "@/config/env";
 import { getStoredToken } from "@/services/authToken";
 
+declare module "axios" {
+  export interface AxiosRequestConfig {
+    /** When true, do not attach the stored Bearer token. */
+    skipAuth?: boolean;
+  }
+}
+
 /**
  * Single configured axios instance used for all real backend calls.
  *
- * Browser requests use same-origin `/api/...` paths (proxied by Next.js).
- * `API_BASE_URL` is exported from env config for direct/server usage when needed.
+ * The project uses the configured backend base URL so public and protected
+ * endpoints consistently resolve to the actual API host.
  */
 export const httpClient = axios.create({
-  baseURL: "",
+  baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -17,10 +24,18 @@ export { API_BASE_URL };
 
 // Attach the bearer token (when present) to every request.
 httpClient.interceptors.request.use((config) => {
-  const token = getStoredToken();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (config.skipAuth) {
+    delete config.headers.Authorization;
+    return config;
   }
+
+  if (!config.headers.Authorization) {
+    const token = getStoredToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+
   return config;
 });
 
