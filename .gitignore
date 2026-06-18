@@ -13,11 +13,13 @@
 # testing
 /coverage
 
-# next.js
+# next.js (legacy — project runs on Vite)
 /.next/
 /out/
+next-env.d.ts
 
-# production
+# production / build output (Vercel builds this on deploy — do not commit)
+/dist
 /build
 
 # misc
@@ -41,7 +43,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
 
 # Claude Code local settings
 .claude/

@@ -69,8 +69,8 @@ const Hero: React.FC<Props> = ({ city }) => {
         delay: 0.5,
       });
 
-      gsap.from('.center-hero-image-wrap', {
-        x: 60,
+      gsap.from('.center-hero-bg-image', {
+        x: 40,
         opacity: 0,
         duration: 1,
         ease: 'power3.out',
@@ -85,14 +85,23 @@ const Hero: React.FC<Props> = ({ city }) => {
       ref={containerRef}
       className="relative w-full overflow-hidden bg-[#121212] pt-[88px] md:pt-[92px]"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(32,160,224,0.12),transparent_42%),radial-gradient(circle_at_85%_80%,rgba(162,164,251,0.08),transparent_38%)]" />
+      <div className="center-hero-bg-image pointer-events-none absolute inset-y-0 right-0 z-0 w-full sm:w-[88%] lg:w-[62%] xl:w-[58%]">
+        <Image
+          src={heroImage}
+          alt=""
+          fill
+          priority
+          sizes="(max-width: 1024px) 100vw, 58vw"
+          className="object-cover object-right"
+          aria-hidden
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#121212] via-[#121212]/88 to-[#121212]/25 sm:via-[#121212]/72 lg:via-[#121212]/55 lg:to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-[#121212]/40" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_50%,transparent_0%,#121212_80%)]" />
+      </div>
 
-      <div className="relative z-10 mx-auto grid min-h-[min(88vh,860px)] w-full max-w-[1440px] grid-cols-1 items-center gap-8 px-4 py-10 sm:px-6 md:px-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-6 lg:px-12 lg:py-14 xl:px-16">
-        <div className="flex min-w-0 flex-col justify-center text-left">
-          <p className="mb-3 font-['Montserrat'] text-[12px] font-bold uppercase tracking-[0.22em] text-[#7eb8e8] sm:text-[13px]">
-            SRIRAM&apos;s IAS Center
-          </p>
-
+      <div className="relative z-10 mx-auto flex min-h-[min(88vh,860px)] w-full max-w-[1440px] items-center px-4 py-10 sm:px-6 md:px-10 lg:px-12 lg:py-14 xl:px-16">
+        <div className="flex w-full max-w-[720px] flex-col justify-center text-left">
           <h1 className="center-hero-title font-['Montserrat'] text-[34px] font-[900] uppercase leading-[1.05] tracking-[0.02em] text-white sm:text-[42px] md:text-[48px] lg:text-[54px]">
             Welcome to{' '}
             <span className="bg-gradient-to-r from-[#7eb8e8] via-[#A2A4FB] to-[#c8c9ff] bg-clip-text text-transparent">
@@ -145,50 +154,6 @@ const Hero: React.FC<Props> = ({ city }) => {
               </svg>
               {branchContact.email}
             </EmailLink>
-          </div>
-        </div>
-
-        <div className="center-hero-image-wrap relative mx-auto flex w-full max-w-[560px] items-end justify-end lg:mx-0 lg:max-w-none lg:justify-end lg:pl-4">
-          <div className="relative h-[300px] w-full sm:h-[360px] md:h-[420px] lg:h-[min(72vh,620px)] lg:w-[92%] xl:w-[88%]">
-            <div
-              className="pointer-events-none absolute right-[8%] top-[6%] z-20 h-[72px] w-[72px] rounded-sm bg-[#20A0E0]/90 sm:h-[88px] sm:w-[88px]"
-              aria-hidden
-            >
-              <div className="grid h-full w-full grid-cols-4 gap-1.5 p-3">
-                {Array.from({ length: 16 }).map((_, index) => (
-                  <span
-                    key={index}
-                    className="h-1.5 w-1.5 rounded-full bg-white/85"
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div
-              className="pointer-events-none absolute bottom-[18%] left-[4%] z-20 h-[10px] w-[120px] bg-[#20A0E0] sm:w-[150px]"
-              aria-hidden
-            />
-            <div
-              className="pointer-events-none absolute bottom-[12%] left-[10%] z-20 h-[10px] w-[90px] bg-[#005B88] sm:w-[110px]"
-              aria-hidden
-            />
-            <div
-              className="pointer-events-none absolute bottom-[24%] right-[6%] z-20 h-[10px] w-[70px] bg-white/90"
-              aria-hidden
-            />
-
-            <div className="relative h-full w-full overflow-hidden">
-              <Image
-                src={heroImage}
-                alt={`${cityName} center`}
-                fill
-                priority
-                sizes="(max-width: 1024px) 90vw, 48vw"
-                className="object-contain object-bottom object-right grayscale-[18%] contrast-[1.05]"
-              />
-            </div>
-
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#121212] to-transparent" />
           </div>
         </div>
       </div>

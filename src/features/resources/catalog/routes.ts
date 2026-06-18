@@ -136,7 +136,7 @@ export function resourceDownloadPath(item: ResourceLinkFields) {
   ) {
     return url;
   }
-  return `/api/resources/download?id=${encodeURIComponent(item.id)}&${buildResourceQuery(item)}`;
+  return `/assets/samples/sriram-sample.pdf`;
 }
 
 /** @deprecated Use resourceViewPath(item) */
