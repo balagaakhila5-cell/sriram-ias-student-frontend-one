@@ -1,0 +1,1 @@
+import{r as t}from"./index-FOwXK0BM.js";import{u as r}from"./navigation-DyL9qzwr.js";function a(){const e=r();return t.useEffect(()=>{e.replace("/checkout?step=payment")},[e]),null}export{a as default};

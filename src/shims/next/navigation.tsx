@@ -21,7 +21,8 @@ export function useRouter() {
 }
 
 export function useSearchParams() {
-  return useSearchParamsRR();
+  const [searchParams] = useSearchParamsRR();
+  return searchParams;
 }
 
 export function usePathname() {
@@ -36,6 +37,6 @@ export function redirect(href: string): void {
   window.location.replace(href);
 }
 
-export function notFound(): void {
+export function notFound(): never {
   throw new Error("notFound");
 }

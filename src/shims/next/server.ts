@@ -1,4 +1,6 @@
-export interface NextRequest extends Request {}
+export interface NextRequest extends Request {
+  readonly nextUrl: URL;
+}
 
 export class NextResponse extends Response {
   static json(body: unknown, init?: ResponseInit) {

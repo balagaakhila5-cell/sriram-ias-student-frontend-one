@@ -15,7 +15,7 @@ declare module "axios" {
  * endpoints consistently resolve to the actual API host.
  */
 export const httpClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? "",
   headers: { "Content-Type": "application/json" },
 });
 

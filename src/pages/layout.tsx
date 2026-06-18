@@ -6,7 +6,7 @@ import { AppProviders } from "./providers";
 
 export const viewport: Viewport = {
   width: "device-width",
-  initialScale: 1,
+  initialScale: "1",
 };
 
 export const metadata: Metadata = {

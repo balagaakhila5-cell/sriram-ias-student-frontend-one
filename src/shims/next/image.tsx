@@ -5,6 +5,7 @@ interface NextImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   alt: string;
   fill?: boolean;
   priority?: boolean;
+  quality?: number;
   sizes?: string;
   placeholder?: string;
   unoptimized?: boolean;
@@ -16,6 +17,8 @@ export default function Image({
   fill,
   className,
   style,
+  quality: _quality,
+  priority: _priority,
   ...props
 }: NextImageProps) {
   const imageStyle: React.CSSProperties = {

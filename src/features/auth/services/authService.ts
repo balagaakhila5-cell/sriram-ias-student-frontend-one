@@ -4,6 +4,7 @@ import {
   authVerifyOtp,
   authVerifyStudentSignup,
 } from "@/lib/allApi";
+import type { ApiRequestBody } from "@/types/api";
 import type {
   AuthResponse,
   AuthUser,
@@ -106,7 +107,9 @@ export const authService = {
   studentSignup: async (
     payload: StudentSignupPayload,
   ): Promise<StudentSignupResponse> => {
-    const data = (await authStudentSignup(payload)) as Record<string, unknown>;
+    const data = (await authStudentSignup(
+      payload as unknown as ApiRequestBody,
+    )) as Record<string, unknown>;
     const user = data.user as Record<string, unknown> | undefined;
     return {
       userId: String(data.userId ?? user?.id ?? user?._id ?? ""),
@@ -117,12 +120,16 @@ export const authService = {
   verifyStudentSignup: async (
     payload: VerifyStudentSignupPayload,
   ): Promise<AuthResponse> => {
-    const data = await authVerifyStudentSignup(payload);
+    const data = await authVerifyStudentSignup(
+      payload as unknown as ApiRequestBody,
+    );
     return normalizeAuthResponse(data, "student");
   },
 
   login: async (payload: LoginPayload): Promise<LoginRequestResponse> => {
-    const data = (await authLogin(payload)) as Record<string, unknown>;
+    const data = (await authLogin(
+      payload as unknown as ApiRequestBody,
+    )) as Record<string, unknown>;
     return {
       userId: data.userId ? String(data.userId) : undefined,
       message: data.message as string | undefined,
@@ -130,7 +137,7 @@ export const authService = {
   },
 
   verifyOtp: async (payload: VerifyOtpPayload): Promise<AuthResponse> => {
-    const data = await authVerifyOtp(payload);
+    const data = await authVerifyOtp(payload as unknown as ApiRequestBody);
     return normalizeAuthResponse(data, "student");
   },
 
