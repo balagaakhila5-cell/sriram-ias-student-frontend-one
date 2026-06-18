@@ -1,5 +1,4 @@
 import axios from "axios";
-import { API_BASE_URL } from "@/config/env";
 import { getStoredToken } from "@/services/authToken";
 
 declare module "axios" {
@@ -19,8 +18,6 @@ export const httpClient = axios.create({
   baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
 });
-
-export { API_BASE_URL };
 
 // Attach the bearer token (when present) to every request.
 httpClient.interceptors.request.use((config) => {
