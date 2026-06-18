@@ -139,14 +139,14 @@ const OfflineCentres: React.FC = () => {
           </h2>
         </div>
 
-        <div className="offline-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+        <div className="offline-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 justify-items-center">
           {centres.map((center) => {
             const centerHref = centerPageHref(center.name);
 
             return (
               <div
                 key={center.id}
-                className="offline-card group relative w-full max-w-[300px] sm:max-w-[320px] overflow-hidden shadow-2xl cursor-pointer aspect-square rounded-none bg-black"
+                className="offline-card group relative w-full max-w-[340px] sm:max-w-[360px] lg:max-w-[380px] overflow-hidden shadow-2xl cursor-pointer aspect-square rounded-none bg-black"
               >
                 <Image
                   src={center.image}
@@ -158,28 +158,28 @@ const OfflineCentres: React.FC = () => {
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent transition-opacity duration-500 group-hover:opacity-0" />
 
-                {/* Default state — left-aligned, image visible */}
-                <div className="absolute inset-0 p-8 flex flex-col justify-end items-start transition-all duration-500 group-hover:translate-y-[-20px] group-hover:opacity-0">
-                  <div className="flex items-center gap-3 text-white mb-6">
-                    <div className="bg-white p-2 rounded-full shrink-0">
+                {/* Default state — city name + Explore inside card */}
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-end p-6 text-center sm:p-8 transition-opacity duration-500 group-hover:opacity-0">
+                  <div className="mb-5 flex items-center justify-center gap-3 text-white">
+                    <div className="shrink-0 rounded-full bg-white p-2">
                       <Building2 size={24} className="text-black" />
                     </div>
-                    <span className="text-3xl sm:text-4xl font-bold tracking-tight">
+                    <span className="text-2xl font-bold tracking-tight sm:text-3xl">
                       {center.name}
                     </span>
                   </div>
                   <Link
                     href={centerHref}
-                    className={`${buttonClassName} self-center`}
+                    className={buttonClassName}
                     style={buttonStyle}
                   >
                     Explore
                   </Link>
                 </div>
 
-                {/* Hover state — left-aligned with full info */}
+                {/* Hover state — info fills full card height */}
                 <div
-                  className="absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-20 flex flex-col p-8"
+                  className="absolute inset-0 z-20 flex h-full translate-y-full flex-col items-center p-6 text-center transition-transform duration-500 ease-out group-hover:translate-y-0 sm:p-8 overflow-hidden"
                   style={{
                     background:
                       'linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.95) 100%)',
@@ -202,41 +202,41 @@ const OfflineCentres: React.FC = () => {
                     }}
                   />
 
-                  <div className="flex items-center gap-3 text-white mb-4 pb-4 relative z-10">
-                    <div className="bg-white p-2 rounded-full shrink-0">
-                      <Building2 size={24} className="text-black" />
+                  <div className="relative z-10 flex w-full shrink-0 items-center justify-center gap-3 border-b border-white/15 pb-4 text-white">
+                    <div className="shrink-0 rounded-full bg-white p-2">
+                      <Building2 size={22} className="text-black" />
                     </div>
-                    <span className="text-3xl sm:text-4xl font-bold">{center.name}</span>
+                    <span className="text-2xl font-bold sm:text-3xl">{center.name}</span>
                   </div>
 
-                  <div className="flex-grow space-y-5 text-white/90 relative z-10">
-                    <div className="flex items-start gap-3 transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-[transform,opacity] duration-500 delay-200">
-                      <MapPin size={22} className="text-primary shrink-0 mt-1" />
-                      <p className="text-sm leading-relaxed">{center.address}</p>
+                  <div className="relative z-10 flex min-h-0 w-full flex-1 flex-col items-center justify-evenly py-4 text-white/90">
+                    <div className="flex max-w-[92%] translate-y-8 items-start justify-center gap-3 opacity-0 transition-[transform,opacity] duration-500 delay-200 group-hover:translate-y-0 group-hover:opacity-100">
+                      <MapPin size={20} className="mt-0.5 shrink-0 text-primary" />
+                      <p className="text-left text-sm leading-relaxed">{center.address}</p>
                     </div>
 
-                    <div className="flex items-center gap-3 transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-[transform,opacity] duration-500 delay-300">
-                      <div className="bg-white/10 p-2 rounded-lg shrink-0">
+                    <div className="flex translate-y-8 items-center justify-center gap-3 opacity-0 transition-[transform,opacity] duration-500 delay-300 group-hover:translate-y-0 group-hover:opacity-100">
+                      <div className="shrink-0 rounded-lg bg-white/10 p-2">
                         <Phone size={18} />
                       </div>
                       <PhoneLink
                         value={center.phone}
-                        className="text-base font-semibold hover:underline"
+                        className="text-sm font-semibold hover:underline sm:text-base"
                       />
                     </div>
 
-                    <div className="flex items-center gap-3 transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-[transform,opacity] duration-500 delay-[400ms]">
-                      <div className="bg-white/10 p-2 rounded-lg shrink-0">
+                    <div className="flex max-w-[92%] translate-y-8 items-center justify-center gap-3 opacity-0 transition-[transform,opacity] duration-500 delay-[400ms] group-hover:translate-y-0 group-hover:opacity-100">
+                      <div className="shrink-0 rounded-lg bg-white/10 p-2">
                         <Mail size={18} />
                       </div>
                       <EmailLink
                         value={center.email}
-                        className="text-base font-semibold hover:underline"
+                        className="break-all text-left text-sm font-semibold hover:underline sm:text-base"
                       />
                     </div>
                   </div>
 
-                  <div className="mt-auto flex justify-center transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-[transform,opacity] duration-500 delay-[500ms] relative z-10">
+                  <div className="relative z-10 shrink-0 translate-y-8 pt-2 opacity-0 transition-[transform,opacity] duration-500 delay-[500ms] group-hover:translate-y-0 group-hover:opacity-100">
                     <Link
                       href={centerHref}
                       className={buttonClassName}

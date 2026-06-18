@@ -1,5 +1,10 @@
-import { redirect } from "next/navigation";
+import { Navigate } from "react-router-dom";
 
 export default function DpqTopPerformersRedirectPage() {
-  redirect("/current-affairs/daily-practice-questions/test-results?examType=prelims");
+  return (
+    <Navigate
+      to="/current-affairs/daily-practice-questions/test-results?examType=prelims"
+      replace
+    />
+  );
 }

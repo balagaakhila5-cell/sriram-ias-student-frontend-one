@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import BlogActionButtons from './BlogActionButtons';
 import type { BlogBookmarkInput } from '../types';
+import { cn } from '@/lib/utils';
 
 type BlogGridCardProps = {
   blog: BlogBookmarkInput;
@@ -14,7 +15,10 @@ type BlogGridCardProps = {
 export default function BlogGridCard({ blog, className = '' }: BlogGridCardProps) {
   return (
     <div
-      className={`blog-grid-card group relative h-[260px] overflow-hidden rounded-[8px] shadow-md transition-all duration-500 ease-out hover:scale-[1.08] hover:shadow-[0_22px_45px_rgba(0,0,0,0.24)] ${className}`}
+      className={cn(
+        'blog-grid-card group relative h-[260px] overflow-hidden rounded-[8px] shadow-md transition-all duration-500 ease-out hover:scale-[1.08] hover:shadow-[0_22px_45px_rgba(0,0,0,0.24)]',
+        className,
+      )}
     >
       <Image src={blog.image} alt={blog.title} fill className="object-cover" />
 
@@ -25,14 +29,14 @@ export default function BlogGridCard({ blog, className = '' }: BlogGridCardProps
       </div>
 
       <div className="absolute bottom-4 left-5 right-4">
-        <h3 className="mb-3 text-[19px] font-extrabold leading-[1.45] text-white sm:text-[20px]">
+        <h3 className="mb-3 text-[22px] font-extrabold leading-[1.45] text-white sm:text-[24px]">
           {blog.title}
         </h3>
 
-        <p className="mb-2 text-[13px] font-bold text-white">{blog.date}</p>
+        <p className="mb-2 text-[16px] font-bold text-white sm:text-[17px]">{blog.date}</p>
 
         {blog.time ? (
-          <p className="mb-3 text-[13px] font-bold text-white">{blog.time}</p>
+          <p className="mb-3 text-[16px] font-bold text-white sm:text-[17px]">{blog.time}</p>
         ) : null}
 
         <Link

@@ -96,7 +96,7 @@ const OurToppers: React.FC<Props> = () => {
                   />
                 </div>
 
-                <div className="relative z-20 -mt-3 flex min-h-[76px] flex-col items-center justify-start px-1 text-center sm:-mt-4">
+                <div className="relative z-20 mt-2 flex min-h-[76px] flex-col items-center justify-start px-1 text-center sm:mt-3">
                   <h3 className="max-w-full truncate text-[14px] font-bold leading-tight text-white md:text-[15px]">
                     {topper.name}
                   </h3>

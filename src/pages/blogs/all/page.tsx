@@ -69,7 +69,7 @@ export default function AllBlogsPage() {
             >
               ← Back to Blogs
             </Link>
-            <h1 className="text-[32px] font-black uppercase leading-none sm:text-[40px] md:text-[48px]">
+            <h1 className="text-[40px] font-black uppercase leading-none sm:text-[48px] md:text-[56px]">
               <span className="bg-gradient-to-r from-white via-[#c9c4ff] to-[#8f8cff] bg-clip-text text-transparent">
                 All Blogs
               </span>
@@ -91,10 +91,10 @@ export default function AllBlogsPage() {
           <div className="relative mx-auto grid max-w-[1320px] grid-cols-1 gap-8 lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_350px]">
             <div className="min-w-0">
               <div className="mb-8">
-                <h2 className="text-[28px] font-extrabold text-gray-900 md:text-[32px]">
+                <h2 className="text-[32px] font-extrabold text-gray-900 md:text-[36px]">
                   Explore All Articles
                 </h2>
-                <p className="mt-2 text-[15px] font-medium text-gray-600">
+                <p className="mt-2 text-[17px] font-medium text-gray-600 md:text-[18px]">
                   Browse every blog post in one place.
                 </p>
               </div>
@@ -105,7 +105,11 @@ export default function AllBlogsPage() {
 
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {ALL_BLOGS.map((blog) => (
-                  <BlogGridCard key={blog.id} blog={blog} />
+                  <BlogGridCard
+                    key={blog.id}
+                    blog={blog}
+                    className="h-[320px] sm:h-[340px]"
+                  />
                 ))}
               </div>
             </div>

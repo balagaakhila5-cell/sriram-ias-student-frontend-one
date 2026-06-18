@@ -7,7 +7,7 @@ export const RESOURCE_PAGE_HEADING_GRADIENT =
 /** Max cards shown per section */
 export const RESOURCE_CARD_LIMIT = 10;
 
-/** PDF grids — initial batch size before View More / Next */
+/** @deprecated Pagination removed — kept for any legacy imports */
 export const RESOURCE_DOCUMENTS_PAGE_SIZE = 6;
 
 /** Shared low-opacity section backgrounds (Free Resources + Current Affairs) */

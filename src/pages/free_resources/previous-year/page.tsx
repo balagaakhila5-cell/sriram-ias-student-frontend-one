@@ -52,6 +52,7 @@ const sections = [
     visual: PYQ_ASSETS.prelimsVisual,
     visualScale: "scale-105",
     visualPositionClass: "bottom-0 right-0",
+    disableVisualHover: false,
   },
   {
     id: "mains",
@@ -62,7 +63,8 @@ const sections = [
     visual: PYQ_ASSETS.mainsVisual,
     /** Mains PNG has more padding — scale up to match Prelims boy */
     visualScale: "scale-[1.22]",
-    visualPositionClass: "bottom-10 -right-4 sm:bottom-12 sm:-right-3",
+    visualPositionClass: "bottom-4 -right-4 sm:bottom-5 sm:-right-6",
+    disableVisualHover: true,
   },
 ] as const;
 
@@ -169,7 +171,11 @@ export default function PreviousYearPage() {
                         className={`pointer-events-none absolute z-10 flex items-end justify-end overflow-visible ${section.visualPositionClass}`}
                       >
                         <div
-                          className={`relative shrink-0 origin-bottom-right transition-transform duration-300 group-hover:scale-[1.04] ${section.visualScale}`}
+                          className={`relative shrink-0 origin-bottom-right ${section.visualScale} ${
+                            section.disableVisualHover
+                              ? ""
+                              : "transition-transform duration-300 group-hover:scale-[1.04]"
+                          }`}
                           style={{
                             width: PYQ_VISUAL_SIZE.width,
                             height: PYQ_VISUAL_SIZE.height,

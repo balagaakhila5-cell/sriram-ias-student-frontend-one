@@ -10,14 +10,48 @@ interface Props {
   course: CourseData;
 }
 
+const stripCityFromTitle = (title: string, city?: CourseData['city']) => {
+  if (!city) return title;
+  const cityName = city.charAt(0).toUpperCase() + city.slice(1);
+  return title.replace(new RegExp(`\\s*-\\s*${cityName}`, 'gi'), '');
+};
+
+const titleGradientStyle: React.CSSProperties = {
+  fontFamily: "'Montserrat', sans-serif",
+  background:
+    'linear-gradient(90deg, rgba(255, 255, 255, 0.8) 12.5%, #7575DF 47.6%, #9E9EFD 100%)',
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
+  backgroundClip: 'text',
+  color: 'transparent',
+  WebkitFontSmoothing: 'antialiased',
+};
+
+const lineTextStyle: React.CSSProperties = {
+  fontWeight: 1000,
+  fontSize: '56px',
+  lineHeight: '1.2',
+};
+
+const leadingNumberStyle: React.CSSProperties = {
+  fontWeight: 700,
+  fontSize: '120px',
+  lineHeight: '1',
+  letterSpacing: '0%',
+  paddingRight: '16px',
+};
+
 const CourseHero: React.FC<Props> = ({ course }) => {
-  const titleLines = course.title.split('\n');
+  const displayTitle = stripCityFromTitle(course.title, course.city);
+  const titleLines = displayTitle.split('\n').map((line) => line.trim()).filter(Boolean);
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
-  const firstChar = titleLines[0]?.charAt(0) || '';
-  const restOfFirstLine = titleLines[0]?.substring(1).trim() || '';
+  const firstLine = titleLines[0] ?? '';
   const otherLines = titleLines.slice(1);
+  const leadingNumberMatch = firstLine.match(/^(\d+)\s*(.*)$/);
+  const leadingNumber = leadingNumberMatch?.[1];
+  const restOfFirstLine = leadingNumberMatch?.[2]?.trim() ?? '';
 
   useGSAP(
     () => {
@@ -55,75 +89,42 @@ const CourseHero: React.FC<Props> = ({ course }) => {
       className="relative flex w-full items-center"
       style={{ height: '82vh', minHeight: '520px', maxHeight: '720px' }}
     >
-      {/* Hero image */}
       <img
         src="/assets/course_image.png"
-        alt={course.title}
+        alt={displayTitle}
         className="hero-image absolute inset-0 w-full h-full object-cover object-center"
       />
 
-      {/* Dark overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/100 via-black/75 to-transparent" />
 
-      {/* Text Container */}
       <div className="relative z-10 px-8 md:px-16 lg:px-24 max-w-5xl hero-title-wrapper">
-        <h1
-          className="flex items-center"
-          style={{
-            fontFamily: "'Montserrat', sans-serif",
-            background:
-              'linear-gradient(90deg, rgba(255, 255, 255, 0.8) 12.5%, #7575DF 47.6%, #9E9EFD 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            color: 'transparent',
-            WebkitFontSmoothing: 'antialiased',
-          }}
-        >
-          {firstChar && (
-            <span
-              className="shrink-0"
-              style={{
-                fontWeight: 700,
-                fontSize: '120px',
-                lineHeight: '1',
-                letterSpacing: '0%',
-                paddingRight: '16px',
-              }}
-            >
-              {firstChar}
+        {leadingNumber ? (
+          <h1 className="flex items-center" style={titleGradientStyle}>
+            <span className="shrink-0" style={leadingNumberStyle}>
+              {leadingNumber}
             </span>
-          )}
-
-          <span className="block">
-            {restOfFirstLine && (
-              <span
-                className="block"
-                style={{
-                  fontWeight: 1000,
-                  fontSize: '56px',
-                  lineHeight: '1.2',
-                }}
-              >
-                {restOfFirstLine}
-              </span>
-            )}
-
-            {otherLines.map((line, i) => (
-              <span
-                key={i}
-                className="block"
-                style={{
-                  fontWeight: 1000,
-                  fontSize: '56px',
-                  lineHeight: '1.2',
-                }}
-              >
-                {line.trim()}
+            <span className="block">
+              {restOfFirstLine && (
+                <span className="block" style={lineTextStyle}>
+                  {restOfFirstLine}
+                </span>
+              )}
+              {otherLines.map((line, i) => (
+                <span key={i} className="block" style={lineTextStyle}>
+                  {line}
+                </span>
+              ))}
+            </span>
+          </h1>
+        ) : (
+          <h1 style={titleGradientStyle}>
+            {titleLines.map((line, i) => (
+              <span key={i} className="block" style={lineTextStyle}>
+                {line}
               </span>
             ))}
-          </span>
-        </h1>
+          </h1>
+        )}
       </div>
     </section>
   );

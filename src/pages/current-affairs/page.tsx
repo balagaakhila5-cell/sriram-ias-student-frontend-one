@@ -62,7 +62,7 @@ const quickLinks = [
   },
   {
     title: "Study Material",
-    href: "/free_resources/study-material",
+    href: "/free_resources/study-materials",
     border: "border-[#7B72C4]",
     text: "text-[#625BB0]",
     icon: (

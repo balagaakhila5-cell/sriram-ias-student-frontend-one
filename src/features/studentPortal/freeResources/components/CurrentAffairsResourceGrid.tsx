@@ -8,6 +8,7 @@ import {
 import type { CurrentAffairsSubtopicId } from "@/features/resources/catalog/types";
 import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
 import PracticeTestCard from "@/features/resources/components/PracticeTestCard";
+import PaginatedPdfGrid from "@/features/resources/components/PaginatedPdfGrid";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 import { RESOURCE_EMPTY } from "@/features/resources/components/cardStyles";
 
@@ -51,16 +52,18 @@ export default function CurrentAffairsResourceGrid({
   if (documents.length === 0) return <EmptyState />;
 
   return (
-    <ResourceCardGrid>
-      {documents.map((item) => (
+    <PaginatedPdfGrid
+      items={documents}
+      resetKey={`${subtopic}-${year}-${month}-${date ?? ""}`}
+      getKey={(item) => item.id}
+      renderItem={(item) => (
         <ResourceDocumentCard
-          key={item.id}
           item={item}
           variant="portal"
           singleRowActions
         />
-      ))}
-    </ResourceCardGrid>
+      )}
+    />
   );
 }
 

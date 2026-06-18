@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { FOOTER_SOCIAL_LINKS } from "@/config/footerLinks";
 import { RESOURCE_PAGE_HEADING_GRADIENT } from "@/features/resources/components/cardStyles";
 
 export type TrendingVideo = {
@@ -13,19 +14,19 @@ const defaultVideos: TrendingVideo[] = [
     id: 1,
     title: "Daily Current Affairs - 16 March 2026",
     image: "/assets/current-affairs/daily-current-affairs/trending-video.png",
-    link: "#",
+    link: FOOTER_SOCIAL_LINKS.youtube,
   },
   {
     id: 2,
     title: "Daily Current Affairs - 16 March 2026",
     image: "/assets/current-affairs/daily-current-affairs/trending-video.png",
-    link: "#",
+    link: FOOTER_SOCIAL_LINKS.youtube,
   },
   {
     id: 3,
     title: "Daily Current Affairs - 16 March 2026",
     image: "/assets/current-affairs/daily-current-affairs/trending-video.png",
-    link: "#",
+    link: FOOTER_SOCIAL_LINKS.youtube,
   },
 ];
 
@@ -36,7 +37,7 @@ type Props = {
 
 export default function TrendingVideosCard({
   videos = defaultVideos,
-  viewAllHref = "#",
+  viewAllHref = FOOTER_SOCIAL_LINKS.youtube,
 }: Props) {
   return (
     <div className="rounded-[26px] bg-white/95 p-6 shadow-[0px_12px_30px_rgba(0,0,0,0.06)]">
@@ -51,6 +52,8 @@ export default function TrendingVideosCard({
           <div key={video.id}>
             <a
               href={video.link}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-start gap-4 transition-opacity duration-300 hover:opacity-90"
             >
               <div className="relative h-[112px] w-[150px] shrink-0 overflow-hidden rounded-[6px]">
@@ -66,19 +69,6 @@ export default function TrendingVideosCard({
                 <h3 className="text-[16px] font-semibold leading-[1.4] text-[#1b1b1b]">
                   {video.title}
                 </h3>
-
-                <div className="mt-2 flex items-center gap-2 text-[15px] text-[#666]">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="#FF0000"
-                    aria-hidden="true"
-                  >
-                    <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.6 3.5 12 3.5 12 3.5s-7.6 0-9.4.6A3 3 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.8.6 9.4.6 9.4.6s7.6 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8ZM9.75 15.52V8.48L15.98 12l-6.23 3.52Z" />
-                  </svg>
-                  <span>YouTube</span>
-                </div>
               </div>
             </a>
 
@@ -92,7 +82,9 @@ export default function TrendingVideosCard({
       <div className="mt-5 text-center">
         <a
           href={viewAllHref}
-          className="text-[18px] font-medium text-[#3380C4] underline underline-offset-2"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[18px] font-medium text-[#3380C4] underline underline-offset-2 transition-colors hover:text-[#1E6F9F]"
         >
           View All
         </a>

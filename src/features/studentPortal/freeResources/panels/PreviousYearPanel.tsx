@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { listFreeResourceDocuments } from "@/features/resources/catalog/freeResources";
 import { RESOURCE_ASSETS } from "@/features/resources/catalog/assets";
 import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
-import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
+import PaginatedPdfGrid from "@/features/resources/components/PaginatedPdfGrid";
 import { FREE_RESOURCE_CARD_GRID } from "@/features/resources/components/cardStyles";
 import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 import {
@@ -13,9 +13,7 @@ import {
   useResourceFiles,
 } from "@/features/resources/hooks/useResources";
 import type { CatalogDocument } from "@/features/resources/catalog/types";
-import {
-  buildPyqPortalCardTitle,
-} from "../resourceFilters";
+import { buildPyqPortalCardTitle } from "../resourceFilters";
 
 interface PreviousYearPanelProps {
   pyqYear: string;
@@ -29,11 +27,7 @@ export default function PreviousYearPanel({
   examType,
 }: PreviousYearPanelProps) {
   const fallback = useMemo(
-    () =>
-      listFreeResourceDocuments("previous-year", pyqYear, undefined, examType).slice(
-        0,
-        10,
-      ),
+    () => listFreeResourceDocuments("previous-year", pyqYear, undefined, examType),
     [pyqYear, examType],
   );
 
@@ -50,7 +44,7 @@ export default function PreviousYearPanel({
   );
 
   const items: CatalogDocument[] = useMemo(() => {
-    const mapped = mapApiFilesToCatalog(files, "previous-year", fallback).map(
+    const mapped = mapApiFilesToCatalog(files, "previous-year", fallback, 50).map(
       (item) => ({
         ...item,
         image: RESOURCE_ASSETS.PDF_ICON,
@@ -58,7 +52,7 @@ export default function PreviousYearPanel({
       }),
     );
 
-    const base = (mapped.length > 0 ? mapped : fallback).slice(0, 10);
+    const base = mapped.length > 0 ? mapped : fallback;
 
     return base.map((item, index) => ({
       ...item,
@@ -73,16 +67,19 @@ export default function PreviousYearPanel({
           Updating results…
         </p>
       ) : null}
-      <ResourceCardGrid className={FREE_RESOURCE_CARD_GRID}>
-        {items.map((item) => (
+      <PaginatedPdfGrid
+        items={items}
+        gridClassName={FREE_RESOURCE_CARD_GRID}
+        resetKey={`${pyqYear}-${examType}`}
+        getKey={(item) => item.id}
+        renderItem={(item) => (
           <ResourceDocumentCard
-            key={item.id}
             item={item}
             variant="portal"
             singleRowActions
           />
-        ))}
-      </ResourceCardGrid>
+        )}
+      />
     </div>
   );
 }

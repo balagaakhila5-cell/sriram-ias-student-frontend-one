@@ -101,7 +101,7 @@ export default function StudyMaterialsPage() {
 
   const catalogItems = useMemo(
     () =>
-      mapApiFilesToCatalog(files, "study-materials", fallback).map((item) => ({
+      mapApiFilesToCatalog(files, "study-materials", fallback, 50).map((item) => ({
         ...item,
         hideImage: true,
         image: "",
@@ -188,6 +188,7 @@ export default function StudyMaterialsPage() {
                     items={catalogItems}
                     emptyMessage={`No study material available for ${activeTab}.`}
                     gridClassName={FREE_RESOURCE_CARD_GRID}
+                    resetKey={activeTab}
                   />
                 </div>
               </div>

@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
+import NetworkDotsBackground from '@/components/common/NetworkDotsBackground';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -138,6 +139,7 @@ const CourseDetailsSection: React.FC<Props> = ({ course }) => {
         <section
           className={`relative w-full overflow-hidden ${textColor} md:pt-15`}
         >
+          <NetworkDotsBackground variant="light" />
           {/* New Background Image for the whole section */}
           <img
             src="/assets/course/hyd-coourse-details-bg.png" /* Replace with your actual background image path */
@@ -212,6 +214,7 @@ const CourseDetailsSection: React.FC<Props> = ({ course }) => {
           className={`relative w-full overflow-hidden ${textColor} md:pt-15`}
           style={{ background: 'linear-gradient(90deg, #8780D7 0%, #CECDE2 100%)' }}
         >
+          <NetworkDotsBackground variant="light" />
           <div className="max-w-[1400px] mx-auto relative z-10 px-6 md:px-12 lg:px-20">
             {/* Heading */}
             <div className="course-details-heading mb-10 xl:mb-16">
@@ -305,6 +308,7 @@ const CourseDetailsSection: React.FC<Props> = ({ course }) => {
         className={`relative w-full overflow-hidden ${textColor} py-16 px-6 md:px-12 lg:px-24`}
         style={{ background: sectionBg }}
       >
+        <NetworkDotsBackground variant="dark" />
         <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
 
           {/* Left Side: Text Content */}

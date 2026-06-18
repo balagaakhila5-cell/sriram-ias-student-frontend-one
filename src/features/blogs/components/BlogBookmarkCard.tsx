@@ -30,14 +30,14 @@ export default function BlogBookmarkCard({
       </button>
 
       <div className="absolute bottom-4 left-5 right-4">
-        <h3 className="mb-3 text-[19px] font-extrabold leading-[1.45] text-white">
+        <h3 className="mb-3 text-[22px] font-extrabold leading-[1.45] text-white sm:text-[24px]">
           {bookmark.title}
         </h3>
 
-        <p className="mb-2 text-[13px] font-bold text-white">{bookmark.date}</p>
+        <p className="mb-2 text-[16px] font-bold text-white sm:text-[17px]">{bookmark.date}</p>
 
         {bookmark.time ? (
-          <p className="mb-3 text-[13px] font-bold text-white">{bookmark.time}</p>
+          <p className="mb-3 text-[16px] font-bold text-white sm:text-[17px]">{bookmark.time}</p>
         ) : null}
 
         <Link

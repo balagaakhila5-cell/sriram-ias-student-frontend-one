@@ -53,7 +53,7 @@ export default function StudyMaterialsPanel({
   );
 
   const items: CatalogDocument[] = useMemo(
-    () => mapApiFilesToCatalog(files, "study-materials", fallback),
+    () => mapApiFilesToCatalog(files, "study-materials", fallback, 50),
     [files, fallback],
   );
 
@@ -68,6 +68,7 @@ export default function StudyMaterialsPanel({
         items={items}
         variant="portal"
         gridClassName={FREE_RESOURCE_CARD_GRID}
+        resetKey={examType}
       />
     </div>
   );

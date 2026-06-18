@@ -68,32 +68,41 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
   return (
     <section
       ref={containerRef}
-      className="relative flex w-full flex-col items-center overflow-hidden bg-white px-6 pb-16 pt-4 md:px-12 md:pb-20 md:pt-6 lg:px-24"
+      className="relative flex w-full flex-col items-center overflow-hidden bg-gradient-to-br from-[#EAE8F4] via-[#FFFFFF] to-[#E3F2F9] px-6 pb-16 pt-4 md:px-12 md:pb-20 md:pt-6 lg:px-24"
     >
-      {/* Background Video */}
-      <div className="absolute inset-0 z-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="w-full h-full object-cover opacity-50"
-        >
-          <source src="/assets/dropdown-video.mp4" type="video/mp4" />
-        </video>
-
-        {/* White Overlay to maintain "totally white" look while showing video */}
-        <div className="absolute inset-0 bg-white/70"></div>
-      </div>
-
-      {/* Background waves decoration placeholder */}
       <div
-        className="absolute inset-0 z-0 opacity-40 pointer-events-none"
+        className="pointer-events-none absolute top-[-140px] right-[8%] z-0 h-[260px] w-[260px] rounded-b-full bg-white"
         style={{
-          backgroundImage:
-            'radial-gradient(ellipse at top right, rgba(255,255,255,0.8) 30%, transparent 60%), radial-gradient(ellipse at bottom left, rgba(255,255,255,0.8) 20%, transparent 50%)',
+          boxShadow: '0px 0px 120px 20px rgba(91, 178, 229, 0.7)',
         }}
-      ></div>
+      />
+
+      <div
+        className="pointer-events-none absolute top-1/2 right-[-160px] z-0 h-[260px] w-[260px] -translate-y-1/2 rounded-l-full bg-white"
+        style={{
+          boxShadow: '0px 0px 120px 20px rgba(91, 178, 229, 0.7)',
+        }}
+      />
+
+      <div
+        className="pointer-events-none absolute top-[80px] left-[-200px] z-0 h-[190px] w-[450px] opacity-100"
+        style={{
+          background:
+            'linear-gradient(181.87deg, #ACAFFF -157.44%, rgba(181,189,254,0.96) -157.4%, rgba(171,169,213,0.67) 216.94%, rgba(150,143,199,0.8) 216.94%)',
+          filter: 'blur(70px)',
+          transform: 'rotate(30deg)',
+        }}
+      />
+
+      <div
+        className="pointer-events-none absolute bottom-[80px] left-[-200px] z-0 h-[190px] w-[450px] opacity-100"
+        style={{
+          background:
+            'linear-gradient(181.87deg, #ACAFFF -157.44%, rgba(181,189,254,0.96) -157.4%, rgba(171,169,213,0.67) 216.94%, rgba(150,143,199,0.8) 216.94%)',
+          filter: 'blur(70px)',
+          transform: 'rotate(150deg)',
+        }}
+      />
 
       <h2
         className="courses-city-heading relative z-10 mb-8 font-['Montserrat'] text-[32px] font-[900] uppercase tracking-wider md:text-[50px]"

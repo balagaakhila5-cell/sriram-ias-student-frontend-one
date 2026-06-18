@@ -221,6 +221,19 @@ export function formatCourseTitle(title: string): string {
   return title.replace(/\n/g, ' ').trim();
 }
 
+const CITY_TITLE_SUFFIXES: Record<CenterCity, string[]> = {
+  delhi: ['NEW DELHI', 'New Delhi', 'Delhi'],
+  hyderabad: ['Hyderabad'],
+  pune: ['Pune'],
+};
+
+function stripCitySuffixFromCourseLabel(label: string, cityKey: CenterCity): string {
+  return CITY_TITLE_SUFFIXES[cityKey].reduce((result, cityName) => {
+    const escaped = cityName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return result.replace(new RegExp(`\\s*-\\s*${escaped}\\s*$`, 'i'), '').trim();
+  }, label);
+}
+
 export type CenterProgram = {
   slug: string;
   title: string;
@@ -275,9 +288,7 @@ export function getHeaderCourseLinks(
       if (!course) return null;
 
       let label = formatCourseTitle(course.title);
-      if (cityKey === 'hyderabad') {
-        label = label.replace(/\s*-\s*Hyderabad\s*$/i, '').trim();
-      }
+      label = stripCitySuffixFromCourseLabel(label, cityKey);
 
       return {
         label,

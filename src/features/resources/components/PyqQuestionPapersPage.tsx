@@ -35,7 +35,7 @@ import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog
 
 import PyqPaperCard from "@/features/resources/components/PyqPaperCard";
 
-import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
+import PaginatedPdfGrid from "@/features/resources/components/PaginatedPdfGrid";
 
 import {
   PYQ_SELECT_PAPER_OPTIONS,
@@ -249,7 +249,7 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
     );
 
-    const mapped = mapApiFilesToCatalog(files, "previous-year", fallback, 10).map(
+    const mapped = mapApiFilesToCatalog(files, "previous-year", fallback, 50).map(
 
       (item, index) => ({
 
@@ -499,19 +499,17 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
                   {showResults && !isFetching && catalogItems.length > 0 && (
 
-                    <ResourceCardGrid className={FREE_RESOURCE_CARD_GRID}>
-
-                      {catalogItems.map((item) => (
-
-                        <div key={item.id} className="animate-card min-w-0">
-
+                    <PaginatedPdfGrid
+                      items={catalogItems}
+                      gridClassName={FREE_RESOURCE_CARD_GRID}
+                      resetKey={`${section}-${selectedPaper}-${selectedYear}`}
+                      getKey={(item) => item.id}
+                      renderItem={(item) => (
+                        <div className="animate-card min-w-0">
                           <PyqPaperCard item={item} />
-
                         </div>
-
-                      ))}
-
-                    </ResourceCardGrid>
+                      )}
+                    />
 
                   )}
 

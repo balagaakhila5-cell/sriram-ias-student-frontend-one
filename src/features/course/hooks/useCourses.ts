@@ -33,10 +33,17 @@ export function useCategories(options: { enabled?: boolean } = {}) {
   });
 }
 
-export function useCourses(filters: CourseFilters = {}) {
+export function useCourses(
+  filters: CourseFilters = {},
+  options: { enabled?: boolean } = {},
+) {
   return useQuery({
     queryKey: coursesKeys.list(filters),
     queryFn: () => coursesService.listCourses(filters),
+    enabled: options.enabled ?? true,
+    staleTime: 10 * 60 * 1000,
+    retry: false,
+    refetchOnMount: false,
   });
 }
 

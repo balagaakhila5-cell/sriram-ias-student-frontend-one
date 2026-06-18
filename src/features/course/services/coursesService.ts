@@ -155,7 +155,7 @@ function toCourseDetail(summary: CourseSummary): CourseDetail {
   };
 }
 
-const delay = (ms = 150) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /* ------------------------------------------------------------------ */
 /*  Service                                                            */

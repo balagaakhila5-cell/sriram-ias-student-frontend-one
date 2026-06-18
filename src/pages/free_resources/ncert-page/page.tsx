@@ -17,7 +17,7 @@ import { PremiumSearchButton } from "@/components/common/ResourceFilterButtons";
 import { listFreeResourceDocuments } from "@/features/resources/catalog/freeResources";
 import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 import NcertBookCard from "@/features/resources/components/NcertBookCard";
-import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
+import PaginatedPdfGrid from "@/features/resources/components/PaginatedPdfGrid";
 import {
   FREE_RESOURCE_CARD_GRID,
   RESOURCE_PAGE_HEADING_GRADIENT,
@@ -127,7 +127,7 @@ export default function NcertBooksPage() {
   const catalogItems = useMemo(() => {
     if (!showResults) return [];
     const fallback = listFreeResourceDocuments("ncert-books");
-    return mapApiFilesToCatalog(files, "ncert-books", fallback);
+    return mapApiFilesToCatalog(files, "ncert-books", fallback, 50);
   }, [files, showResults]);
 
   useGSAP(
@@ -253,15 +253,15 @@ export default function NcertBooksPage() {
                   )}
 
                   {showResults && !isFetching && catalogItems.length > 0 && (
-                    <ResourceCardGrid className={FREE_RESOURCE_CARD_GRID}>
-                      {catalogItems.map((item) => (
-                        <NcertBookCard
-                          key={item.id}
-                          item={item}
-                          className="animate-card"
-                        />
-                      ))}
-                    </ResourceCardGrid>
+                    <PaginatedPdfGrid
+                      items={catalogItems}
+                      gridClassName={FREE_RESOURCE_CARD_GRID}
+                      resetKey={`${selectedSubject}-${selectedClass}`}
+                      getKey={(item) => item.id}
+                      renderItem={(item) => (
+                        <NcertBookCard item={item} className="animate-card" />
+                      )}
+                    />
                   )}
                 </div>
               </div>

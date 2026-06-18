@@ -19,9 +19,8 @@ interface ResourceDocumentCardProps {
   singleRowActions?: boolean;
 }
 
-function primaryActionLabel(item: CatalogDocument): string {
-  if (item.subtopic === "previous-year") return "View";
-  return "Read";
+function primaryActionLabel(_item: CatalogDocument): string {
+  return "View";
 }
 
 function resolveBanner(item: CatalogDocument) {

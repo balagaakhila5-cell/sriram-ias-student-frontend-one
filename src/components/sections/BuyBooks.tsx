@@ -93,91 +93,94 @@ const BookCard: React.FC<BookCardProps> = ({ book, onOpenSample }) => {
         />
       </div>
 
-      <div className="flex flex-col flex-1 p-5 space-y-3 text-center">
-        <h3 className="font-bold text-lg text-gray-800 line-clamp-1">
+      <div className="flex flex-col flex-1 p-5 space-y-3">
+        <h3 className="font-bold text-lg text-gray-800 line-clamp-1 text-center">
           {book.title}
         </h3>
 
-        <div className="flex items-center justify-center gap-3 pt-1">
-          <div className="inline-flex flex-col items-center">
-            <span
-              className="font-bold text-lg inline-block text-transparent bg-clip-text"
-              style={{
-                backgroundImage:
-                  'linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)',
-              }}
-            >
-              {book.priceLabel}
-            </span>
-            <p className="mt-0.5 whitespace-nowrap text-[9px] text-gray-400 sm:text-[10px]">
-              * Excluding GST
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() =>
-              onOpenSample({
-                title: book.title,
-                image: book.image,
-                slug: book.slug,
-              })
-            }
-            className="cursor-pointer rounded-md border border-[#249EDC] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-[#007BB5] transition-all hover:bg-gray-50 sm:text-xs"
-          >
-            VIEW SAMPLE
-          </button>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3 pt-1">
-          <button
-            type="button"
-            onClick={() => router.push(`/books/${book.slug}`)}
-            className="py-2 text-xs text-white rounded-md transition-all hover:opacity-90 font-medium cursor-pointer"
-            style={{
-              background:
-                'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)',
-              boxShadow: '0px 4px 32px 0px #0000001A',
-            }}
-          >
-            Buy Now
-          </button>
-
-          {cartQuantity > 0 ? (
-            <div className="flex h-[34px] items-center justify-between rounded-md border border-[#249EDC] bg-[#EAF7FF] px-2">
-              <button
-                type="button"
-                onClick={handleDecrement}
-                aria-label="Decrease quantity"
-                className="flex h-7 w-7 items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white cursor-pointer"
+        <div className="flex flex-col gap-3 pt-1">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1">
+              <span
+                className="font-bold text-base sm:text-lg text-transparent bg-clip-text"
+                style={{
+                  backgroundImage:
+                    'linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)',
+                }}
               >
-                −
-              </button>
-              <button
-                type="button"
-                onClick={handleGoToCheckout}
-                aria-label="Go to checkout"
-                className="min-w-[24px] cursor-pointer text-center text-sm font-bold text-[#007BB5] hover:underline"
-              >
-                {cartQuantity}
-              </button>
-              <button
-                type="button"
-                onClick={handleIncrement}
-                aria-label="Increase quantity"
-                className="flex h-7 w-7 items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white cursor-pointer"
-              >
-                +
-              </button>
+                {book.priceLabel}
+              </span>
+              <p className="text-[9px] leading-tight text-gray-400 sm:text-[10px]">
+                * Excluding GST
+              </p>
             </div>
-          ) : (
+
+            <button
+              type="button"
+              onClick={() =>
+                onOpenSample({
+                  title: book.title,
+                  image: book.image,
+                  slug: book.slug,
+                })
+              }
+              className="h-fit w-full cursor-pointer rounded-md border border-[#249EDC] px-2 py-2 text-[10px] font-semibold uppercase tracking-wide text-[#007BB5] transition-all hover:bg-gray-50 sm:text-xs"
+            >
+              VIEW SAMPLE
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
               onClick={() => router.push(`/books/${book.slug}`)}
-              className="cursor-pointer rounded-md border border-[#249EDC] py-2 text-xs font-medium text-[#007BB5] transition-all hover:bg-gray-50"
+              className="w-full cursor-pointer rounded-md py-2 text-xs font-medium text-white transition-all hover:opacity-90"
+              style={{
+                background:
+                  'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)',
+                boxShadow: '0px 4px 32px 0px #0000001A',
+              }}
             >
-              View
+              Buy Now
             </button>
-          )}
+
+            {cartQuantity > 0 ? (
+              <div className="flex h-[34px] w-full items-center justify-between rounded-md border border-[#249EDC] bg-[#EAF7FF] px-2">
+                <button
+                  type="button"
+                  onClick={handleDecrement}
+                  aria-label="Decrease quantity"
+                  className="flex h-7 w-7 items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white cursor-pointer"
+                >
+                  −
+                </button>
+                <button
+                  type="button"
+                  onClick={handleGoToCheckout}
+                  aria-label="Go to checkout"
+                  className="min-w-[20px] cursor-pointer text-center text-sm font-bold text-[#007BB5] hover:underline"
+                >
+                  {cartQuantity}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleIncrement}
+                  aria-label="Increase quantity"
+                  className="flex h-7 w-7 items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white cursor-pointer"
+                >
+                  +
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={handleIncrement}
+                className="w-full cursor-pointer rounded-md border border-[#249EDC] py-2 text-xs font-medium text-[#007BB5] transition-all hover:bg-gray-50"
+              >
+                Add to Cart
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

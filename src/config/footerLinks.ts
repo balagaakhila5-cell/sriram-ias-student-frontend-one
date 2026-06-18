@@ -7,12 +7,11 @@ export type FooterLinkItem = {
 };
 
 export const FOOTER_COPYRIGHT = {
-  brandName: "Sriram's IAS",
-  establishedYear: 1985,
+  brandName: "panacea it services private limited",
 } as const;
 
-export function getFooterCopyrightText(year = new Date().getFullYear()) {
-  return `Copyright © ${FOOTER_COPYRIGHT.establishedYear}–${year} ${FOOTER_COPYRIGHT.brandName}. All Rights Reserved.`;
+export function getFooterCopyrightText() {
+  return `Copyright © ${FOOTER_COPYRIGHT.brandName}. All Rights Reserved.`;
 }
 
 export const FOOTER_SOCIAL_LINKS = {

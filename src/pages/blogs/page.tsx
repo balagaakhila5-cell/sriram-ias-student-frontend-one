@@ -132,7 +132,7 @@ export default function BlogsPage() {
           <div className="absolute inset-0 bg-black/30" />
 
           <div className="relative z-10 flex h-full items-end px-4 pb-8 sm:px-8 sm:pb-10 md:px-10">
-            <h1 className="text-[32px] font-black uppercase leading-none sm:text-[40px] md:text-[48px]">
+            <h1 className="text-[40px] font-black uppercase leading-none sm:text-[48px] md:text-[56px]">
               <span className="bg-gradient-to-r from-white via-[#c9c4ff] to-[#8f8cff] bg-clip-text text-transparent">
                 BLOGS
               </span>
@@ -176,17 +176,17 @@ export default function BlogsPage() {
                 </div>
 
                 <div className="absolute left-[38px] top-[62px] max-w-[480px]">
-                  <h2 className="mb-4 text-[34px] font-extrabold leading-[1.35] text-white">
+                  <h2 className="mb-4 text-[40px] font-extrabold leading-[1.35] text-white sm:text-[42px]">
                     How to Stay Consistent
                     <br />
                     Efficiently ?
                   </h2>
 
-                  <p className="mb-4 text-[15px] font-bold text-white">
+                  <p className="mb-4 text-[18px] font-bold text-white sm:text-[20px]">
                     March 23 , 2026
                   </p>
 
-                  <p className="text-[15px] font-bold text-white">
+                  <p className="text-[18px] font-bold text-white sm:text-[20px]">
                     12:30 PM
                   </p>
                 </div>
@@ -267,15 +267,15 @@ export default function BlogsPage() {
                       </div>
 
                       <div className="absolute bottom-4 left-5 right-4">
-                        <h3 className="mb-3 text-[19px] font-extrabold leading-[1.45] text-white sm:text-[20px]">
+                        <h3 className="mb-3 text-[22px] font-extrabold leading-[1.45] text-white sm:text-[24px]">
                           {GS_CARD_META.title}
                         </h3>
 
-                        <p className="mb-2 text-[13px] font-bold text-white">
+                        <p className="mb-2 text-[16px] font-bold text-white sm:text-[17px]">
                           {GS_CARD_META.date}
                         </p>
 
-                        <p className="mb-3 text-[13px] font-bold text-white">
+                        <p className="mb-3 text-[16px] font-bold text-white sm:text-[17px]">
                           {GS_CARD_META.time}
                         </p>
 

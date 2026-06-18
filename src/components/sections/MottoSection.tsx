@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import useInViewport from '@/hooks/useInViewport';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import { useHomepage } from '@/features/homepage/hooks/useHomepage';
 
@@ -13,9 +12,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const MottoSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
-  const isInViewport = useInViewport(sectionRef, { threshold: 0.2 });
   const { data: homepage } = useHomepage();
   const tagline = homepage?.section2?.text;
 
@@ -69,21 +66,6 @@ const MottoSection: React.FC = () => {
     { dependencies: [prefersReducedMotion], scope: sectionRef },
   );
 
-  useEffect(() => {
-    const video = videoRef.current;
-
-    if (!video) return;
-
-    if (prefersReducedMotion || !isInViewport) {
-      video.pause();
-      return;
-    }
-
-    void video.play().catch(() => {
-      // Ignore autoplay rejections.
-    });
-  }, [isInViewport, prefersReducedMotion]);
-
   return (
     <section
       ref={sectionRef}
@@ -99,6 +81,7 @@ const MottoSection: React.FC = () => {
             alt="Motto Wall"
             fill
             sizes="(max-width: 790px) 100vw, 68vw"
+            loading="lazy"
             className="object-cover object-left"
           />
         </div>

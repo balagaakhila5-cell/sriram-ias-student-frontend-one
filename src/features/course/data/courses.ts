@@ -655,7 +655,7 @@ export const courses: CourseData[] = [
   {
     slug: '2-years-gs-foundation-hyderabad',
     city: 'hyderabad',
-    title: '2 Years  General Studies\nFoundation Course - Hyderabad',
+    title: '2 Years  General Studies\nFoundation Course',
     subtitle: '2-Years General Studies Comprehensive Course',
     heroImage: '/assets/course/course-hero-bg.jpg',
     startDate: '24 March 2026',

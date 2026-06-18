@@ -21,8 +21,44 @@ const FEATURED_YOUTUBE_VIDEO = {
   url: 'https://youtu.be/8aLYn6C9n8I?si=GRscIaL1AhLEtOoD',
 };
 
+const MIN_YOUTUBE_CARDS = 5;
+
+const YOUTUBE_FALLBACK_POOL = [
+  {
+    id: 'yt-fallback-1',
+    title: 'The Hindu Daily Current Affairs',
+    image: FEATURED_YOUTUBE_VIDEO.image,
+    author: 'Saurabh Tripathi',
+    url: FEATURED_YOUTUBE_VIDEO.url,
+  },
+  FEATURED_YOUTUBE_VIDEO,
+  {
+    id: 'yt-fallback-3',
+    title: 'Complete Modern History',
+    image: FEATURED_YOUTUBE_VIDEO.image,
+    author: 'Expert Faculty',
+    url: FEATURED_YOUTUBE_VIDEO.url,
+  },
+  {
+    id: 'yt-fallback-4',
+    title: 'Geography Masterclass',
+    image: FEATURED_YOUTUBE_VIDEO.image,
+    author: 'Sriram IAS Faculty',
+    url: FEATURED_YOUTUBE_VIDEO.url,
+  },
+  {
+    id: 'yt-fallback-5',
+    title: 'UPSC Prelims Strategy',
+    image: FEATURED_YOUTUBE_VIDEO.image,
+    author: 'Sriram IAS',
+    url: FEATURED_YOUTUBE_VIDEO.url,
+  },
+] as const;
+
+const VISIBLE_CARD_OFFSET = 2;
+
 const AppAndVideos: React.FC = () => {
-  const [activeIndex, setActiveIndex] = useState(1);
+  const [activeIndex, setActiveIndex] = useState(2);
   const [isPaused, setIsPaused] = useState(false);
   const [playingVideo, setPlayingVideo] = useState<{ videoId: string; title: string } | null>(null);
   const touchStartX = useRef<number | null>(null);
@@ -32,23 +68,7 @@ const AppAndVideos: React.FC = () => {
   const { data: homepage } = useHomepage();
   const section7 = homepage?.section7;
 
-  const fallbackVideos = [
-    {
-      id: 1,
-      title: 'The Hindu Daily Current Affairs',
-      image: FEATURED_YOUTUBE_VIDEO.image,
-      author: 'Saurabh Tripathi',
-      url: FEATURED_YOUTUBE_VIDEO.url,
-    },
-    FEATURED_YOUTUBE_VIDEO,
-    {
-      id: 3,
-      title: 'Complete Modern History',
-      image: FEATURED_YOUTUBE_VIDEO.image,
-      author: 'Expert Faculty',
-      url: FEATURED_YOUTUBE_VIDEO.url,
-    },
-  ];
+  const fallbackVideos = [...YOUTUBE_FALLBACK_POOL];
 
   const videos = useMemo(() => {
     const apiVideos = section7?.videos ?? [];
@@ -73,19 +93,58 @@ const AppAndVideos: React.FC = () => {
             });
 
     const hasFeaturedVideo = mapped.some((video) => video.url?.includes('8aLYn6C9n8I'));
-    if (hasFeaturedVideo) return mapped;
+    let result = hasFeaturedVideo
+      ? [...mapped]
+      : (() => {
+          const withFeatured = [...mapped];
+          const insertAt = Math.min(1, withFeatured.length);
+          withFeatured.splice(insertAt, 0, FEATURED_YOUTUBE_VIDEO);
+          return withFeatured;
+        })();
 
-    const withFeatured = [...mapped];
-    const insertAt = Math.min(1, withFeatured.length);
-    withFeatured.splice(insertAt, 0, FEATURED_YOUTUBE_VIDEO);
-    return withFeatured;
+    if (result.length < MIN_YOUTUBE_CARDS) {
+      const existingIds = new Set(result.map((video) => String(video.id)));
+      for (const fallback of YOUTUBE_FALLBACK_POOL) {
+        if (result.length >= MIN_YOUTUBE_CARDS) break;
+        if (!existingIds.has(String(fallback.id))) {
+          result.push({ ...fallback });
+          existingIds.add(String(fallback.id));
+        }
+      }
+    }
+
+    return result;
   }, [section7]);
 
   useEffect(() => {
     if (activeIndex >= videos.length) {
-      setActiveIndex(0);
+      setActiveIndex(Math.min(2, Math.max(0, videos.length - 1)));
     }
   }, [activeIndex, videos.length]);
+
+  const getCarouselPosition = (index: number) => {
+    let position = index - activeIndex;
+    while (position < -VISIBLE_CARD_OFFSET) position += videos.length;
+    while (position > VISIBLE_CARD_OFFSET) position -= videos.length;
+    return position;
+  };
+
+  const getCarouselStyle = (position: number) => {
+    switch (position) {
+      case 0:
+        return { transform: 'translateX(0) scale(1)', zIndex: 40, opacity: 1 };
+      case -1:
+        return { transform: 'translateX(-44%) scale(0.84)', zIndex: 30, opacity: 0.82 };
+      case 1:
+        return { transform: 'translateX(44%) scale(0.84)', zIndex: 30, opacity: 0.82 };
+      case -2:
+        return { transform: 'translateX(-82%) scale(0.7)', zIndex: 20, opacity: 0.58 };
+      case 2:
+        return { transform: 'translateX(82%) scale(0.7)', zIndex: 20, opacity: 0.58 };
+      default:
+        return { transform: 'translateX(0) scale(0.45)', zIndex: 10, opacity: 0 };
+    }
+  };
 
   const openVideo = (url?: string, title?: string) => {
     const videoId =
@@ -383,7 +442,7 @@ const AppAndVideos: React.FC = () => {
           />
 
           <div
-            className="relative h-[350px] md:h-[450px] lg:h-[450px] w-full flex items-center justify-center py-4 px-10 z-10 touch-pan-y md:py-6"
+            className="relative h-[360px] md:h-[480px] lg:h-[520px] w-full flex items-center justify-center py-4 px-6 z-10 touch-pan-y md:px-10 md:py-6"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             onTouchStart={(e) => { setIsPaused(true); handleTouchStart(e); }}
@@ -393,58 +452,36 @@ const AppAndVideos: React.FC = () => {
             onWheel={handleWheel}
           >
             {videos.map((video, idx) => {
-              let position = idx - activeIndex;
-              if (position < -1) position += videos.length;
-              if (position > 1) position -= videos.length;
-
+              const position = getCarouselPosition(idx);
               const isActive = position === 0;
-              const isLeft = position === -1;
-              const isRight = position === 1;
-
-              let transformStyle = '';
-              let zIndex = 0;
-              let opacity = 0;
-
-              if (isActive) {
-                transformStyle = 'translateX(0) scale(0.95)';
-                zIndex = 30;
-                opacity = 1;
-              } else if (isLeft) {
-                transformStyle = 'translateX(-50%) scale(0.7)';
-                zIndex = 20;
-                opacity = 0.6;
-              } else if (isRight) {
-                transformStyle = 'translateX(55%) scale(0.8)';
-                zIndex = 20;
-                opacity = 0.6;
-              } else {
-                transformStyle = 'translateX(0) scale(0.5)';
-                zIndex = 10;
-                opacity = 0;
-              }
+              const { transform, zIndex, opacity } = getCarouselStyle(position);
 
               return (
                 <div
                   key={video.id}
                   onClick={() => setActiveIndex(idx)}
-                  className="absolute w-[380px] md:w-[700px] lg:w-[750px] cursor-pointer transition-[transform,opacity] duration-700 ease-out will-change-transform"
+                  className="absolute w-[280px] sm:w-[340px] md:w-[520px] lg:w-[620px] xl:w-[700px] cursor-pointer transition-[transform,opacity] duration-700 ease-out will-change-transform"
                   style={{
-                    transform: transformStyle,
+                    transform,
                     zIndex,
                     opacity,
                   }}
                 >
                   <div className="relative aspect-[16/9] rounded-[1.75rem] overflow-hidden shadow-[0_30px_70px_rgba(0,0,0,0.4)] transition-colors duration-500">
-                    <img
-                      src={video.image}
-                      alt={video.title}
-                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                      onError={(e) => {
-                        const target = e.currentTarget;
-                        target.onerror = null;
-                        target.src = '/assets/youtube_video_image.png';
-                      }}
-                    />
+                    {opacity > 0 ? (
+                      <img
+                        src={video.image}
+                        alt={video.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          target.onerror = null;
+                          target.src = '/assets/youtube_video_image.png';
+                        }}
+                      />
+                    ) : null}
 
                     <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-[transform,opacity] duration-500 ${isActive ? 'scale-100 opacity-100 hover:scale-110' : 'scale-50 opacity-0'}`}>
                       <button

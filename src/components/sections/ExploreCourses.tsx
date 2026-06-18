@@ -89,8 +89,8 @@ const catalogCoursesForTab = (tab: string): ExploreCardCourse[] =>
   }));
 
 const ExploreCourses: React.FC = () => {
-  const { data: categories } = useCategories();
-  const { data: allCourses } = useCourses();
+  const { data: categories } = useCategories({ enabled: false });
+  const { data: allCourses } = useCourses({}, { enabled: false });
 
   const tabs = useMemo(() => {
     const list = Array.isArray(categories) ? categories : [];

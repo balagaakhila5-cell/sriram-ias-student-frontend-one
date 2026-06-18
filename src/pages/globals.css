@@ -217,6 +217,66 @@
     will-change: background-position;
   }
 
+  .courses-mega-success-orb-top {
+    animation: coursesMegaSuccessOrbTop 7s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  .courses-mega-success-orb-side {
+    animation: coursesMegaSuccessOrbSide 8s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  .courses-mega-success-blob-a {
+    animation: coursesMegaSuccessBlobA 9s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  .courses-mega-success-blob-b {
+    animation: coursesMegaSuccessBlobB 10s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  @keyframes coursesMegaSuccessOrbTop {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+
+    100% {
+      transform: translate3d(-14px, 12px, 0);
+    }
+  }
+
+  @keyframes coursesMegaSuccessOrbSide {
+    0% {
+      transform: translate3d(0, -50%, 0);
+    }
+
+    100% {
+      transform: translate3d(-18px, calc(-50% + 10px), 0);
+    }
+  }
+
+  @keyframes coursesMegaSuccessBlobA {
+    0% {
+      transform: rotate(30deg) translate3d(0, 0, 0);
+    }
+
+    100% {
+      transform: rotate(34deg) translate3d(22px, -12px, 0);
+    }
+  }
+
+  @keyframes coursesMegaSuccessBlobB {
+    0% {
+      transform: rotate(150deg) translate3d(0, 0, 0);
+    }
+
+    100% {
+      transform: rotate(146deg) translate3d(18px, 10px, 0);
+    }
+  }
+
   .courses-mega-float-bg::before,
   .courses-mega-float-bg::after {
     content: '';
@@ -506,6 +566,10 @@
   .bg-moving-lines,
   .free-learning-bg-square-motion,
   .courses-centers-option-bg,
+  .courses-mega-success-orb-top,
+  .courses-mega-success-orb-side,
+  .courses-mega-success-blob-a,
+  .courses-mega-success-blob-b,
   .courses-option-bar-motion,
   .courses-mega-float-bg::before,
   .courses-mega-float-bg::after,
@@ -1340,5 +1404,62 @@
 
   .offline-centres-section .offline-card:hover {
     transform: none;
+  }
+}
+
+/* Book Free Demo / Our Centers / Courses mega menu shared motion */
+.book-demo-panel-bg-motion {
+  animation: bookDemoPanelBgMove 5.5s ease-in-out infinite alternate;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.our-centers-icon-motion {
+  animation: ourCentersIconFloat 4s ease-in-out infinite alternate;
+  transform-origin: center bottom;
+  will-change: transform;
+}
+
+.our-centers-icon-motion--delay-1 {
+  animation-delay: 0.45s;
+}
+
+.our-centers-icon-motion--delay-2 {
+  animation-delay: 0.9s;
+}
+
+.center-city-icon {
+  mix-blend-mode: multiply;
+  background: transparent !important;
+}
+
+.center-city-icon--on-dark {
+  mix-blend-mode: darken;
+}
+
+@keyframes bookDemoPanelBgMove {
+  0% {
+    transform: translateX(-5%) translateY(-4%) scale(1.08);
+  }
+
+  100% {
+    transform: translateX(5%) translateY(4%) scale(1.16);
+  }
+}
+
+@keyframes ourCentersIconFloat {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+
+  100% {
+    transform: translateY(-10px) scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book-demo-panel-bg-motion,
+  .our-centers-icon-motion {
+    animation: none;
   }
 }

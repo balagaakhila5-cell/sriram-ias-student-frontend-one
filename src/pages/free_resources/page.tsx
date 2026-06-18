@@ -1,6 +1,6 @@
-import { redirect } from "next/navigation";
+import { Navigate } from "react-router-dom";
 
 /** Free Resources hub — land on the main gateway page */
 export default function FreeResourcesPage() {
-  redirect("/free_resources/ncert-books");
+  return <Navigate to="/free_resources/ncert-books" replace />;
 }

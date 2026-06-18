@@ -350,11 +350,11 @@ const OurToppersGalleryPage = () => {
                     <div
                       className={`relative z-10 flex min-h-[90px] flex-col items-center bg-transparent ${
                         isSecondRow
-                          ? '-mt-[58px] lg:-mt-[72px]'
-                          : '-mt-[72px] lg:-mt-[92px]'
+                          ? '-mt-[44px] lg:-mt-[58px]'
+                          : '-mt-[56px] lg:-mt-[72px]'
                       }`}
                     >
-                      <h3 className="max-w-[250px] text-center text-[14px] font-extrabold uppercase leading-[1.25] tracking-[0.2px] text-white drop-shadow-sm md:text-[16px]">
+                      <h3 className="max-w-[250px] pt-2 text-center text-[14px] font-extrabold uppercase leading-[1.25] tracking-[0.2px] text-white drop-shadow-sm md:text-[16px]">
                         {topper.name}
                       </h3>
 

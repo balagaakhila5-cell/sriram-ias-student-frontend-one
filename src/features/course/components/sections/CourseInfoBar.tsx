@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useRef, useState } from 'react';
 import type { CourseData } from '../../types';
@@ -25,7 +25,7 @@ const getBrochureFileName = (course: CourseData) => {
 };
 
 const getFeeDisplay = (fee?: string, fallback?: string) => {
-  if (!fee || fee === '—' || fee === '-') return fallback ?? '';
+  if (!fee || fee === 'ΓÇö' || fee === '-') return fallback ?? '';
   return fee;
 };
 
@@ -129,7 +129,7 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
 
             <div className="hidden h-10 w-px shrink-0 bg-black/10 sm:block" aria-hidden />
 
-            {/* Modes — single line */}
+            {/* Modes ΓÇö single line */}
             <div className="info-item flex shrink-0 items-center">
               <div className="flex min-w-0 flex-col">
                 <div className="flex items-center gap-3 whitespace-nowrap md:gap-4">

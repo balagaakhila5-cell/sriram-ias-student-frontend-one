@@ -50,6 +50,8 @@ const OurToppers: React.FC = () => {
       <img
         src="/assets/our-centers/centers-bg.png"
         alt="Background"
+        loading="lazy"
+        decoding="async"
         className="absolute inset-0 z-0 h-full w-full object-cover"
       />
 
@@ -84,7 +86,7 @@ const OurToppers: React.FC = () => {
                 </div>
 
                 {/* TEXT AREA */}
-                <div className="-mt-3 flex min-h-[76px] flex-col items-center justify-start text-center relative z-20 px-1 sm:-mt-4">
+                <div className="mt-2 flex min-h-[76px] flex-col items-center justify-start text-center relative z-20 px-1 sm:mt-3">
                   <h3 className="text-white text-[14px] md:text-[15px] font-bold leading-tight min-h-[20px] max-w-full truncate">
                     {topper.name}
                   </h3>

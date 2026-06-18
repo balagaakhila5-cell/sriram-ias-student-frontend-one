@@ -1,23 +1,14 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import type { CourseData } from '../../types';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
+import NetworkDotsBackground from '@/components/common/NetworkDotsBackground';
 
 gsap.registerPlugin(ScrollTrigger);
-
-const NUM_NODES = 60;
-const NODE_RADIUS = 4;
-const SPEED = 0.4;
-const MAX_DIST = 220;
-const DOT_COLOR = 'rgba(0, 100, 180, 0.12)';
-
-interface Node {
-  x: number; y: number; vx: number; vy: number;
-}
 
 interface Props {
   course: CourseData;
@@ -25,91 +16,7 @@ interface Props {
 
 const CourseDescription: React.FC<Props> = ({ course }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let rafId: number;
-    let nodes: Node[] = [];
-
-    const init = (w: number, h: number) => {
-      nodes = Array.from({ length: NUM_NODES }, () => ({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * SPEED * 2,
-        vy: (Math.random() - 0.5) * SPEED * 2,
-      }));
-    };
-
-    const resize = () => {
-      const w = canvas.offsetWidth;
-      const h = canvas.offsetHeight;
-      canvas.width = w;
-      canvas.height = h;
-      init(w, h);
-    };
-
-    resize();
-
-    const draw = () => {
-      const w = canvas.width;
-      const h = canvas.height;
-      ctx.clearRect(0, 0, w, h);
-
-      for (const n of nodes) {
-        n.x += n.vx;
-        n.y += n.vy;
-        if (n.x < 0 || n.x > w) n.vx *= -1;
-        if (n.y < 0 || n.y > h) n.vy *= -1;
-
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, NODE_RADIUS, 0, Math.PI * 2);
-        ctx.fillStyle = DOT_COLOR;
-        ctx.fill();
-      }
-
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const dx = nodes[i].x - nodes[j].x;
-          const dy = nodes[i].y - nodes[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < MAX_DIST) {
-            const alpha = (1 - dist / MAX_DIST) * 0.08;
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
-            ctx.strokeStyle = `rgba(0, 100, 180, ${alpha})`;
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
-          }
-        }
-      }
-
-      if (!prefersReducedMotion) {
-        rafId = requestAnimationFrame(draw);
-      }
-    };
-
-    if (!prefersReducedMotion) {
-      rafId = requestAnimationFrame(draw);
-    } else {
-      draw();
-    }
-
-    const observer = new ResizeObserver(resize);
-    observer.observe(canvas);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      observer.disconnect();
-    };
-  }, [prefersReducedMotion]);
 
   useGSAP(() => {
     if (prefersReducedMotion) return;
@@ -359,17 +266,7 @@ const CourseDescription: React.FC<Props> = ({ course }) => {
       className="relative flex w-full items-center justify-center overflow-hidden border border-[rgba(255,255,255,0.1)] py-10 font-['Montserrat',sans-serif] md:pb-20 md:pt-12 lg:pt-14"
       style={bgStyle}
     >
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: 'absolute',
-          inset: 0,
-          width: '100%',
-          height: '100%',
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-      />
+      <NetworkDotsBackground variant="light" />
       <div className="max-w-[1200px] mx-auto px-6 md:px-12 lg:px-20 relative z-10">
         <p className="course-description-text text-left text-[16px] md:text-[24px] leading-[1.8] md:leading-[2.2] text-[#4b5563] transition-colors duration-300 hover:text-black">
           {descriptionContent}
