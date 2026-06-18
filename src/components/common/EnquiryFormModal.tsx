@@ -3,11 +3,11 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { useSubmitEnquiry } from '@/features/course/hooks/useCourses';
-import {
-  useEnquiryCenters,
-  useEnquiryCourses,
-} from '@/features/enquiry/hooks/useEnquiryLookups';
+import { useEnquiryCourses } from '@/features/enquiry/hooks/useEnquiryLookups';
+import CourseCenterSelect from '@/components/common/CourseCenterSelect';
 import DemoFormSelect from '@/components/common/DemoFormSelect';
+import type { CourseCenter } from '@/features/enquiry/hooks/useCourseCenters';
+import { toast } from '@/store/toastStore';
 
 interface EnquiryFormModalProps {
   isOpen: boolean;
@@ -32,32 +32,21 @@ const initialState: FormState = {
   centerId: '',
 };
 
-/* Added center options */
-const fallbackCenters = [
-  { _id: 'new-delhi', name: 'New Delhi' },
-  { _id: 'hyderabad', name: 'Hyderabad' },
-  { _id: 'pune', name: 'Pune' },
-];
-
 const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
   isOpen,
   onClose,
   defaultCourseTitle,
   defaultCenterName,
 }) => {
-  const { data: centersData } = useEnquiryCenters();
   const { mutateAsync: submitEnquiry, isPending } = useSubmitEnquiry();
 
   const [form, setForm] = useState<FormState>(initialState);
+  const [selectedCenter, setSelectedCenter] = useState<CourseCenter | undefined>();
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
-  const centers = centersData?.length ? centersData : fallbackCenters;
-  const selectedCenter = centers.find((c) => c._id === form.centerId);
-
-  // Real courses for the chosen center (no fake fallback — a placeholder course
-  // would be rejected by the backend's course lookup).
-  const { data: coursesData } = useEnquiryCourses(selectedCenter?.name);
+  const { data: coursesData } = useEnquiryCourses(selectedCenter?.centerName, {
+    enabled: isOpen,
+  });
   const courses = coursesData ?? [];
 
   if (!isOpen) return null;
@@ -72,7 +61,6 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
     e.preventDefault();
 
     setError(null);
-    setSuccess(null);
 
     if (!form.name.trim() || !form.phone.trim() || !form.email.trim()) {
       setError('Please fill in name, phone, and email.');
@@ -99,11 +87,16 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
         course: form.courseId,
         center: form.centerId,
         courseTitle: selectedCourse?.title ?? defaultCourseTitle,
-        centerName: selectedCenter?.name ?? defaultCenterName,
+        centerName: selectedCenter?.centerName ?? defaultCenterName,
       });
 
-      setSuccess(res.message ?? 'Enquiry submitted. We will reach out soon.');
+      const message =
+        res.message ?? 'Enquiry submitted. We will reach out soon.';
+
       setForm(initialState);
+      setSelectedCenter(undefined);
+      toast(message, 'success');
+      onClose();
     } catch (err) {
       const message =
         err instanceof Error ? err.message : 'Failed to submit enquiry.';
@@ -183,24 +176,16 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
               />
             </div>
 
-            {/* Center Dropdown */}
-            <div className="space-y-0.5">
-              <label className="ml-1 text-sm font-normal text-gray-400">
-                Center
-              </label>
-
-              <DemoFormSelect
-                value={form.centerId}
-                onChange={(value) =>
-                  setForm((f) => ({ ...f, centerId: value, courseId: '' }))
-                }
-                options={centers.map((center) => ({
-                  value: center._id,
-                  label: center.name,
-                }))}
-                placeholder="Choose center"
-              />
-            </div>
+            <CourseCenterSelect
+              value={form.centerId}
+              enabled={isOpen}
+              onChange={(centerId, center) => {
+                setForm((f) => ({ ...f, centerId, courseId: '' }));
+                setSelectedCenter(center);
+              }}
+              labelClassName="ml-1 text-sm font-normal text-gray-400"
+              placeholder="Choose center"
+            />
 
             {/* Course Dropdown */}
             <div className="space-y-0.5">
@@ -227,7 +212,6 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
             </div>
 
             {error && <p className="text-sm text-red-600">{error}</p>}
-            {success && <p className="text-sm text-green-600">{success}</p>}
 
             <div className="pt-2">
               <button

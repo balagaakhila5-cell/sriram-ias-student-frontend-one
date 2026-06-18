@@ -22,11 +22,14 @@ export function useCenters() {
   });
 }
 
-export function useCategories() {
+export function useCategories(options: { enabled?: boolean } = {}) {
   return useQuery({
     queryKey: coursesKeys.categories,
     queryFn: coursesService.listCategories,
+    enabled: options.enabled ?? true,
     staleTime: 10 * 60 * 1000,
+    retry: false,
+    refetchOnMount: false,
   });
 }
 

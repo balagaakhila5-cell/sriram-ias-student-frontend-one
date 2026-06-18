@@ -2,22 +2,34 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { enquiryLookupService } from "../services/lookupService";
+import { useCourseCenters } from "./useCourseCenters";
 
-/** Real (public) centers for the enquiry form's Center dropdown. */
+/** @deprecated Prefer `useCourseCenters` — kept for legacy `{ _id, name }` shape. */
 export function useEnquiryCenters() {
-  return useQuery({
-    queryKey: ["enquiry", "centers"],
-    queryFn: enquiryLookupService.listCenters,
-    staleTime: 10 * 60 * 1000,
-  });
+  const { centers, ...rest } = useCourseCenters();
+
+  return {
+    ...rest,
+    data: centers.map((center) => ({
+      _id: center._id,
+      name: center.centerName,
+    })),
+  };
 }
 
 /** Real (public) courses for a center — drives the Course dropdown. */
-export function useEnquiryCourses(centerName?: string) {
+export function useEnquiryCourses(
+  centerName?: string,
+  options: { enabled?: boolean } = {},
+) {
+  const enabled = (options.enabled ?? true) && Boolean(centerName);
+
   return useQuery({
     queryKey: ["enquiry", "courses", centerName ?? ""],
     queryFn: () => enquiryLookupService.listCourses(centerName),
-    enabled: Boolean(centerName),
+    enabled,
     staleTime: 5 * 60 * 1000,
+    retry: false,
+    refetchOnMount: false,
   });
 }

@@ -9,17 +9,15 @@ import {
   useCategories,
   useSubmitEnquiry,
 } from '@/features/course/hooks/useCourses';
-import {
-  useEnquiryCenters,
-  useEnquiryCourses,
-} from '@/features/enquiry/hooks/useEnquiryLookups';
+import { useEnquiryCourses } from '@/features/enquiry/hooks/useEnquiryLookups';
+import CourseCenterSelect from '@/components/common/CourseCenterSelect';
 import DemoFormSelect from '@/components/common/DemoFormSelect';
+import type { CourseCenter } from '@/features/enquiry/hooks/useCourseCenters';
 import {
   fallbackCategories,
-  fallbackCenters,
 } from '@/features/course/data/demoFormOptions';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
-import type { Category, Center } from '@/features/course/services/coursesService';
+import type { Category } from '@/features/course/services/coursesService';
 
 interface BookFreeDemoModalProps {
   isOpen: boolean;
@@ -37,15 +35,6 @@ const initialForm = {
   expectation: '',
 };
 
-function normalizeCenters(items: Center[]): Center[] {
-  return items
-    .map((item) => ({
-      _id: item._id || (item as Center & { id?: string }).id || item.name,
-      name: item.name,
-    }))
-    .filter((item) => item._id && item.name);
-}
-
 function normalizeCategories(items: Category[]): Category[] {
   return items
     .map((item) => ({
@@ -57,17 +46,13 @@ function normalizeCategories(items: Category[]): Category[] {
 
 const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }) => {
   const [form, setForm] = useState(initialForm);
+  const [selectedCenter, setSelectedCenter] = useState<CourseCenter | undefined>();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const { data: centersData = [], isError: centersError } = useEnquiryCenters();
-  const { data: categoriesData = [], isError: categoriesError } = useCategories();
-
-  const centers = useMemo(() => {
-    const apiCenters = normalizeCenters(centersData);
-    if (apiCenters.length && !centersError) return apiCenters;
-    return fallbackCenters;
-  }, [centersData, centersError]);
+  const { data: categoriesData = [], isError: categoriesError } = useCategories({
+    enabled: isOpen,
+  });
 
   const categories = useMemo(() => {
     const apiCategories = normalizeCategories(categoriesData);
@@ -75,25 +60,15 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
     return fallbackCategories;
   }, [categoriesData, categoriesError]);
 
-  const selectedCenter = useMemo(
-    () => centers.find((c) => c._id === form.centerId),
-    [centers, form.centerId],
-  );
-  // Courses come from the real public endpoint, filtered by the selected
-  // center only (categoryName isn't usable publicly — see lookupService).
   const { data: courses = [], isFetching: coursesLoading } = useEnquiryCourses(
-    selectedCenter?.name,
+    selectedCenter?.centerName,
+    { enabled: isOpen },
   );
 
   // Reset course when center/category changes
   useEffect(() => {
     setForm((prev) => ({ ...prev, courseId: '' }));
   }, [form.centerId, form.categoryId]);
-
-  const centerOptions = useMemo(
-    () => centers.map((center) => ({ value: center._id, label: center.name })),
-    [centers],
-  );
 
   const categoryOptions = useMemo(
     () =>
@@ -162,6 +137,7 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
 
   const resetAndClose = () => {
     setForm(initialForm);
+    setSelectedCenter(undefined);
     setError(null);
     setSuccess(false);
     submit.reset();
@@ -198,7 +174,7 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
       center: form.centerId,
       category: form.categoryId,
       course: form.courseId,
-      centerName: selectedCenter?.name,
+      centerName: selectedCenter?.centerName,
       courseTitle: selectedCourse?.title,
       targetYear: form.targetYear,
       expectation: form.expectation.trim(),
@@ -324,14 +300,13 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
 
               <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="flex-1 min-w-0">
-                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Center</label>
-                  <DemoFormSelect
+                  <CourseCenterSelect
                     value={form.centerId}
-                    onChange={(value) =>
-                      setForm((prev) => ({ ...prev, centerId: value }))
-                    }
-                    options={centerOptions}
-                    placeholder="Choose Center"
+                    enabled={isOpen}
+                    onChange={(centerId, center) => {
+                      setForm((prev) => ({ ...prev, centerId }));
+                      setSelectedCenter(center);
+                    }}
                   />
                 </div>
 
