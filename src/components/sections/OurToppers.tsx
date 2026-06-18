@@ -89,7 +89,7 @@ const OurToppers: React.FC = () => {
                     {topper.name}
                   </h3>
 
-                  <span className="bg-[#FF9800] text-white text-[13px] font-semibold py-1.5 px-5 rounded-full mt-1.5">
+                  <span className="topper-air-badge mt-1.5">
                     {topper.rank}
                   </span>
 

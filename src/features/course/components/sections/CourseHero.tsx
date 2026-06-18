@@ -52,8 +52,8 @@ const CourseHero: React.FC<Props> = ({ course }) => {
   return (
     <section
       ref={containerRef}
-      className="relative w-full flex items-center"
-      style={{ height: '70vh', minHeight: '400px' }}
+      className="relative flex w-full items-center"
+      style={{ height: '82vh', minHeight: '520px', maxHeight: '720px' }}
     >
       {/* Hero image */}
       <img

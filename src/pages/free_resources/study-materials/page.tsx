@@ -7,6 +7,8 @@ import StudyMaterialsGrid from "@/features/resources/components/StudyMaterialsGr
 import {
   FREE_RESOURCE_CARD_GRID,
   RESOURCE_PAGE_HEADING_GRADIENT,
+  RESOURCE_SECTION_SHELL,
+  RESOURCE_SECTION_TEXTURE_OVERLAY,
 } from "@/features/resources/components/cardStyles";
 import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 import gsap from "gsap";
@@ -159,7 +161,8 @@ export default function StudyMaterialsPage() {
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.2)_0%,#000000_100%)]" />
         </section>
 
-        <section className="relative bg-[url('/assets/free-resources/free-resource-bg-1.png')] bg-cover bg-center bg-no-repeat px-5 py-16 md:px-8 lg:px-12 xl:px-16">
+        <section className={`${RESOURCE_SECTION_SHELL} px-5 py-16 md:px-8 lg:px-12 xl:px-16`}>
+          <div className={RESOURCE_SECTION_TEXTURE_OVERLAY} aria-hidden />
           <div className="relative mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-12 xl:gap-14">
               <div className="min-w-0">

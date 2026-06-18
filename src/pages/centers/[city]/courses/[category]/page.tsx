@@ -2,7 +2,6 @@ import MainLayout from '@/components/common/MainLayout';
 import CenterCategoryPrograms from '@/features/center/components/sections/CenterCategoryPrograms';
 import JoinCTA from '@/features/course/components/sections/JoinCTA';
 import {
-  formatCityLabel,
   getCenterCategory,
   isCenterCity,
   isCourseCategoryKey,
@@ -28,10 +27,7 @@ export default async function CenterCategoryPage({
   return (
     <MainLayout headerVariant="light">
       <CenterCategoryPrograms city={cityKey} category={category} />
-      <JoinCTA
-        city={cityKey}
-        title={`CONTACT US : ${formatCityLabel(cityKey).toUpperCase()} Branch`}
-      />
+      <JoinCTA city={cityKey} />
     </MainLayout>
   );
 }

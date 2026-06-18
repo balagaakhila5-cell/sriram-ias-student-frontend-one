@@ -186,7 +186,7 @@ const SuccessStories = ({ city }: { city: string }) => {
                   <h3 className="text-[18px] font-bold text-gray-800 md:text-[20px]">
                     {story.name}
                   </h3>
-                  <p className="mt-1 text-[15px] font-bold text-gray-600 md:text-[16px]">
+                  <p className="mt-1 text-[16px] font-bold text-gray-600 md:text-[18px]">
                     {story.rank}
                   </p>
                 </div>

@@ -10,6 +10,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import FreeResourcesCourseSlider from '@/components/common/FreeResourcesCourseSlider';
 import { FREE_LEARNING_EXPLORE_HREFS } from '@/features/homepage/utils/homepageLinks';
+import { FOOTER_SOCIAL_LINKS } from '@/config/footerLinks';
 import BlogDetailBookmarkButton from '@/features/blogs/components/BlogDetailBookmarkButton';
 import { getBlogBookmarkId } from '@/features/blogs/utils/blogBookmarks';
 import {
@@ -160,7 +161,7 @@ export default function BlogDetailPage() {
             className="object-cover"
           />
 
-          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute inset-0 bg-black/30" />
 
           <h1 className="absolute left-[28px] top-[200px] text-[48px] font-black uppercase leading-none">
             <span className="ml-10 bg-gradient-to-r from-white via-[#c9c4ff] to-[#8f8cff] bg-clip-text text-transparent">
@@ -173,7 +174,7 @@ export default function BlogDetailPage() {
           {/* Visible animated background - top */}
           <div
             ref={bgTopRef}
-            className="pointer-events-none absolute right-[-90px] top-[10px] z-0 h-[760px] w-[760px] opacity-80"
+            className="pointer-events-none absolute right-[-90px] top-[10px] z-0 h-[760px] w-[760px] opacity-45"
           >
             <Image
               src="/assets/blogs/background-animation-blog1.png"
@@ -186,7 +187,7 @@ export default function BlogDetailPage() {
           {/* Visible animated background - bottom */}
           <div
             ref={bgBottomRef}
-            className="pointer-events-none absolute bottom-[-170px] left-[-130px] z-0 h-[850px] w-[850px] opacity-80"
+            className="pointer-events-none absolute bottom-[-170px] left-[-130px] z-0 h-[850px] w-[850px] opacity-45"
           >
             <Image
               src="/assets/blogs/background-animation-blog2.png"
@@ -200,7 +201,7 @@ export default function BlogDetailPage() {
             {/* Title area */}
             <div className="mb-10 flex items-start justify-between gap-6">
               <div>
-                <h2 className="mb-6 text-[40px] font-black leading-[1.15]">
+                <h2 className="mb-6 text-[44px] font-black leading-[1.15] sm:text-[48px]">
                   <span className="bg-gradient-to-r from-[#3099DD] via-[#8B85AA] to-[#D06D7A] bg-clip-text text-transparent">
                     Why Discipline Beats Motivation Every Time ?
                   </span>
@@ -287,7 +288,7 @@ export default function BlogDetailPage() {
               {/* RIGHT SIDE FULL AREA */}
               <div className="min-w-0">
                 {/* Image full width beside TOC */}
-                <div className="blog-section-card relative mb-10 h-[285px] overflow-hidden rounded-[10px]">
+                <div className="blog-section-card relative mb-10 h-[440px] overflow-hidden rounded-[10px] sm:h-[460px] md:h-[480px]">
                   <Image
                     src="/assets/blogs/timer-in-hand.png"
                     alt="Discipline Blog"
@@ -523,26 +524,33 @@ export default function BlogDetailPage() {
                           key={item}
                           className="mb-4 flex gap-4 border-b pb-4 last:border-b-0"
                         >
-                          <div className="relative h-[86px] w-[155px] shrink-0 overflow-hidden rounded-[4px]">
+                          <div className="relative h-[96px] w-[155px] shrink-0 overflow-hidden rounded-[4px]">
                             <Image
-                              src="/assets/blogs/trending-video.png"
-                              alt="Trending Video"
+                              src="/assets/current-affairs/daily-current-affairs/trending-video.png"
+                              alt="Daily Current Affairs"
                               fill
                               className="object-cover"
                             />
                           </div>
 
                           <div>
-                            <p className="text-[13px] font-bold leading-[1.45] text-black">
+                            <p className="text-[16px] font-bold leading-[1.45] text-black sm:text-[17px]">
                               Daily Current Affairs - 16 March 2026
-                            </p>
-
-                            <p className="mt-2 text-[13px] font-medium text-[#666]">
-                              ▶ Youtube
                             </p>
                           </div>
                         </div>
                       ))}
+
+                      <div className="mt-2 flex justify-center">
+                        <a
+                          href={FOOTER_SOCIAL_LINKS.youtube}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[16px] font-semibold text-[#3380C4] underline underline-offset-2 transition-colors hover:text-[#1E6F9F]"
+                        >
+                          View All
+                        </a>
+                      </div>
                     </div>
 
                     {/* Quick Links */}

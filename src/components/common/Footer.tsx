@@ -131,9 +131,9 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
   return (
     <footer
       ref={footerRef}
-      className="w-full min-w-0 overflow-x-clip bg-[#1a1a18] px-4 pt-12 pb-10 text-white md:px-8"
+      className="w-full min-w-0 overflow-x-clip bg-[#1a1a18] px-4 pt-10 pb-6 text-white md:px-8"
     >
-      <div className="mx-auto w-full min-w-0 max-w-[1500px] space-y-9">
+      <div className="mx-auto w-full min-w-0 max-w-[1500px] space-y-6">
         {/* Top CTA & Social Bar */}
         <div className="footer-top-bar -mt-2 flex flex-col items-start justify-between gap-6 xl:flex-row xl:items-center">
           <div className="flex flex-wrap items-center gap-3 sm:gap-4">
@@ -209,12 +209,8 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
           {/* Left Side */}
           <div className="min-w-0 w-full flex-1">
             {/* Website Links */}
-            <div className="footer-links -mt-1 grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3 md:gap-10 xl:gap-12">
-              <div className="footer-link-group space-y-3">
-                <h4 className="text-[18px] font-semibold tracking-[0.3px] text-white">
-                  Website Links
-                </h4>
-
+            <div className="footer-links -mt-1 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 md:gap-8 xl:gap-10">
+              <div className="footer-link-group">
                 <ul className="space-y-1.5 text-[14px] text-[#B3B3B3] font-normal leading-[1.35] tracking-[0.2px]">
                   {FOOTER_WEBSITE_LINKS_PRIMARY.map((item) => (
                     <li key={`${item.label}-${item.href}`}>
@@ -226,11 +222,7 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
                 </ul>
               </div>
 
-              <div className="footer-link-group space-y-3">
-                <h4 className="text-[18px] font-semibold tracking-[0.3px] text-white">
-                  Website Links
-                </h4>
-
+              <div className="footer-link-group">
                 <ul className="space-y-1.5 text-[14px] text-[#B3B3B3] font-normal leading-[1.35] tracking-[0.2px]">
                   {FOOTER_WEBSITE_LINKS_SECONDARY.map((item) => (
                     <li key={`${item.label}-${item.href}`}>
@@ -242,11 +234,7 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
                 </ul>
               </div>
 
-              <div className="footer-link-group space-y-3">
-                <h4 className="text-[18px] font-semibold tracking-[0.3px] text-white">
-                  Courses Details
-                </h4>
-
+              <div className="footer-link-group">
                 <ul className="space-y-1.5 text-[14px] text-[#B3B3B3] font-normal leading-[1.35] tracking-[0.2px]">
                   {FOOTER_COURSE_LINKS.map((item, index) => (
                     <li key={`${item.label}-${index}`}>
@@ -260,7 +248,7 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
             </div>
 
             {/* Cities moved down and text spacing added */}
-           <div className="footer-contacts mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 md:gap-10 xl:mt-14 xl:grid-cols-3 xl:gap-12">
+           <div className="footer-contacts mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 md:gap-8 xl:mt-8 xl:grid-cols-3 xl:gap-10">
               {FOOTER_BRANCHES.map((branch) => (
                 <div key={branch.city} className="footer-contact space-y-4">
                   <Link href={branch.href} className="flex items-center gap-3 hover:opacity-90">
@@ -307,7 +295,7 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
           </div>
 
           {/* Right Side: Masked Sliced Effect Zone */}
-          <div className="footer-vertical-text-container pointer-events-none mt-5 hidden h-[420px] shrink-0 select-none items-start justify-end gap-2 pr-2 sm:pr-4 xl:flex xl:h-[520px] xl:gap-3">
+          <div className="footer-vertical-text-container pointer-events-none mt-3 hidden h-[360px] shrink-0 select-none items-start justify-end gap-2 pr-2 sm:pr-4 xl:flex xl:h-[440px] xl:gap-3">
             {/* IFS */}
             <div className="relative w-[42px] h-full overflow-hidden z-10">
               <div className="moving-col absolute inset-0 flex flex-col gap-5 text-[38px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">
@@ -348,7 +336,7 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
           </div>
         </div>
 
-        <div className="footer-copyright border-t border-white/10 pt-6 text-center">
+        <div className="footer-copyright border-t border-white/10 pt-4 pb-1 text-center">
           <p className="text-[13px] font-medium leading-relaxed tracking-[0.2px] text-[#B3B3B3]">
             {getFooterCopyrightText()}
           </p>

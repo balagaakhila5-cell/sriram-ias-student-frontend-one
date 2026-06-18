@@ -356,7 +356,7 @@ const CourseDescription: React.FC<Props> = ({ course }) => {
   return (
     <section
       ref={containerRef}
-      className="w-full py-16 md:py-24 relative overflow-hidden flex items-center justify-center font-['Montserrat',sans-serif] border border-[rgba(255,255,255,0.1)]"
+      className="relative flex w-full items-center justify-center overflow-hidden border border-[rgba(255,255,255,0.1)] py-10 font-['Montserrat',sans-serif] md:pb-20 md:pt-12 lg:pt-14"
       style={bgStyle}
     >
       <canvas

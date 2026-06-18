@@ -235,8 +235,9 @@ const ExploreCourses: React.FC = () => {
 
   return (
     <section
+      id="explore-courses"
       ref={sectionRef}
-      className="relative bg-white px-4 py-20 md:px-8 lg:px-16"
+      className="relative scroll-mt-8 bg-white px-4 pt-20 pb-8 md:px-8 lg:px-16"
     >
       <div className="relative z-10 mx-auto max-w-7xl space-y-12">
         <div ref={headerRef} className="text-center">
@@ -313,55 +314,47 @@ const ExploreCourses: React.FC = () => {
                     </div>
 
                       <div
-                        className="absolute inset-0 z-20 flex translate-y-full flex-col justify-between p-5 transition-transform duration-500 ease-out group-hover:translate-y-0"
+                        className="absolute inset-0 z-20 grid translate-y-full grid-rows-[auto_1fr_auto] overflow-hidden p-4 transition-transform duration-500 ease-out group-hover:translate-y-0 sm:p-5"
                         style={{
                           background:
                             'linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.95) 100%)',
                         }}
                       >
-                        <div className="relative z-30 space-y-3">
-                          <div className="border-b border-white/20 pb-4">
-                            <div className="flex items-start gap-2">
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="#FFE81C"
-                                className="mt-0.5 shrink-0"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-                        </svg>
-                              <span className="text-[15px] font-bold leading-snug text-[#FFE81C] md:text-base">
+                        <h3 className="text-center text-[15px] font-bold leading-snug text-[#FFE81C] sm:text-base md:text-lg">
                           {course.title}
-                        </span>
-                      </div>
+                        </h3>
+
+                        <div className="flex flex-col items-center justify-center gap-2 text-center">
+                          <div className="flex items-center justify-center gap-1.5 text-sm font-medium text-white sm:text-base">
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="shrink-0"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z" />
+                            </svg>
+                            <span className="capitalize">{center}</span>
                           </div>
 
-                          <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-white md:text-base">
-                            <div className="flex items-center gap-1.5">
-                              <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="currentColor"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z" />
-                              </svg>
-                              <span className="capitalize">{center}</span>
-                            </div>
+                          <div className="inline-flex w-fit max-w-full flex-col items-center">
+                            <p className="text-lg font-semibold text-[#FFE81C] sm:text-xl md:text-2xl">
+                              {fee}
+                            </p>
+                            <p className="mt-0.5 whitespace-nowrap text-[9px] text-white/60 sm:text-[10px]">
+                              * Excluding GST
+                            </p>
                           </div>
-
-                          <p className="text-xl text-[#FFE81C] md:text-xl">{fee}</p>
                         </div>
 
-                        <div className="relative z-30 mt-2">
-                          <span className="inline-block rounded-xl bg-white px-9 py-1 text-base text-black shadow-lg">
-                        Explore
-                      </span>
-                    </div>
-                  </div>
+                        <div className="flex justify-center pt-1">
+                          <span className="inline-block rounded-xl bg-white px-6 py-1.5 text-sm font-semibold text-black shadow-lg transition-colors duration-300 hover:bg-[#044062] hover:text-white sm:px-8 sm:py-2 sm:text-base">
+                            Explore
+                          </span>
+                        </div>
+                      </div>
                     </div>
                     </Link>
                 );

@@ -21,6 +21,8 @@ import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 import {
   FREE_RESOURCE_CARD_GRID,
   RESOURCE_PAGE_HEADING_GRADIENT,
+  RESOURCE_SECTION_SHELL,
+  RESOURCE_SECTION_TEXTURE_OVERLAY,
 } from "@/features/resources/components/cardStyles";
 import {
   useResourceCategories,
@@ -199,8 +201,8 @@ export default function NcertBooksPage() {
           <div className="absolute inset-0 bg-[linear-gradient(90deg,#000000_15.33%,rgba(0,0,0,0.1)_50.97%)]" />
         </section>
 
-        <section className="relative overflow-hidden bg-[#f7f7f7] px-5 py-12 md:px-8 lg:px-12 xl:px-16">
-          <div className="pointer-events-none absolute inset-0 overflow-hidden bg-[url('/assets/free-resources/free-resource-bg-1.png')] bg-cover bg-center bg-no-repeat opacity-50" />
+        <section className={`${RESOURCE_SECTION_SHELL} relative overflow-hidden px-5 py-12 md:px-8 lg:px-12 xl:px-16`}>
+          <div className={RESOURCE_SECTION_TEXTURE_OVERLAY} aria-hidden />
 
           <div className="relative mx-auto max-w-[1500px]">
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_320px]">
@@ -265,7 +267,7 @@ export default function NcertBooksPage() {
               </div>
 
               <aside className="animate-sidebar sticky top-[120px] mx-auto w-full max-w-[310px] shrink-0 isolate self-start space-y-7 xl:ml-auto xl:mt-[40px]">
-                <FreeResourcesCourseSlider />
+                <FreeResourcesCourseSlider centerActions hideStar />
 
                 {/* OUR TOPPERS */}
                 <div className="toppers-card">
@@ -425,8 +427,8 @@ export default function NcertBooksPage() {
         .topper-rank {
           border-radius: 999px;
           background: #ff9800;
-          padding: 2px 9px;
-          font-size: 9px;
+          padding: 4px 12px;
+          font-size: 13px;
           font-weight: 900;
           line-height: 1;
           color: #ffffff;

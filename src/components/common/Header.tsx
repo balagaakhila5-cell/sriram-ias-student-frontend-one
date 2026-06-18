@@ -58,7 +58,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
   const blogLangRef = useRef<HTMLDivElement>(null);
   const aboutMenuRef = useRef<HTMLDivElement>(null);
 
-  const [activeCity, setActiveCity] = useState('New Delhi');
+  const [activeCity, setActiveCity] = useState('NEW DELHI');
   const [activeTab, setActiveTab] = useState('GS Foundation');
 
   const closeAllDesktopMenus = () => {
@@ -131,11 +131,11 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
 
   const cities = [
     {
-      name: 'New Delhi',
+      name: 'NEW DELHI',
       icon: (
         <Image
           src="/assets/new-delhi-only-icon.svg"
-          alt="New Delhi"
+          alt="NEW DELHI"
           width={35}
           height={35}
           className="w-[35px] h-[35px] object-contain"
@@ -177,13 +177,52 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
     }
   }, [activeCity, activeTab, tabs]);
 
+  const splitMegaMenuCourseLabel = (label: string) => {
+    const numberLed = label.match(/^(\d+\s+Years?)\s+(.+)$/i);
+    if (numberLed) {
+      return { primary: numberLed[1], secondary: numberLed[2], twoLines: true };
+    }
+    return { primary: label, secondary: null, twoLines: false };
+  };
+
   const BulletArrow = () => (
     <img
       src="/assets/arrow.png"
-      alt="arrow"
-      className="w-[22px] h-[22px] object-contain shrink-0"
+      alt=""
+      className="h-[22px] w-[22px] shrink-0 object-contain"
     />
   );
+
+  const renderMegaMenuCourseLink = (course: { href: string; slug: string; label: string }) => {
+    const parts = splitMegaMenuCourseLabel(course.label);
+
+    return (
+      <Link
+        href={course.href}
+        key={course.slug}
+        onClick={() => setIsCoursesOpen(false)}
+        className="group/course-item flex w-full items-start gap-4"
+      >
+        <span className="shrink-0 pt-[2px] transition-opacity group-hover/course-item:opacity-80">
+          <BulletArrow />
+        </span>
+        <span
+          className={`font-[Montserrat] text-[18px] font-bold leading-[1.25] text-black transition-colors group-hover/course-item:text-[#1376B1] md:text-[19px] ${
+            parts.twoLines ? '' : 'whitespace-nowrap'
+          }`}
+        >
+          {parts.twoLines ? (
+            <>
+              <span className="block">{parts.primary}</span>
+              <span className="block">{parts.secondary}</span>
+            </>
+          ) : (
+            parts.primary
+          )}
+        </span>
+      </Link>
+    );
+  };
 
   const topNavItemClass = isLightHeader
     ? 'px-2 xl:px-2.5 py-1.5 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-[#333333] font-bold cursor-pointer hover:text-black active:bg-transparent focus:bg-transparent'
@@ -205,8 +244,8 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
         ref={headerRef}
         className={
           isLightHeader
-            ? "sticky top-0 left-0 right-0 z-50 mx-auto w-full border-b border-gray-100 bg-white py-3 shadow-sm lg:py-3 px-4 md:px-6 lg:px-8 xl:px-12 font-['Montserrat']"
-            : "absolute top-0 left-0 right-0 z-50 mx-auto w-full bg-transparent py-5 lg:py-4 px-4 md:px-6 lg:px-8 xl:px-12 font-['Montserrat']"
+            ? "sticky top-0 left-0 right-0 z-50 mx-auto w-full border-b border-gray-100 bg-white py-2 shadow-sm lg:py-2 px-3 md:px-4 lg:px-6 font-['Montserrat']"
+            : "absolute top-0 left-0 right-0 z-50 mx-auto w-full bg-transparent py-2 lg:py-2 px-3 md:px-4 lg:px-6 font-['Montserrat']"
         }
       >
         <div className="w-full max-w-[1440px] mx-auto flex justify-between items-start relative">
@@ -268,7 +307,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                 </button>
 
                 {isBlogLangOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-36 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
+                  <div className="absolute top-full left-0 mt-2 w-36 overflow-hidden rounded-lg border border-white/50 py-2 z-50 shadow-xl bg-[linear-gradient(145deg,#B8E4F7_0%,#D8E6F5_42%,#EAC8D0_100%)]">
                     {[
                       { label: 'English', href: '/blogs?lang=english' },
                       { label: 'Marathi', href: '/blogs?lang=marathi' },
@@ -278,7 +317,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                         key={item.label}
                         href={item.href}
                         onClick={() => setIsBlogLangOpen(false)}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1897D8] cursor-pointer transition-colors font-medium normal-case"
+                        className="block px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-white/40 hover:text-[#1897D8] cursor-pointer normal-case"
                       >
                         {item.label}
                       </Link>
@@ -336,11 +375,11 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                 </div>
 
                 {isLangOpen && (
-                  <div className="absolute top-full right-0 mt-2 w-32 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
+                  <div className="absolute top-full right-0 mt-2 w-32 overflow-hidden rounded-lg border border-white/50 py-2 z-50 shadow-xl bg-[linear-gradient(145deg,#B8E4F7_0%,#D8E6F5_42%,#EAC8D0_100%)]">
                     {['English', 'Telugu', 'Marathi'].map((lang) => (
                       <div
                         key={lang}
-                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1897D8] cursor-pointer transition-colors font-medium"
+                        className="cursor-pointer px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-white/40 hover:text-[#1897D8]"
                         onClick={() => {
                           setSelectedLang(lang);
                           setIsLangOpen(false);
@@ -575,29 +614,29 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                 </button>
 
                 {isAboutOpen && (
-                  <div className="absolute top-full right-0 mt-10 w-[min(602px,calc(100vw-2rem))] h-[274px] rounded-[22px] bg-white shadow-[0px_18px_50px_rgba(0,0,0,0.18)] overflow-hidden z-50">
+                  <div className="absolute top-full right-0 z-50 mt-4 h-[168px] w-[min(390px,calc(100vw-2rem))] overflow-hidden rounded-[14px] bg-white shadow-[0px_12px_32px_rgba(0,0,0,0.14)]">
                     <div className="about-bg-motion absolute inset-0 pointer-events-none" />
                     <div className="absolute inset-0 bg-white/10 pointer-events-none" />
 
-                    <div className="relative z-20 flex h-full items-center justify-center gap-5 px-16">
+                    <div className="relative z-20 flex h-full items-center justify-center gap-3 px-7">
                       <Link
                         href="/about"
                         onClick={() => setIsAboutOpen(false)}
-                        className="group flex h-[172px] w-[190px] flex-col items-center justify-center rounded-[18px] bg-white shadow-[0px_12px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]"
+                        className="group flex h-[112px] w-[132px] flex-col items-center justify-center rounded-[12px] bg-white shadow-[0px_8px_20px_rgba(0,0,0,0.07)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_12px_26px_rgba(0,0,0,0.1)]"
                       >
-                        <div className="mb-5 flex h-[72px] w-[72px] items-center justify-center">
+                        <div className="mb-2 flex h-[44px] w-[44px] items-center justify-center">
                           <Image
                             src="/assets/about/about-us-icon.svg"
                             alt="About Us"
-                            width={72}
-                            height={72}
+                            width={44}
+                            height={44}
                             priority
                             unoptimized
-                            className="h-[72px] w-[72px] object-contain transition-transform duration-300 group-hover:scale-110"
+                            className="h-[44px] w-[44px] object-contain transition-transform duration-300 group-hover:scale-110"
                           />
                         </div>
 
-                        <span className="text-[18px] font-semibold normal-case text-[#B95D63]">
+                        <span className="text-[13px] font-semibold normal-case text-[#B95D63]">
                           About Us
                         </span>
                       </Link>
@@ -605,21 +644,21 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                       <Link
                         href="/founders-message"
                         onClick={() => setIsAboutOpen(false)}
-                        className="group flex h-[172px] w-[258px] flex-col items-center justify-center rounded-[18px] bg-white shadow-[0px_12px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_18px_40px_rgba(0,0,0,0.12)]"
+                        className="group flex h-[112px] w-[172px] flex-col items-center justify-center rounded-[12px] bg-white shadow-[0px_8px_20px_rgba(0,0,0,0.07)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_12px_26px_rgba(0,0,0,0.1)]"
                       >
-                        <div className="mb-5 flex h-[72px] w-[72px] items-center justify-center">
+                        <div className="mb-2 flex h-[44px] w-[44px] items-center justify-center">
                           <Image
                             src="/assets/about/founder's-message-icon.svg"
                             alt="Founder Message"
-                            width={72}
-                            height={72}
+                            width={44}
+                            height={44}
                             priority
                             unoptimized
-                            className="h-[72px] w-[72px] object-contain transition-transform duration-300 group-hover:scale-110"
+                            className="h-[44px] w-[44px] object-contain transition-transform duration-300 group-hover:scale-110"
                           />
                         </div>
 
-                        <span className="text-[18px] font-semibold normal-case text-[#6F8E3B]">
+                        <span className="text-[13px] font-semibold normal-case text-[#6F8E3B]">
                           Founder&apos;s Message
                         </span>
                       </Link>
@@ -661,19 +700,19 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
         </div>
 
         {isFreeResourcesOpen && (
-          <div ref={freeResourcesDropdownRef} className="absolute top-full left-0 right-0 z-50 mt-4">
-            <div className="w-full border-t border-b border-[#E9E9E9] bg-white/95 py-14">
-              <div className="mx-auto w-full max-w-[1280px] px-10">
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4 xl:gap-6">
+          <div ref={freeResourcesDropdownRef} className="absolute top-full left-0 right-0 z-50 mt-3">
+            <div className="w-full border-t border-b border-[#E9E9E9] bg-white/95 py-8">
+              <div className="mx-auto w-full max-w-[1100px] px-6 md:px-8">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4 xl:gap-4">
                   <Link
                     href="/free_resources/ncert-page"
                     onClick={() => setIsFreeResourcesOpen(false)}
-                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                    className="group flex h-[148px] flex-col items-center justify-center rounded-[18px] bg-[#F8F8F8] px-4 text-center shadow-[0px_8px_22px_rgba(0,0,0,0.05)] transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
                   >
-                    <div className="mb-5 flex h-[60px] w-[60px] items-center justify-center rounded-[16px] bg-[#E8F3C9]">
-                      <BookOpen className="h-8 w-8 text-[#6E9331]" strokeWidth={2} />
+                    <div className="mb-3 flex h-[48px] w-[48px] items-center justify-center rounded-[14px] bg-[#E8F3C9]">
+                      <BookOpen className="h-6 w-6 text-[#6E9331]" strokeWidth={2} />
                     </div>
-                    <h3 className="text-[18px] leading-[26px] font-semibold normal-case text-[#6E9331]">
+                    <h3 className="text-[15px] font-semibold leading-[22px] normal-case text-[#6E9331]">
                       NCERT Books
                     </h3>
                   </Link>
@@ -681,12 +720,12 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                   <Link
                     href="/free_resources/previous-year"
                     onClick={() => setIsFreeResourcesOpen(false)}
-                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                    className="group flex h-[148px] flex-col items-center justify-center rounded-[18px] bg-[#F8F8F8] px-4 text-center shadow-[0px_8px_22px_rgba(0,0,0,0.05)] transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
                   >
-                    <div className="mb-5 flex h-[60px] w-[60px] items-center justify-center rounded-[16px] bg-[#F7DDE0]">
-                      <FileText className="h-8 w-8 text-[#C57A7E]" strokeWidth={2} />
+                    <div className="mb-3 flex h-[48px] w-[48px] items-center justify-center rounded-[14px] bg-[#F7DDE0]">
+                      <FileText className="h-6 w-6 text-[#C57A7E]" strokeWidth={2} />
                     </div>
-                    <h3 className="text-[17px] leading-[26px] font-semibold normal-case text-[#C57A7E] max-w-[210px]">
+                    <h3 className="max-w-[180px] text-[14px] font-semibold leading-[20px] normal-case text-[#C57A7E]">
                       Previous Year Question Papers
                     </h3>
                   </Link>
@@ -694,12 +733,12 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                   <Link
                     href="/free_resources/free-mocktests"
                     onClick={() => setIsFreeResourcesOpen(false)}
-                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                    className="group flex h-[148px] flex-col items-center justify-center rounded-[18px] bg-[#F8F8F8] px-4 text-center shadow-[0px_8px_22px_rgba(0,0,0,0.05)] transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
                   >
-                    <div className="mb-5 flex h-[60px] w-[60px] items-center justify-center rounded-[16px] bg-[#E8F3C9]">
-                      <ClipboardCheck className="h-8 w-8 text-[#6E9331]" strokeWidth={2} />
+                    <div className="mb-3 flex h-[48px] w-[48px] items-center justify-center rounded-[14px] bg-[#E8F3C9]">
+                      <ClipboardCheck className="h-6 w-6 text-[#6E9331]" strokeWidth={2} />
                     </div>
-                    <h3 className="text-[18px] leading-[26px] font-semibold normal-case text-[#6E9331]">
+                    <h3 className="text-[15px] font-semibold leading-[22px] normal-case text-[#6E9331]">
                       Free Mock Tests
                     </h3>
                   </Link>
@@ -707,12 +746,12 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                   <Link
                     href="/free_resources/study-materials"
                     onClick={() => setIsFreeResourcesOpen(false)}
-                    className="group h-[188px] rounded-[24px] bg-[#F8F8F8] shadow-[0px_10px_30px_rgba(0,0,0,0.06)] flex flex-col items-center justify-center text-center px-5 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                    className="group flex h-[148px] flex-col items-center justify-center rounded-[18px] bg-[#F8F8F8] px-4 text-center shadow-[0px_8px_22px_rgba(0,0,0,0.05)] transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
                   >
-                    <div className="mb-5 flex h-[60px] w-[60px] items-center justify-center rounded-[16px] bg-[#F7DDE0]">
-                      <LibraryBig className="h-8 w-8 text-[#FF4B55]" strokeWidth={2} />
+                    <div className="mb-3 flex h-[48px] w-[48px] items-center justify-center rounded-[14px] bg-[#F7DDE0]">
+                      <LibraryBig className="h-6 w-6 text-[#FF4B55]" strokeWidth={2} />
                     </div>
-                    <h3 className="text-[18px] leading-[26px] font-semibold normal-case text-[#FF4B55]">
+                    <h3 className="text-[15px] font-semibold leading-[22px] normal-case text-[#FF4B55]">
                       Study Material
                     </h3>
                   </Link>
@@ -799,30 +838,33 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
 
         <div
           ref={megaMenuRef}
-          className={`absolute top-full left-0 right-0 mt-6 bg-[#F2F7F9] rounded-[32px] shadow-2xl border border-white/20 flex overflow-hidden text-left cursor-default transform origin-top transition-all duration-300 z-50 min-h-[460px] ${
+          className={`absolute top-full left-0 right-0 z-50 mt-4 flex min-h-[380px] origin-top transform cursor-default overflow-hidden rounded-[32px] border border-gray-100 bg-white text-left shadow-2xl transition-all duration-300 ${
             isCoursesOpen ? 'scale-100 opacity-100 pointer-events-auto' : 'scale-95 opacity-0 pointer-events-none'
           }`}
         >
-          <div className="w-[280px] bg-white p-8 shrink-0 border-r border-gray-100 z-10">
-            <h3 className="text-[14px] font-[Montserrat] font-bold text-black mb-10 tracking-[0.1em] uppercase">
-              COURSES
+          <div className="relative z-10 w-[280px] shrink-0 overflow-hidden border-r border-gray-100 bg-white p-8">
+            <h3 className="relative z-10 mb-10 font-[Montserrat] text-[17px] font-bold uppercase tracking-[0.1em]">
+              <span className="bg-gradient-to-r from-[#20A0E0] to-[#E16165] bg-clip-text text-transparent">
+                COURSES
+              </span>
             </h3>
 
-            <div className="space-y-4">
+            <div className="relative z-10 space-y-4">
               {cities.map((city) => (
                 <button
                   key={city.name}
                   onClick={() => setActiveCity(city.name)}
-                  className={`w-full flex items-center gap-4 px-5 py-4 rounded-[16px] transition-all duration-300 ${
-                    activeCity === city.name ? 'text-[#0A73B7]' : 'text-gray-500 hover:bg-gray-50'
-                  }`}
-                  style={
+                  className={`flex w-full items-center gap-4 rounded-[16px] px-5 py-4 transition-all duration-300 ${
                     activeCity === city.name
-                      ? { background: 'linear-gradient(90deg, rgba(0, 159, 238, 0.24) 34.5%, rgba(0, 91, 136, 0.3) 100%)' }
-                      : {}
-                  }
+                      ? 'bg-gray-100 text-[#0A73B7]'
+                      : 'text-gray-500 hover:bg-gray-50'
+                  }`}
                 >
-                  <div className={`transition-colors duration-300 ${activeCity === city.name ? 'text-[#0A73B7]' : 'text-gray-400'}`}>
+                  <div
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center transition-colors duration-300 ${
+                      activeCity === city.name ? 'text-[#0A73B7]' : 'text-gray-400'
+                    }`}
+                  >
                     {city.icon}
                   </div>
 
@@ -838,27 +880,15 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
             </div>
           </div>
 
-          <div className="flex-1 p-10 pl-12 bg-[#F7F4F4] relative overflow-hidden">
-            {isCoursesOpen && (
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="none"
-                className="absolute inset-0 w-full h-full object-cover z-0 opacity-[0.08] mix-blend-darken pointer-events-none"
-              >
-                <source src="/assets/dropdown-video.mp4" type="video/mp4" />
-              </video>
-            )}
-
+          <div className="relative flex-1 overflow-hidden bg-white p-6 md:p-8 md:pl-10">
             <div className="relative z-10">
-              <div className="flex justify-between bg-[#E7E3E3] p-2 rounded-full mb-12 border border-[#E3DFDF]">
+              <div className="relative mb-8 overflow-hidden rounded-full border border-[#E3DFDF] bg-white p-1.5">
+                <div className="relative z-10 flex w-full justify-between gap-1">
                 {tabs.map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`px-7 py-3 rounded-full text-sm font-medium font-[Montserrat] transition-all duration-300 whitespace-nowrap ${
+                    className={`flex-1 rounded-full px-4 py-2.5 text-sm font-medium font-[Montserrat] transition-all duration-300 whitespace-nowrap ${
                       activeTab === tab ? 'text-white shadow-sm' : 'text-[#5F5F5F] hover:text-[#333333]'
                     }`}
                     style={activeTab === tab ? { background: 'linear-gradient(90deg, #2A9FDB 0%, #15658D 100%)' } : {}}
@@ -866,46 +896,11 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                     {tab}
                   </button>
                 ))}
+                </div>
               </div>
 
-              <div className="grid grid-cols-[1fr_2px_1fr] gap-x-12 text-left items-start">
-                <div className="flex flex-col gap-7">
-                  {courseList.slice(0, Math.ceil(courseList.length / 2)).map((course) => (
-                    <Link
-                      href={course.href}
-                      key={`left-${course.slug}`}
-                      onClick={() => setIsCoursesOpen(false)}
-                      className="flex items-start gap-4 group/left-item w-full"
-                    >
-                      <span className="group-hover/left-item:opacity-80 transition-opacity shrink-0 pt-[2px]">
-                        <BulletArrow />
-                      </span>
-                      <span className="text-[17px] font-medium text-black font-[Montserrat] group-hover/left-item:text-[#1376B1] transition-colors leading-[1.3] text-left">
-                        {course.label}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-
-                <div className="h-[240px] w-[3px] bg-gradient-to-b from-transparent via-[#2184B8] to-transparent rounded-full opacity-80 mt-2"></div>
-
-                <div className="flex flex-col gap-7">
-                  {courseList.slice(Math.ceil(courseList.length / 2)).map((course) => (
-                    <Link
-                      href={course.href}
-                      key={`right-${course.slug}`}
-                      onClick={() => setIsCoursesOpen(false)}
-                      className="flex items-start gap-4 group/right-item w-full"
-                    >
-                      <span className="group-hover/right-item:opacity-80 transition-opacity shrink-0 pt-[2px]">
-                        <BulletArrow />
-                      </span>
-                      <span className="text-[17px] font-medium text-black font-[Montserrat] group-hover/right-item:text-[#1376B1] transition-colors leading-[1.3] text-left">
-                        {course.label}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-4">
+                {courseList.map((course) => renderMegaMenuCourseLink(course))}
               </div>
             </div>
           </div>
@@ -919,11 +914,18 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
       : 'scale-95 opacity-0 pointer-events-none'
   }`}
 >
-  {/* Visible moving background */}
-  <div className="our-centers-bg-motion absolute inset-0 z-0 pointer-events-none" />
-
-  {/* Very light overlay only */}
-  <div className="absolute inset-0 z-[1] bg-white/10 pointer-events-none" />
+  <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+    <div className="our-centers-bg-motion relative absolute left-[-12%] top-[-12%] h-[124%] w-[124%] will-change-transform">
+      <Image
+        src="/assets/free-demo-bgs.png"
+        alt=""
+        fill
+        unoptimized
+        className="object-cover opacity-95"
+        aria-hidden
+      />
+    </div>
+  </div>
 
   <div className="relative z-10 flex h-full w-full items-center justify-center gap-4 px-4 py-5 sm:gap-6 sm:px-8 overflow-hidden">
     <Link
@@ -977,30 +979,18 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
 
   <style jsx global>{`
     .our-centers-bg-motion {
-      background-image: url('/assets/background-animation-our-centers.png');
-      background-size: 135% 135%;
-      background-repeat: no-repeat;
-      background-position: left center;
-      opacity: 0.9;
-      animation: ourCentersBgMove 2.8s ease-in-out infinite alternate;
+      animation: ourCentersBgMove 5.5s ease-in-out infinite alternate;
       transform-origin: center center;
-      will-change: transform, background-position;
+      will-change: transform;
     }
 
     @keyframes ourCentersBgMove {
       0% {
-        background-position: left center;
-        transform: translateX(-24px) translateY(8px) scale(1.12);
-      }
-
-      50% {
-        background-position: center center;
-        transform: translateX(22px) translateY(-8px) scale(1.18);
+        transform: translateX(-5%) translateY(-4%) scale(1.08);
       }
 
       100% {
-        background-position: right center;
-        transform: translateX(-18px) translateY(7px) scale(1.14);
+        transform: translateX(5%) translateY(4%) scale(1.16);
       }
     }
   `}</style>
@@ -1093,12 +1083,12 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
               </div>
 
               {isLangOpen && (
-                <div className="flex flex-col gap-3 pl-4 mt-1 border-l border-gray-100">
+                <div className="mt-1 flex flex-col gap-1 overflow-hidden rounded-lg border border-white/50 py-2 pl-0 shadow-md bg-[linear-gradient(145deg,#B8E4F7_0%,#D8E6F5_42%,#EAC8D0_100%)]">
                   {['English', 'Telugu', 'Marathi'].map((lang) => (
                     <div
                       key={lang}
-                      className={`text-sm cursor-pointer transition-colors ${
-                        selectedLang === lang ? 'text-primary font-bold' : 'text-gray-600 hover:text-primary'
+                      className={`cursor-pointer px-4 py-2 text-sm transition-colors hover:bg-white/40 hover:text-primary ${
+                        selectedLang === lang ? 'font-bold text-primary' : 'font-medium text-gray-800'
                       }`}
                       onClick={() => {
                         setSelectedLang(lang);

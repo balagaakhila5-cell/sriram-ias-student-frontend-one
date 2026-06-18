@@ -13,7 +13,11 @@ import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import QuickLinks from "@/components/common/QuickLinks";
 import FloatingActions from "@/components/common/FloatingActions";
-import { RESOURCE_PAGE_HEADING_GRADIENT } from "@/features/resources/components/cardStyles";
+import {
+  RESOURCE_PAGE_HEADING_GRADIENT,
+  RESOURCE_SECTION_SHELL,
+  RESOURCE_SECTION_WAVE_OVERLAY,
+} from "@/features/resources/components/cardStyles";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -47,6 +51,7 @@ const sections = [
     background: PYQ_ASSETS.prelimsBg,
     visual: PYQ_ASSETS.prelimsVisual,
     visualScale: "scale-105",
+    visualPositionClass: "bottom-0 right-0",
   },
   {
     id: "mains",
@@ -57,6 +62,7 @@ const sections = [
     visual: PYQ_ASSETS.mainsVisual,
     /** Mains PNG has more padding — scale up to match Prelims boy */
     visualScale: "scale-[1.22]",
+    visualPositionClass: "bottom-10 -right-4 sm:bottom-12 sm:-right-3",
   },
 ] as const;
 
@@ -112,8 +118,9 @@ export default function PreviousYearPage() {
           <div className="absolute inset-0 bg-[linear-gradient(90deg,#000000_15.33%,rgba(0,0,0,0.1)_50.97%)]" />
         </section>
 
-        <section className="relative bg-[#fcfcfc] bg-[url('/assets/bg-wave.png')] bg-cover bg-center bg-no-repeat px-4 py-12 sm:px-6 lg:px-10 xl:px-14">
-          <div className="mx-auto max-w-[1400px]">
+        <section className={`${RESOURCE_SECTION_SHELL} px-4 py-12 sm:px-6 lg:px-10 xl:px-14`}>
+          <div className={RESOURCE_SECTION_WAVE_OVERLAY} aria-hidden />
+          <div className="relative z-10 mx-auto max-w-[1400px]">
             <h1
               className={`animate-heading mb-10 text-left text-[34px] font-extrabold uppercase leading-tight tracking-tight sm:text-[44px] lg:text-[52px] ${RESOURCE_PAGE_HEADING_GRADIENT}`}
             >
@@ -136,8 +143,8 @@ export default function PreviousYearPage() {
                       />
                     </div>
 
-                    <div className="relative z-20 flex h-full items-center overflow-visible">
-                      <div className="flex min-w-0 max-w-[48%] flex-col justify-center overflow-visible pl-7 pr-4 py-6 sm:pl-8 sm:pr-5">
+                    <div className="relative z-20 flex h-full flex-col justify-between overflow-visible">
+                      <div className="flex min-w-0 max-w-[48%] flex-col overflow-visible pl-7 pr-4 pt-6 sm:pl-8 sm:pr-5">
                         <h2
                           className={`w-fit max-w-full text-[26px] font-extrabold uppercase leading-[1.08] tracking-tight sm:text-[30px] ${RESOURCE_PAGE_HEADING_GRADIENT}`}
                         >
@@ -146,16 +153,21 @@ export default function PreviousYearPage() {
                         <p className="mt-3 max-w-[200px] text-[15px] font-medium leading-[1.45] text-[#444444] sm:max-w-[210px] sm:text-[16px]">
                           {section.description}
                         </p>
+                      </div>
+
+                      <div className="relative z-20 flex min-w-0 max-w-[48%] pl-7 pb-6 sm:pl-8">
                         <Link
                           href={section.href}
-                          className={`mt-4 sm:mt-5 ${PYQ_VIEW_BUTTON}`}
+                          className={PYQ_VIEW_BUTTON}
                         >
-                          View
+                          Explore
                           <ArrowRight size={18} aria-hidden />
                         </Link>
                       </div>
 
-                      <div className="pointer-events-none absolute bottom-0 right-0 z-10 flex items-end justify-end overflow-visible">
+                      <div
+                        className={`pointer-events-none absolute z-10 flex items-end justify-end overflow-visible ${section.visualPositionClass}`}
+                      >
                         <div
                           className={`relative shrink-0 origin-bottom-right transition-transform duration-300 group-hover:scale-[1.04] ${section.visualScale}`}
                           style={{

@@ -1,5 +1,14 @@
 import type { DiamondConfig } from './Diamond';
 
+const withReducedOpacity = (
+  config: DiamondConfig[],
+  multiplier: number,
+): DiamondConfig[] =>
+  config.map((diamond) => ({
+    ...diamond,
+    opacity: diamond.opacity * multiplier,
+  }));
+
 export const heroDiamondConfig: DiamondConfig[] = [
   // --- TOP ZONE (0% - 20%) ---
   { size: 180, top: "8%", left: "15%", opacity: 0.15, parallax: -0.06, color1: "#22a3d0", color2: "#0091ca" }, // DEEP
@@ -47,3 +56,5 @@ export const heroDiamondConfig: DiamondConfig[] = [
   { size: 75, top: "90%", left: "50%", opacity: 0.25, parallax: -0.12, color1: "#d8eef7", color2: "#a7d3e6" },
   { size: 200, top: "95%", left: "5%", opacity: 0.08, parallax: -0.04, color1: "#40b0df", color2: "#007ba7" }, // DEEP
 ];
+
+export const buyBooksDiamondConfig = withReducedOpacity(heroDiamondConfig, 0.4);

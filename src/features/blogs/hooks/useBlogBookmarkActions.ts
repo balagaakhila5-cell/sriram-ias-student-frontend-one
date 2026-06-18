@@ -13,6 +13,16 @@ import {
 
 export type BlogBookmarkMode = "listing" | "detail";
 
+export function getBlogShareUrl(slug: string) {
+  return typeof window !== "undefined"
+    ? `${window.location.origin}/blogs/${slug}`
+    : `/blogs/${slug}`;
+}
+
+export function getBlogShareText(title: string) {
+  return `Check out ${title} on Sriram's IAS`;
+}
+
 export function useBlogBookmarkActions(
   bookmark: BlogBookmarkInput,
   mode: BlogBookmarkMode = "listing",
@@ -25,6 +35,9 @@ export function useBlogBookmarkActions(
 
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [shareMessage, setShareMessage] = useState<string | null>(null);
+
+  const shareUrl = getBlogShareUrl(bookmark.slug);
+  const shareText = getBlogShareText(bookmark.title);
 
   const isStudent = isAuthenticated && user?.role === "student";
 
@@ -70,6 +83,40 @@ export function useBlogBookmarkActions(
     return true;
   }, [isHydrated, isStudent, pathname, router, user?.id]);
 
+  const showShareMessage = useCallback((message: string) => {
+    setShareMessage(message);
+    window.setTimeout(() => setShareMessage(null), 2500);
+  }, []);
+
+  const shareOnWhatsApp = useCallback(() => {
+    const text = encodeURIComponent(`${shareText} ${shareUrl}`);
+    window.open(`https://wa.me/?text=${text}`, "_blank", "noopener,noreferrer");
+  }, [shareText, shareUrl]);
+
+  const shareOnFacebook = useCallback(() => {
+    const url = encodeURIComponent(shareUrl);
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
+  }, [shareUrl]);
+
+  const shareViaEmail = useCallback(() => {
+    const subject = encodeURIComponent(bookmark.title);
+    const body = encodeURIComponent(`${shareText}\n\n${shareUrl}`);
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  }, [bookmark.title, shareText, shareUrl]);
+
+  const copyShareLink = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      showShareMessage("Link copied to clipboard");
+    } catch {
+      showShareMessage("Unable to copy link");
+    }
+  }, [shareUrl, showShareMessage]);
+
   const handleBookmark = useCallback(() => {
     if (!requireStudentAuth() || !user?.id) return;
 
@@ -82,49 +129,14 @@ export function useBlogBookmarkActions(
     }
   }, [bookmark, mode, requireStudentAuth, user?.id]);
 
-  const handleShare = useCallback(async () => {
-    if (!requireStudentAuth()) return;
-
-    const shareUrl =
-      typeof window !== "undefined"
-        ? `${window.location.origin}/blogs/${bookmark.slug}`
-        : `/blogs/${bookmark.slug}`;
-
-    const sharePayload = {
-      title: bookmark.title,
-      text: `Check out ${bookmark.title} on Sriram's IAS`,
-      url: shareUrl,
-    };
-
-    try {
-      if (typeof navigator !== "undefined" && navigator.share) {
-        await navigator.share(sharePayload);
-        return;
-      }
-
-      await navigator.clipboard.writeText(shareUrl);
-      setShareMessage("Link copied to clipboard");
-    } catch (error) {
-      if (error instanceof Error && error.name === "AbortError") {
-        return;
-      }
-
-      try {
-        await navigator.clipboard.writeText(shareUrl);
-        setShareMessage("Link copied to clipboard");
-      } catch {
-        setShareMessage("Unable to share right now");
-      }
-    }
-
-    window.setTimeout(() => setShareMessage(null), 2500);
-  }, [bookmark.slug, bookmark.title, requireStudentAuth]);
-
   return {
     isBookmarked,
     shareMessage,
     handleBookmark,
-    handleShare,
+    shareOnWhatsApp,
+    shareOnFacebook,
+    shareViaEmail,
+    copyShareLink,
     isStudentReady: isHydrated && isStudent,
   };
 }

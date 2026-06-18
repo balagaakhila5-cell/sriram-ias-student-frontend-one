@@ -34,7 +34,7 @@ export default function HoverCard({
     <Link
       href={href}
       prefetch
-      className={`animate-card group relative z-0 block overflow-hidden rounded-[16px] transition-shadow duration-500 ease-out hover:shadow-[0px_14px_32px_rgba(0,0,0,0.18)] ${className}`}
+      className={`animate-card group relative z-0 block overflow-hidden rounded-[16px] transition-shadow duration-300 ease-out hover:shadow-[0px_14px_32px_rgba(0,0,0,0.18)] ${className}`}
     >
       {/* Background Image */}
       <Image
@@ -43,18 +43,18 @@ export default function HoverCard({
         fill
         sizes="(min-width: 1280px) 50vw, (min-width: 640px) 50vw, 100vw"
         quality={75}
-        className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+        className="object-cover transition-transform duration-300 ease-out group-hover:scale-110"
       />
 
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_55%,rgba(0,0,0,0.85)_100%)] transition-all duration-500 group-hover:bg-[linear-gradient(180deg,rgba(0,0,0,0.15)_40%,rgba(0,0,0,0.9)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_55%,rgba(0,0,0,0.85)_100%)] transition-all duration-300 group-hover:bg-[linear-gradient(180deg,rgba(0,0,0,0.15)_40%,rgba(0,0,0,0.9)_100%)]" />
 
       {/* Text */}
       <h3
         className="
     absolute bottom-10 left-10 max-w-[80%]
     text-left text-[32px] font-bold leading-[1.1] tracking-[0.1px] text-white
-    transition-all duration-500 ease-out
+    transition-all duration-300 ease-out
 
     break-words
 

@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
+import { formatCenterDisplayName } from '@/features/center/data/centerCourseCategories';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,7 +15,7 @@ interface Props {
 }
 
 const CenterGallery: React.FC<Props> = ({ city }) => {
-  const cityName = city.toUpperCase();
+  const cityName = formatCenterDisplayName(city);
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 

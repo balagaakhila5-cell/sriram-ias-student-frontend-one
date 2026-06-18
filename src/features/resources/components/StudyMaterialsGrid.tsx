@@ -1,10 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import type { CatalogDocument } from "@/features/resources/catalog/types";
 import {
   resourceDownloadPath,
-  resourceViewPath,
 } from "@/features/resources/catalog/routes";
 import ResourceCardGrid from "./ResourceCardGrid";
 import { RESOURCE_EMPTY, STUDY_MATERIAL_CARD } from "./cardStyles";
@@ -37,17 +35,14 @@ export default function StudyMaterialsGrid({
               <h3 className={STUDY_MATERIAL_CARD.title}>{item.title}</h3>
 
               <div className={STUDY_MATERIAL_CARD.actionsCentered}>
-                <Link
-                  href={resourceViewPath(item, variant === "portal" ? "portal" : "public")}
+                <a
+                  href={resourceDownloadPath(item)}
                   className={STUDY_MATERIAL_CARD.viewButton}
-                  prefetch={false}
-                  target={variant === "portal" ? "_blank" : undefined}
-                  rel={
-                    variant === "portal" ? "noopener noreferrer" : undefined
-                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  View
-                </Link>
+                  PDF
+                </a>
                 <a
                   href={resourceDownloadPath(item)}
                   className={STUDY_MATERIAL_CARD.downloadButton}

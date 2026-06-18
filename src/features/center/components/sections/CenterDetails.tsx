@@ -5,7 +5,6 @@ import Hero from './Hero';
 import CoursesInCity from './CoursesInCity';
 import OurToppers from './OurToppers';
 import CenterGallery from './CenterGallery';
-import SuccessStories from './SuccessStories';
 import OurStaff from './OurStaff';
 
 interface Props {
@@ -18,9 +17,8 @@ const CenterDetails: React.FC<Props> = ({ city }) => {
       <Hero city={city} />
       <CoursesInCity city={city} />
       <OurToppers city={city} />
-      <CenterGallery city={city} />
-      <SuccessStories city={city} />
       <OurStaff city={city} />
+      <CenterGallery city={city} />
     </div>
   );
 };

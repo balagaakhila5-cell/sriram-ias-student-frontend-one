@@ -14,7 +14,7 @@ export default async function CenterPage({ params }: { params: Promise<{ city: s
   return (
     <MainLayout>
       <CenterDetails city={city.toLowerCase()} />
-      <JoinCTA city={city.toLowerCase()} title={`CONTACT US : ${city.toUpperCase()} Branch`} />
+      <JoinCTA city={city.toLowerCase()} />
     </MainLayout>
   );
 }

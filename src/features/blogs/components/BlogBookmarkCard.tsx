@@ -30,7 +30,7 @@ export default function BlogBookmarkCard({
       </button>
 
       <div className="absolute bottom-4 left-5 right-4">
-        <h3 className="mb-3 text-[17px] font-extrabold leading-[1.45] text-white">
+        <h3 className="mb-3 text-[19px] font-extrabold leading-[1.45] text-white">
           {bookmark.title}
         </h3>
 

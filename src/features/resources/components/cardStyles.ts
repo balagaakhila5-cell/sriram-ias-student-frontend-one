@@ -7,6 +7,16 @@ export const RESOURCE_PAGE_HEADING_GRADIENT =
 /** Max cards shown per section */
 export const RESOURCE_CARD_LIMIT = 10;
 
+/** PDF grids — initial batch size before View More / Next */
+export const RESOURCE_DOCUMENTS_PAGE_SIZE = 6;
+
+/** Shared low-opacity section backgrounds (Free Resources + Current Affairs) */
+export const RESOURCE_SECTION_SHELL = "relative bg-[#fcfcfc]";
+export const RESOURCE_SECTION_TEXTURE_OVERLAY =
+  "pointer-events-none absolute inset-0 bg-[url('/assets/free-resources/free-resource-bg-1.png')] bg-cover bg-center bg-no-repeat opacity-[0.08]";
+export const RESOURCE_SECTION_WAVE_OVERLAY =
+  "pointer-events-none absolute inset-0 bg-[url('/assets/bg-wave.png')] bg-cover bg-center bg-no-repeat opacity-[0.08]";
+
 /** Responsive grid — matches Monthly Magazine reference (2 columns) */
 export const RESOURCE_CARD_GRID =
   "grid w-full grid-cols-1 gap-6 overflow-visible px-1 py-2 md:grid-cols-2 md:gap-x-8 md:gap-y-6";
@@ -85,7 +95,7 @@ export const RESOURCE_BUTTON = {
   downloadSolid: `${BUTTON_CORE} shrink-0 px-4 py-1.5 text-[12px] hover:border-[#2AA7DF] hover:bg-[#2AA7DF] hover:text-white`,
 } as const;
 
-/** Study materials list — Figma cream cards (title + View / Download PDF) */
+/** Study materials list — Figma cream cards (title + PDF / Download PDF) */
 export const STUDY_MATERIAL_CARD = {
   shell: `study-material-card group flex h-[132px] min-h-[132px] w-full flex-col overflow-visible rounded-[12px] resource-card-surface`,
   bodyCentered:
@@ -102,17 +112,18 @@ export const RESOURCE_EMPTY =
   "resource-card-surface rounded-[14px] px-6 py-8 text-center text-[14px] font-semibold text-[#5A6573]";
 
 const NCERT_BUTTON =
-  "inline-flex min-w-[100px] items-center justify-center rounded-[6px] border border-[#7EB4E2] bg-transparent px-5 py-2 text-center text-[13px] font-semibold text-[#7EB4E2] transition-all duration-300 ease-in-out hover:border-[#5BA3E0] hover:bg-[#7EB4E2] hover:text-white";
+  "inline-flex min-w-0 items-center justify-center rounded-[6px] border border-[#7EB4E2] bg-transparent px-4 py-2 text-center text-[12px] font-semibold text-[#7EB4E2] transition-all duration-300 ease-in-out hover:border-[#5BA3E0] hover:bg-[#7EB4E2] hover:text-white sm:px-5 sm:text-[13px]";
 
-/** Daily Practice Questions — Figma horizontal layout (icon left, title + Attempt Test) */
+/** Daily Practice Questions — icon left, centered title, Attempt Test bottom-right pill */
 export const PRACTICE_TEST_CARD = {
   shell:
-    "practice-test-card group flex h-[132px] min-h-[132px] w-full min-w-0 flex-row overflow-visible rounded-[12px] resource-card-surface",
-  body: "flex min-w-0 flex-1 flex-col justify-center gap-2 px-4 py-3",
-  title: CARD_TITLE,
-  actions: "flex w-full min-w-0 flex-nowrap items-center",
+    "practice-test-card group relative flex h-[132px] min-h-[132px] w-full min-w-0 flex-row overflow-visible rounded-[12px] resource-card-surface",
+  body:
+    "relative flex min-w-0 flex-1 flex-col items-center justify-center px-4 py-3 text-center",
+  title:
+    "line-clamp-2 w-full px-10 text-center font-['Montserrat'] text-[17px] font-bold leading-[1.35] tracking-normal text-[#000000] sm:text-[18px]",
   attemptButton:
-    "inline-flex items-center gap-2 rounded-full border border-[#57B0F2] bg-white px-4 py-1.5 text-[12px] font-semibold text-[#46A7ED] transition-all duration-300 hover:border-[#2AA7DF] hover:bg-[#2AA7DF] hover:text-white",
+    "absolute bottom-3 right-3 z-10 inline-flex items-center gap-2 rounded-full border border-[#57B0F2] bg-white px-4 py-1.5 text-[12px] font-semibold text-[#46A7ED] shadow-sm transition-all duration-300 group-hover:border-[#2AA7DF] group-hover:bg-[#2AA7DF] group-hover:text-white",
 } as const;
 
 /** PYQ question paper cards — Figma horizontal layout (Prelims / Mains lists) */
@@ -134,9 +145,9 @@ export const PYQ_PAPER_CARD = {
 export const NCERT_BOOK_CARD = {
   shell: `ncert-book-card group flex h-[120px] min-h-[120px] w-full flex-col overflow-visible rounded-[12px] ${CARD_SURFACE}`,
   bodyCentered:
-    "flex h-full w-full flex-col items-center justify-center gap-2.5 px-5 py-3 text-center",
+    "flex h-full w-full flex-col items-center justify-between gap-2 px-5 py-3 text-center",
   title: CARD_TITLE,
-  actionsCentered: "flex flex-nowrap items-center justify-center gap-3",
+  actionsCentered: "mt-auto flex w-full flex-row flex-nowrap items-center justify-center gap-2.5",
   button: NCERT_BUTTON,
 } as const;
 

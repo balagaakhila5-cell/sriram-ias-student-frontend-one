@@ -18,7 +18,11 @@ import {
 } from "@/features/currentAffairs/filters";
 
 import Header from "@/components/common/Header";
-import { RESOURCE_PAGE_HEADING_GRADIENT } from "@/features/resources/components/cardStyles";
+import {
+  RESOURCE_PAGE_HEADING_GRADIENT,
+  RESOURCE_SECTION_SHELL,
+  RESOURCE_SECTION_TEXTURE_OVERLAY,
+} from "@/features/resources/components/cardStyles";
 import Footer from "@/components/common/Footer";
 import CustomDropdown from "@/components/common/CustomDropdown";
 import FloatingActions from "@/components/common/FloatingActions";
@@ -26,80 +30,6 @@ import TrendingVideosCard from "@/components/common/TrendingVideosCard";
 import QuickLinks from "@/components/common/QuickLinks";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const magazineCards = [
-  {
-    id: 1,
-    title: "April Month Magazine 2026",
-    image: "/assets/current-affairs/monthly-magazine/magazine.png",
-    sampleLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 2,
-    title: "April Month Magazine 2026",
-    image: "/assets/current-affairs/monthly-magazine/magazine.png",
-    sampleLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 3,
-    title: "April Month Magazine 2026",
-    image: "/assets/current-affairs/monthly-magazine/magazine.png",
-    sampleLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 4,
-    title: "April Month Magazine 2026",
-    image: "/assets/current-affairs/monthly-magazine/magazine.png",
-    sampleLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 5,
-    title: "April Month Magazine 2026",
-    image: "/assets/current-affairs/monthly-magazine/magazine.png",
-    sampleLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 6,
-    title: "April Month Magazine 2026",
-    image: "/assets/current-affairs/monthly-magazine/magazine.png",
-    sampleLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 7,
-    title: "April Month Magazine 2026",
-    image: "/assets/current-affairs/monthly-magazine/magazine.png",
-    sampleLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 8,
-    title: "April Month Magazine 2026",
-    image: "/assets/current-affairs/monthly-magazine/magazine.png",
-    sampleLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 9,
-    title: "April Month Magazine 2026",
-    image: "/assets/current-affairs/monthly-magazine/magazine.png",
-    sampleLink: "#",
-    downloadLink: "#",
-  },
-  {
-    id: 10,
-    title: "April Month Magazine 2026",
-    image: "/assets/current-affairs/monthly-magazine/magazine.png",
-    sampleLink: "#",
-    downloadLink: "#",
-  },
-];
-
 
 export default function MonthlyMagazinePage() {
   const containerRef = useRef<HTMLElement>(null);
@@ -189,8 +119,9 @@ export default function MonthlyMagazinePage() {
         </section>
 
         {/* Main Content */}
-        <section className="relative bg-[url('/assets/free-resources/free-resource-bg-1.png')] bg-cover bg-center bg-no-repeat px-4 py-14 md:px-8 lg:px-10 xl:px-14">
-          <div className="mx-auto max-w-[1400px]">
+        <section className={`${RESOURCE_SECTION_SHELL} px-4 py-14 md:px-8 lg:px-10 xl:px-14`}>
+          <div className={RESOURCE_SECTION_TEXTURE_OVERLAY} aria-hidden />
+          <div className="relative z-10 mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-14">
               {/* Left Content */}
               <div>

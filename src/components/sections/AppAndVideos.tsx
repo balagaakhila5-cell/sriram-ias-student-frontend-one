@@ -257,79 +257,71 @@ const AppAndVideos: React.FC = () => {
 
               {/* CHANGED: QR block updated to use only image, no white card background */}
               <div className="download-app-element flex flex-col items-start gap-8">
-               <div className="flex flex-col items-start gap-6 sm:flex-row sm:-space-x-6 md:-space-x-10">
-                 <div className="flex flex-col items-center gap-0">
-                  {/* QR */}
-                  <img
-                    src="/assets/Qr_code.svg"
-                    alt="QR Code IOS"
-                    className="w-[180px] sm:w-[220px] md:w-[260px] h-auto object-contain block"
-                  />
+                <div className="flex flex-col items-start gap-6 sm:flex-row sm:-space-x-6 md:-space-x-10">
+                  <div className="flex flex-col items-center gap-4 w-[180px] sm:w-[220px] md:w-[260px]">
+                    <img
+                      src="/assets/Qr_code.svg"
+                      alt="QR Code Android"
+                      className="w-full h-auto object-contain block"
+                    />
 
-                  {/* Scan Button */}
-                <div className="relative -mt-[-1] cursor-pointer">
-                  {/* top triangle */}
-                  <div className="mx-auto mt-[10px]  w-0 h-0 border-l-[14px] border-r-[14px] border-b-[14px] border-l-transparent border-r-transparent border-b-[#17A8E3]" />
+                    <div className="relative cursor-pointer">
+                      <div className="mx-auto mt-[10px] w-0 h-0 border-l-[14px] border-r-[14px] border-b-[14px] border-l-transparent border-r-transparent border-b-[#17A8E3]" />
+                      <div
+                        className="w-[145px] md:w-[165px] h-[42px] md:h-[46px] rounded-b-[14px] rounded-t-[5px] flex items-center justify-center text-white font-bold text-[18px] md:text-[22px] tracking-wide cursor-pointer transition-all duration-300 hover:scale-105"
+                        style={{
+                          background: 'linear-gradient(90deg, #18B7E8 0%, #2E73D5 100%)',
+                        }}
+                      >
+                        SCAN
+                      </div>
+                    </div>
 
-                  {/* button */}
-                  <div
-                    className="w-[145px] md:w-[165px] h-[42px] md:h-[46px] rounded-b-[14px] rounded-t-[5px] flex items-center justify-center text-white font-bold text-[18px] md:text-[22px] tracking-wide cursor-pointer transition-all duration-300 hover:scale-105"
-                    style={{
-                      background: "linear-gradient(90deg, #18B7E8 0%, #2E73D5 100%)",
-                    }}
-                  >
-                    SCAN
+                    <button
+                      type="button"
+                      className="bg-black text-white px-8 py-4 rounded-xl flex items-center gap-4 hover:-translate-y-1 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.2)]"
+                    >
+                      <img src="/assets/playstore.svg" alt="Google Play" className="w-6 h-6" />
+                      <div className="text-left">
+                        <p className="text-[10px] opacity-60 font-bold uppercase">Get it on</p>
+                        <p className="text-lg font-bold leading-none">Google Play</p>
+                      </div>
+                    </button>
+                  </div>
+
+                  <div className="flex flex-col items-center gap-4 w-[180px] sm:w-[220px] md:w-[260px]">
+                    <img
+                      src="/assets/Qr_code.svg"
+                      alt="QR Code iOS"
+                      className="w-full h-auto object-contain block"
+                    />
+
+                    <div className="relative cursor-pointer">
+                      <div className="mx-auto mt-[10px] w-0 h-0 border-l-[14px] border-r-[14px] border-b-[14px] border-l-transparent border-r-transparent border-b-[#17A8E3]" />
+                      <div
+                        className="w-[145px] md:w-[165px] h-[42px] md:h-[46px] rounded-b-[14px] rounded-t-[5px] flex items-center justify-center text-white font-bold text-[18px] md:text-[22px] tracking-wide cursor-pointer transition-all duration-300 hover:scale-105"
+                        style={{
+                          background: 'linear-gradient(90deg, #18B7E8 0%, #2E73D5 100%)',
+                        }}
+                      >
+                        SCAN
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="bg-black text-white px-8 py-4 rounded-xl flex items-center gap-4 hover:-translate-y-1 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.2)]"
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.1 2.48-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.31-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.24-1.99 1.1-3.15-1.02.04-2.25.68-2.98 1.54-.66.76-1.24 1.93-1.09 3.07 1.14.09 2.24-.63 2.97-1.46z" />
+                      </svg>
+                      <div className="text-left">
+                        <p className="text-[10px] opacity-60 font-bold uppercase">Download on the</p>
+                        <p className="text-lg font-bold leading-none">App Store</p>
+                      </div>
+                    </button>
                   </div>
                 </div>
-                </div>
-
-                  <div className="flex flex-col items-center gap-0">
-              {/* QR */}
-              <img
-                src="/assets/Qr_code.svg"
-                alt="QR Code IOS"
-                className="w-[180px] sm:w-[220px] md:w-[260px] h-auto object-contain block"
-              />
-
-              {/* Scan Button */}
-             <div className="relative -mt-[-1] cursor-pointer">
-                {/* top triangle */}
-                <div className="mx-auto mt-[10px]  w-0 h-0 border-l-[14px] border-r-[14px] border-b-[14px] border-l-transparent border-r-transparent border-b-[#17A8E3]" />
-
-                {/* button */}
-                <div
-                  className="w-[145px] md:w-[165px] h-[42px] md:h-[46px] rounded-b-[14px] rounded-t-[5px] flex items-center justify-center text-white font-bold text-[18px] md:text-[22px] tracking-wide cursor-pointer transition-all duration-300 hover:scale-105"
-                  style={{
-                    background: "linear-gradient(90deg, #18B7E8 0%, #2E73D5 100%)",
-                  }}
-                >
-                  SCAN
-                </div>
-              </div>
-            </div>
-                </div>
-              </div>
-
-              {/* STORE BUTTONS */}
-              {/* CHANGED: gap-18 replaced with gap-[18px] */}
-              <div className="flex flex-row gap-[18px] flex-wrap">
-                <button className="bg-black text-white px-8 py-4 rounded-xl flex items-center gap-4 hover:-translate-y-1 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.2)]">
-                  <img src="/assets/playstore.svg" alt="Google Play" className="w-6 h-6" />
-                  <div className="text-left">
-                    <p className="text-[10px] opacity-60 font-bold uppercase">Get it on</p>
-                    <p className="text-lg font-bold leading-none">Google Play</p>
-                  </div>
-                </button>
-
-                <button className="bg-black text-white px-8 py-4 rounded-xl flex items-center gap-4 hover:-translate-y-1 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.2)]">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.1 2.48-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.31-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.24-1.99 1.1-3.15-1.02.04-2.25.68-2.98 1.54-.66.76-1.24 1.93-1.09 3.07 1.14.09 2.24-.63 2.97-1.46z" />
-                  </svg>
-                  <div className="text-left">
-                    <p className="text-[10px] opacity-60 font-bold uppercase">Download on the</p>
-                    <p className="text-lg font-bold leading-none">App Store</p>
-                  </div>
-                </button>
               </div>
             </div>
 
@@ -367,7 +359,7 @@ const AppAndVideos: React.FC = () => {
       </section>
 
       {/* ================= YOUTUBE VIDEOS ================= */}
-      <div className="youtube-trigger py-32 space-y-16">
+      <div className="youtube-trigger space-y-6 pt-12 pb-8 md:space-y-8 md:pt-16 md:pb-10">
         <div className="text-center">
           <h2 className="global-section-heading">
             YOUTUBE VIDEOS
@@ -391,7 +383,7 @@ const AppAndVideos: React.FC = () => {
           />
 
           <div
-            className="relative h-[350px] md:h-[450px] lg:h-[450px] w-full flex items-center justify-center py-12 px-10 z-10 touch-pan-y"
+            className="relative h-[350px] md:h-[450px] lg:h-[450px] w-full flex items-center justify-center py-4 px-10 z-10 touch-pan-y md:py-6"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             onTouchStart={(e) => { setIsPaused(true); handleTouchStart(e); }}
@@ -493,7 +485,7 @@ const AppAndVideos: React.FC = () => {
             <ChevronRight size={20} className="text-gray-800" />
           </button>
 
-          <div className="flex justify-center gap-3 mt-8 relative z-30">
+          <div className="flex justify-center gap-3 mt-4 relative z-30">
             {videos.map((_, idx) => (
               <button
                 key={idx}

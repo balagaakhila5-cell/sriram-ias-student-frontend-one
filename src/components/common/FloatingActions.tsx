@@ -88,19 +88,19 @@ const FloatingActions: React.FC = () => {
       {/* Floating Elements (Enquire Now, WhatsApp) */}
       <div 
         className={`floating-enquire fixed right-0 top-[calc(50%-2.5rem)] z-60 flex -translate-y-1/2 transform-gpu cursor-pointer items-center justify-end overflow-visible drop-shadow-2xl transition-[transform] duration-500 ${
-          isScrolledSafe ? 'translate-x-[calc(100%-40px)]' : 'translate-x-[0px]'
+          isScrolledSafe ? 'translate-x-[calc(100%-30px)]' : 'translate-x-[0px]'
         } hover:translate-x-0 group`}
         onClick={() => setIsEnquiryModalOpen(true)}
       >
          <div 
-           className={`rounded-l-2xl font-black uppercase [writing-mode:vertical-lr] shadow-2xl transition-[padding] duration-500 flex items-center justify-center min-w-[50px] font-['Montserrat'] ${
-             isScrolledSafe ? 'py-3 px-2' : 'py-5 px-4'
-           } group-hover:py-5 group-hover:px-4 group-hover:min-w-[50px] text-white backdrop-blur-md`}
+           className={`rounded-l-2xl font-black uppercase [writing-mode:vertical-lr] shadow-2xl transition-[padding] duration-500 flex items-center justify-center min-w-[36px] font-['Montserrat'] ${
+             isScrolledSafe ? 'py-2 px-1.5' : 'py-3 px-2.5'
+           } group-hover:py-3 group-hover:px-2.5 group-hover:min-w-[36px] text-white backdrop-blur-md`}
            style={{
              background: 'linear-gradient(90deg, rgba(24, 151, 216, 0.9) 0%, rgba(2, 28, 41, 0.95) 100%)'
            }}
          >
-           <span className={`transition-all duration-500 select-none text-[13px] leading-[16px] tracking-[0.12em] opacity-100`}>
+           <span className={`transition-all duration-500 select-none text-[11px] leading-[14px] tracking-[0.1em] opacity-100`}>
              ENQUIRE NOW
            </span>
          </div>

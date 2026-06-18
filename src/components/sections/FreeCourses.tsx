@@ -7,6 +7,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import { useHomepage } from '@/features/homepage/hooks/useHomepage';
+import DiamondLayer from '../DiamondLayer';
+import { heroDiamondConfig } from '../diamondConfigs';
 import {
   FREE_LEARNING_EXPLORE_HREFS,
   freeLearningHref,
@@ -119,9 +121,9 @@ const FreeCourses: React.FC = () => {
         opacity: 0,
         immediateRender: false,
         scale: 0.95,
-        duration: 0.8,
+        duration: 0.5,
         ease: 'power3.out',
-        delay: 0.3,
+        delay: 0.15,
         force3D: true,
         scrollTrigger: {
           trigger: '.section-header',
@@ -143,7 +145,7 @@ const FreeCourses: React.FC = () => {
             xPercent: index % 2 === 0 ? 5 : -5,
             yPercent: 4,
             scale: 1.18,
-            duration: 4,
+            duration: 2.5,
             ease: 'sine.inOut',
             repeat: -1,
             yoyo: true,
@@ -164,10 +166,10 @@ const FreeCourses: React.FC = () => {
         ScrollTrigger.create({
           trigger: card,
           start: 'top top',
-          end: '+=100%',
+          end: '+=50%',
           pin: true,
           pinSpacing: false,
-          scrub: true,
+          scrub: 0.35,
           anticipatePin: 1,
         });
       });
@@ -177,8 +179,12 @@ const FreeCourses: React.FC = () => {
 
   return (
     <section ref={containerRef} className="bg-white">
-      <div className="section-header text-center py-20 px-4 bg-[#EAF7FF]">
-        <h2 className="global-section-heading">{sectionTitle}</h2>
+      <div className="section-header relative overflow-hidden bg-[#EAF7FF] px-4 py-20 text-center sm:px-6 md:px-10">
+        <DiamondLayer config={heroDiamondConfig} />
+
+        <h2 className="free-learning-section-heading global-section-heading relative z-10">
+          {sectionTitle}
+        </h2>
       </div>
 
       <div className="relative">
@@ -204,21 +210,25 @@ const FreeCourses: React.FC = () => {
 
             <div className="relative z-10 grid w-full max-w-[1450px] mx-auto grid-cols-1 md:grid-cols-[58%_42%] items-center gap-8 md:gap-10 lg:gap-12">
               {/* Text */}
-              <div className="section-text w-full min-w-0 space-y-8 md:space-y-10 overflow-visible">
-                <h3 className="text-[24px] sm:text-[32px] md:text-[44px] lg:text-[52px] xl:text-[58px] font-extrabold leading-[1.05] break-words">
+              <div className="section-text w-full min-w-0 overflow-visible">
+                <h3 className="whitespace-nowrap text-[24px] font-extrabold leading-[1.05] sm:text-[32px] md:text-[44px] lg:text-[52px] xl:text-[58px]">
                   <span className={section.accentColor}>{section.title}</span>
                 </h3>
 
-                <p className="text-gray-100 text-base md:text-[1.1rem] lg:text-[1.2rem] font-medium leading-relaxed max-w-xl opacity-90">
-                  {section.description}
-                </p>
+                <div className="max-w-xl">
+                  <p className="mt-5 text-gray-100 text-base md:text-[1.1rem] lg:text-[1.2rem] font-medium leading-relaxed opacity-90 md:mt-6">
+                    {section.description}
+                  </p>
 
-                <Link
-                  href={section.href}
-                  className="bg-white text-[#1E6F9F] px-6 py-2 rounded-md font-semibold text-sm md:text-base hover:bg-[#1E6F9F] hover:text-white transition-all duration-300 w-fit shadow-md cursor-pointer"
-                >
-                  Explore
-                </Link>
+                  <div className="mt-4 flex justify-center md:mt-5">
+                    <Link
+                      href={section.href}
+                      className="bg-white text-[#1E6F9F] px-10 py-3 rounded-lg font-semibold text-base md:text-lg hover:bg-[#1E6F9F] hover:text-white transition-all duration-150 w-fit shadow-md cursor-pointer"
+                    >
+                      Explore
+                    </Link>
+                  </div>
+                </div>
               </div>
 
               {/* Image */}
@@ -228,7 +238,7 @@ const FreeCourses: React.FC = () => {
                     <img
                       src={section.rightImage}
                       alt={section.title}
-                      className="section-image h-full w-auto max-w-none object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500 cursor-pointer"
+                      className="section-image h-full w-auto max-w-none object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-200 cursor-pointer"
                     />
 
                     {section.floatingImage && (

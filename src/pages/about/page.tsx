@@ -58,16 +58,15 @@ const AboutPage = () => {
         <div className="absolute inset-0 bg-black/20" />
         <div className="absolute inset-y-0 left-0 w-[78%] bg-gradient-to-r from-black/95 via-black/75 to-transparent md:w-[52%]" />
         <div className="absolute inset-y-0 right-0 w-[38%] bg-gradient-to-l from-black/20 to-transparent" />
-
-        <div className="relative z-10 flex h-full w-full items-center px-6 pt-[70px] sm:px-10 md:px-[72px] md:pt-[90px] lg:px-[82px]">
-          <h1 className="font-['Montserrat'] text-[clamp(36px,8vw,58px)] font-extrabold uppercase leading-[1.15] tracking-[1px] text-white">
-            ABOUT <br className="block sm:hidden" />
-            <span className="text-[#B8B2FF]">US</span>
-          </h1>
-        </div>
       </section>
 
-      <section className="about-section-bg relative -mt-[1px] w-full overflow-hidden px-4 pb-12 pt-7 sm:px-6 sm:pb-14 sm:pt-8 md:px-8 lg:px-6 lg:pb-[35px] lg:pt-[30px] xl:px-0">
+      <div className="relative z-10 mx-auto w-full max-w-[1366px] px-4 pt-6 sm:px-6 md:px-8 lg:px-5 lg:pt-8">
+        <h1 className="text-center font-['Montserrat'] text-[clamp(28px,6vw,52px)] font-extrabold uppercase leading-[1.1] tracking-[1px] text-[#1f3442] md:text-left">
+          ABOUT <span className="text-[#6B8FD4]">US</span>
+        </h1>
+      </div>
+
+      <section className="about-section-bg relative w-full overflow-hidden px-4 pb-10 pt-4 sm:px-6 sm:pb-12 sm:pt-5 md:px-8 lg:px-6 lg:pb-[28px] lg:pt-6 xl:px-0">
         <div className="side-circle-left pointer-events-none" />
         <div className="side-circle-right pointer-events-none" />
         <div className="bottom-wave-lines pointer-events-none" />

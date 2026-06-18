@@ -101,7 +101,7 @@ const OurToppers: React.FC<Props> = () => {
                     {topper.name}
                   </h3>
 
-                  <span className="mt-1.5 rounded-full bg-[#FF9800] px-5 py-1.5 text-[13px] font-semibold text-white">
+                  <span className="topper-air-badge mt-1.5">
                     {topper.rank}
                   </span>
 

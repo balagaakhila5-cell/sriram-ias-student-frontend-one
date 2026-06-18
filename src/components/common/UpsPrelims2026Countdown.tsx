@@ -126,20 +126,20 @@ export default function UpsPrelims2026Countdown({
         Countdown
       </p>
 
-      <div className="mt-5 flex justify-center gap-2 sm:gap-2.5">
+      <div className="mt-5 grid grid-cols-2 gap-2.5 sm:gap-3">
         {UNITS.map(({ key, label }) => (
           <div
             key={label}
-            className="flex h-[72px] w-[68px] flex-col items-center justify-center rounded-[10px] bg-[#0B1628] shadow-lg sm:h-[78px] sm:w-[72px]"
+            className="flex min-h-[76px] flex-col items-center justify-center rounded-[12px] bg-[#0B1628] px-2 py-3 shadow-lg sm:min-h-[82px]"
           >
-            <div className="text-[20px] font-extrabold leading-none text-white sm:text-[22px]">
+            <div className="text-[22px] font-extrabold leading-none text-white sm:text-[24px]">
               {!display
                 ? "--"
                 : key === "days"
                   ? display.days
                   : pad(display[key])}
             </div>
-            <span className="mt-2 text-[9px] font-extrabold uppercase tracking-wide text-[#A5DEFF] sm:text-[10px]">
+            <span className="mt-2 text-[9px] font-extrabold uppercase tracking-[0.12em] text-[#A5DEFF] sm:text-[10px]">
               {label}
             </span>
           </div>

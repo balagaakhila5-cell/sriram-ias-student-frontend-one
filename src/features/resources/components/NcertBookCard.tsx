@@ -33,7 +33,7 @@ export default function NcertBookCard({
             target={variant === "portal" ? "_blank" : undefined}
             rel={variant === "portal" ? "noopener noreferrer" : undefined}
           >
-            View
+            Explore
           </Link>
           <a
             href={resourceDownloadPath(item)}

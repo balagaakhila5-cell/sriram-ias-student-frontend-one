@@ -46,18 +46,10 @@ export default function DpqTopPerformers({ examType }: DpqTopPerformersProps) {
       {loading ? (
         <DpqTopPerformersSkeleton />
       ) : (
-        <>
-          {leaderboard?.testName ? (
-            <p className="mb-4 text-center text-[15px] font-semibold text-[#4D5660]">
-              Latest Test: {leaderboard.testName}
-            </p>
-          ) : null}
-
-          <DpqTestLeaderboardTable
-            entries={leaderboard?.entries ?? []}
-            variant="compact"
-          />
-        </>
+        <DpqTestLeaderboardTable
+          entries={leaderboard?.entries ?? []}
+          variant="compact"
+        />
       )}
 
       <div className="mt-6 text-center">

@@ -20,7 +20,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const GS_TABS = ['GS I', 'GS II', 'GS III', 'GS IV'] as const;
+const GS_TABS = ['GS I', 'GS II', 'GS III', 'GS IV', 'Strategy'] as const;
 type GsTab = (typeof GS_TABS)[number];
 
 const GS_CARD_META = {
@@ -65,10 +65,10 @@ const gsPaperCardsByTab: Record<GsTab, typeof gsPaperImages> = {
   'GS II': gsPaperImages,
   'GS III': gsPaperImages,
   'GS IV': gsPaperImages,
+  Strategy: gsPaperImages,
 };
 
 export default function BlogsPage() {
-  const [activeLang, setActiveLang] = useState('ENGLISH');
   const [activeGsTab, setActiveGsTab] = useState<GsTab>('GS I');
   const mainRef = useRef<HTMLElement>(null);
 
@@ -129,7 +129,7 @@ export default function BlogsPage() {
             className="object-cover"
           />
 
-          <div className="absolute inset-0 bg-black/45" />
+          <div className="absolute inset-0 bg-black/30" />
 
           <div className="relative z-10 flex h-full items-end px-4 pb-8 sm:px-8 sm:pb-10 md:px-10">
             <h1 className="text-[32px] font-black uppercase leading-none sm:text-[40px] md:text-[48px]">
@@ -142,7 +142,7 @@ export default function BlogsPage() {
 
         <section className="relative overflow-x-hidden px-4 py-12 lg:px-6 xl:px-8">
           {/* Dotted Background */}
-          <div className="pointer-events-none absolute inset-0 opacity-[0.35]">
+          <div className="pointer-events-none absolute inset-0 opacity-[0.2]">
             <div
               className="h-full w-full"
               style={{
@@ -156,31 +156,12 @@ export default function BlogsPage() {
           <div className="relative mx-auto grid max-w-[1320px] grid-cols-1 gap-8 lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_350px]">
             {/* LEFT CONTENT */}
             <div className="min-w-0">
-              {/* Language Tabs */}
-              <div className="mb-7 flex justify-center">
-                <div className="flex h-auto min-h-[56px] w-full max-w-[610px] flex-col items-stretch justify-between gap-2 rounded-full bg-[#F1F1F1] p-2 sm:h-[70px] sm:flex-row sm:p-[10px]">
-                  {['ENGLISH', 'MARATHI', 'TELUGU'].map((lang) => (
-                    <button
-                      key={lang}
-                      onClick={() => setActiveLang(lang)}
-                      className={`h-[44px] flex-1 rounded-full text-[14px] font-bold capitalize transition-all duration-300 sm:h-[50px] sm:text-[18px] ${
-                        activeLang === lang
-                          ? 'bg-gradient-to-r from-[#35A8DF] to-[#096A8D] text-white shadow-[0_8px_18px_rgba(0,0,0,0.16)]'
-                          : 'bg-transparent text-[#666666]'
-                      }`}
-                    >
-                      {lang.charAt(0) + lang.slice(1).toLowerCase()}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               <div className="mb-7 lg:hidden">
                 <BlogsCalendar />
               </div>
 
               {/* Main Cup Card */}
-              <div className="blog-main-card group relative mb-7 h-[278px] overflow-hidden rounded-[7px] shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-500 ease-out hover:scale-[1.06] hover:shadow-[0_20px_40px_rgba(0,0,0,0.22)]">
+              <div className="blog-main-card group relative mb-7 h-[320px] overflow-hidden rounded-[7px] shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-500 ease-out hover:scale-[1.06] hover:shadow-[0_20px_40px_rgba(0,0,0,0.22)] sm:h-[340px]">
                 <Image
                   src="/assets/blogs/main-cup.png"
                   alt="Main Cup Blog"
@@ -270,7 +251,7 @@ export default function BlogsPage() {
                     return (
                     <div
                       key={`${activeGsTab}-${index}`}
-                      className="blog-grid-card group relative h-[220px] overflow-hidden rounded-[8px] shadow-md transition-all duration-500 ease-out hover:scale-[1.08] hover:shadow-[0_22px_45px_rgba(0,0,0,0.24)]"
+                      className="blog-grid-card group relative h-[260px] overflow-hidden rounded-[8px] shadow-md transition-all duration-500 ease-out hover:scale-[1.08] hover:shadow-[0_22px_45px_rgba(0,0,0,0.24)]"
                     >
                       <Image
                         src={image}
@@ -286,7 +267,7 @@ export default function BlogsPage() {
                       </div>
 
                       <div className="absolute bottom-4 left-5 right-4">
-                        <h3 className="mb-3 text-[17px] font-extrabold leading-[1.45] text-white">
+                        <h3 className="mb-3 text-[19px] font-extrabold leading-[1.45] text-white sm:text-[20px]">
                           {GS_CARD_META.title}
                         </h3>
 

@@ -1,14 +1,15 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { ArrowRight, X } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import DiamondLayer from '../DiamondLayer';
-import { heroDiamondConfig } from '../diamondConfigs';
+import { buyBooksDiamondConfig } from '../diamondConfigs';
 import { useHomepage } from '@/features/homepage/hooks/useHomepage';
 import { useCartStore } from '@/store/cartStore';
 import {
@@ -17,6 +18,7 @@ import {
   type HomeSectionBook,
 } from '@/features/homepage/utils/homepageBook';
 import BooksCartButton from '@/features/books/components/BooksCartButton';
+import FlipBook from '@/components/common/FlipBook';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -40,11 +42,18 @@ const parseFallbackPrice = (label: string) => {
   return Number.isFinite(parsed) ? parsed : 5999;
 };
 
-type BookCardProps = {
-  book: HomeSectionBook;
+type SampleBook = {
+  title: string;
+  image: string;
+  slug: string;
 };
 
-const BookCard: React.FC<BookCardProps> = ({ book }) => {
+type BookCardProps = {
+  book: HomeSectionBook;
+  onOpenSample: (book: SampleBook) => void;
+};
+
+const BookCard: React.FC<BookCardProps> = ({ book, onOpenSample }) => {
   const router = useRouter();
   const addItem = useCartStore((state) => state.addItem);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
@@ -54,10 +63,6 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
     (state) =>
       state.items.find((item) => item.book.id === book.id)?.quantity ?? 0,
   );
-
-  const handleAddToCart = () => {
-    addItem(cartBook, { openSidebar: false });
-  };
 
   const handleIncrement = () => {
     addItem(cartBook, { openSidebar: false });
@@ -77,100 +82,129 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
   };
 
   return (
-    <div className="book-card min-w-[85vw] w-[85vw] sm:min-w-[280px] sm:w-[320px] bg-white rounded-2xl shadow-xl border border-gray-100 flex flex-col p-6 space-y-4 group hover:shadow-2xl transition-shadow duration-300 transform-gpu backface-visibility-hidden">
-      <div className="relative rounded-xl overflow-hidden shadow-md aspect-6/5 w-full bg-gray-100">
+    <div className="book-card min-w-[85vw] w-[85vw] sm:min-w-[280px] sm:w-[320px] bg-white rounded-2xl shadow-xl border border-gray-100 flex flex-col overflow-hidden group hover:shadow-2xl transition-shadow duration-300 transform-gpu backface-visibility-hidden">
+      <div className="relative aspect-6/5 w-full bg-[#F5D060]">
         <Image
           src={book.image}
           alt={book.title}
           fill
           sizes="280px"
-          className="object-cover group-hover:scale-110 transition-transform duration-700"
+          className="object-cover object-center group-hover:scale-110 transition-transform duration-700"
         />
       </div>
 
-      <div className="space-y-3">
+      <div className="flex flex-col flex-1 p-5 space-y-3 text-center">
         <h3 className="font-bold text-lg text-gray-800 line-clamp-1">
           {book.title}
         </h3>
 
-        <p className="text-gray-400 text-xs leading-relaxed line-clamp-2">
-          {book.summary}
-        </p>
-
-        <div className="flex justify-between items-center pt-1">
-          <span
-            className="font-bold text-lg inline-block text-transparent bg-clip-text"
-            style={{
-              backgroundImage:
-                'linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)',
-            }}
-          >
-            {book.priceLabel}
-          </span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          onClick={() => router.push(`/books/${book.slug}`)}
-          className="py-2 text-xs text-white rounded-md transition-all hover:opacity-90 font-medium cursor-pointer"
-          style={{
-            background:
-              'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)',
-            boxShadow: '0px 4px 32px 0px #0000001A',
-          }}
-        >
-          Buy Now
-        </button>
-
-        {cartQuantity > 0 ? (
-          <div className="flex h-[34px] items-center justify-between rounded-md border border-[#249EDC] bg-[#EAF7FF] px-2">
-            <button
-              type="button"
-              onClick={handleDecrement}
-              aria-label="Decrease quantity"
-              className="flex h-7 w-7 items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white cursor-pointer"
+        <div className="flex items-center justify-center gap-3 pt-1">
+          <div className="inline-flex flex-col items-center">
+            <span
+              className="font-bold text-lg inline-block text-transparent bg-clip-text"
+              style={{
+                backgroundImage:
+                  'linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)',
+              }}
             >
-              −
-            </button>
-            <button
-              type="button"
-              onClick={handleGoToCheckout}
-              aria-label="Go to checkout"
-              className="min-w-[24px] cursor-pointer text-center text-sm font-bold text-[#007BB5] hover:underline"
-            >
-              {cartQuantity}
-            </button>
-            <button
-              type="button"
-              onClick={handleIncrement}
-              aria-label="Increase quantity"
-              className="flex h-7 w-7 items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white cursor-pointer"
-            >
-              +
-            </button>
+              {book.priceLabel}
+            </span>
+            <p className="mt-0.5 whitespace-nowrap text-[9px] text-gray-400 sm:text-[10px]">
+              * Excluding GST
+            </p>
           </div>
-        ) : (
           <button
             type="button"
-            onClick={handleAddToCart}
-            className="cursor-pointer rounded-md border border-[#249EDC] py-2 text-xs font-medium text-[#007BB5] transition-all hover:bg-gray-50"
+            onClick={() =>
+              onOpenSample({
+                title: book.title,
+                image: book.image,
+                slug: book.slug,
+              })
+            }
+            className="cursor-pointer rounded-md border border-[#249EDC] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-[#007BB5] transition-all hover:bg-gray-50 sm:text-xs"
           >
-            ADD TO CART
+            VIEW SAMPLE
           </button>
-        )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 pt-1">
+          <button
+            type="button"
+            onClick={() => router.push(`/books/${book.slug}`)}
+            className="py-2 text-xs text-white rounded-md transition-all hover:opacity-90 font-medium cursor-pointer"
+            style={{
+              background:
+                'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)',
+              boxShadow: '0px 4px 32px 0px #0000001A',
+            }}
+          >
+            Buy Now
+          </button>
+
+          {cartQuantity > 0 ? (
+            <div className="flex h-[34px] items-center justify-between rounded-md border border-[#249EDC] bg-[#EAF7FF] px-2">
+              <button
+                type="button"
+                onClick={handleDecrement}
+                aria-label="Decrease quantity"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white cursor-pointer"
+              >
+                −
+              </button>
+              <button
+                type="button"
+                onClick={handleGoToCheckout}
+                aria-label="Go to checkout"
+                className="min-w-[24px] cursor-pointer text-center text-sm font-bold text-[#007BB5] hover:underline"
+              >
+                {cartQuantity}
+              </button>
+              <button
+                type="button"
+                onClick={handleIncrement}
+                aria-label="Increase quantity"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white cursor-pointer"
+              >
+                +
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => router.push(`/books/${book.slug}`)}
+              className="cursor-pointer rounded-md border border-[#249EDC] py-2 text-xs font-medium text-[#007BB5] transition-all hover:bg-gray-50"
+            >
+              View
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
 const BuyBooks: React.FC = () => {
+  const router = useRouter();
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const { data: homepage } = useHomepage();
   const sectionBooks = homepage?.sectionBooks;
+  const [showSamplePopup, setShowSamplePopup] = useState(false);
+  const [selectedSampleBook, setSelectedSampleBook] = useState<SampleBook | null>(
+    null,
+  );
+
+  const openSamplePopup = (book: SampleBook) => {
+    setSelectedSampleBook(book);
+    setShowSamplePopup(true);
+  };
+
+  const closeSamplePopup = () => {
+    setShowSamplePopup(false);
+    setSelectedSampleBook(null);
+  };
 
   const books = useMemo(() => {
     const apiBooks = sectionBooks?.books ?? [];
@@ -266,8 +300,9 @@ const BuyBooks: React.FC = () => {
   );
 
   return (
+    <>
     <section ref={sectionRef} className="relative z-30 py-18 overflow-hidden">
-      <DiamondLayer config={heroDiamondConfig} />
+      <DiamondLayer config={buyBooksDiamondConfig} />
       <BooksCartButton />
 
       <div className="relative z-10 mx-auto w-full overflow-hidden">
@@ -277,18 +312,65 @@ const BuyBooks: React.FC = () => {
           </h2>
         </div>
 
-        <div className="w-full relative flex mt-32 pb-16">
+        <div className="w-full relative flex mt-10 pb-16">
           <div
             ref={cardsContainerRef}
             className="flex gap-8 w-max will-change-transform pl-8"
           >
             {duplicatedBooks.map((book, index) => (
-              <BookCard key={`${book.id}-${index}`} book={book} />
+              <BookCard
+                key={`${book.id}-${index}`}
+                book={book}
+                onOpenSample={openSamplePopup}
+              />
             ))}
           </div>
         </div>
       </div>
     </section>
+
+    {showSamplePopup && selectedSampleBook && (
+      <div className="fixed inset-0 z-[9999] bg-black/55 flex items-center justify-center px-4 py-6">
+        <div className="relative w-full max-w-[860px] rounded-[20px] bg-[#F5F5F5] shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <div className="px-8 pt-6 pb-4 relative">
+            <h2 className="text-[34px] md:text-[42px] font-extrabold uppercase leading-none tracking-[0.5px]">
+              <span className="bg-[linear-gradient(90deg,#6AA9D8_0%,#C88EA0_100%)] bg-clip-text text-transparent">
+                SAMPLE
+              </span>
+            </h2>
+
+            <button
+              type="button"
+              onClick={closeSamplePopup}
+              className="absolute top-6 right-8 w-[30px] h-[30px] md:w-[32px] md:h-[32px] rounded-full bg-[#FF0000] flex items-center justify-center cursor-pointer"
+            >
+              <X size={20} className="text-white" strokeWidth={3} />
+            </button>
+          </div>
+
+          <div className="px-8 pb-8">
+            <div className="bg-[#01285A] rounded-[16px] min-h-[470px] relative px-6 md:px-10 py-6 md:py-8 flex flex-col">
+              <FlipBook coverImage={selectedSampleBook.image} />
+
+              <div className="flex justify-center mt-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    router.push(`/books/${selectedSampleBook.slug}`);
+                    closeSamplePopup();
+                  }}
+                  className="min-w-[160px] h-[46px] md:h-[48px] px-7 rounded-full border border-white bg-transparent text-white text-[18px] md:text-[20px] font-semibold leading-none transition-all duration-300 hover:bg-[#0F8EDB] hover:border-[#0F8EDB] flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  Buy Now
+                  <ArrowRight size={20} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 };
 

@@ -12,7 +12,11 @@ import Footer from "@/components/common/Footer";
 import QuickLinks from "@/components/common/QuickLinks";
 import HoverCard from "@/components/common/HoverCard";
 import FreeResourcesOurBooksSlider from "@/components/common/FreeResourcesOurBooksSlider";
-import { RESOURCE_PAGE_HEADING_GRADIENT } from "@/features/resources/components/cardStyles";
+import {
+  RESOURCE_PAGE_HEADING_GRADIENT,
+  RESOURCE_SECTION_SHELL,
+  RESOURCE_SECTION_TEXTURE_OVERLAY,
+} from "@/features/resources/components/cardStyles";
 import { useResourceCategories } from "@/features/resources/hooks/useResources";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -94,8 +98,12 @@ export default function NcertBooksPage() {
           <div className="absolute inset-0 bg-[linear-gradient(90deg,#000000_15.33%,rgba(0,0,0,0.1)_50.97%)]" />
         </section>
 
-        <section className="bg-[url('/assets/image-91.png')] bg-[position:center_35%] bg-cover bg-no-repeat px-4 py-10 sm:px-6 sm:py-12 md:px-8 lg:px-14">
-          <div className="mx-auto max-w-[1600px]">
+        <section className={`${RESOURCE_SECTION_SHELL} px-4 py-10 sm:px-6 sm:py-12 md:px-8 lg:px-14`}>
+          <div
+            className="pointer-events-none absolute inset-0 bg-[url('/assets/image-91.png')] bg-[position:center_35%] bg-cover bg-no-repeat opacity-[0.08]"
+            aria-hidden
+          />
+          <div className="relative z-10 mx-auto max-w-[1600px]">
             <h1 className="animate-heading mb-8 text-center text-[32px] font-extrabold uppercase leading-none sm:text-[40px] md:mb-10 md:text-[52px] lg:text-left lg:text-[56px]">
               <span className={RESOURCE_PAGE_HEADING_GRADIENT}>
                 FREE RESOURCES

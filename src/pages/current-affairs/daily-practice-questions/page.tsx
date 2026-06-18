@@ -26,6 +26,8 @@ import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 import {
   FREE_RESOURCE_CARD_GRID,
   RESOURCE_PAGE_HEADING_GRADIENT,
+  RESOURCE_SECTION_SHELL,
+  RESOURCE_SECTION_TEXTURE_OVERLAY,
 } from "@/features/resources/components/cardStyles";
 import DpqTopPerformers from "@/components/current-affairs/DpqTopPerformers";
 
@@ -154,7 +156,8 @@ export default function DailyPracticeQuestionsPage() {
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.22)_0%,rgba(0,0,0,0.08)_40%,rgba(0,0,0,0)_100%)]" />
         </section>
 
-        <section className="relative bg-white px-4 py-14 md:px-8 lg:px-10 xl:px-14">
+        <section className={`${RESOURCE_SECTION_SHELL} px-4 py-14 md:px-8 lg:px-10 xl:px-14`}>
+          <div className={RESOURCE_SECTION_TEXTURE_OVERLAY} aria-hidden />
           <div className="relative z-10 mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-14">
               <div>
@@ -164,11 +167,11 @@ export default function DailyPracticeQuestionsPage() {
                   </span>
                 </h1>
 
-                <div className="dpq-animate-filters mx-auto mb-10 flex max-w-[620px] overflow-hidden rounded-[26px] bg-[#F1F1F1] p-2 sm:p-3 shadow-[0px_10px_30px_rgba(0,0,0,0.08)]">
+                <div className="dpq-animate-filters mx-auto mb-10 flex max-w-[620px] overflow-hidden rounded-full bg-[#F1F1F1] p-2 sm:p-3 shadow-[0px_10px_30px_rgba(0,0,0,0.08)]">
                   <button
                     type="button"
                     onClick={() => setActiveTab("prelims")}
-                    className={`flex min-h-[88px] sm:h-[112px] flex-1 items-center justify-center rounded-[20px] transition-all duration-300 ${
+                    className={`flex min-h-[88px] sm:h-[112px] flex-1 items-center justify-center rounded-full transition-all duration-300 ${
                       activeTab === "prelims"
                         ? "bg-gradient-to-r from-[#2FA3E8] to-[#0F567D] text-white shadow-[0px_12px_24px_rgba(23,110,156,0.28)]"
                         : "bg-transparent text-[#111111]"
@@ -189,7 +192,7 @@ export default function DailyPracticeQuestionsPage() {
                   <button
                     type="button"
                     onClick={() => setActiveTab("mains")}
-                    className={`flex min-h-[88px] sm:h-[112px] flex-1 items-center justify-center rounded-[20px] transition-all duration-300 ${
+                    className={`flex min-h-[88px] sm:h-[112px] flex-1 items-center justify-center rounded-full transition-all duration-300 ${
                       activeTab === "mains"
                         ? "bg-gradient-to-r from-[#2FA3E8] to-[#0F567D] text-white shadow-[0px_12px_24px_rgba(23,110,156,0.28)]"
                         : "bg-transparent text-[#111111]"

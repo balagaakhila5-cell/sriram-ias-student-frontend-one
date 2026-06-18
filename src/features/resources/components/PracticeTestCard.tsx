@@ -26,12 +26,10 @@ export default function PracticeTestCard({
       />
       <div className={PRACTICE_TEST_CARD.body}>
         <h3 className={PRACTICE_TEST_CARD.title}>{test.title}</h3>
-        <div className={PRACTICE_TEST_CARD.actions}>
-          <Link href={test.attemptPath} className={PRACTICE_TEST_CARD.attemptButton}>
-            Attempt Test
-            <ArrowRight size={14} aria-hidden />
-          </Link>
-        </div>
+        <Link href={test.attemptPath} className={PRACTICE_TEST_CARD.attemptButton}>
+          Attempt Test
+          <ArrowRight size={14} aria-hidden />
+        </Link>
       </div>
     </div>
   );

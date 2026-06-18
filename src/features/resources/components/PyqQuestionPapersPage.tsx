@@ -47,6 +47,8 @@ import {
 import {
   FREE_RESOURCE_CARD_GRID,
   RESOURCE_PAGE_HEADING_GRADIENT,
+  RESOURCE_SECTION_SHELL,
+  RESOURCE_SECTION_WAVE_OVERLAY,
 } from "@/features/resources/components/cardStyles";
 
 import {
@@ -401,9 +403,9 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
 
 
-        <section className="relative bg-[#f7f7f7] bg-[url('/assets/bg-wave.png')] bg-cover bg-center bg-no-repeat px-6 py-12 lg:px-16 lg:py-14">
-
-          <div className="mx-auto max-w-[1500px]">
+        <section className={`${RESOURCE_SECTION_SHELL} px-6 py-12 lg:px-16 lg:py-14`}>
+          <div className={RESOURCE_SECTION_WAVE_OVERLAY} aria-hidden />
+          <div className="relative z-10 mx-auto max-w-[1500px]">
 
             <h1 className="animate-heading mb-10 pl-6 text-left text-[36px] font-extrabold uppercase leading-[0.95] md:pl-10 md:text-[48px] lg:pl-14 lg:text-[56px]">
 

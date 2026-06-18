@@ -14,18 +14,18 @@ type BlogGridCardProps = {
 export default function BlogGridCard({ blog, className = '' }: BlogGridCardProps) {
   return (
     <div
-      className={`blog-grid-card group relative h-[220px] overflow-hidden rounded-[8px] shadow-md transition-all duration-500 ease-out hover:scale-[1.08] hover:shadow-[0_22px_45px_rgba(0,0,0,0.24)] ${className}`}
+      className={`blog-grid-card group relative h-[260px] overflow-hidden rounded-[8px] shadow-md transition-all duration-500 ease-out hover:scale-[1.08] hover:shadow-[0_22px_45px_rgba(0,0,0,0.24)] ${className}`}
     >
       <Image src={blog.image} alt={blog.title} fill className="object-cover" />
 
-      <div className="absolute inset-0 bg-black/25" />
+      <div className="absolute inset-0 bg-black/15" />
 
       <div className="absolute right-4 top-4">
         <BlogActionButtons bookmark={blog} />
       </div>
 
       <div className="absolute bottom-4 left-5 right-4">
-        <h3 className="mb-3 text-[17px] font-extrabold leading-[1.45] text-white">
+        <h3 className="mb-3 text-[19px] font-extrabold leading-[1.45] text-white sm:text-[20px]">
           {blog.title}
         </h3>
 

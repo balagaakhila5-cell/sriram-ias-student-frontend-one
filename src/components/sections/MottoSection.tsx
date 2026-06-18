@@ -24,6 +24,12 @@ const MottoSection: React.FC = () => {
       'linear-gradient(90deg, #20A0E0 0%, rgba(225, 97, 101, 0.8) 100%)',
   };
 
+  const scrollToExploreCourses = () => {
+    document
+      .getElementById('explore-courses')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   useGSAP(
     () => {
       if (!sectionRef.current || prefersReducedMotion) return;
@@ -132,7 +138,7 @@ const MottoSection: React.FC = () => {
                 className="inline-block bg-clip-text text-transparent"
                 style={gradientStyle}
               >
-                Officers
+                Officers,
               </span>
 
               <span className="text-[#00000099]">
@@ -164,13 +170,15 @@ const MottoSection: React.FC = () => {
                 className="inline-block bg-clip-text text-transparent"
                 style={gradientStyle}
               >
-                nation
+                Nation
               </span>
             </div>
           </div>
 
           <div className="motto-text-line mt-7 sm:mt-8 md:mt-9">
             <button
+              type="button"
+              onClick={scrollToExploreCourses}
               className="text-white font-['Montserrat'] font-semibold text-[18px] sm:text-[20px] md:text-[22px] lg:text-[26px] flex items-center justify-center gap-[14px] rounded-[12px] w-full max-w-[500px] h-[48px] sm:h-[56px] md:h-[64px] px-[18px] py-[10px] hover:scale-[1.02] hover:brightness-110 transition-all duration-300"
               style={{
                 background: 'linear-gradient(90deg, #00679C 0%, #002436 100%)',

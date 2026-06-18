@@ -23,6 +23,8 @@ import {
   FREE_RESOURCE_CARD_GRID,
   RESOURCE_CARD_LIMIT,
   RESOURCE_PAGE_HEADING_GRADIENT,
+  RESOURCE_SECTION_SHELL,
+  RESOURCE_SECTION_WAVE_OVERLAY,
 } from "@/features/resources/components/cardStyles";
 import { listDemoMockTestCards } from "@/features/resources/catalog/demoMockTests";
 import {
@@ -35,6 +37,9 @@ import {
 } from "@/features/resources/hooks/useResources";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const PRELIMS_PAPER_OPTIONS = ["General Studies", "CSAT"];
+const MAINS_PAPER_OPTIONS = ["GS I", "GS II", "GS III", "GS IV"];
 
 export default function FreeMockTestsPage() {
   const containerRef = useRef<HTMLElement>(null);
@@ -81,6 +86,12 @@ export default function FreeMockTestsPage() {
       (p, i, arr) => arr.findIndex((x) => x.value === p.value) === i,
     );
   }, [allPapers, subCategoryId]);
+
+  const paperOptions = useMemo(
+    () =>
+      activeTab === "prelims" ? PRELIMS_PAPER_OPTIONS : MAINS_PAPER_OPTIONS,
+    [activeTab],
+  );
 
   const paperId = useMemo(
     () => papers.find((p) => p.value === selectedPaper)?._id,
@@ -169,8 +180,9 @@ export default function FreeMockTestsPage() {
           <div className="absolute inset-0 bg-[linear-gradient(90deg,#000000_15.33%,rgba(0,0,0,0.1)_50.97%)]" />
         </section>
 
-        <section className="relative bg-[#fcfcfc] bg-[url('/assets/bg-wave.png')] bg-cover bg-center bg-no-repeat px-5 py-16 md:px-8 lg:px-12 xl:px-16">
-          <div className="relative mx-auto max-w-[1400px]">
+        <section className={`${RESOURCE_SECTION_SHELL} px-5 py-16 md:px-8 lg:px-12 xl:px-16`}>
+          <div className={RESOURCE_SECTION_WAVE_OVERLAY} aria-hidden />
+          <div className="relative z-10 mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-14">
               <div>
                 <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold leading-none md:text-[56px] lg:text-[56px]">
@@ -188,11 +200,7 @@ export default function FreeMockTestsPage() {
 
                   <div className="relative z-[60] mb-8 flex justify-center">
                     <CustomDropdown
-                      options={
-                        papers.length > 0
-                          ? papers.map((p) => p.value)
-                          : Array.from({ length: 10 }, (_, i) => `Paper ${i + 1}`)
-                      }
+                      options={paperOptions}
                       value={selectedPaper}
                       onChange={setSelectedPaper}
                       placeholder="Select Paper"

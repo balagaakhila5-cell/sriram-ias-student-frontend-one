@@ -9,20 +9,28 @@ import {
   useCategories,
   useSubmitEnquiry,
 } from '@/features/course/hooks/useCourses';
-import { useEnquiryCourses } from '@/features/enquiry/hooks/useEnquiryLookups';
-import CourseCenterSelect from '@/components/common/CourseCenterSelect';
+import {
+  useEnquiryCenters,
+  useEnquiryCourses,
+} from '@/features/enquiry/hooks/useEnquiryLookups';
 import DemoFormSelect from '@/components/common/DemoFormSelect';
-import type { CourseCenter } from '@/features/enquiry/hooks/useCourseCenters';
 import {
   fallbackCategories,
+  fallbackCenters,
 } from '@/features/course/data/demoFormOptions';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
-import type { Category } from '@/features/course/services/coursesService';
+import type { Category, Center } from '@/features/course/services/coursesService';
 
 interface BookFreeDemoModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const demoInputClassName =
+  'h-9 w-full rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-center text-sm text-gray-800 outline-none placeholder:text-center focus:ring-2 focus:ring-[#1897D8]/50';
+
+const demoTextareaClassName =
+  'w-full resize-none rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-center text-sm text-gray-800 outline-none placeholder:text-center focus:ring-2 focus:ring-[#1897D8]/50';
 
 const initialForm = {
   name: '',
@@ -35,6 +43,15 @@ const initialForm = {
   expectation: '',
 };
 
+function normalizeCenters(items: Center[]): Center[] {
+  return items
+    .map((item) => ({
+      _id: item._id || (item as Center & { id?: string }).id || item.name,
+      name: item.name,
+    }))
+    .filter((item) => item._id && item.name);
+}
+
 function normalizeCategories(items: Category[]): Category[] {
   return items
     .map((item) => ({
@@ -46,13 +63,17 @@ function normalizeCategories(items: Category[]): Category[] {
 
 const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }) => {
   const [form, setForm] = useState(initialForm);
-  const [selectedCenter, setSelectedCenter] = useState<CourseCenter | undefined>();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const { data: categoriesData = [], isError: categoriesError } = useCategories({
-    enabled: isOpen,
-  });
+  const { data: centersData = [], isError: centersError } = useEnquiryCenters();
+  const { data: categoriesData = [], isError: categoriesError } = useCategories();
+
+  const centers = useMemo(() => {
+    const apiCenters = normalizeCenters(centersData);
+    if (apiCenters.length && !centersError) return apiCenters;
+    return fallbackCenters;
+  }, [centersData, centersError]);
 
   const categories = useMemo(() => {
     const apiCategories = normalizeCategories(categoriesData);
@@ -60,15 +81,25 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
     return fallbackCategories;
   }, [categoriesData, categoriesError]);
 
+  const selectedCenter = useMemo(
+    () => centers.find((c) => c._id === form.centerId),
+    [centers, form.centerId],
+  );
+  // Courses come from the real public endpoint, filtered by the selected
+  // center only (categoryName isn't usable publicly — see lookupService).
   const { data: courses = [], isFetching: coursesLoading } = useEnquiryCourses(
-    selectedCenter?.centerName,
-    { enabled: isOpen },
+    selectedCenter?.name,
   );
 
   // Reset course when center/category changes
   useEffect(() => {
     setForm((prev) => ({ ...prev, courseId: '' }));
   }, [form.centerId, form.categoryId]);
+
+  const centerOptions = useMemo(
+    () => centers.map((center) => ({ value: center._id, label: center.name })),
+    [centers],
+  );
 
   const categoryOptions = useMemo(
     () =>
@@ -137,7 +168,6 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
 
   const resetAndClose = () => {
     setForm(initialForm);
-    setSelectedCenter(undefined);
     setError(null);
     setSuccess(false);
     submit.reset();
@@ -174,7 +204,7 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
       center: form.centerId,
       category: form.categoryId,
       course: form.courseId,
-      centerName: selectedCenter?.centerName,
+      centerName: selectedCenter?.name,
       courseTitle: selectedCourse?.title,
       targetYear: form.targetYear,
       expectation: form.expectation.trim(),
@@ -200,14 +230,24 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
         onClick={resetAndClose}
       />
 
-      <div className={`book-demo-modal-panel relative z-10 flex max-h-[92vh] w-full max-w-[980px] min-h-0 overflow-y-auto rounded-[24px] bg-white font-['Montserrat'] shadow-2xl md:max-h-[min(600px,92vh)]${prefersReducedMotion ? '' : ' opacity-0'}`}>
-        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+      <div className={`book-demo-modal-panel relative z-10 flex max-h-[92vh] w-full max-w-[980px] min-h-0 overflow-y-auto overflow-x-hidden rounded-[24px] font-['Montserrat'] shadow-2xl md:max-h-[min(600px,92vh)]${prefersReducedMotion ? '' : ' opacity-0'}`}>
+        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-[24px]">
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(180deg, #20A0E0 0%, #1897D8 50%, #005B88 100%)',
+            }}
+            aria-hidden
+          />
           <div className="book-demo-bg-motion absolute left-[-12%] top-[-12%] h-[124%] w-[124%] will-change-transform">
             <Image
               src="/assets/free-demo-bgs.png"
-              alt="Background styling"
+              alt=""
               fill
+              sizes="980px"
               className="object-cover opacity-80"
+              aria-hidden
             />
           </div>
         </div>
@@ -269,7 +309,7 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                     value={form.name}
                     onChange={handleChange}
                     required
-                    className="h-9 w-full rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
+                    className={demoInputClassName}
                   />
                 </div>
                 <div className="flex-1">
@@ -281,7 +321,7 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                     onChange={handleChange}
                     required
                     pattern="[0-9]{10}"
-                    className="h-9 w-full rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
+                    className={demoInputClassName}
                   />
                 </div>
               </div>
@@ -294,19 +334,21 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                   value={form.email}
                   onChange={handleChange}
                   required
-                  className="h-9 w-full rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
+                  className={demoInputClassName}
                 />
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="flex-1 min-w-0">
-                  <CourseCenterSelect
+                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Center</label>
+                  <DemoFormSelect
                     value={form.centerId}
-                    enabled={isOpen}
-                    onChange={(centerId, center) => {
-                      setForm((prev) => ({ ...prev, centerId }));
-                      setSelectedCenter(center);
-                    }}
+                    onChange={(value) =>
+                      setForm((prev) => ({ ...prev, centerId: value }))
+                    }
+                    options={centerOptions}
+                    placeholder="Choose Center"
+                    centerText
                   />
                 </div>
 
@@ -319,6 +361,7 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                     }
                     options={categoryOptions}
                     placeholder="Choose Category"
+                    centerText
                   />
                 </div>
               </div>
@@ -346,6 +389,7 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                       (coursesLoading && !courses.length) ||
                       courseOptions.length === 0
                     }
+                    centerText
                   />
                 </div>
 
@@ -358,6 +402,7 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                     }
                     options={targetYearOptions}
                     placeholder="Choose Year"
+                    centerText
                   />
                 </div>
               </div>
@@ -369,7 +414,8 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                   value={form.expectation}
                   onChange={handleChange}
                   rows={2}
-                  className="w-full resize-none rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50"
+                  className={demoTextareaClassName}
+                  placeholder="Share your expectations"
                 />
               </div>
 

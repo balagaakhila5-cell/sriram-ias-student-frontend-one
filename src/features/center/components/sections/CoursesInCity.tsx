@@ -9,10 +9,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import {
   CENTER_CATEGORIES_BY_CITY,
+  formatCenterDisplayName,
   type CenterCity,
 } from '@/features/center/data/centerCourseCategories';
-import { PhoneLink } from '@/components/common/ContactLinks';
-import { getCenterBranchContact } from '@/utils/centerContact';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -22,7 +21,7 @@ interface Props {
 
 const CoursesInCity: React.FC<Props> = ({ city }) => {
   const cityKey = city.toLowerCase() as CenterCity;
-  const cityName = cityKey.toUpperCase();
+  const cityName = formatCenterDisplayName(city);
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -30,8 +29,6 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
     () => CENTER_CATEGORIES_BY_CITY[cityKey] ?? CENTER_CATEGORIES_BY_CITY.delhi,
     [cityKey],
   );
-  const branchContact = getCenterBranchContact(city);
-
   useGSAP(
     () => {
       if (prefersReducedMotion) return;
@@ -71,7 +68,7 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
   return (
     <section
       ref={containerRef}
-      className="relative w-full py-24 bg-white flex flex-col items-center px-6 md:px-12 lg:px-24 overflow-hidden"
+      className="relative flex w-full flex-col items-center overflow-hidden bg-white px-6 pb-16 pt-4 md:px-12 md:pb-20 md:pt-6 lg:px-24"
     >
       {/* Background Video */}
       <div className="absolute inset-0 z-0">
@@ -99,7 +96,7 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
       ></div>
 
       <h2
-        className="courses-city-heading text-[32px] md:text-[50px] font-[900] uppercase tracking-wider mb-14 relative z-10 font-['Montserrat']"
+        className="courses-city-heading relative z-10 mb-8 font-['Montserrat'] text-[32px] font-[900] uppercase tracking-wider md:text-[50px]"
         style={{
           background:
             'linear-gradient(90deg, #46A1D4 0%, #908CAF 45%, #D47B83 100%)',
@@ -134,7 +131,7 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
 
             {/* Bottom Card Area */}
             <div className="p-8 flex flex-col items-center gap-6 grow bg-white">
-              <h3 className="text-[18px] lg:text-[20px] font-[800] text-center text-[#111] font-['Montserrat'] leading-tight px-2">
+              <h3 className="px-2 text-center font-['Montserrat'] text-[22px] font-[800] leading-tight text-[#111] md:text-[24px] lg:text-[28px]">
                 {course.title}
               </h3>
 
@@ -147,14 +144,6 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
             </div>
           </div>
         ))}
-      </div>
-
-      <div className="mt-20 font-['Montserrat'] font-semibold text-[16px] md:text-[20px] text-[#4A4A4A] relative z-10">
-        For More details contact us at{' '}
-        <PhoneLink
-          value={branchContact.phone}
-          className="text-[#111] font-bold border-b-2 border-black pb-0.5 ml-1 inline-block leading-none hover:opacity-80"
-        />
       </div>
     </section>
   );

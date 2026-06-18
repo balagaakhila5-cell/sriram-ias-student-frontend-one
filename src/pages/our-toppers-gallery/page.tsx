@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
@@ -18,8 +18,16 @@ type Topper = {
   course: 'GS Course' | 'Optional Course' | 'Test Series' | 'Other';
 };
 
-const SUPPORT_SYSTEM_CARD =
-  'min-h-[185px] rounded-[10px] bg-white p-5 shadow-[0_16px_34px_rgba(29,119,176,0.14)] transition-all duration-300 ease-out hover:z-10 hover:scale-[1.04] hover:bg-[#FFF9E6] hover:shadow-[0_20px_40px_rgba(29,119,176,0.18)] motion-reduce:transition-none motion-reduce:hover:scale-100';
+const YEAR_WISE_PDF = '/assets/samples/sriram-sample.pdf';
+
+const TESTIMONIALS = [
+  {
+    title: 'Shivansh Singh IAS — Rank 164, UPSC CSE 2023',
+    excerpt:
+      'Read how Shivansh Singh prepared for UPSC CSE 2023 and secured AIR 164 with SRIRAM\'s IAS.',
+    url: 'https://forumias.com/blog/shivansh-singh-ias-rank-164-upsc-cse-2023-testimonial/',
+  },
+] as const;
 
 const fallbackToppers: Topper[] = [
   {
@@ -135,15 +143,8 @@ const fallbackToppers: Topper[] = [
 const imagePath = (fileName: string) =>
   `/assets/our-toppers-gallery/${fileName.replaceAll(' ', '%20')}`;
 
-const getRankNumber = (rank: string) => {
-  const match = rank.match(/\d+/);
-  return match ? Number(match[0]) : 9999;
-};
-
 const OurToppersGalleryPage = () => {
-  const [activeTab, setActiveTab] = useState<
-    'All Students' | 'Top 10' | 'GS Course'
-  >('All Students');
+  const [activeTab, setActiveTab] = useState<'Toppers' | 'Testimonials'>('Toppers');
   const [formData, setFormData] = useState({
     fullName: '',
     mobile: '',
@@ -191,19 +192,9 @@ const OurToppersGalleryPage = () => {
     });
   };
 
-  const toppers = useMemo(() => {
-    if (activeTab === 'Top 10') {
-      return fallbackToppers
-        .filter((item) => getRankNumber(item.rank) <= 10)
-        .sort((a, b) => getRankNumber(a.rank) - getRankNumber(b.rank));
-    }
-
-    if (activeTab === 'GS Course') {
-      return fallbackToppers.filter((item) => item.course === 'GS Course');
-    }
-
-    return fallbackToppers;
-  }, [activeTab]);
+  const handleYearWiseClick = () => {
+    window.open(YEAR_WISE_PDF, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <main className="min-h-screen overflow-hidden bg-white font-['Montserrat',sans-serif]">
@@ -223,15 +214,6 @@ const OurToppersGalleryPage = () => {
         <div className="absolute inset-0 bg-black/25" />
         <div className="absolute inset-y-0 left-0 w-[70%] bg-gradient-to-r from-black/90 via-black/60 to-transparent md:w-[48%]" />
         <div className="absolute inset-y-0 right-0 w-[45%] bg-gradient-to-l from-black/25 to-transparent" />
-
-        <div className="relative z-10 flex h-full items-center px-5 pt-[70px] sm:px-8 md:px-[72px] lg:px-[82px]">
-          <h1 className="font-['Montserrat'] text-[34px] font-black uppercase tracking-[1px] text-white sm:text-[42px] md:text-[58px]">
-            OUR{' '}
-            <span className="bg-gradient-to-r from-[#b2aaff] via-[#9ca9ff] to-[#63b9ff] bg-clip-text text-transparent">
-              TOPPERS
-            </span>
-          </h1>
-        </div>
       </section>
 
       {/* TOPPERS GALLERY */}
@@ -256,39 +238,79 @@ const OurToppersGalleryPage = () => {
               </p>
             </div>
 
-            <div className="mx-auto mt-1 flex w-full max-w-[360px] flex-wrap items-center justify-center gap-2 rounded-full bg-white/85 p-1.5 shadow-[0_8px_24px_rgba(38,143,208,0.16)] backdrop-blur md:mx-0 md:w-fit md:max-w-none">
-              {(['All Students', 'Top 10', 'GS Course'] as const).map((tab) => (
-                <button
-                  key={tab}
-                  type="button"
-                  onClick={() => setActiveTab(tab)}
-                  className={`rounded-full px-4 py-2 text-[11px] font-bold transition-all sm:px-5 sm:py-2.5 sm:text-[12px] md:text-[14px] ${
-                    activeTab === tab
-                      ? 'bg-[#178fd2] text-white shadow-md'
-                      : 'text-[#213b4c] hover:bg-[#e4f5ff]'
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
+            <div className="mx-auto mt-1 flex w-full max-w-[420px] flex-wrap items-center justify-center gap-2 md:mx-0 md:w-fit md:max-w-none">
+              <div className="flex items-center gap-1 rounded-full bg-white/85 p-1.5 shadow-[0_8px_24px_rgba(38,143,208,0.16)] backdrop-blur">
+                {(['Toppers', 'Testimonials'] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    type="button"
+                    onClick={() => setActiveTab(tab)}
+                    className={`rounded-full px-4 py-2 text-[11px] font-bold transition-all sm:px-5 sm:py-2.5 sm:text-[12px] md:text-[14px] ${
+                      activeTab === tab
+                        ? 'bg-[#178fd2] text-white shadow-md'
+                        : 'text-[#213b4c] hover:bg-[#e4f5ff]'
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={handleYearWiseClick}
+                className="rounded-full border border-[#178fd2]/30 bg-white px-4 py-2 text-[11px] font-bold text-[#178fd2] shadow-[0_8px_24px_rgba(38,143,208,0.12)] transition-all hover:bg-[#e4f5ff] sm:px-5 sm:py-2.5 sm:text-[12px] md:text-[14px]"
+              >
+                Year wise
+              </button>
             </div>
           </div>
 
-          {/* Topper cards */}
+          {/* Topper cards / Testimonials */}
           <div className="w-full px-4 sm:px-6 lg:px-0">
-            <div
-              className={`grid w-full gap-x-4 gap-y-8 ${
-                activeTab === 'Top 10'
-                  ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:px-[55px]'
-                  : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5'
-              }`}
-            >
-              {toppers.map((topper, index) => {
-                const isTop10 = activeTab === 'Top 10';
-                const isSecondRow = !isTop10 && index >= 5;
-
-                const imageY =
-                  isTop10 && topper.name === 'AAKASH GARG' ? -0.9 : topper.y;
+            {activeTab === 'Testimonials' ? (
+              <div className="mx-auto grid max-w-[900px] gap-6 px-2 sm:px-4">
+                {TESTIMONIALS.map((testimonial) => (
+                  <a
+                    key={testimonial.url}
+                    href={testimonial.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group rounded-[16px] bg-white/90 p-6 shadow-[0_12px_32px_rgba(29,119,176,0.14)] transition-all hover:-translate-y-1 hover:bg-white hover:shadow-[0_18px_40px_rgba(29,119,176,0.2)] sm:p-8"
+                  >
+                    <p className="text-[11px] font-bold uppercase tracking-[1px] text-[#178fd2]">
+                      Student Testimonial
+                    </p>
+                    <h3 className="mt-2 text-[18px] font-extrabold leading-snug text-[#1f3442] sm:text-[22px]">
+                      {testimonial.title}
+                    </h3>
+                    <p className="mt-3 text-[14px] font-medium leading-relaxed text-[#4a6272] sm:text-[16px]">
+                      {testimonial.excerpt}
+                    </p>
+                    <span className="mt-5 inline-flex items-center gap-2 text-[14px] font-bold text-[#178fd2] group-hover:underline">
+                      Read full testimonial
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden
+                      >
+                        <path d="M7 17L17 7" />
+                        <path d="M7 7h10v10" />
+                      </svg>
+                    </span>
+                  </a>
+                ))}
+              </div>
+            ) : (
+            <div className="grid w-full grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
+              {fallbackToppers.map((topper, index) => {
+                const isSecondRow = index >= 5;
 
                 return (
                   <article
@@ -298,18 +320,14 @@ const OurToppersGalleryPage = () => {
                     {/* Image area */}
                     <div
                       className={`relative w-full overflow-visible bg-transparent ${
-                        isTop10
-                          ? 'h-[300px] sm:h-[330px] lg:h-[360px]'
-                          : isSecondRow
-                          ? 'h-[300px] sm:h-[330px] lg:h-[360px]'
-                          : 'h-[330px] sm:h-[360px] lg:h-[430px]'
+                        isSecondRow
+                          ? 'h-[250px] sm:h-[280px] lg:h-[310px]'
+                          : 'h-[280px] sm:h-[310px] lg:h-[360px]'
                       }`}
                     >
                       <div
                         className={`absolute left-1/2 h-[330px] w-[280px] -translate-x-1/2 bg-transparent sm:h-[380px] sm:w-[325px] lg:h-[455px] lg:w-[390px] lg:-translate-x-[55%] ${
-                          isTop10
-                            ? 'top-[-28px] lg:top-[-60px]'
-                            : isSecondRow
+                          isSecondRow
                             ? 'top-[-6px] lg:top-[-8px]'
                             : 'top-[-10px] lg:top-[-22px]'
                         }`}
@@ -319,7 +337,7 @@ const OurToppersGalleryPage = () => {
                           alt={`${topper.name} ${topper.rank}`}
                           className="mx-auto h-full w-full bg-transparent object-contain object-top drop-shadow-[0_20px_26px_rgba(0,0,0,0.25)] transition-transform duration-500 group-hover:scale-105 lg:drop-shadow-[0_24px_30px_rgba(0,0,0,0.28)]"
                           style={{
-                            transform: `translateY(${imageY}px) scale(${
+                            transform: `translateY(${topper.y}px) scale(${
                               topper.scale * 1.08
                             })`,
                             transformOrigin: 'center top',
@@ -330,23 +348,21 @@ const OurToppersGalleryPage = () => {
 
                     {/* Text area */}
                     <div
-                      className={`relative z-10 flex min-h-[105px] flex-col items-center bg-transparent ${
-                        isTop10
-                          ? '-mt-[58px] lg:-mt-[80px]'
-                          : isSecondRow
-                          ? '-mt-[32px] lg:-mt-[38px]'
-                          : '-mt-[46px] lg:-mt-[58px]'
+                      className={`relative z-10 flex min-h-[90px] flex-col items-center bg-transparent ${
+                        isSecondRow
+                          ? '-mt-[58px] lg:-mt-[72px]'
+                          : '-mt-[72px] lg:-mt-[92px]'
                       }`}
                     >
                       <h3 className="max-w-[250px] text-center text-[14px] font-extrabold uppercase leading-[1.25] tracking-[0.2px] text-white drop-shadow-sm md:text-[16px]">
                         {topper.name}
                       </h3>
 
-                      <div className="mt-[8px] rounded-full bg-[#f39d23] px-4 py-[5px] text-[12px] font-extrabold leading-none text-white shadow-sm">
+                      <span className="topper-air-badge mt-[6px] shadow-sm">
                         {topper.rank}
-                      </div>
+                      </span>
 
-                      <p className="mt-[8px] text-[13px] font-semibold leading-[1.2] text-white/95">
+                      <p className="mt-[6px] text-[13px] font-semibold leading-[1.2] text-white/95">
                         {topper.description}
                       </p>
                     </div>
@@ -354,121 +370,7 @@ const OurToppersGalleryPage = () => {
                 );
               })}
             </div>
-
-            {toppers.length === 0 && (
-              <div className="py-16 text-center text-[18px] font-semibold text-[#1f3442]">
-                No students found in this category.
-              </div>
             )}
-          </div>
-        </div>
-      </section>
-
-      {/* SUPPORT SYSTEM */}
-      <section className="relative overflow-hidden bg-[#C8ECFF] px-4 py-12 sm:px-6 md:px-10 lg:py-16">
-        <Image
-          src="/assets/our-toppers-gallery/our-support-system-bg.png"
-          alt="Our support system background"
-          fill
-          sizes="100vw"
-          className="pointer-events-none object-cover object-center"
-        />
-
-        <div className="absolute -left-[95px] top-[145px] h-[210px] w-[210px] rounded-full bg-white/70" />
-        <div className="absolute -right-[95px] bottom-[60px] h-[210px] w-[210px] rounded-full bg-white/75" />
-
-        <div className="relative z-10 mx-auto grid max-w-[1240px] items-center gap-10 lg:grid-cols-[0.88fr_1.42fr]">
-          <div className="relative z-20 lg:-ml-8 xl:-ml-12">
-            <h2 className="mb-8 whitespace-nowrap bg-gradient-to-r from-[#159FE3] via-[#4FA0D6] to-[#6D8EB8] bg-clip-text text-center text-[clamp(22px,3.2vw,40px)] font-black uppercase leading-[1.05] tracking-[0.5px] text-transparent lg:text-left">
-              OUR SUPPORT SYSTEM
-            </h2>
-
-            <div className="mx-auto grid max-w-[560px] grid-cols-1 gap-5 overflow-visible px-1 py-2 sm:grid-cols-2 lg:mx-0">
-              <div className={SUPPORT_SYSTEM_CARD}>
-                <div className="mb-4 flex h-[44px] w-[44px] items-center justify-center rounded-[10px] bg-[#FFF0DA] shadow-sm">
-                  <Image
-                    src="/assets/our-toppers-gallery/timer-icon.svg"
-                    alt="24/7 Academic Support icon"
-                    width={26}
-                    height={26}
-                    className="h-[26px] w-[26px] object-contain"
-                  />
-                </div>
-
-                <h3 className="mb-3 text-[15px] font-extrabold text-[#111827]">
-                  24/7 Academic Support
-                </h3>
-
-                <p className="text-[13px] font-medium leading-[1.55] text-[#575757]">
-                  Spreads the syllabus over two years, allowing thorough
-                  understanding without burnout.
-                </p>
-              </div>
-
-              <div className={`${SUPPORT_SYSTEM_CARD} sm:mt-[58px]`}>
-                <div className="mb-4 flex h-[44px] w-[44px] items-center justify-center rounded-[10px] bg-[#FFE5E8] shadow-sm">
-                  <Image
-                    src="/assets/our-toppers-gallery/personalized-attention-icon.svg"
-                    alt="Personalised Attention icon"
-                    width={26}
-                    height={26}
-                    className="h-[26px] w-[26px] object-contain"
-                  />
-                </div>
-
-                <h3 className="mb-3 text-[15px] font-extrabold text-[#111827]">
-                  Personalised Attention
-                </h3>
-
-                <p className="text-[13px] font-medium leading-[1.55] text-[#575757]">
-                  Eliminates the need for multiple programs with our all-in-one
-                  strategy.
-                </p>
-              </div>
-
-              <div className={`${SUPPORT_SYSTEM_CARD} sm:col-span-2 lg:col-span-1`}>
-                <div className="mb-4 flex h-[44px] w-[44px] items-center justify-center rounded-[10px] bg-[#FFE5E8] shadow-sm">
-                  <Image
-                    src="/assets/our-toppers-gallery/expert-mentorship-icon.svg"
-                    alt="Expert Mentorship icon"
-                    width={26}
-                    height={26}
-                    className="h-[26px] w-[26px] object-contain"
-                  />
-                </div>
-
-                <h3 className="mb-3 text-[15px] font-extrabold text-[#111827]">
-                  Expert Mentorship
-                </h3>
-
-                <p className="text-[13px] font-medium leading-[1.55] text-[#575757]">
-                  Recorded classes and digital content ensure seamless learning
-                  regardless of time or place.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="relative mx-auto h-[360px] w-full max-w-[520px] sm:h-[420px] md:h-[455px] md:max-w-[720px] lg:h-[515px] lg:max-w-[780px]">
-            <div className="absolute right-[-20px] top-0 h-[270px] w-[330px] overflow-hidden rounded-tl-[180px] shadow-[0_18px_34px_rgba(0,0,0,0.16)] sm:h-[340px] sm:w-[440px] md:right-[-70px] md:h-[460px] md:w-[590px] lg:right-[-105px] lg:h-[515px] lg:w-[670px]">
-              <Image
-                src="/assets/our-toppers-gallery/women-image.png"
-                alt="Support mentor"
-                fill
-                sizes="(max-width: 640px) 330px, (max-width: 768px) 590px, 670px"
-                className="object-cover object-center"
-              />
-            </div>
-
-            <div className="absolute bottom-[10px] left-[0px] z-20 h-[190px] w-[190px] overflow-hidden rounded-full border-[6px] border-[#BFE6FF] shadow-[0_18px_36px_rgba(0,0,0,0.22)] sm:h-[250px] sm:w-[250px] md:bottom-[-8px] md:left-[-5px] md:h-[330px] md:w-[330px] md:border-[8px] lg:left-[-15px] lg:h-[355px] lg:w-[355px]">
-              <Image
-                src="/assets/our-toppers-gallery/person-image.png"
-                alt="Support team"
-                fill
-                sizes="(max-width: 640px) 190px, (max-width: 768px) 330px, 355px"
-                className="object-cover object-center"
-              />
-            </div>
           </div>
         </div>
       </section>

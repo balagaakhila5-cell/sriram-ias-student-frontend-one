@@ -5,6 +5,7 @@ import Link from 'next/link';
 import FreeResourcesCourseSlider from '@/components/common/FreeResourcesCourseSlider';
 import { FREE_LEARNING_EXPLORE_HREFS } from '@/features/homepage/utils/homepageLinks';
 import BlogsCalendar from '@/features/blogs/components/BlogsCalendar';
+import { FOOTER_SOCIAL_LINKS } from '@/config/footerLinks';
 import { BarChart3, BookOpenText, Lightbulb } from 'lucide-react';
 
 type BlogsSidebarProps = {
@@ -99,26 +100,33 @@ export default function BlogsSidebar({
               key={item}
               className="mb-4 flex gap-4 border-b pb-4 last:border-b-0"
             >
-              <div className="relative h-[86px] w-[160px] shrink-0 overflow-hidden rounded-[4px]">
+              <div className="relative h-[96px] w-[160px] shrink-0 overflow-hidden rounded-[4px]">
                 <Image
-                  src="/assets/blogs/trending-video.png"
-                  alt="Trending Video"
+                  src="/assets/current-affairs/daily-current-affairs/trending-video.png"
+                  alt="Daily Current Affairs"
                   fill
                   className="object-cover"
                 />
               </div>
 
               <div>
-                <p className="text-[14px] font-bold leading-[1.45] text-black">
+                <p className="text-[16px] font-bold leading-[1.45] text-black sm:text-[17px]">
                   Daily Current Affairs - 16 March 2026
-                </p>
-
-                <p className="mt-2 text-[13px] font-medium text-[#666]">
-                  ▶ Youtube
                 </p>
               </div>
             </div>
           ))}
+
+          <div className="mt-2 flex justify-center">
+            <a
+              href={FOOTER_SOCIAL_LINKS.youtube}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[16px] font-semibold text-[#3380C4] underline underline-offset-2 transition-colors hover:text-[#1E6F9F]"
+            >
+              View All
+            </a>
+          </div>
         </div>
       ) : null}
 

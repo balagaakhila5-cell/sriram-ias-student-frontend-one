@@ -222,8 +222,42 @@ export const resourcesService = {
     }
     if (query.type === "PAPER") {
       return [
-        { _id: "filter-paper-1", type: "PAPER", value: "Paper 1" },
-        { _id: "filter-paper-2", type: "PAPER", value: "Paper 2" },
+        {
+          _id: "filter-prelims-gs",
+          type: "PAPER",
+          value: "General Studies",
+          subCategory: "mock-prelims",
+        },
+        {
+          _id: "filter-prelims-csat",
+          type: "PAPER",
+          value: "CSAT",
+          subCategory: "mock-prelims",
+        },
+        {
+          _id: "filter-mains-gs1",
+          type: "PAPER",
+          value: "GS I",
+          subCategory: "mock-mains",
+        },
+        {
+          _id: "filter-mains-gs2",
+          type: "PAPER",
+          value: "GS II",
+          subCategory: "mock-mains",
+        },
+        {
+          _id: "filter-mains-gs3",
+          type: "PAPER",
+          value: "GS III",
+          subCategory: "mock-mains",
+        },
+        {
+          _id: "filter-mains-gs4",
+          type: "PAPER",
+          value: "GS IV",
+          subCategory: "mock-mains",
+        },
       ];
     }
     return [

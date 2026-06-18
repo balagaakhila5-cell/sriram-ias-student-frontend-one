@@ -18,6 +18,7 @@ interface DemoFormSelectProps {
   placeholder: string;
   disabled?: boolean;
   variant?: DemoFormSelectVariant;
+  centerText?: boolean;
 }
 
 const VARIANTS: Record<
@@ -71,6 +72,7 @@ const DemoFormSelect: React.FC<DemoFormSelectProps> = ({
   placeholder,
   disabled = false,
   variant = "modal",
+  centerText = false,
 }) => {
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState<MenuPosition | null>(null);
@@ -138,9 +140,11 @@ const DemoFormSelect: React.FC<DemoFormSelectProps> = ({
         type="button"
         disabled={disabled}
         onClick={toggleOpen}
-        className={styles.trigger}
+        className={`${styles.trigger} ${centerText ? "relative justify-center text-center" : ""}`}
       >
-        <span className={`truncate ${value ? "" : styles.placeholder}`}>
+        <span
+          className={`truncate ${centerText ? "w-full text-center" : ""} ${value ? "" : styles.placeholder}`}
+        >
           {selectedLabel}
         </span>
         <svg
@@ -152,7 +156,7 @@ const DemoFormSelect: React.FC<DemoFormSelectProps> = ({
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className={`ml-2 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`shrink-0 transition-transform ${open ? "rotate-180" : ""} ${centerText ? "absolute right-3" : "ml-2"}`}
         >
           <polyline points="6 9 12 15 18 9" />
         </svg>

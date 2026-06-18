@@ -60,7 +60,7 @@ export default function AllBlogsPage() {
             className="object-cover"
           />
 
-          <div className="absolute inset-0 bg-black/45" />
+          <div className="absolute inset-0 bg-black/30" />
 
           <div className="relative z-10 flex h-full flex-col justify-end px-4 pb-8 sm:px-8 sm:pb-10 md:px-10">
             <Link
@@ -78,7 +78,7 @@ export default function AllBlogsPage() {
         </section>
 
         <section className="relative overflow-x-hidden px-4 py-12 lg:px-6 xl:px-8">
-          <div className="pointer-events-none absolute inset-0 opacity-[0.35]">
+          <div className="pointer-events-none absolute inset-0 opacity-[0.2]">
             <div
               className="h-full w-full"
               style={{

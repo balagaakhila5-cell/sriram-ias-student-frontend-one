@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { RESOURCE_CARD_TITLE } from "@/features/resources/components/cardStyles";
 import { useEffect, useState } from "react";
 import { ArrowRight, Bookmark } from "lucide-react";
 import type { TestItem } from "../data/tests";
@@ -46,7 +45,7 @@ export default function TestCard({
   };
 
   return (
-    <article className="relative flex items-center gap-4 rounded-[14px] bg-[#FAF8F3] p-4 shadow-[0_4px_14px_rgba(0,0,0,0.04)] transition-all duration-300 hover:translate-x-2 hover:bg-[#EEF7FD] hover:shadow-[0_10px_24px_rgba(31,122,184,0.18)]">
+    <article className="group relative flex items-center gap-4 rounded-[14px] bg-[#FAF8F3] p-4 shadow-[0_4px_14px_rgba(0,0,0,0.04)] transition-all duration-300 hover:translate-x-2 hover:bg-[#EEF7FD] hover:shadow-[0_10px_24px_rgba(31,122,184,0.18)]">
       <button
         type="button"
         onClick={handleBookmark}
@@ -77,15 +76,17 @@ export default function TestCard({
         />
       </div>
 
-      <div className="min-w-0 flex-1 pr-6">
-        <h4 className={RESOURCE_CARD_TITLE}>{test.title}</h4>
+      <div className="relative min-w-0 flex-1 pr-6 text-center">
+        <h4 className="px-8 text-center text-[17px] font-bold leading-[1.35] text-[#000000] sm:text-[18px]">
+          {test.title}
+        </h4>
 
         <Link
           href={
             attemptHref ??
             `/current-affairs/daily-practice-questions/${test.attemptSlug}`
           }
-          className="mt-3 inline-flex items-center gap-2 rounded-md border border-[#A8CEE6] bg-white px-3 py-1.5 text-[13px] font-extrabold text-[#009FEECC]"
+          className="absolute bottom-0 right-0 inline-flex items-center gap-2 rounded-full border border-[#57B0F2] bg-white px-4 py-1.5 text-[12px] font-semibold text-[#46A7ED] transition-all duration-300 group-hover:border-[#2AA7DF] group-hover:bg-[#2AA7DF] group-hover:text-white"
         >
           {actionLabel}
           <ArrowRight size={14} />

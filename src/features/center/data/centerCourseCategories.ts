@@ -34,6 +34,7 @@ export const TAB_TO_CATEGORY_KEY: Record<string, CourseCategoryKey> = {
 
 export const CITY_NAME_TO_KEY: Record<string, CenterCity> = {
   'New Delhi': 'delhi',
+  'NEW DELHI': 'delhi',
   Delhi: 'delhi',
   Hyderabad: 'hyderabad',
   Pune: 'pune',
@@ -273,8 +274,13 @@ export function getHeaderCourseLinks(
       const course = getCourseBySlug(slug);
       if (!course) return null;
 
+      let label = formatCourseTitle(course.title);
+      if (cityKey === 'hyderabad') {
+        label = label.replace(/\s*-\s*Hyderabad\s*$/i, '').trim();
+      }
+
       return {
-        label: formatCourseTitle(course.title),
+        label,
         slug,
         href: `/course/${slug}`,
       };
@@ -287,6 +293,18 @@ export function getCenterCategoryHref(city: string, category: CourseCategoryKey)
 }
 
 export function formatCityLabel(city: string): string {
+  const key = city.toLowerCase();
+  if (key === 'delhi') return 'NEW DELHI';
+  return key.charAt(0).toUpperCase() + key.slice(1);
+}
+
+export function formatCenterDisplayName(city: string): string {
+  const key = city.toLowerCase();
+  if (key === 'delhi') return 'NEW DELHI';
+  return key.toUpperCase();
+}
+
+export function getEnquiryCenterName(city: string): string {
   const key = city.toLowerCase();
   if (key === 'delhi') return 'New Delhi';
   return key.charAt(0).toUpperCase() + key.slice(1);

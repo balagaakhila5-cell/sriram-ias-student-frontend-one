@@ -76,7 +76,7 @@ const OurStaff: React.FC<Props> = ({ city: _city }) => {
     () => {
       if (prefersReducedMotion) return;
 
-      gsap.from('.our-staff-heading', {
+      gsap.from('.our-faculty-heading', {
         y: 70,
         opacity: 0,
         duration: 0.8,
@@ -88,7 +88,7 @@ const OurStaff: React.FC<Props> = ({ city: _city }) => {
         },
       });
 
-      const cards = gsap.utils.toArray<HTMLElement>('.our-staff-card');
+      const cards = gsap.utils.toArray<HTMLElement>('.our-faculty-card');
       cards.forEach((card, index) => {
         gsap.fromTo(
           card,
@@ -135,7 +135,7 @@ const OurStaff: React.FC<Props> = ({ city: _city }) => {
   return (
     <section
       ref={containerRef}
-      className="relative w-full overflow-x-hidden bg-white py-24"
+      className="relative w-full overflow-x-hidden bg-white pb-24 pt-10"
     >
       <div
         className="pointer-events-none absolute inset-0 z-0 bg-image-placeholder opacity-40"
@@ -148,10 +148,10 @@ const OurStaff: React.FC<Props> = ({ city: _city }) => {
       />
 
       <div className="relative z-10 mx-auto flex max-w-[1400px] flex-col items-center px-4 sm:px-6 lg:px-12">
-        <div className="our-staff-heading mx-auto mb-16 w-full max-w-4xl text-center">
+        <div className="our-faculty-heading mx-auto mb-16 w-full max-w-4xl text-center">
           <h2 className="relative z-10 mb-6 font-['Montserrat'] text-[36px] font-[900] uppercase tracking-wider md:text-[50px]">
             <span className="bg-gradient-to-r from-[#20A0E0] to-[rgba(225,97,101,0.8)] bg-clip-text text-transparent">
-              OUR STAFF
+              OUR FACULTY
             </span>
           </h2>
 
@@ -167,7 +167,7 @@ const OurStaff: React.FC<Props> = ({ city: _city }) => {
           <div
             ref={featuredRef}
             key={`featured-${slotOrder[0]}`}
-            className="our-staff-card flex w-full shrink-0 flex-col overflow-hidden rounded-2xl bg-white shadow-[0_10px_40px_rgba(0,0,0,0.08)] sm:flex-row lg:w-[46%]"
+            className="our-faculty-card flex w-full shrink-0 flex-col overflow-hidden rounded-2xl bg-white shadow-[0_10px_40px_rgba(0,0,0,0.08)] sm:flex-row lg:w-[46%]"
           >
             <div
               className={`relative h-[300px] w-full shrink-0 sm:h-[340px] sm:w-[240px] ${featuredStaff.bg}`}
@@ -227,7 +227,7 @@ const OurStaff: React.FC<Props> = ({ city: _city }) => {
                   key={`thumb-slot-${thumbIndex}`}
                   type="button"
                   onClick={() => handleThumbnailClick(thumbIndex)}
-                  className="our-staff-card group flex min-w-0 flex-1 cursor-pointer flex-col overflow-hidden rounded-2xl bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_38px_rgba(0,0,0,0.12)] focus:outline-none focus:ring-2 focus:ring-[#20A0E0]"
+                  className="our-faculty-card group flex min-w-0 flex-1 cursor-pointer flex-col overflow-hidden rounded-2xl bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_38px_rgba(0,0,0,0.12)] focus:outline-none focus:ring-2 focus:ring-[#20A0E0]"
                   aria-label={`Show ${STAFF_NAME} photo ${thumbIndex + 2} as featured`}
                 >
                   <div

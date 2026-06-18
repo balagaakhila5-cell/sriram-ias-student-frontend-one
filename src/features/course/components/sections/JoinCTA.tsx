@@ -8,6 +8,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import { useSubmitEnquiry } from '@/features/enquiry/hooks/useEnquiry';
 import { useEnquiryCourses } from '@/features/enquiry/hooks/useEnquiryLookups';
+import {
+  getEnquiryCenterName,
+} from '@/features/center/data/centerCourseCategories';
 import DemoFormSelect from '@/components/common/DemoFormSelect';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -114,7 +117,7 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
   );
 
   const city = propCity?.toLowerCase() || course?.city?.toLowerCase() || 'delhi';
-  const enquiryCenterName = city.charAt(0).toUpperCase() + city.slice(1);
+  const enquiryCenterName = getEnquiryCenterName(city);
   // The backend requires a resolvable course on every enquiry; this generic CTA
   // has no course picker, so default to the branch's first real course.
   const { data: cityCourses = [] } = useEnquiryCourses(enquiryCenterName);
