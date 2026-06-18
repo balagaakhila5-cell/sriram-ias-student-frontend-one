@@ -21,14 +21,27 @@ export default function Image({
   priority: _priority,
   ...props
 }: NextImageProps) {
-  const imageStyle: React.CSSProperties = {
-    display: "block",
-    width: fill ? "100%" : undefined,
-    height: fill ? "100%" : undefined,
-    objectFit: fill ? "cover" : undefined,
-    objectPosition: fill ? "center" : undefined,
-    ...style,
-  };
+  const imageStyle: React.CSSProperties = fill
+    ? {
+        position: "absolute",
+        inset: 0,
+        display: "block",
+        width: "100%",
+        height: "100%",
+        ...style,
+      }
+    : {
+        display: "block",
+        ...style,
+      };
 
-  return <img src={src} alt={alt} className={className} style={imageStyle} {...props} />;
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      style={imageStyle}
+      {...props}
+    />
+  );
 }
