@@ -29,13 +29,37 @@ import {
   getHeaderTabsForCity,
 } from '@/features/center/data/centerCourseCategories';
 import CoursesMegaMenuBackground from './CoursesMegaMenuBackground';
-import BookDemoAnimatedBackground from './BookDemoAnimatedBackground';
+import CentersDropdownBackground from './CentersDropdownBackground';
 
 const CENTER_CITY_ICONS = {
   delhi: '/assets/our-centers/new-delhi-india-gate-icon-1.png',
   hyderabad: '/assets/our-centers/hyderabad-charminar-icon-1.png',
   pune: '/assets/our-centers/pune-historical-icon-1.png',
 } as const;
+
+const CENTER_DROPDOWN_ITEMS = [
+  {
+    name: 'New Delhi',
+    href: '/centers/delhi',
+    icon: CENTER_CITY_ICONS.delhi,
+    iconBg: 'bg-[#DCEEFF]',
+    textColor: 'text-[#4A90D9]',
+  },
+  {
+    name: 'Hyderabad',
+    href: '/centers/hyderabad',
+    icon: CENTER_CITY_ICONS.hyderabad,
+    iconBg: 'bg-[#EDE8F7]',
+    textColor: 'text-[#7B6FCF]',
+  },
+  {
+    name: 'Pune',
+    href: '/centers/pune',
+    icon: CENTER_CITY_ICONS.pune,
+    iconBg: 'bg-[#FEF0DC]',
+    textColor: 'text-[#D9833A]',
+  },
+] as const;
 
 const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
   variant = 'transparent',
@@ -56,7 +80,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
   const headerRef = useRef<HTMLElement>(null);
   const megaMenuRef = useRef<HTMLDivElement>(null);
   const coursesButtonRef = useRef<HTMLDivElement>(null);
-  const centersMenuRef = useRef<HTMLDivElement>(null);
+  const centersDropdownRef = useRef<HTMLDivElement>(null);
   const centersButtonRef = useRef<HTMLDivElement>(null);
   const freeResourcesMenuRef = useRef<HTMLDivElement>(null);
   const freeResourcesDropdownRef = useRef<HTMLDivElement>(null);
@@ -91,12 +115,12 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
         setIsCoursesOpen(false);
       }
 
-      if (
-        centersMenuRef.current &&
-        !centersMenuRef.current.contains(target) &&
-        centersButtonRef.current &&
-        !centersButtonRef.current.contains(target)
-      ) {
+      const clickedInsideCentersButton =
+        centersButtonRef.current && centersButtonRef.current.contains(target);
+      const clickedInsideCentersDropdown =
+        centersDropdownRef.current && centersDropdownRef.current.contains(target);
+
+      if (!clickedInsideCentersButton && !clickedInsideCentersDropdown) {
         setIsCentersOpen(false);
       }
 
@@ -356,6 +380,44 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                 >
                   OUR CENTERS
                 </button>
+
+                {isCentersOpen && (
+                  <div
+                    ref={centersDropdownRef}
+                    className="absolute top-full left-0 z-50 mt-3 w-[min(520px,calc(100vw-2rem))] overflow-hidden rounded-[12px] bg-white shadow-[0px_10px_28px_rgba(0,0,0,0.14)]"
+                  >
+                    <CentersDropdownBackground />
+
+                    <div className="relative z-20 flex flex-col items-stretch justify-center gap-[10px] px-5 py-5 sm:flex-row sm:items-center">
+                      {CENTER_DROPDOWN_ITEMS.map((center) => (
+                        <Link
+                          key={center.href}
+                          href={center.href}
+                          onClick={() => setIsCentersOpen(false)}
+                          className="group flex h-[140px] min-w-0 flex-1 flex-col items-center justify-center rounded-[10px] bg-white px-3 text-center shadow-[0px_6px_16px_rgba(0,0,0,0.07)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_10px_22px_rgba(0,0,0,0.1)]"
+                        >
+                          <div
+                            className={`mb-2.5 flex h-[52px] w-[52px] items-center justify-center rounded-[12px] ${center.iconBg}`}
+                          >
+                            <Image
+                              src={center.icon}
+                              alt={center.name}
+                              width={40}
+                              height={40}
+                              unoptimized
+                              className="h-[40px] w-[40px] object-contain transition-transform duration-300 group-hover:scale-110"
+                            />
+                          </div>
+                          <h3
+                            className={`text-[14px] leading-[20px] font-semibold normal-case ${center.textColor}`}
+                          >
+                            {center.name}
+                          </h3>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
              <Link href="/our-toppers-gallery" className={topNavItemClass}>
@@ -776,7 +838,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
           <div ref={currentAffairsDropdownRef} className="absolute top-full left-0 right-0 z-50 mt-3">
             <div className="w-full border-t border-b border-[#E9E9E9] bg-white/95 py-7">
               <div className="mx-auto w-full max-w-[1100px] px-6 md:px-8">
-                <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5 lg:gap-4">
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6 lg:gap-4">
                   <Link
                     href="/current-affairs"
                     onClick={() => setIsCurrentAffairsOpen(false)}
@@ -839,6 +901,19 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                     </div>
                     <h3 className="text-[14px] leading-[20px] font-semibold normal-case text-[#D9833A]">
                       Monthly Recap
+                    </h3>
+                  </Link>
+
+                  <Link
+                    href="/current-affairs/daily-learning"
+                    onClick={() => setIsCurrentAffairsOpen(false)}
+                    className="group flex h-[140px] flex-col items-center justify-center rounded-[16px] bg-[#F8F8F8] px-4 text-center shadow-[0px_8px_22px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
+                  >
+                    <div className="mb-2.5 flex h-[46px] w-[46px] items-center justify-center rounded-[12px] bg-[#E3F4FC]">
+                      <BookOpen className="h-6 w-6 text-[#349EE3]" strokeWidth={2} />
+                    </div>
+                    <h3 className="text-[14px] leading-[20px] font-semibold normal-case text-[#349EE3]">
+                      Daily Learning
                     </h3>
                   </Link>
                 </div>
@@ -918,76 +993,6 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
             </div>
           </div>
         </div>
-
- <div
-  ref={centersMenuRef}
-  className={`absolute top-full left-1/2 mt-6 w-[min(840px,calc(100vw-2rem))] min-h-[290px] -translate-x-1/2 overflow-hidden rounded-[12px] shadow-[0px_18px_50px_rgba(0,0,0,0.22)] border border-white/20 text-center cursor-default transform origin-top transition-all duration-300 z-50 ${
-    isCentersOpen
-      ? 'scale-100 opacity-100 pointer-events-auto'
-      : 'scale-95 opacity-0 pointer-events-none'
-  }`}
->
-  <BookDemoAnimatedBackground />
-
-  <div className="relative z-10 isolate flex h-full w-full items-center justify-center gap-4 px-4 py-6 sm:gap-8 sm:px-8 overflow-hidden">
-    <Link
-      href="/centers/delhi"
-      onClick={() => setIsCentersOpen(false)}
-      className="group flex flex-col items-center gap-2"
-    >
-      <Image
-        src={CENTER_CITY_ICONS.delhi}
-        alt="New Delhi"
-        width={180}
-        height={170}
-        priority
-        unoptimized
-        className="h-[150px] w-[150px] object-contain transition-transform duration-300 group-hover:scale-[1.04] sm:h-[170px] sm:w-[170px]"
-      />
-      <span className="font-[Montserrat] text-[14px] font-bold uppercase tracking-wide text-white sm:text-[15px]">
-        New Delhi
-      </span>
-    </Link>
-
-    <Link
-      href="/centers/hyderabad"
-      onClick={() => setIsCentersOpen(false)}
-      className="group flex flex-col items-center gap-2"
-    >
-      <Image
-        src={CENTER_CITY_ICONS.hyderabad}
-        alt="Hyderabad"
-        width={180}
-        height={170}
-        priority
-        unoptimized
-        className="h-[150px] w-[150px] object-contain transition-transform duration-300 group-hover:scale-[1.04] sm:h-[170px] sm:w-[170px]"
-      />
-      <span className="font-[Montserrat] text-[14px] font-bold uppercase tracking-wide text-white sm:text-[15px]">
-        Hyderabad
-      </span>
-    </Link>
-
-    <Link
-      href="/centers/pune"
-      onClick={() => setIsCentersOpen(false)}
-      className="group flex flex-col items-center gap-2"
-    >
-      <Image
-        src={CENTER_CITY_ICONS.pune}
-        alt="Pune"
-        width={180}
-        height={170}
-        priority
-        unoptimized
-        className="h-[150px] w-[150px] object-contain transition-transform duration-300 group-hover:scale-[1.04] sm:h-[170px] sm:w-[170px]"
-      />
-      <span className="font-[Montserrat] text-[14px] font-bold uppercase tracking-wide text-white sm:text-[15px]">
-        Pune
-      </span>
-    </Link>
-  </div>
-</div>
 
         <BookFreeDemoModal
           isOpen={isBookDemoOpen}

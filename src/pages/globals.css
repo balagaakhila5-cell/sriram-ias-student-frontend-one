@@ -972,20 +972,25 @@
     width: fit-content;
     margin-inline: auto;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 6px;
+    height: 38px;
     border-radius: 9999px;
-    border: 1.5px solid #ffffff;
-    background: rgba(0, 0, 0, 0.82);
-    padding: 8px 18px;
+    border: 1px solid #ffffff;
+    background: transparent;
+    padding: 0 32px;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     color: #ffffff;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    transition: all 0.3s ease;
   }
 
   .free-resources-course-slider .course-slider-enroll:hover {
-    background: rgba(0, 0, 0, 0.95);
-    transform: scale(1.02);
+    border-color: transparent;
+    background: linear-gradient(to right, #38aee5, #07344d);
+    color: #ffffff;
+    opacity: 0.9;
+    transform: none;
   }
 
   .free-resources-course-slider .course-dots {
@@ -1060,8 +1065,9 @@
   }
 
   .free-resources-course-slider.course-slider-card--compact .course-slider-enroll {
-    padding: 5px 12px;
-    font-size: 11px;
+    height: 34px;
+    padding: 0 22px;
+    font-size: 12px;
   }
 
   .free-resources-course-slider.course-slider-card--compact .course-dots {
@@ -1144,7 +1150,8 @@
   }
 
   .book-details-course-slider .free-resources-course-slider.course-slider-card--compact .course-slider-enroll {
-    padding: 7px 14px;
+    height: 36px;
+    padding: 0 26px;
     font-size: 12px;
   }
 
@@ -1448,7 +1455,7 @@
   }
 
   100% {
-    transform: translateY(-10px) scale(1.04);
+    transform: translateY(-14px) scale(1.05);
   }
 }
 

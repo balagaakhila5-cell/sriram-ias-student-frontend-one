@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
+import { COURSE_EXPLORE_BUTTON_LABEL } from "@/components/common/courseExploreButton";
 
 export type FreeResourcesCourseSlide = {
   title: string;
@@ -42,16 +43,16 @@ interface FreeResourcesCourseSliderProps {
   showBackground?: boolean;
   /** Smaller card for book details and tight layouts */
   compact?: boolean;
-  /** CTA label — default Enroll Now; use Explore for PYQ sidebar */
+  /** CTA label — default Explore (Daily Learning style) */
   actionLabel?: string;
 }
 
-/** Free Resources sidebar — auto-sliding courses with title + Enroll Now → course page */
+/** Free Resources sidebar — auto-sliding courses with Explore → course page */
 export default function FreeResourcesCourseSlider({
   className = "",
   showBackground = false,
   compact = false,
-  actionLabel = "Enroll Now",
+  actionLabel = COURSE_EXPLORE_BUTTON_LABEL,
 }: FreeResourcesCourseSliderProps) {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -108,7 +109,6 @@ export default function FreeResourcesCourseSlider({
             className="course-slider-enroll"
           >
             {actionLabel}
-            <span aria-hidden>→</span>
           </Link>
         </div>
 

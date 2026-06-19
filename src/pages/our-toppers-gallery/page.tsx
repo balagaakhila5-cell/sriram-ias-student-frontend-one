@@ -2,11 +2,15 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
+import ToppersGalleryTabs from '@/features/ourToppers/components/ToppersGalleryTabs';
+import TestimonialQuoteCard from '@/features/ourToppers/components/TestimonialQuoteCard';
+import { TESTIMONIALS } from '@/features/ourToppers/data/testimonials';
+import type { YearWiseSelection } from '@/features/ourToppers/components/YearWiseDropdown';
 import { useSessionBooking } from '@/features/course/hooks/useSessionBooking';
 import SessionBookingDialog from '@/features/course/components/SessionBookingDialog';
-import FormFieldLabel from '@/components/common/FormFieldLabel';
 
 type Topper = {
   name: string;
@@ -17,17 +21,6 @@ type Topper = {
   scale: number;
   course: 'GS Course' | 'Optional Course' | 'Test Series' | 'Other';
 };
-
-const YEAR_WISE_PDF = '/assets/samples/sriram-sample.pdf';
-
-const TESTIMONIALS = [
-  {
-    title: 'Shivansh Singh IAS — Rank 164, UPSC CSE 2023',
-    excerpt:
-      'Read how Shivansh Singh prepared for UPSC CSE 2023 and secured AIR 164 with SRIRAM\'s IAS.',
-    url: 'https://forumias.com/blog/shivansh-singh-ias-rank-164-upsc-cse-2023-testimonial/',
-  },
-] as const;
 
 const fallbackToppers: Topper[] = [
   {
@@ -144,6 +137,7 @@ const imagePath = (fileName: string) =>
   `/assets/our-toppers-gallery/${fileName.replaceAll(' ', '%20')}`;
 
 const OurToppersGalleryPage = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'Toppers' | 'Testimonials'>('Toppers');
   const [formData, setFormData] = useState({
     fullName: '',
@@ -192,8 +186,12 @@ const OurToppersGalleryPage = () => {
     });
   };
 
-  const handleYearWiseClick = () => {
-    window.open(YEAR_WISE_PDF, '_blank', 'noopener,noreferrer');
+  const handleTabChange = (tab: 'Toppers' | 'Testimonials') => {
+    setActiveTab(tab);
+  };
+
+  const handleYearSelect = (selection: YearWiseSelection) => {
+    navigate(`/our-toppers-gallery/year-wise/${selection}`);
   };
 
   return (
@@ -230,7 +228,9 @@ const OurToppersGalleryPage = () => {
           <div className="mb-8 flex w-full flex-col justify-between gap-5 px-4 sm:px-6 md:flex-row md:items-start md:px-[48px] lg:px-[42px]">
             <div className="text-center md:text-left">
               <h2 className="bg-gradient-to-r from-[#159fe3] via-[#8e91b5] to-[#d96f7d] bg-clip-text text-[34px] font-black uppercase leading-[1.05] tracking-[1px] text-transparent sm:text-[44px] md:text-[66px] lg:text-[74px]">
-                TOPPER’S GALLERY
+                {activeTab === 'Testimonials'
+                  ? 'TESTIMONIALS'
+                  : "TOPPERS' GALLERY"}
               </h2>
 
               <p className="mx-auto mt-4 max-w-[650px] text-[14px] font-medium text-[#1f3442] sm:text-[16px] md:mx-0 md:text-[20px]">
@@ -238,73 +238,19 @@ const OurToppersGalleryPage = () => {
               </p>
             </div>
 
-            <div className="mx-auto mt-1 flex w-full max-w-[420px] flex-wrap items-center justify-center gap-2 md:mx-0 md:w-fit md:max-w-none">
-              <div className="flex items-center gap-1 rounded-full bg-white/85 p-1.5 shadow-[0_8px_24px_rgba(38,143,208,0.16)] backdrop-blur">
-                {(['Toppers', 'Testimonials'] as const).map((tab) => (
-                  <button
-                    key={tab}
-                    type="button"
-                    onClick={() => setActiveTab(tab)}
-                    className={`rounded-full px-4 py-2 text-[11px] font-bold transition-all sm:px-5 sm:py-2.5 sm:text-[12px] md:text-[14px] ${
-                      activeTab === tab
-                        ? 'bg-[#178fd2] text-white shadow-md'
-                        : 'text-[#213b4c] hover:bg-[#e4f5ff]'
-                    }`}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                type="button"
-                onClick={handleYearWiseClick}
-                className="rounded-full border border-[#178fd2]/30 bg-white px-4 py-2 text-[11px] font-bold text-[#178fd2] shadow-[0_8px_24px_rgba(38,143,208,0.12)] transition-all hover:bg-[#e4f5ff] sm:px-5 sm:py-2.5 sm:text-[12px] md:text-[14px]"
-              >
-                Year wise
-              </button>
-            </div>
+            <ToppersGalleryTabs
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
+              onYearSelect={handleYearSelect}
+            />
           </div>
 
-          {/* Topper cards / Testimonials */}
+          {/* Topper cards / Testimonials / Year wise */}
           <div className="w-full px-4 sm:px-6 lg:px-0">
             {activeTab === 'Testimonials' ? (
-              <div className="flex flex-wrap justify-center gap-5 sm:gap-6">
+              <div className="mx-auto grid w-full max-w-[980px] grid-cols-1 gap-5 px-4 sm:grid-cols-2 sm:gap-6 lg:px-0">
                 {TESTIMONIALS.map((testimonial) => (
-                  <a
-                    key={testimonial.url}
-                    href={testimonial.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex h-[280px] w-[280px] flex-col rounded-[16px] bg-white/90 p-5 shadow-[0_12px_32px_rgba(29,119,176,0.14)] transition-all hover:-translate-y-1 hover:bg-white hover:shadow-[0_18px_40px_rgba(29,119,176,0.2)] sm:h-[300px] sm:w-[300px] sm:p-6 md:h-[320px] md:w-[320px]"
-                  >
-                    <p className="text-[10px] font-bold uppercase tracking-[0.8px] text-[#178fd2] sm:text-[11px]">
-                      Student Testimonial
-                    </p>
-                    <h3 className="mt-2 line-clamp-4 text-[13px] font-extrabold leading-snug text-[#1f3442] sm:text-[15px]">
-                      {testimonial.title}
-                    </h3>
-                    <p className="mt-2 line-clamp-4 flex-1 text-[11px] font-medium leading-relaxed text-[#4a6272] sm:text-[12px]">
-                      {testimonial.excerpt}
-                    </p>
-                    <span className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-[#178fd2] group-hover:underline sm:text-[12px]">
-                      Read full testimonial
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden
-                      >
-                        <path d="M7 17L17 7" />
-                        <path d="M7 7h10v10" />
-                      </svg>
-                    </span>
-                  </a>
+                  <TestimonialQuoteCard key={testimonial.url} testimonial={testimonial} />
                 ))}
               </div>
             ) : (
@@ -392,12 +338,6 @@ const OurToppersGalleryPage = () => {
             <form className="mx-auto w-full max-w-[640px] lg:mx-0" onSubmit={handleSessionSubmit}>
               <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <FormFieldLabel
-                    required
-                    className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
-                  >
-                    Full Name
-                  </FormFieldLabel>
                   <input
                     type="text"
                     name="fullName"
@@ -410,12 +350,6 @@ const OurToppersGalleryPage = () => {
                 </div>
 
                 <div>
-                  <FormFieldLabel
-                    required
-                    className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
-                  >
-                    Mobile Number
-                  </FormFieldLabel>
                   <input
                     type="tel"
                     name="mobile"
@@ -429,12 +363,6 @@ const OurToppersGalleryPage = () => {
                 </div>
 
                 <div>
-                  <FormFieldLabel
-                    required
-                    className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
-                  >
-                    Email Id
-                  </FormFieldLabel>
                   <input
                     type="email"
                     name="email"
@@ -447,12 +375,6 @@ const OurToppersGalleryPage = () => {
                 </div>
 
                 <div className="w-full">
-                  <FormFieldLabel
-                    required
-                    className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
-                  >
-                    Target UPSC Attempt Year
-                  </FormFieldLabel>
                   <div className="relative w-full">
                     <select
                       name="targetYear"
@@ -488,12 +410,6 @@ const OurToppersGalleryPage = () => {
                 </div>
 
                 <div className="w-full">
-                  <FormFieldLabel
-                    required
-                    className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
-                  >
-                    City
-                  </FormFieldLabel>
                   <div className="relative w-full">
                     <select
                       name="city"
@@ -580,6 +496,12 @@ const OurToppersGalleryPage = () => {
       <Footer />
 
       <style jsx>{`
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&display=swap');
+
+        .testimonial-quote-text {
+          font-family: 'Caveat', 'Segoe Script', 'Bradley Hand', cursive;
+        }
+
         @keyframes wantCtaBgMove {
           0% {
             transform: translate3d(0, 0, 0) scale(1.08);

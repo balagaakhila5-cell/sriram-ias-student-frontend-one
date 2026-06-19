@@ -14,6 +14,7 @@ import QuickLinks from "@/components/common/QuickLinks";
 import FloatingActions from "@/components/common/FloatingActions";
 import HoverCard from "@/components/common/HoverCard";
 import FreeResourcesOurBooksSlider from "@/components/common/FreeResourcesOurBooksSlider";
+import { DAILY_LEARNING_CARD_IMAGE } from "@/features/currentAffairs/components/DailyLearningTopicCarousel";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -42,6 +43,11 @@ const categories = [
     title: "Monthly Recap",
     href: "/current-affairs/monthly-recap",
     image: "/assets/current-affairs/monthly-recap.png",
+  },
+  {
+    title: "Daily Learning",
+    href: "/current-affairs/daily-learning",
+    image: DAILY_LEARNING_CARD_IMAGE,
   },
 ];
 
@@ -168,6 +174,7 @@ export default function CurrentAffairsPage() {
 
                 <div className="flex gap-[18px]">
                   <HoverCard {...categories[4]} className="h-[242px] flex-1" />
+                  <HoverCard {...categories[5]} className="h-[242px] flex-1" />
                 </div>
               </div>
 

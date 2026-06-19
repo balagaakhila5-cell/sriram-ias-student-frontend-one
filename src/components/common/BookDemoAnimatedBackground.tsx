@@ -10,12 +10,15 @@ type BookDemoAnimatedBackgroundProps = {
   imageClassName?: string;
   /** `gradient` = blue fill + lines (Book Demo / Our Centers). `lines-only` = white base + animated lines. */
   variant?: 'gradient' | 'lines-only';
+  /** Skip solid base fill so parent panel opacity shows through. */
+  transparentBase?: boolean;
 };
 
 export default function BookDemoAnimatedBackground({
   className = '',
   imageClassName,
   variant = 'gradient',
+  transparentBase = false,
 }: BookDemoAnimatedBackgroundProps) {
   const isLinesOnly = variant === 'lines-only';
   const resolvedImageClass =
@@ -29,15 +32,15 @@ export default function BookDemoAnimatedBackground({
       className={`pointer-events-none absolute inset-0 z-0 isolate overflow-hidden ${className}`}
       aria-hidden
     >
-      {isLinesOnly ? (
+      {isLinesOnly && !transparentBase ? (
         <div className="absolute inset-0 bg-white" aria-hidden />
-      ) : (
+      ) : !isLinesOnly ? (
         <div
           className="absolute inset-0"
           style={{ background: BOOK_DEMO_BG_GRADIENT }}
           aria-hidden
         />
-      )}
+      ) : null}
       <div className="book-demo-panel-bg-motion absolute left-[-12%] top-[-12%] h-[124%] w-[124%] will-change-transform">
         <Image
           src="/assets/free-demo-bgs.png"

@@ -6,6 +6,10 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import {
+  COURSE_EXPLORE_BUTTON_CLASS,
+  COURSE_EXPLORE_BUTTON_LABEL,
+} from '@/components/common/courseExploreButton';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import { useCategories, useCourses } from '@/features/course/hooks/useCourses';
 import { findStaticMatch } from '@/features/course/adapters/courseAdapter';
@@ -341,8 +345,8 @@ const ExploreCourses: React.FC = () => {
                         </div>
 
                         <div className="flex justify-center pt-1">
-                          <span className="inline-block rounded-full bg-white px-6 py-1.5 text-sm font-semibold text-black shadow-lg transition-colors duration-300 hover:bg-[#044062] hover:text-white sm:px-8 sm:py-2 sm:text-base">
-                            Explore
+                          <span className={COURSE_EXPLORE_BUTTON_CLASS}>
+                            {COURSE_EXPLORE_BUTTON_LABEL}
                           </span>
                         </div>
                       </div>

@@ -6,6 +6,7 @@ import {
   AboutPage,
   FoundersMessagePage,
   OurToppersGalleryPage,
+  OurToppersYearWisePage,
   BooksPage,
   BookDetailsPage,
   CentersPage,
@@ -21,6 +22,7 @@ import {
   CurrentAffairsDpqPage,
   CurrentAffairsInfographicsPage,
   CurrentAffairsMonthlyRecapPage,
+  CurrentAffairsDailyLearningPage,
   CurrentAffairsDpqTestResultsPage,
   CurrentAffairsDpqTopPerformersPage,
   CurrentAffairsDpqAttemptPage,
@@ -51,6 +53,10 @@ export default function AppRoutes() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/founders-message" element={<FoundersMessagePage />} />
         <Route path="/our-toppers-gallery" element={<OurToppersGalleryPage />} />
+        <Route
+          path="/our-toppers-gallery/year-wise/:year"
+          element={<OurToppersYearWisePage />}
+        />
         <Route path="/books" element={<BooksPage />} />
         <Route path="/books/:slug" element={<BookDetailsPage />} />
         <Route path="/centers/:city" element={<CentersPage />} />
@@ -107,6 +113,10 @@ export default function AppRoutes() {
         <Route
           path="/current-affairs/monthly-recap"
           element={<CurrentAffairsMonthlyRecapPage />}
+        />
+        <Route
+          path="/current-affairs/daily-learning"
+          element={<CurrentAffairsDailyLearningPage />}
         />
         <Route path="/blogs" element={<BlogsPage />} />
         <Route path="/blogs/all" element={<AllBlogsPage />} />

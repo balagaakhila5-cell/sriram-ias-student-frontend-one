@@ -78,7 +78,7 @@ const CenterGallery: React.FC<Props> = ({ city }) => {
           color: 'transparent',
         }}
       >
-        OUR {cityName} GALLERY
+        OUR <span className="whitespace-nowrap">{cityName}</span> GALLERY
       </h2>
 
       {/* Gallery Grid Container */}

@@ -12,6 +12,7 @@ gsap.registerPlugin(ScrollTrigger);
 interface StaffMember {
   id: number;
   name: string;
+  subject: string;
   bg: string;
   image: string;
 }
@@ -23,7 +24,6 @@ interface Props {
 const STAFF_NAME = 'Kotla Darshan';
 
 const FEATURED_INFO = {
-  title: 'Center Head - Social Studies',
   experience: '20+ Years of Experience in Social',
   points: [
     'Mentored AIR Students',
@@ -37,24 +37,28 @@ const STAFF_MEMBERS: StaffMember[] = [
   {
     id: 1,
     name: STAFF_NAME,
+    subject: 'Social Studies',
     bg: 'bg-[#D3DAE8]',
     image: '/assets/our-centers/person-2.png',
   },
   {
     id: 2,
     name: STAFF_NAME,
+    subject: 'Polity',
     bg: 'bg-[#ECA01D]',
     image: '/assets/our-centers/person-1.png',
   },
   {
     id: 3,
     name: STAFF_NAME,
+    subject: 'Current Affairs',
     bg: 'bg-[#8E74A2]',
     image: '/assets/our-centers/person-3.png',
   },
   {
     id: 4,
     name: STAFF_NAME,
+    subject: 'Essay & Ethics',
     bg: 'bg-[#B8A4C8]',
     image: '/assets/our-centers/person-4.png',
   },
@@ -167,17 +171,17 @@ const OurStaff: React.FC<Props> = ({ city: _city }) => {
           <div
             ref={featuredRef}
             key={`featured-${slotOrder[0]}`}
-            className="our-faculty-card flex w-full shrink-0 flex-col overflow-hidden rounded-2xl bg-white shadow-[0_10px_40px_rgba(0,0,0,0.08)] sm:flex-row lg:w-[46%]"
+            className="our-faculty-card flex w-full shrink-0 flex-col overflow-hidden rounded-none bg-white shadow-[0_10px_40px_rgba(0,0,0,0.08)] sm:flex-row lg:w-[46%]"
           >
             <div
-              className={`relative h-[300px] w-full shrink-0 sm:h-[340px] sm:w-[240px] ${featuredStaff.bg}`}
+              className={`relative h-[300px] w-full shrink-0 overflow-hidden sm:h-[340px] sm:w-[240px] ${featuredStaff.bg}`}
             >
               <Image
                 unoptimized
                 src={featuredStaff.image}
                 fill
                 sizes="(max-width: 640px) 100vw, 240px"
-                className="object-contain object-center p-4"
+                className="object-cover object-bottom"
                 alt={featuredStaff.name}
               />
             </div>
@@ -187,7 +191,7 @@ const OurStaff: React.FC<Props> = ({ city: _city }) => {
                 {STAFF_NAME}
               </h3>
               <p className="mb-4 text-sm font-medium text-gray-600">
-                {FEATURED_INFO.title}
+                {featuredStaff.subject}
               </p>
               <p className="mb-8 text-sm font-medium text-gray-600">
                 {FEATURED_INFO.experience}
@@ -227,18 +231,18 @@ const OurStaff: React.FC<Props> = ({ city: _city }) => {
                   key={`thumb-slot-${thumbIndex}`}
                   type="button"
                   onClick={() => handleThumbnailClick(thumbIndex)}
-                  className="our-faculty-card group flex min-w-0 flex-1 cursor-pointer flex-col overflow-hidden rounded-2xl bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_38px_rgba(0,0,0,0.12)] focus:outline-none focus:ring-2 focus:ring-[#20A0E0]"
+                  className="our-faculty-card group flex min-w-0 flex-1 cursor-pointer flex-col overflow-hidden rounded-none bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_38px_rgba(0,0,0,0.12)] focus:outline-none focus:ring-2 focus:ring-[#20A0E0]"
                   aria-label={`Show ${STAFF_NAME} photo ${thumbIndex + 2} as featured`}
                 >
                   <div
-                    className={`relative w-full flex-1 min-h-[200px] sm:min-h-[240px] lg:min-h-[280px] ${staff.bg}`}
+                    className={`relative aspect-square w-full shrink-0 overflow-hidden ${staff.bg}`}
                   >
                     <Image
                       unoptimized
                       src={staff.image}
                       fill
                       sizes="(max-width: 1024px) 30vw, 200px"
-                      className="object-contain object-center p-3 transition-transform duration-300 group-hover:scale-[1.02]"
+                      className="object-cover object-bottom transition-transform duration-300 group-hover:scale-[1.03]"
                       alt={staff.name}
                     />
                   </div>
@@ -246,6 +250,9 @@ const OurStaff: React.FC<Props> = ({ city: _city }) => {
                     <h4 className="text-[14px] font-bold text-gray-900 sm:text-[16px]">
                       {STAFF_NAME}
                     </h4>
+                    <p className="mt-1 text-[12px] font-medium text-gray-600 sm:text-[13px]">
+                      {staff.subject}
+                    </p>
                   </div>
                 </button>
               );

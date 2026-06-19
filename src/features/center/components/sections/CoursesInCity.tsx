@@ -115,7 +115,8 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
           color: 'transparent',
         }}
       >
-        COURSES IN {cityName}
+        COURSES IN{' '}
+        <span className="whitespace-nowrap">{cityName}</span>
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 lg:gap-8 w-full max-w-[1400px] relative z-10">

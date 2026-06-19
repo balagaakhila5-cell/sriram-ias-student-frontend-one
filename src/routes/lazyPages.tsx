@@ -5,6 +5,9 @@ export const HomePage = lazy(() => import("@/pages/page"));
 export const AboutPage = lazy(() => import("@/pages/about/page"));
 export const FoundersMessagePage = lazy(() => import("@/pages/founders-message/page"));
 export const OurToppersGalleryPage = lazy(() => import("@/pages/our-toppers-gallery/page"));
+export const OurToppersYearWisePage = withParams(
+  lazy(() => import("@/pages/our-toppers-gallery/year-wise/[year]/page")),
+);
 export const BooksPage = lazy(() => import("@/pages/books/page"));
 export const CheckoutPage = lazy(() => import("@/pages/checkout/page"));
 export const CheckoutPaymentPage = lazy(() => import("@/pages/checkout/payment/page"));
@@ -25,6 +28,9 @@ export const CurrentAffairsInfographicsPage = lazy(
 );
 export const CurrentAffairsMonthlyRecapPage = lazy(
   () => import("@/pages/current-affairs/monthly-recap/page"),
+);
+export const CurrentAffairsDailyLearningPage = lazy(
+  () => import("@/pages/current-affairs/daily-learning/page"),
 );
 export const CurrentAffairsDpqTestResultsPage = lazy(
   () => import("@/pages/current-affairs/daily-practice-questions/test-results/page"),

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
+import { COURSE_EXPLORE_BUTTON_CLASS, COURSE_EXPLORE_BUTTON_LABEL } from '@/components/common/courseExploreButton';
 
 const DAILY_LEARNING_IMAGES = [
   { src: '/assets/blogs/timer-image.png', alt: 'Study desk with books and clock' },
@@ -13,7 +14,7 @@ const DAILY_LEARNING_IMAGES = [
   { src: '/assets/blogs/main-cup.png', alt: 'Focused learning session' },
 ] as const;
 
-const EXPLORE_HREF = '/current-affairs/daily-practice-questions';
+const EXPLORE_HREF = '/current-affairs/daily-learning';
 const SLIDE_INTERVAL_MS = 5000;
 const SLIDE_COUNT = DAILY_LEARNING_IMAGES.length;
 
@@ -84,9 +85,9 @@ export default function DailyLearningCard({
         <div className="pointer-events-none absolute inset-0 z-10 flex items-end justify-center pb-5">
           <Link
             href={EXPLORE_HREF}
-            className="pointer-events-auto inline-flex h-[38px] items-center justify-center rounded-full border border-white bg-transparent px-8 text-[14px] font-semibold text-white transition-all duration-300 hover:border-transparent hover:bg-gradient-to-r hover:from-[#38AEE5] hover:to-[#07344D] hover:text-white hover:opacity-90"
+            className={`pointer-events-auto ${COURSE_EXPLORE_BUTTON_CLASS}`}
           >
-            Explore →
+            {COURSE_EXPLORE_BUTTON_LABEL}
           </Link>
         </div>
       </div>
