@@ -20,7 +20,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const GS_TABS = ['GS I', 'GS II', 'GS III', 'GS IV', 'Strategy'] as const;
+const GS_TABS = ['GS I', 'GS II', 'GS III', 'GS IV', 'STRATEGY'] as const;
 type GsTab = (typeof GS_TABS)[number];
 
 const GS_CARD_META = {
@@ -65,7 +65,7 @@ const gsPaperCardsByTab: Record<GsTab, typeof gsPaperImages> = {
   'GS II': gsPaperImages,
   'GS III': gsPaperImages,
   'GS IV': gsPaperImages,
-  Strategy: gsPaperImages,
+  STRATEGY: gsPaperImages,
 };
 
 export default function BlogsPage() {

@@ -1,55 +1,26 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import useInViewport from '@/hooks/useInViewport';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const HERO_POSTER = '/assets/course/course-hero-bg.jpg';
 const HERO_VIDEO_SRC = '/assets/HOME PAGE_BANNER VIDEO.mp4';
 
 const Hero: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const isHeroVisible = useInViewport(sectionRef, { threshold: 0.15 });
-  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
-
-  useEffect(() => {
-    if (prefersReducedMotion || !isHeroVisible) {
-      return;
-    }
-
-    let idleCallback: number | undefined;
-
-    if (typeof window.requestIdleCallback === 'function') {
-      idleCallback = window.requestIdleCallback(() => setShouldLoadVideo(true), {
-        timeout: 1200,
-      });
-    } else {
-      idleCallback = window.setTimeout(() => setShouldLoadVideo(true), 600);
-    }
-
-    return () => {
-      if (typeof window.cancelIdleCallback === 'function' && idleCallback !== undefined) {
-        window.cancelIdleCallback(idleCallback);
-      } else if (idleCallback !== undefined) {
-        window.clearTimeout(idleCallback);
-      }
-    };
-  }, [isHeroVisible, prefersReducedMotion]);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !shouldLoadVideo) {
+    if (!video || prefersReducedMotion) {
       return;
     }
 
-    if (prefersReducedMotion || !isHeroVisible) {
+    if (!isHeroVisible) {
       video.pause();
       return;
     }
@@ -57,11 +28,11 @@ const Hero: React.FC = () => {
     void video.play().catch(() => {
       // Ignore autoplay rejections so the page stays interactive.
     });
-  }, [isHeroVisible, prefersReducedMotion, shouldLoadVideo]);
+  }, [isHeroVisible, prefersReducedMotion]);
 
   return (
-    <div ref={containerRef}>
-      <section ref={sectionRef} className="relative w-full h-[95vh] min-h-[500px] overflow-hidden bg-[#012439]">
+    <div>
+      <section ref={sectionRef} className="relative h-[95vh] min-h-[500px] w-full overflow-hidden bg-[#012439]">
         <div className="absolute inset-0 z-0 h-full">
           <img
             src={HERO_POSTER}
@@ -69,18 +40,20 @@ const Hero: React.FC = () => {
             aria-hidden
             fetchPriority="high"
             decoding="async"
-            className="absolute inset-0 h-full w-full object-cover"
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+              isVideoPlaying ? 'opacity-0' : 'opacity-100'
+            }`}
           />
 
-          {shouldLoadVideo && !prefersReducedMotion ? (
+          {!prefersReducedMotion ? (
             <video
               ref={videoRef}
               autoPlay
               muted
               loop
               playsInline
-              preload="none"
-              poster={HERO_POSTER}
+              preload="auto"
+              onPlaying={() => setIsVideoPlaying(true)}
               className="absolute inset-0 h-full w-full object-cover"
             >
               <source src={HERO_VIDEO_SRC} type="video/mp4" />
@@ -90,7 +63,7 @@ const Hero: React.FC = () => {
           <div className="absolute inset-0 bg-black/20" />
         </div>
 
-        <div className="relative z-10 flex items-center justify-center w-full h-full pointer-events-none" />
+        <div className="pointer-events-none relative z-10 flex h-full w-full items-center justify-center" />
       </section>
     </div>
   );

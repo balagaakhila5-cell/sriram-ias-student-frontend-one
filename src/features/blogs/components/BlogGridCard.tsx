@@ -16,7 +16,7 @@ export default function BlogGridCard({ blog, className = '' }: BlogGridCardProps
   return (
     <div
       className={cn(
-        'blog-grid-card group relative h-[260px] overflow-hidden rounded-[8px] shadow-md transition-all duration-500 ease-out hover:scale-[1.08] hover:shadow-[0_22px_45px_rgba(0,0,0,0.24)]',
+        'blog-grid-card group relative h-[240px] overflow-hidden rounded-[8px] shadow-md transition-all duration-500 ease-out hover:scale-[1.08] hover:shadow-[0_22px_45px_rgba(0,0,0,0.24)]',
         className,
       )}
     >
@@ -29,14 +29,14 @@ export default function BlogGridCard({ blog, className = '' }: BlogGridCardProps
       </div>
 
       <div className="absolute bottom-4 left-5 right-4">
-        <h3 className="mb-3 text-[22px] font-extrabold leading-[1.45] text-white sm:text-[24px]">
+        <h3 className="mb-2 text-[19px] font-extrabold leading-[1.4] text-white sm:text-[20px]">
           {blog.title}
         </h3>
 
-        <p className="mb-2 text-[16px] font-bold text-white sm:text-[17px]">{blog.date}</p>
+        <p className="mb-1 text-[13px] font-bold text-white">{blog.date}</p>
 
         {blog.time ? (
-          <p className="mb-3 text-[16px] font-bold text-white sm:text-[17px]">{blog.time}</p>
+          <p className="mb-2 text-[13px] font-bold text-white">{blog.time}</p>
         ) : null}
 
         <Link

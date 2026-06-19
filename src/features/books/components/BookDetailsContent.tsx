@@ -7,6 +7,7 @@ import { Share2 } from 'lucide-react';
 import { Book } from '../types';
 import FlipBook from '@/components/common/FlipBook';
 import FreeResourcesCourseSlider from '@/components/common/FreeResourcesCourseSlider';
+import DailyLearningCard from '@/features/blogs/components/DailyLearningCard';
 import { useCartStore } from '@/store/cartStore';
 import { validatePincode } from '@/features/books/utils/checkoutFormValidation';
 
@@ -259,32 +260,10 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
          </div>
 
          <div className="book-details-promo-grid mt-10 grid min-w-0 w-full grid-cols-1 gap-4 lg:grid-cols-12 lg:items-stretch lg:gap-5">
-            <div className="relative min-w-0 overflow-hidden rounded-[10px] bg-[#EEF3FF] p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-transform duration-300 hover:scale-[1.02] lg:col-span-8">
-               <h3 className="mb-3 text-center text-[30px] font-extrabold leading-none">
-                  <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
-                     Daily Learning
-                  </span>
-               </h3>
-
-               <div className="relative h-[225px] overflow-hidden rounded-[8px]">
-                  <Image
-                     src="/assets/blogs/timer-image.png"
-                     alt="Daily Learning"
-                     fill
-                     className="object-cover"
-                     sizes="(max-width: 1024px) 100vw, 66vw"
-                  />
-
-                  <div className="absolute bottom-5 left-1/2 -translate-x-1/2">
-                     <Link
-                        href="/current-affairs/daily-practice-questions"
-                        className="inline-flex h-[38px] items-center justify-center rounded-full border border-white px-8 text-[14px] font-semibold text-white transition hover:bg-white/10"
-                     >
-                        Explore →
-                     </Link>
-                  </div>
-               </div>
-            </div>
+            <DailyLearningCard
+               className="relative min-w-0 overflow-hidden transition-transform duration-300 hover:scale-[1.02] lg:col-span-8"
+               imageSizes="(max-width: 1024px) 100vw, 66vw"
+            />
 
             <div className="book-details-course-slider min-w-0 w-full rounded-[10px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] lg:col-span-4">
                <FreeResourcesCourseSlider />

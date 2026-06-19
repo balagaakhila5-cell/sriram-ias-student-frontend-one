@@ -5,6 +5,8 @@ import Link from 'next/link';
 import FreeResourcesCourseSlider from '@/components/common/FreeResourcesCourseSlider';
 import { FREE_LEARNING_EXPLORE_HREFS } from '@/features/homepage/utils/homepageLinks';
 import BlogsCalendar from '@/features/blogs/components/BlogsCalendar';
+import DailyLearningCard from '@/features/blogs/components/DailyLearningCard';
+import { TrendingVideosViewAllButton } from '@/components/common/TrendingVideosCard';
 import { FOOTER_SOCIAL_LINKS } from '@/config/footerLinks';
 import { BarChart3, BookOpenText, Lightbulb } from 'lucide-react';
 
@@ -25,31 +27,7 @@ export default function BlogsSidebar({
         </div>
       ) : null}
 
-      <div className="rounded-[10px] bg-[#EEF3FF] p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-transform duration-300 hover:scale-[1.02]">
-        <h3 className="mb-3 text-center text-[30px] font-extrabold leading-none">
-          <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
-            Daily Learning
-          </span>
-        </h3>
-
-        <div className="relative h-[225px] overflow-hidden rounded-[8px]">
-          <Image
-            src="/assets/blogs/timer-image.png"
-            alt="Daily Learning"
-            fill
-            className="object-cover"
-          />
-
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2">
-            <Link
-              href="/current-affairs/daily-practice-questions"
-              className="inline-flex h-[38px] items-center justify-center rounded-full border border-white px-8 text-[14px] font-semibold text-white transition hover:bg-white/10"
-            >
-              Explore →
-            </Link>
-          </div>
-        </div>
-      </div>
+      <DailyLearningCard className="transition-transform duration-300 hover:scale-[1.02]" />
 
       <div className="rounded-[10px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
         <h3 className="mb-5 text-center text-[30px] font-extrabold leading-none">
@@ -118,14 +96,7 @@ export default function BlogsSidebar({
           ))}
 
           <div className="mt-2 flex justify-center">
-            <a
-              href={FOOTER_SOCIAL_LINKS.youtube}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[16px] font-semibold text-[#3380C4] underline underline-offset-2 transition-colors hover:text-[#1E6F9F]"
-            >
-              View All
-            </a>
+            <TrendingVideosViewAllButton href={FOOTER_SOCIAL_LINKS.youtube} />
           </div>
         </div>
       ) : null}

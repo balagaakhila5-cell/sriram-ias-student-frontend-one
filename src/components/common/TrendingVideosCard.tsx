@@ -35,6 +35,28 @@ type Props = {
   viewAllHref?: string;
 };
 
+export const TRENDING_VIDEOS_VIEW_ALL_CLASS =
+  "inline-flex h-[42px] min-w-[130px] items-center justify-center rounded-full border border-[#38AEE5] bg-white px-6 text-[16px] font-semibold text-[#3380C4] transition-all duration-300 hover:border-[#38AEE5] hover:bg-[#38AEE5] hover:text-white";
+
+export function TrendingVideosViewAllButton({
+  href,
+  className = "",
+}: {
+  href: string;
+  className?: string;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`${TRENDING_VIDEOS_VIEW_ALL_CLASS} ${className}`.trim()}
+    >
+      View All
+    </a>
+  );
+}
+
 export default function TrendingVideosCard({
   videos = defaultVideos,
   viewAllHref = FOOTER_SOCIAL_LINKS.youtube,
@@ -79,15 +101,8 @@ export default function TrendingVideosCard({
         ))}
       </div>
 
-      <div className="mt-5 text-center">
-        <a
-          href={viewAllHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[18px] font-medium text-[#3380C4] underline underline-offset-2 transition-colors hover:text-[#1E6F9F]"
-        >
-          View All
-        </a>
+      <div className="mt-5 flex justify-center">
+        <TrendingVideosViewAllButton href={viewAllHref} />
       </div>
     </div>
   );
