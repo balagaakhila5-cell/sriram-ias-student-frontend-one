@@ -145,7 +145,7 @@ export default function DailyPracticeQuestionTestPage({ params }: PageProps) {
                 <button
                   key={item._id}
                   onClick={() => setCurrentQuestion(index)}
-                  className={`h-[45px] min-w-[60px] rounded-[8px] text-[18px] font-semibold transition-all ${
+                  className={`h-[45px] min-w-[60px] rounded-full text-[18px] font-semibold transition-all ${
                     active
                       ? 'bg-gradient-to-r from-[#37ACEE] to-[#045B84] text-white shadow-lg'
                       : isAnswered
@@ -174,7 +174,7 @@ export default function DailyPracticeQuestionTestPage({ params }: PageProps) {
                   <button
                     key={option.key}
                     onClick={() => handleOptionSelect(question._id, option.key)}
-                    className={`flex h-[60px] w-full items-center rounded-[16px] border px-8 text-left text-[18px] font-semibold transition-all ${
+                    className={`flex h-[60px] w-full items-center rounded-full border px-8 text-left text-[18px] font-semibold transition-all ${
                       isSelected
                         ? 'border-[#BFD7FF] bg-[#EEF1FC]'
                         : 'border-[#DDD] bg-white hover:bg-[#F7F9FF]'
@@ -194,7 +194,7 @@ export default function DailyPracticeQuestionTestPage({ params }: PageProps) {
               <button
                 onClick={handlePrevious}
                 disabled={currentQuestion === 0}
-                className={`rounded-[12px] px-6 py-2 text-[18px] font-bold text-white ${
+                className={`rounded-full px-6 py-2 text-[18px] font-bold text-white ${
                   currentQuestion === 0
                     ? 'cursor-not-allowed bg-[#B8C4CF]'
                     : 'bg-gradient-to-r from-[#40B7F6] to-[#045A84]'
@@ -206,7 +206,7 @@ export default function DailyPracticeQuestionTestPage({ params }: PageProps) {
               <button
                 onClick={handleSaveNext}
                 disabled={currentQuestion === totalQuestions - 1}
-                className={`rounded-[12px] px-6 py-2 text-[18px] font-bold text-white ${
+                className={`rounded-full px-6 py-2 text-[18px] font-bold text-white ${
                   currentQuestion === totalQuestions - 1
                     ? 'cursor-not-allowed bg-[#B8C4CF]'
                     : 'bg-gradient-to-r from-[#40B7F6] to-[#045A84]'

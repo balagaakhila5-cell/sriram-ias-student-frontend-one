@@ -146,7 +146,7 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
 
               <Link
                 href={`/centers/${cityKey}/courses/${course.key}`}
-                className="mt-auto bg-[#044062] hover:bg-[#065A8C] text-white font-semibold text-[15px] px-8 py-3 rounded-md transition-colors font-['Montserrat'] shadow-md whitespace-nowrap"
+                className="mt-auto whitespace-nowrap rounded-full bg-[#044062] px-8 py-3 font-['Montserrat'] text-[15px] font-semibold text-white shadow-md transition-colors hover:bg-[#065A8C]"
               >
                 View Courses
               </Link>

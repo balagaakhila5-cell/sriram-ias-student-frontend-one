@@ -342,7 +342,7 @@ export default function MonthlyRecapPage() {
 
       <main
         ref={containerRef}
-        className="w-full overflow-hidden bg-[#F7F8FB] font-['Montserrat',sans-serif]"
+        className="w-full overflow-hidden bg-[#f2f6fa] font-['Montserrat',sans-serif]"
       >
         {/* Banner */}
         <section className="relative h-[230px] w-full overflow-hidden md:h-[280px] lg:h-[320px]">

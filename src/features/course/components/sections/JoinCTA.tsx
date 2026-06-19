@@ -294,7 +294,7 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
               <button
                 type="submit"
                 disabled={isPending}
-                className="rounded-3xl px-8 py-3.5 text-[18px] font-semibold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded-full px-8 py-3.5 text-[18px] font-semibold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
                 style={{
                   background:
                     'linear-gradient(90deg, rgba(24, 151, 216, 0.8) 0%, #021C29 100%)',

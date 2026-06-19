@@ -303,7 +303,7 @@ export default function CheckoutPage() {
               <button
                 type="button"
                 onClick={handleSave}
-                className={`${brandGradient} rounded-lg px-9 py-2 text-[18px] font-semibold text-white shadow-md transition-opacity hover:opacity-90`}
+                className={`${brandGradient} rounded-full px-9 py-2 text-[18px] font-semibold text-white shadow-md transition-opacity hover:opacity-90`}
               >
                 Save
               </button>

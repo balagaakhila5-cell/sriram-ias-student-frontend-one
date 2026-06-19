@@ -37,7 +37,7 @@ type ExploreCardCourse = Pick<
 };
 
 const formatFee = (fee?: number) =>
-  typeof fee === 'number' ? `Rs. ${fee.toLocaleString('en-IN')} /-` : 'Rs. —';
+  typeof fee === 'number' ? `Rs. ${fee.toLocaleString('en-IN')}` : 'Rs. —';
 
 const parseStaticFee = (feesOnline?: string): number | undefined => {
   if (!feesOnline) return undefined;
@@ -325,32 +325,23 @@ const ExploreCourses: React.FC = () => {
                         </h3>
 
                         <div className="flex flex-col items-center justify-center gap-2 text-center">
-                          <div className="flex items-center justify-center gap-1.5 text-sm font-medium text-white sm:text-base">
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                              className="shrink-0"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z" />
-                            </svg>
-                            <span className="capitalize">{center}</span>
-                          </div>
+                          <p className="text-sm font-medium capitalize text-white sm:text-base">
+                            {center}
+                          </p>
 
                           <div className="inline-flex w-fit max-w-full flex-col items-center">
                             <p className="text-lg font-semibold text-[#FFE81C] sm:text-xl md:text-2xl">
                               {fee}
+                              <span className="text-[#FFE81C]">*</span>
                             </p>
                             <p className="mt-0.5 whitespace-nowrap text-[9px] text-white/60 sm:text-[10px]">
-                              * Excluding GST
+                              <span className="text-black">*</span> Excluding GST
                             </p>
                           </div>
                         </div>
 
                         <div className="flex justify-center pt-1">
-                          <span className="inline-block rounded-xl bg-white px-6 py-1.5 text-sm font-semibold text-black shadow-lg transition-colors duration-300 hover:bg-[#044062] hover:text-white sm:px-8 sm:py-2 sm:text-base">
+                          <span className="inline-block rounded-full bg-white px-6 py-1.5 text-sm font-semibold text-black shadow-lg transition-colors duration-300 hover:bg-[#044062] hover:text-white sm:px-8 sm:py-2 sm:text-base">
                             Explore
                           </span>
                         </div>

@@ -159,8 +159,8 @@ export default function CheckoutOrderSummary({
                   onClick={onApplyCoupon}
                   className={
                     appliedCoupon
-                      ? 'rounded-lg border border-[#DC2626] bg-white px-8 py-2 text-[16px] font-semibold text-[#DC2626] shadow-sm transition-colors hover:bg-[#FEF2F2]'
-                      : `${brandGradient} rounded-lg px-8 py-2 text-[16px] font-semibold text-white shadow-sm transition-opacity hover:opacity-90`
+                      ? 'rounded-full border border-[#DC2626] bg-white px-8 py-2 text-[16px] font-semibold text-[#DC2626] shadow-sm transition-colors hover:bg-[#FEF2F2]'
+                      : `${brandGradient} rounded-full px-8 py-2 text-[16px] font-semibold text-white shadow-sm transition-opacity hover:opacity-90`
                   }
                 >
                   {appliedCoupon ? 'Remove' : 'Apply'}
@@ -211,8 +211,8 @@ export default function CheckoutOrderSummary({
                           onClick={() => onApplyOffer?.(index)}
                           className={
                             isActive
-                              ? 'rounded-lg border border-[#DC2626] bg-white px-6 py-2 text-[14px] font-semibold text-[#DC2626] shadow-sm transition-colors hover:bg-[#FEF2F2]'
-                              : `${brandGradient} rounded-lg px-6 py-2 text-[14px] font-semibold text-white shadow-sm transition-opacity hover:opacity-90`
+                              ? 'rounded-full border border-[#DC2626] bg-white px-6 py-2 text-[14px] font-semibold text-[#DC2626] shadow-sm transition-colors hover:bg-[#FEF2F2]'
+                              : `${brandGradient} rounded-full px-6 py-2 text-[14px] font-semibold text-white shadow-sm transition-opacity hover:opacity-90`
                           }
                         >
                           {isActive ? 'Remove' : 'Apply'}

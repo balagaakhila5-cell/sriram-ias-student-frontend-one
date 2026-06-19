@@ -171,7 +171,7 @@ export default function PaymentReceiptSuccess({
               <button
                 type="button"
                 onClick={handleDownloadInvoice}
-                className="h-[40px] cursor-pointer rounded-[7px] px-6 text-[15px] font-semibold text-white"
+                className="h-[40px] cursor-pointer rounded-full px-6 text-[15px] font-semibold text-white"
                 style={{
                   background: 'linear-gradient(90deg, #43a8da 0%, #003247 100%)',
                 }}
@@ -182,7 +182,7 @@ export default function PaymentReceiptSuccess({
               <button
                 type="button"
                 onClick={handleGoHome}
-                className="h-[40px] cursor-pointer rounded-[7px] border border-[#1a85bb] bg-white px-10 text-[15px] font-semibold text-[#1a85bb]"
+                className="h-[40px] cursor-pointer rounded-full border border-[#1a85bb] bg-white px-10 text-[15px] font-semibold text-[#1a85bb]"
               >
                 Go Home
               </button>

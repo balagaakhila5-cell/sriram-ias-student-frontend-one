@@ -10,7 +10,7 @@ export default function StudyMaterialsSidebar() {
       </section>
 
       <section className="study-materials-sidebar__courses w-full shrink-0">
-        <FreeResourcesCourseSlider showBackground hideStar />
+        <FreeResourcesCourseSlider showBackground />
       </section>
     </aside>
   );

@@ -107,7 +107,7 @@ export default function PreviousYearPage() {
 
       <main
         ref={containerRef}
-        className="min-h-screen bg-[#fcfcfc] font-['Montserrat',sans-serif]"
+        className="min-h-screen bg-[#f2f6fa] font-['Montserrat',sans-serif]"
       >
         <section className="relative h-[320px] w-full overflow-hidden md:h-[400px] lg:h-[420px]">
           <Image

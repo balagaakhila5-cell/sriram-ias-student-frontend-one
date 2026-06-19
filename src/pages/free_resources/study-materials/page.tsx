@@ -148,7 +148,7 @@ export default function StudyMaterialsPage() {
 
       <main
         ref={containerRef}
-        className="w-full overflow-x-hidden bg-[#f7f8fb] font-['Montserrat',sans-serif]"
+        className="w-full overflow-x-hidden bg-[#f2f6fa] font-['Montserrat',sans-serif]"
       >
         <section className="relative h-[320px] w-full md:h-[380px] lg:h-[420px]">
           <Image

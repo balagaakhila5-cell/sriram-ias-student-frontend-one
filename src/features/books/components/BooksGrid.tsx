@@ -136,7 +136,7 @@ const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
         <button
           type="button"
           onClick={handleBuyNow}
-          className="py-2 text-xs text-white rounded-md transition-all hover:opacity-90 font-medium cursor-pointer"
+          className="rounded-full py-2 text-xs font-medium text-white transition-all hover:opacity-90 cursor-pointer"
           style={{
             background:
               'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)',
@@ -177,7 +177,7 @@ const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
           <button
             type="button"
             onClick={handleAddToCart}
-            className="cursor-pointer rounded-md border border-[#249EDC] py-2 text-xs font-medium text-[#007BB5] transition-all hover:bg-gray-50"
+            className="cursor-pointer rounded-full border border-[#249EDC] py-2 text-xs font-medium text-[#007BB5] transition-all hover:bg-gray-50"
           >
             ADD TO CART
           </button>
@@ -237,8 +237,8 @@ const BooksGrid: React.FC<BooksGridProps> = ({ books }) => {
       {showPopup && selectedBook && (
         <div className="fixed inset-0 z-[9999] bg-black/55 flex items-center justify-center px-4 py-6">
           <div className="relative w-full max-w-[860px] rounded-[20px] bg-[#F5F5F5] shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-            <div className="px-8 pt-6 pb-4 relative">
-              <h2 className="text-[34px] md:text-[42px] font-extrabold uppercase leading-none tracking-[0.5px]">
+            <div className="relative px-8 pb-4 pt-6">
+              <h2 className="text-center text-[34px] font-extrabold uppercase leading-none tracking-[0.5px] md:text-[42px]">
                 <span className="bg-[linear-gradient(90deg,#6AA9D8_0%,#C88EA0_100%)] bg-clip-text text-transparent">
                   SAMPLE
                 </span>
@@ -247,15 +247,15 @@ const BooksGrid: React.FC<BooksGridProps> = ({ books }) => {
               <button
                 type="button"
                 onClick={closePopup}
-                className="absolute top-6 right-8 w-[30px] h-[30px] md:w-[32px] md:h-[32px] rounded-full bg-[#FF0000] flex items-center justify-center cursor-pointer"
+                className="absolute right-8 top-6 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-[#FF0000] md:h-[32px] md:w-[32px]"
               >
                 <X size={20} className="text-white" strokeWidth={3} />
               </button>
             </div>
 
             <div className="px-8 pb-8">
-              <div className="bg-[#01285A] rounded-[16px] min-h-[470px] relative px-6 md:px-10 py-6 md:py-8 flex flex-col">
-                <FlipBook coverImage={selectedBook.image} />
+              <div className="relative flex min-h-[540px] flex-col rounded-[16px] bg-[#01285A] px-4 py-6 md:px-8 md:py-8">
+                <FlipBook key={selectedBook.image} coverImage={selectedBook.image} />
 
                 <div className="flex justify-center mt-2 shrink-0">
                   <button

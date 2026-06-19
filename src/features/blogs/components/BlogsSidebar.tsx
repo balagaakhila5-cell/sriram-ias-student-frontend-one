@@ -165,7 +165,7 @@ export default function BlogsSidebar({
               size={26}
               className="transition-colors duration-300 group-hover:text-white"
             />
-            Daily Practice Questions
+            Daily Practice Quiz
           </Link>
 
           <Link

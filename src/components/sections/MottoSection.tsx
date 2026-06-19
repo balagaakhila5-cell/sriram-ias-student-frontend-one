@@ -162,7 +162,7 @@ const MottoSection: React.FC = () => {
             <button
               type="button"
               onClick={scrollToExploreCourses}
-              className="text-white font-['Montserrat'] font-semibold text-[18px] sm:text-[20px] md:text-[22px] lg:text-[26px] flex items-center justify-center gap-[14px] rounded-[12px] w-full max-w-[500px] h-[48px] sm:h-[56px] md:h-[64px] px-[18px] py-[10px] hover:scale-[1.02] hover:brightness-110 transition-all duration-300"
+              className="text-white font-['Montserrat'] font-semibold text-[18px] sm:text-[20px] md:text-[22px] lg:text-[26px] flex items-center justify-center gap-[14px] rounded-full w-full max-w-[500px] h-[48px] sm:h-[56px] md:h-[64px] px-[18px] py-[10px] hover:scale-[1.02] hover:brightness-110 transition-all duration-300"
               style={{
                 background: 'linear-gradient(90deg, #00679C 0%, #002436 100%)',
                 boxShadow: '0px 4px 32px 0px #0000001A',

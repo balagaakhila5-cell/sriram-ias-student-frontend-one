@@ -125,12 +125,12 @@ const CenterCategoryPrograms: React.FC<Props> = ({ city, category }) => {
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                <h2 className="absolute bottom-4 left-5 right-5 text-[17px] font-extrabold leading-snug text-white md:text-[18px]">
+                <h2 className="absolute bottom-4 left-5 right-5 text-center text-[17px] font-extrabold leading-snug text-white md:text-[18px]">
                   {program.title}
                 </h2>
               </div>
 
-              <div className="flex flex-col gap-4 p-6">
+              <div className="flex flex-col items-center gap-4 p-6 text-center">
                 {program.startDate ? (
                   <p className="text-[14px] font-semibold text-[#444]">
                     Start Date:{' '}
@@ -153,7 +153,7 @@ const CenterCategoryPrograms: React.FC<Props> = ({ city, category }) => {
 
                 <Link
                   href={`/course/${program.slug}`}
-                  className="mt-auto inline-flex h-[44px] items-center justify-center rounded-md bg-[#044062] px-6 text-[15px] font-semibold text-white transition hover:bg-[#065A8C]"
+                  className="mt-auto inline-flex h-[44px] items-center justify-center rounded-full bg-[#044062] px-6 text-[15px] font-semibold text-white transition hover:bg-[#065A8C]"
                 >
                   View Courses
                 </Link>

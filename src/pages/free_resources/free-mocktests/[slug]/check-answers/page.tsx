@@ -180,7 +180,7 @@ export default function CheckAnswersPage({ params }: PageProps) {
                     return (
                       <div
                         key={optionIndex}
-                        className={`flex h-[60px] w-full items-center justify-between rounded-[16px] border px-8 text-left text-[18px] font-semibold transition-all ${optionClass}`}
+                        className={`flex h-[60px] w-full items-center justify-between rounded-full border px-8 text-left text-[18px] font-semibold transition-all ${optionClass}`}
                       >
                         <div className="flex items-center">
                           <span className="mr-5 inline-flex min-w-[48px] shrink-0 items-center">

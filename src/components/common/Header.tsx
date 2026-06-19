@@ -318,7 +318,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                 </button>
 
                 {isBlogLangOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-36 overflow-hidden rounded-lg border border-white/50 py-2 z-50 shadow-xl bg-[linear-gradient(145deg,#B8E4F7_0%,#D8E6F5_42%,#EAC8D0_100%)]">
+                  <div className="absolute top-full left-0 z-50 mt-2 w-36 overflow-hidden rounded-lg border border-white/50 py-2 text-center shadow-xl bg-[linear-gradient(145deg,#B8E4F7_0%,#D8E6F5_42%,#EAC8D0_100%)]">
                     {[
                       { label: 'English', href: '/blogs?lang=english' },
                       { label: 'Marathi', href: '/blogs?lang=marathi' },
@@ -328,7 +328,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                         key={item.label}
                         href={item.href}
                         onClick={() => setIsBlogLangOpen(false)}
-                        className="block px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-white/40 hover:text-[#1897D8] cursor-pointer normal-case"
+                        className="block w-full px-4 py-2 text-center text-sm font-medium text-gray-800 transition-colors hover:bg-white/40 hover:text-[#1897D8] cursor-pointer normal-case"
                       >
                         {item.label}
                       </Link>
@@ -419,8 +419,8 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                 onClick={() => setIsBookDemoOpen(true)}
                 className={
                   isLightHeader
-                    ? 'rounded-[10px] bg-gradient-to-r from-[#00679C] to-[#002436] px-2.5 py-2 text-[14px] font-bold uppercase text-white shadow-sm transition-all duration-300 xl:text-[14px]'
-                    : 'text-white font-bold px-2.5 py-2 rounded-[10px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase bg-transparent hover:bg-transparent shadow-none'
+                    ? 'rounded-full bg-gradient-to-r from-[#00679C] to-[#002436] px-2.5 py-2 text-[14px] font-bold uppercase text-white shadow-sm transition-all duration-300 xl:text-[14px]'
+                    : 'rounded-full bg-transparent px-2.5 py-2 text-[14px] font-bold uppercase text-white shadow-none transition-all duration-300 hover:bg-transparent xl:text-[14px]'
                 }
               >
                 BOOK FREE DEMO
@@ -458,7 +458,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
 
               <button
                 onClick={() => setIsBookDemoOpen(true)}
-                className="hidden sm:block px-4 md:px-6 py-2 md:py-2.5 rounded-[4px] tracking-wide text-sm md:text-base whitespace-nowrap shadow-[0px_4px_32px_0px_#0000001A]"
+                className="hidden sm:block rounded-full px-4 py-2 tracking-wide text-sm whitespace-nowrap shadow-[0px_4px_32px_0px_#0000001A] md:px-6 md:py-2.5 md:text-base"
                 style={{ background: 'linear-gradient(90deg, #00679C 0%, #002436 100%)' }}
               >
                 BOOK A DEMO
@@ -857,8 +857,8 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
 
           <div className="relative z-10 isolate flex min-h-[380px] w-full">
             <div className="relative flex w-[300px] shrink-0 flex-col items-center overflow-hidden px-4 pb-6 pt-6">
-              <h3 className="relative z-10 mb-8 w-full border-0 text-center font-[Montserrat] text-[26px] font-bold uppercase tracking-[0.08em] sm:text-[28px]">
-                <span className="bg-gradient-to-r from-[#20A0E0] to-[#E16165] bg-clip-text text-transparent">
+              <h3 className="relative z-10 mb-8 w-full border-0 text-center font-[Montserrat] text-[26px] font-black uppercase tracking-[0.08em] sm:text-[28px]">
+                <span className="bg-gradient-to-r from-[#20A0E0] to-[#E16165] bg-clip-text font-black text-transparent">
                   COURSES
                 </span>
               </h3>
@@ -870,8 +870,8 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                     onClick={() => setActiveCity(city.name)}
                     className={`grid w-full grid-cols-[52px_1fr] items-center gap-3 rounded-[16px] px-3 py-3 transition-all duration-300 ${
                       activeCity === city.name
-                        ? 'text-[#0A73B7] shadow-sm ring-2 ring-[#20A0E0]/30'
-                        : 'text-gray-500 hover:bg-white/50'
+                        ? 'bg-[#E3F2F9]/90 text-[#0A73B7] shadow-sm ring-2 ring-[#20A0E0]/30'
+                        : 'text-gray-500 hover:bg-[#E8F4FC] hover:text-[#1E86C1]'
                     }`}
                   >
                     <div className="flex h-[52px] w-[52px] items-center justify-center overflow-hidden bg-transparent">
@@ -892,14 +892,16 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
 
             <div className="relative flex-1 overflow-hidden p-6 md:p-8 md:pl-10">
               <div className="relative z-10">
-                <div className="relative mb-8 overflow-hidden rounded-full border border-[#E3DFDF] bg-white/90 p-1.5 backdrop-blur-sm">
+                <div className="relative mb-8 overflow-hidden rounded-full border border-[#D6EBF5] bg-[#F0F8FD]/95 p-1.5 backdrop-blur-sm">
                   <div className="relative z-10 flex w-full justify-between gap-1">
                     {tabs.map((tab) => (
                       <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className={`flex-1 rounded-full px-4 py-2.5 text-sm font-medium font-[Montserrat] transition-all duration-300 whitespace-nowrap ${
-                          activeTab === tab ? 'text-white shadow-sm' : 'text-[#5F5F5F] hover:text-[#333333]'
+                        className={`flex-1 rounded-full px-4 py-2.5 text-sm font-semibold font-[Montserrat] transition-all duration-300 whitespace-nowrap ${
+                          activeTab === tab
+                            ? 'text-white shadow-sm'
+                            : 'bg-transparent text-[#333333] hover:text-[#15658D]'
                         }`}
                         style={activeTab === tab ? { background: 'linear-gradient(90deg, #2A9FDB 0%, #15658D 100%)' } : {}}
                       >

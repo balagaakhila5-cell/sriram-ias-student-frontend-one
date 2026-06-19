@@ -217,7 +217,7 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
               <button
                 type="submit"
                 disabled={isPending}
-                className="h-10 w-full rounded-xl text-sm font-medium text-white shadow-md transition-all hover:brightness-105 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                className="h-10 w-full rounded-full text-sm font-medium text-white shadow-md transition-all hover:brightness-105 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                 style={{
                   background:
                     'linear-gradient(90deg, #37B6E9 0%, #0077B6 100%)',

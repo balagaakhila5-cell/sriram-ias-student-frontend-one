@@ -5,7 +5,7 @@ import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 
 const NUM_NODES = 60;
 const NODE_RADIUS = 4;
-const SPEED = 0.4;
+const DEFAULT_SPEED = 0.4;
 const MAX_DIST = 220;
 
 const VARIANTS = {
@@ -33,11 +33,13 @@ interface Node {
 interface Props {
   variant?: Variant;
   className?: string;
+  speed?: number;
 }
 
 const NetworkDotsBackground: React.FC<Props> = ({
   variant = 'light',
   className = '',
+  speed = DEFAULT_SPEED,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -57,8 +59,8 @@ const NetworkDotsBackground: React.FC<Props> = ({
       nodes = Array.from({ length: NUM_NODES }, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
-        vx: (Math.random() - 0.5) * SPEED * 2,
-        vy: (Math.random() - 0.5) * SPEED * 2,
+        vx: (Math.random() - 0.5) * speed * 2,
+        vy: (Math.random() - 0.5) * speed * 2,
       }));
     };
 
@@ -124,7 +126,7 @@ const NetworkDotsBackground: React.FC<Props> = ({
       cancelAnimationFrame(rafId);
       observer.disconnect();
     };
-  }, [prefersReducedMotion, variant]);
+  }, [prefersReducedMotion, variant, speed]);
 
   return (
     <canvas

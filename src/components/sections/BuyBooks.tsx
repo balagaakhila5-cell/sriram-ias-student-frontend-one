@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, X } from 'lucide-react';
 import gsap from 'gsap';
@@ -23,12 +22,12 @@ import FlipBook from '@/components/common/FlipBook';
 gsap.registerPlugin(ScrollTrigger);
 
 const fallbackBooks = [
-  { id: '1', title: 'UPSC Book sciences - 1', summary: 'Atomic Habits by James Clear', priceLabel: 'Rs.10,000/-', image: '/assets/books.png' },
-  { id: '2', title: 'UPSC Book sciences - 2', summary: 'Deep Work by Cal Newport', priceLabel: 'Rs.12,000/-', image: '/assets/books.png' },
-  { id: '3', title: 'UPSC Book sciences - 3', summary: 'Thinking Fast and Slow', priceLabel: 'Rs.15,000/-', image: '/assets/books.png' },
-  { id: '4', title: 'UPSC Book sciences - 4', summary: 'The Lean Startup', priceLabel: 'Rs.11,000/-', image: '/assets/books.png' },
-  { id: '5', title: 'UPSC Book sciences - 5', summary: 'Zero to One', priceLabel: 'Rs.13,000/-', image: '/assets/books.png' },
-  { id: '6', title: 'UPSC Book sciences - 6', summary: 'The Four Hour Workweek', priceLabel: 'Rs.14,000/-', image: '/assets/books.png' },
+  { id: '1', title: 'UPSC Book sciences - 1', summary: 'Atomic Habits by James Clear', priceLabel: 'Rs. 10,000', image: '/assets/books.png' },
+  { id: '2', title: 'UPSC Book sciences - 2', summary: 'Deep Work by Cal Newport', priceLabel: 'Rs. 12,000', image: '/assets/books.png' },
+  { id: '3', title: 'UPSC Book sciences - 3', summary: 'Thinking Fast and Slow', priceLabel: 'Rs. 15,000', image: '/assets/books.png' },
+  { id: '4', title: 'UPSC Book sciences - 4', summary: 'The Lean Startup', priceLabel: 'Rs. 11,000', image: '/assets/books.png' },
+  { id: '5', title: 'UPSC Book sciences - 5', summary: 'Zero to One', priceLabel: 'Rs. 13,000', image: '/assets/books.png' },
+  { id: '6', title: 'UPSC Book sciences - 6', summary: 'The Four Hour Workweek', priceLabel: 'Rs. 14,000', image: '/assets/books.png' },
 ];
 
 const BUY_NOW_BUTTON_GRADIENT =
@@ -39,7 +38,7 @@ const OUTLINE_BOOK_BUTTON_CLASS =
 
 const formatPrice = (value?: number) =>
   typeof value === 'number'
-    ? `Rs. ${value.toLocaleString('en-IN')} /-`
+    ? `Rs. ${value.toLocaleString('en-IN')}`
     : 'Rs. —';
 
 const parseFallbackPrice = (label: string) => {
@@ -89,34 +88,32 @@ const BookCard: React.FC<BookCardProps> = ({ book, onOpenSample }) => {
 
   return (
     <div className="book-card group flex w-[85vw] min-w-[85vw] flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl transition-shadow duration-300 transform-gpu backface-visibility-hidden hover:shadow-2xl sm:w-[320px] sm:min-w-[280px]">
-      <div className="book-card-image-container relative h-[280px] w-full shrink-0 overflow-hidden bg-[#F5D060] sm:h-[300px] md:h-[320px] lg:h-[350px]">
-        <Image
-          src={book.image}
-          alt={book.title}
-          fill
-          unoptimized
-          sizes="320px"
-          className="book-card-image"
-        />
+      <div className="book-card-image">
+        <img src={book.image} alt={book.title} />
       </div>
 
-      <div className="flex flex-col items-center p-5 text-center">
-        <h3 className="line-clamp-2 w-full font-bold text-lg text-gray-800">
+      <div className="book-card-content flex flex-col items-center px-4 py-4 text-center">
+        <h3 className="line-clamp-2 w-full font-bold text-base text-gray-800 sm:text-lg">
           {book.title}
         </h3>
 
         <span
-          className="mt-2 font-bold text-base text-transparent bg-clip-text sm:text-lg"
-          style={{
-            backgroundImage:
-              'linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)',
-          }}
+          className="mt-2 inline-flex items-baseline font-bold text-base sm:text-lg"
         >
-          {book.priceLabel}
+          <span
+            className="text-transparent bg-clip-text"
+            style={{
+              backgroundImage:
+                'linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)',
+            }}
+          >
+            {book.priceLabel}
+          </span>
+          <span className="text-[#249EDC]">*</span>
         </span>
 
         <p className="mt-1 text-[9px] leading-tight text-gray-400 sm:text-[10px]">
-          * Excluding GST
+          <span className="text-black">*</span> Excluding GST
         </p>
 
         <button
@@ -128,12 +125,12 @@ const BookCard: React.FC<BookCardProps> = ({ book, onOpenSample }) => {
               slug: book.slug,
             })
           }
-          className={`${OUTLINE_BOOK_BUTTON_CLASS} mt-3 w-full max-w-[180px] px-5 py-2.5 text-[10px] font-semibold uppercase tracking-wide sm:text-xs`}
+          className={`${OUTLINE_BOOK_BUTTON_CLASS} mt-2 w-full max-w-[180px] px-5 py-2 text-[10px] font-semibold uppercase tracking-wide sm:text-xs`}
         >
           VIEW SAMPLE
         </button>
 
-        <div className="mt-4 flex w-full gap-3">
+        <div className="mt-3 flex w-full gap-3">
           {cartQuantity > 0 ? (
             <div className="flex h-[38px] min-w-0 flex-1 items-center justify-between rounded-full border border-[#249EDC] bg-[#EAF7FF] px-2">
               <button
@@ -305,7 +302,7 @@ const BuyBooks: React.FC = () => {
 
   return (
     <>
-    <section ref={sectionRef} className="relative z-30 py-18 overflow-hidden">
+    <section ref={sectionRef} className="buy-books-section relative z-30 overflow-hidden pt-12 pb-6 md:pt-16 md:pb-8">
       <DiamondLayer config={buyBooksDiamondConfig} />
       <BooksCartButton />
 
@@ -316,7 +313,7 @@ const BuyBooks: React.FC = () => {
           </h2>
         </div>
 
-        <div className="w-full relative flex mt-10 pb-16">
+        <div className="relative mt-14 flex w-full pb-4 md:mt-16 md:pb-6">
           <div
             ref={cardsContainerRef}
             className="flex gap-8 w-max will-change-transform pl-8"
@@ -334,42 +331,47 @@ const BuyBooks: React.FC = () => {
     </section>
 
     {showSamplePopup && selectedSampleBook && (
-      <div className="fixed inset-0 z-[9999] bg-black/55 flex items-center justify-center px-4 py-6">
-        <div className="relative w-full max-w-[860px] rounded-[20px] bg-[#F5F5F5] shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-          <div className="px-8 pt-6 pb-4 relative">
-            <h2 className="text-[34px] md:text-[42px] font-extrabold uppercase leading-none tracking-[0.5px]">
-              <span className="bg-[linear-gradient(90deg,#6AA9D8_0%,#C88EA0_100%)] bg-clip-text text-transparent">
-                SAMPLE
-              </span>
-            </h2>
+      <div
+        className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/55 px-4 py-6"
+        onClick={closeSamplePopup}
+      >
+        <div
+          className="relative w-full max-w-[620px] rounded-[16px] bg-[#01285A] px-4 pb-5 pt-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)] md:px-6 md:pb-6 md:pt-5"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <button
+            type="button"
+            onClick={closeSamplePopup}
+            aria-label="Close sample preview"
+            className="absolute right-3 top-3 z-20 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-[#FF0000] shadow-md transition-transform hover:scale-105 md:right-4 md:top-4 md:h-9 md:w-9"
+          >
+            <X size={18} className="text-white" strokeWidth={3} />
+          </button>
 
+          <h2 className="mb-3 px-10 text-center text-[24px] font-extrabold uppercase leading-none tracking-[0.5px] md:mb-4 md:text-[28px]">
+            <span className="bg-[linear-gradient(90deg,#B8DDF5_0%,#E8B4BE_100%)] bg-clip-text text-transparent">
+              Sample
+            </span>
+          </h2>
+
+          <FlipBook
+            key={selectedSampleBook.image}
+            coverImage={selectedSampleBook.image}
+            compact
+          />
+
+          <div className="mt-1 flex shrink-0 justify-center">
             <button
               type="button"
-              onClick={closeSamplePopup}
-              className="absolute top-6 right-8 w-[30px] h-[30px] md:w-[32px] md:h-[32px] rounded-full bg-[#FF0000] flex items-center justify-center cursor-pointer"
+              onClick={() => {
+                router.push(`/books/${selectedSampleBook.slug}`);
+                closeSamplePopup();
+              }}
+              className="flex h-[42px] min-w-[150px] cursor-pointer items-center justify-center gap-2 rounded-full border border-white bg-transparent px-6 text-[16px] font-semibold leading-none text-white transition-all duration-300 hover:border-[#0F8EDB] hover:bg-[#0F8EDB] md:h-[44px] md:min-w-[160px] md:text-[18px]"
             >
-              <X size={20} className="text-white" strokeWidth={3} />
+              Buy Now
+              <ArrowRight size={18} />
             </button>
-          </div>
-
-          <div className="px-8 pb-8">
-            <div className="bg-[#01285A] rounded-[16px] min-h-[470px] relative px-6 md:px-10 py-6 md:py-8 flex flex-col">
-              <FlipBook coverImage={selectedSampleBook.image} />
-
-              <div className="flex justify-center mt-2 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => {
-                    router.push(`/books/${selectedSampleBook.slug}`);
-                    closeSamplePopup();
-                  }}
-                  className="min-w-[160px] h-[46px] md:h-[48px] px-7 rounded-full border border-white bg-transparent text-white text-[18px] md:text-[20px] font-semibold leading-none transition-all duration-300 hover:bg-[#0F8EDB] hover:border-[#0F8EDB] flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  Buy Now
-                  <ArrowRight size={20} />
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </div>

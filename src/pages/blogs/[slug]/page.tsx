@@ -583,7 +583,7 @@ export default function BlogDetailPage() {
                           className="group flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#7F72C9] bg-white text-[17px] font-bold text-[#6962B4] transition-all duration-300 hover:bg-[#7F72C9] hover:text-white"
                         >
                           <BookOpenText size={26} className="transition-colors duration-300 group-hover:text-white" />
-                          Daily Practice Questions
+                          Daily Practice Quiz
                         </Link>
 
                         <Link

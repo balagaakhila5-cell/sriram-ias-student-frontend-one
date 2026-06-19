@@ -134,7 +134,7 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
       ref={footerRef}
       className="relative w-full min-w-0 overflow-x-clip bg-[#1a1a18] px-4 pt-6 pb-4 text-white md:px-8"
     >
-      <NetworkDotsBackground variant="dark" />
+      <NetworkDotsBackground variant="dark" speed={0.26} />
       <div className="relative z-10 mx-auto w-full min-w-0 max-w-[1500px] space-y-4">
         {/* Top CTA & Social Bar */}
         <div className="footer-top-bar -mt-1 flex flex-col items-start justify-between gap-4 xl:flex-row xl:items-center">
@@ -142,7 +142,7 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
             <button
               type="button"
               onClick={() => setIsBookDemoOpen(true)}
-              className="cursor-pointer text-white px-7 py-2.5 rounded-lg font-bold text-[15px] transition-all uppercase tracking-wide"
+              className="cursor-pointer rounded-full px-7 py-2.5 text-[15px] font-bold uppercase tracking-wide text-white transition-all"
               style={{
                 background:
                   'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)',
@@ -153,7 +153,7 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
 
             <Link
               href="/course/mentorship-program"
-              className="text-white px-7 py-2.5 rounded-lg font-bold text-[15px] transition-all tracking-wide"
+              className="rounded-full px-7 py-2.5 text-[15px] font-bold tracking-wide text-white transition-all"
               style={{
                 background:
                   'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)',

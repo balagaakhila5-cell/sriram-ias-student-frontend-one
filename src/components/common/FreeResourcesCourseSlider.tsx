@@ -42,10 +42,6 @@ interface FreeResourcesCourseSliderProps {
   showBackground?: boolean;
   /** Smaller card for book details and tight layouts */
   compact?: boolean;
-  /** Center course name + action button (NCERT sidebar) */
-  centerActions?: boolean;
-  /** Hide star icon beside course name (Mains PYQ sidebar) */
-  hideStar?: boolean;
   /** CTA label — default Enroll Now; use Explore for PYQ sidebar */
   actionLabel?: string;
 }
@@ -55,8 +51,6 @@ export default function FreeResourcesCourseSlider({
   className = "",
   showBackground = false,
   compact = false,
-  centerActions = false,
-  hideStar = false,
   actionLabel = "Enroll Now",
 }: FreeResourcesCourseSliderProps) {
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -104,36 +98,14 @@ export default function FreeResourcesCourseSlider({
           ))}
         </div>
 
-        <div
-          className={`course-slider-overlay${
-            centerActions ? " course-slider-overlay--centered" : ""
-          }`}
-        >
-          <div
-            className={`course-slider-label${
-              centerActions ? " course-slider-label--centered" : ""
-            }`}
-          >
-            {!hideStar && (
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="#FFE81C"
-                className="shrink-0"
-                aria-hidden
-              >
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-              </svg>
-            )}
-            <span className="course-slider-course-name">{current.title}</span>
+        <div className="course-slider-overlay">
+          <div className="course-slider-label">
+            <span className="course-slider-course-name text-center">{current.title}</span>
           </div>
 
           <Link
             href={`/course/${current.slug}`}
-            className={`course-slider-enroll${
-              centerActions ? " course-slider-enroll--centered" : ""
-            }`}
+            className="course-slider-enroll"
           >
             {actionLabel}
             <span aria-hidden>→</span>

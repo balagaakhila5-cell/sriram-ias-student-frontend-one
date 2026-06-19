@@ -12,7 +12,7 @@ import DiamondLayer from '../DiamondLayer';
 import { heroDiamondConfig } from '../diamondConfigs';
 import { useHomepage } from '@/features/homepage/hooks/useHomepage';
 import { centerPageHref } from '@/features/homepage/utils/homepageLinks';
-import { EmailLink, PhoneLink } from '@/components/common/ContactLinks';
+import { EmailLink } from '@/components/common/ContactLinks';
 import { FOOTER_BRANCHES } from '@/config/footerLinks';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -221,10 +221,9 @@ const OfflineCentres: React.FC = () => {
                       <div className="shrink-0 rounded-lg bg-white/10 p-2">
                         <Phone size={18} />
                       </div>
-                      <PhoneLink
-                        value={center.phone}
-                        className="text-sm font-semibold hover:underline sm:text-base"
-                      />
+                      <span className="text-sm font-semibold sm:text-base">
+                        {center.phone}
+                      </span>
                     </div>
 
                     <div className="flex max-w-[92%] translate-y-8 items-center justify-center gap-3 opacity-0 transition-[transform,opacity] duration-500 delay-[400ms] group-hover:translate-y-0 group-hover:opacity-100">

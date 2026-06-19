@@ -50,11 +50,11 @@ export default function ExamTypeTabs({
   const lite = variant === "lite";
 
   const tabs = (
-    <div className="flex w-full overflow-hidden">
+    <div className="flex w-full overflow-hidden rounded-full">
       <button
         type="button"
         onClick={() => onChange("prelims")}
-        className={`flex flex-1 flex-col items-center justify-center gap-2 rounded-[16px] py-4 transition-all duration-300 ${
+        className={`flex flex-1 flex-col items-center justify-center gap-2 rounded-full py-4 transition-all duration-300 ${
           activeTab === "prelims"
             ? lite
               ? "bg-white text-[#333] shadow-sm"
@@ -73,7 +73,7 @@ export default function ExamTypeTabs({
       <button
         type="button"
         onClick={() => onChange("mains")}
-        className={`flex flex-1 flex-col items-center justify-center gap-2 rounded-[16px] py-4 transition-all duration-300 ${
+        className={`flex flex-1 flex-col items-center justify-center gap-2 rounded-full py-4 transition-all duration-300 ${
           activeTab === "mains"
             ? lite
               ? "bg-white text-[#333] shadow-sm"
@@ -95,7 +95,7 @@ export default function ExamTypeTabs({
 
   return (
     <div
-      className={`mx-auto max-w-[800px] rounded-[24px] bg-[#F4F4F4] p-4 shadow-sm ${className}`}
+      className={`mx-auto max-w-[800px] overflow-hidden rounded-full bg-[#F4F4F4] p-4 shadow-sm ${className}`}
     >
       {tabs}
     </div>

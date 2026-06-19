@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useRef, useState } from 'react';
 import type { CourseData } from '../../types';
@@ -96,7 +96,7 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
     <>
       <section
       ref={containerRef}
-      className="relative w-full border border-black/10 px-4 py-5 font-['Montserrat',sans-serif] md:px-8 md:py-6 lg:py-7 xl:px-0"
+      className="relative w-full border border-black/10 px-4 py-4 font-['Montserrat',sans-serif] md:px-8 md:py-4 lg:py-5"
       style={{
         backgroundImage: `url(${course.coursedetailsbg})`,
         backgroundSize: '320px auto',
@@ -129,11 +129,11 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
 
             <div className="hidden h-10 w-px shrink-0 bg-black/10 sm:block" aria-hidden />
 
-            {/* Modes ΓÇö single line */}
+            {/* Modes — stacked vertically */}
             <div className="info-item flex shrink-0 items-center">
               <div className="flex min-w-0 flex-col">
-                <div className="flex items-center gap-3 whitespace-nowrap md:gap-4">
-                  <div className="flex items-center gap-1.5">
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center gap-1.5 whitespace-nowrap">
                     <img
                       src="/assets/course/online-icon.png"
                       alt="Online"
@@ -143,7 +143,7 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
                       ONLINE
                     </span>
                   </div>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 whitespace-nowrap">
                     <img
                       src="/assets/course/offline-icon.png"
                       alt="Offline"
@@ -154,7 +154,7 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
                     </span>
                   </div>
                 </div>
-                <span className="mt-0.5 text-[12px] font-semibold text-[#00000099] md:text-[13px]">
+                <span className="mt-1 text-[12px] font-semibold text-[#00000099] md:text-[13px]">
                   Modes
                 </span>
               </div>
@@ -208,19 +208,6 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
 
           {/* CTA Buttons */}
           <div className="flex w-full shrink-0 flex-col items-center justify-center gap-2.5 lg:w-[290px] xl:w-[310px]">
-              <button
-                type="button"
-                onClick={() => setIsEnrollOpen(true)}
-                className="cta-button h-[42px] w-full max-w-[290px] cursor-pointer whitespace-nowrap rounded-full px-5 text-[13px] font-extrabold uppercase tracking-wide text-white transition-transform hover:scale-[1.03] md:h-[44px] md:px-6 md:text-[14px]"
-                style={{
-                  background:
-                    'linear-gradient(90deg, #00679C 0%, #002436 100%)',
-                  border: '2px solid rgba(236, 255, 92, 0.77)',
-                }}
-              >
-                ENROLL NOW
-              </button>
-
               <div className="flex w-full max-w-[290px] gap-2.5">
                 <button
                   type="button"
@@ -271,6 +258,19 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
                   VIEW DEMO
                 </button>
               </div>
+
+              <button
+                type="button"
+                onClick={() => setIsEnrollOpen(true)}
+                className="cta-button h-[42px] w-full max-w-[290px] cursor-pointer whitespace-nowrap rounded-full px-5 text-[13px] font-extrabold uppercase tracking-wide text-white transition-transform hover:scale-[1.03] md:h-[44px] md:px-6 md:text-[14px]"
+                style={{
+                  background:
+                    'linear-gradient(90deg, #00679C 0%, #002436 100%)',
+                  border: '2px solid rgba(236, 255, 92, 0.77)',
+                }}
+              >
+                ENROLL NOW
+              </button>
             </div>
           </div>
         </div>

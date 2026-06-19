@@ -173,7 +173,7 @@ const OurStory: React.FC = () => {
   }, { dependencies: [prefersReducedMotion, stats.length], scope: sectionRef });
 
   return (
-  <section ref={sectionRef} className="relative pt-12 pb-24 px-4 md:px-16">
+  <section ref={sectionRef} className="relative pt-6 pb-24 px-4 md:px-16 md:pt-8">
       <div className="relative z-10 max-w-7xl mx-auto">
         <div className="space-y-16 relative">
           <div

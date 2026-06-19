@@ -38,7 +38,7 @@ const TestPaperCard: React.FC<TestPaperCardProps> = ({
         </h3>
 
         <div className="mt-4">
-          <span className="inline-flex h-[40px] items-center rounded-[10px] border border-[#47B1F0] bg-white px-4 text-[16px] font-semibold text-[#3AA8EC] transition-all duration-300 group-hover:border-transparent group-hover:bg-gradient-to-r group-hover:from-[#50C0FF] group-hover:to-[#0A587E] group-hover:text-white">
+          <span className="inline-flex h-[40px] items-center rounded-full border border-[#47B1F0] bg-white px-4 text-[16px] font-semibold text-[#3AA8EC] transition-all duration-300 group-hover:border-transparent group-hover:bg-gradient-to-r group-hover:from-[#50C0FF] group-hover:to-[#0A587E] group-hover:text-white">
             {buttonText}
           </span>
         </div>

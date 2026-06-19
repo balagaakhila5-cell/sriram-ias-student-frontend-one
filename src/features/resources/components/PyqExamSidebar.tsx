@@ -7,11 +7,7 @@ import UpsPrelims2026Countdown from "@/components/common/UpsPrelims2026Countdown
 export default function PyqExamSidebar() {
   return (
     <div className="mx-auto w-full max-w-[310px] space-y-7">
-      <FreeResourcesCourseSlider
-        centerActions
-        hideStar
-        actionLabel="Explore"
-      />
+      <FreeResourcesCourseSlider actionLabel="Explore" />
       <UpsPrelims2026Countdown />
     </div>
   );

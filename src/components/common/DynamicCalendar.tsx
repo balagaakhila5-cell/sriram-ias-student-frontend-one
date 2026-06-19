@@ -132,6 +132,16 @@ export default function DynamicCalendar({
           ))}
 
           {cells.map((cell, index) => {
+            if (!cell.isCurrentMonth) {
+              return (
+                <div
+                  key={`empty-${index}`}
+                  className="mx-auto h-9 w-9"
+                  aria-hidden="true"
+                />
+              );
+            }
+
             const formattedDate = formatCalendarDate(cell.year, cell.month, cell.day);
             const isSelected = activeSelectedDate === formattedDate;
 
@@ -185,6 +195,16 @@ export default function DynamicCalendar({
         ))}
 
         {cells.map((cell, index) => {
+          if (!cell.isCurrentMonth) {
+            return (
+              <div
+                key={`empty-${index}`}
+                className="h-[34px]"
+                aria-hidden="true"
+              />
+            );
+          }
+
           const formattedDate = formatCalendarDate(cell.year, cell.month, cell.day);
           const isSelected = activeSelectedDate === formattedDate;
 

@@ -40,7 +40,7 @@ export default function PrelimsMainsExamTabs({
 }: PrelimsMainsExamTabsProps) {
   return (
     <div
-      className={`mx-auto flex w-full max-w-[900px] items-center rounded-[20px] bg-[#F4F4F4] p-2 shadow-inner ${className}`}
+      className={`mx-auto flex w-full max-w-[900px] items-center overflow-hidden rounded-full bg-[#F4F4F4] p-2 shadow-inner ${className}`}
     >
       {TABS.map((tab, index, array) => {
         const isActive = activeTab === tab.id;
@@ -53,10 +53,10 @@ export default function PrelimsMainsExamTabs({
             <button
               type="button"
               onClick={() => onChange(tab.id)}
-              className={`flex flex-1 flex-col items-center justify-center gap-2.5 py-5 transition-all duration-300 ${
+              className={`flex flex-1 flex-col items-center justify-center gap-2.5 rounded-full py-5 transition-all duration-300 ${
                 isActive
-                  ? "rounded-[16px] bg-[linear-gradient(90deg,#2aa7df_0%,#03283b_100%)] shadow-lg"
-                  : "rounded-[16px] hover:bg-[#ebebeb]"
+                  ? "bg-[linear-gradient(90deg,#2aa7df_0%,#03283b_100%)] text-white shadow-lg"
+                  : "text-[#444] hover:bg-[#ebebeb]"
               }`}
             >
               {docIcon(isActive)}

@@ -1140,7 +1140,7 @@ const CouponCard: React.FC<CouponCardProps> = ({ title, desc, onApply }) => {
         <button
           type="button"
           onClick={onApply}
-          className="cursor-pointer rounded-[5px] px-5 py-2 text-[14px] font-bold text-white"
+          className="cursor-pointer rounded-full px-5 py-2 text-[14px] font-bold text-white"
           style={{
             background: 'linear-gradient(90deg, #43a8da 0%, #003247 100%)',
           }}

@@ -269,29 +269,29 @@ const OurToppersGalleryPage = () => {
           {/* Topper cards / Testimonials */}
           <div className="w-full px-4 sm:px-6 lg:px-0">
             {activeTab === 'Testimonials' ? (
-              <div className="mx-auto grid max-w-[900px] gap-6 px-2 sm:px-4">
+              <div className="flex flex-wrap justify-center gap-5 sm:gap-6">
                 {TESTIMONIALS.map((testimonial) => (
                   <a
                     key={testimonial.url}
                     href={testimonial.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group rounded-[16px] bg-white/90 p-6 shadow-[0_12px_32px_rgba(29,119,176,0.14)] transition-all hover:-translate-y-1 hover:bg-white hover:shadow-[0_18px_40px_rgba(29,119,176,0.2)] sm:p-8"
+                    className="group flex h-[280px] w-[280px] flex-col rounded-[16px] bg-white/90 p-5 shadow-[0_12px_32px_rgba(29,119,176,0.14)] transition-all hover:-translate-y-1 hover:bg-white hover:shadow-[0_18px_40px_rgba(29,119,176,0.2)] sm:h-[300px] sm:w-[300px] sm:p-6 md:h-[320px] md:w-[320px]"
                   >
-                    <p className="text-[11px] font-bold uppercase tracking-[1px] text-[#178fd2]">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.8px] text-[#178fd2] sm:text-[11px]">
                       Student Testimonial
                     </p>
-                    <h3 className="mt-2 text-[18px] font-extrabold leading-snug text-[#1f3442] sm:text-[22px]">
+                    <h3 className="mt-2 line-clamp-4 text-[13px] font-extrabold leading-snug text-[#1f3442] sm:text-[15px]">
                       {testimonial.title}
                     </h3>
-                    <p className="mt-3 text-[14px] font-medium leading-relaxed text-[#4a6272] sm:text-[16px]">
+                    <p className="mt-2 line-clamp-4 flex-1 text-[11px] font-medium leading-relaxed text-[#4a6272] sm:text-[12px]">
                       {testimonial.excerpt}
                     </p>
-                    <span className="mt-5 inline-flex items-center gap-2 text-[14px] font-bold text-[#178fd2] group-hover:underline">
+                    <span className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-[#178fd2] group-hover:underline sm:text-[12px]">
                       Read full testimonial
                       <svg
-                        width="16"
-                        height="16"
+                        width="14"
+                        height="14"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -405,7 +405,7 @@ const OurToppersGalleryPage = () => {
                     value={formData.fullName}
                     onChange={handleFormChange}
                     required
-                    className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300 sm:text-left sm:placeholder:text-left"
+                    className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
                   />
                 </div>
 
@@ -424,7 +424,7 @@ const OurToppersGalleryPage = () => {
                     onChange={handleFormChange}
                     required
                     pattern="[0-9]{10}"
-                    className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300 sm:text-left sm:placeholder:text-left"
+                    className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
                   />
                 </div>
 
@@ -442,77 +442,88 @@ const OurToppersGalleryPage = () => {
                     value={formData.email}
                     onChange={handleFormChange}
                     required
-                    className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300 sm:text-left sm:placeholder:text-left"
+                    className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
                   />
                 </div>
 
-                <div className="relative w-full">
+                <div className="w-full">
                   <FormFieldLabel
                     required
                     className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
                   >
                     Target UPSC Attempt Year
                   </FormFieldLabel>
-                  <select
-                    name="targetYear"
-                    value={formData.targetYear}
-                    onChange={handleFormChange}
-                    required
-                    className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300 sm:text-left"
-                  >
-                    <option value="" disabled>
-                      Target UPSC Attempt Year
-                    </option>
-                    <option value="2025">2025</option>
-                    <option value="2026">2026</option>
-                    <option value="2027">2027</option>
-                    <option value="2028">2028</option>
-                    <option value="2029">2029</option>
-                  </select>
+                  <div className="relative w-full">
+                    <select
+                      name="targetYear"
+                      value={formData.targetYear}
+                      onChange={handleFormChange}
+                      required
+                      className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300"
+                    >
+                      <option value="" disabled>
+                        Target UPSC Attempt Year
+                      </option>
+                      <option value="2025">2025</option>
+                      <option value="2026">2026</option>
+                      <option value="2027">2027</option>
+                      <option value="2028">2028</option>
+                      <option value="2029">2029</option>
+                    </select>
 
-                  <svg
-                    className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#999"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
+                    <svg
+                      className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#999"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </div>
                 </div>
 
-                <div className="relative w-full">
-                  <FormFieldLabel className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left">
+                <div className="w-full">
+                  <FormFieldLabel
+                    required
+                    className="mb-1 block text-center text-[12px] font-medium text-[#3A340099] sm:text-left"
+                  >
                     City
                   </FormFieldLabel>
-                  <select
-                    name="city"
-                    value={formData.city}
-                    onChange={handleFormChange}
-                    className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300"
-                  >
-                    <option value="Delhi">Delhi</option>
-                    <option value="Hyderabad">Hyderabad</option>
-                    <option value="Pune">Pune</option>
-                  </select>
+                  <div className="relative w-full">
+                    <select
+                      name="city"
+                      value={formData.city}
+                      onChange={handleFormChange}
+                      required
+                      className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300"
+                    >
+                      <option value="" disabled>
+                        City
+                      </option>
+                      <option value="Delhi">Delhi</option>
+                      <option value="Hyderabad">Hyderabad</option>
+                      <option value="Pune">Pune</option>
+                    </select>
 
-                  <svg
-                    className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#999"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
+                    <svg
+                      className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#999"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </div>
                 </div>
               </div>
 

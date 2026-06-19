@@ -35,7 +35,7 @@ const defaultLinks: QuickLinkItem[] = [
         icon: "💡",
     },
     {
-        title: "Daily Practice Questions",
+        title: "Daily Practice Quiz",
         href: "/current-affairs/daily-practice-questions",
         border: "border-[#7B72C4]",
         text: "text-[#625BB0]",

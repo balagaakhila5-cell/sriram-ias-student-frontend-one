@@ -167,7 +167,7 @@ export default function FreeMockTestsPage() {
 
       <main
         ref={containerRef}
-        className="min-h-screen font-['Montserrat',sans-serif]"
+        className="min-h-screen bg-[#f2f6fa] font-['Montserrat',sans-serif]"
       >
         <section className="relative h-[300px] w-full overflow-hidden md:h-[380px] lg:h-[390px]">
           <Image

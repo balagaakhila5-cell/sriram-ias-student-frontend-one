@@ -104,7 +104,7 @@ export default function MonthlyMagazinePage() {
 
       <main
         ref={containerRef}
-        className="w-full overflow-hidden bg-[#f7f8fb] font-['Montserrat',sans-serif]"
+        className="w-full overflow-hidden bg-[#f2f6fa] font-['Montserrat',sans-serif]"
       >
         {/* Banner */}
         <section className="relative h-[230px] w-full overflow-hidden md:h-[280px] lg:h-[320px]">

@@ -46,7 +46,7 @@ export default function DocumentCard({
               <Link
                 key={btn.label}
                 href={btn.href}
-                className="inline-flex items-center justify-center rounded-[10px] border-[1.5px] border-[#58b7ea] bg-white px-5 py-2 text-[14px] font-bold text-[#2a9cda] transition-all duration-300 hover:border-transparent hover:bg-[linear-gradient(90deg,#2aa7df_0%,#03283b_100%)] hover:text-white"
+                className="inline-flex h-[40px] cursor-pointer items-center justify-center rounded-full border-[1.5px] border-[#58b7ea] bg-white px-5 py-2 text-[14px] font-bold text-[#2a9cda] transition-all duration-300 hover:border-transparent hover:bg-[linear-gradient(90deg,#2aa7df_0%,#03283b_100%)] hover:text-white"
               >
                 {btn.label}
               </Link>
@@ -54,7 +54,7 @@ export default function DocumentCard({
               <button
                 key={btn.label}
                 onClick={btn.onClick}
-                className="inline-flex items-center justify-center rounded-[10px] border-[1.5px] border-[#58b7ea] bg-white px-5 py-2 text-[14px] font-bold text-[#2a9cda] transition-all duration-300 hover:border-transparent hover:bg-[linear-gradient(90deg,#2aa7df_0%,#03283b_100%)] hover:text-white"
+                className="inline-flex h-[40px] cursor-pointer items-center justify-center rounded-full border-[1.5px] border-[#58b7ea] bg-white px-5 py-2 text-[14px] font-bold text-[#2a9cda] transition-all duration-300 hover:border-transparent hover:bg-[linear-gradient(90deg,#2aa7df_0%,#03283b_100%)] hover:text-white"
               >
                 {btn.label}
               </button>

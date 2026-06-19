@@ -7,6 +7,7 @@ import {
   resourceViewPath,
 } from "@/features/resources/catalog/routes";
 import PaginatedPdfGrid from "@/features/resources/components/PaginatedPdfGrid";
+import ResourcePdfIconThumb from "@/features/resources/components/ResourcePdfIconThumb";
 import {
   FREE_RESOURCE_CARD_GRID,
   RESOURCE_EMPTY,
@@ -32,10 +33,11 @@ function StudyMaterialCard({
 
   return (
     <Tag className={STUDY_MATERIAL_CARD.shell}>
-      <div className={STUDY_MATERIAL_CARD.bodyCentered}>
+      <ResourcePdfIconThumb />
+      <div className={STUDY_MATERIAL_CARD.body}>
         <h3 className={STUDY_MATERIAL_CARD.title}>{item.title}</h3>
 
-        <div className={STUDY_MATERIAL_CARD.actionsCentered}>
+        <div className={STUDY_MATERIAL_CARD.actions}>
           <Link
             href={resourceViewPath(item, variant === "portal" ? "portal" : "public")}
             className={STUDY_MATERIAL_CARD.viewButton}

@@ -1,16 +1,26 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface FlipBookProps {
   coverImage: string;
   totalLeaves?: number;
+  /** Smaller layout for Buy Books sample popup */
+  compact?: boolean;
 }
 
-const FlipBook: React.FC<FlipBookProps> = ({ coverImage, totalLeaves = 8 }) => {
+const FlipBook: React.FC<FlipBookProps> = ({
+  coverImage,
+  totalLeaves = 8,
+  compact = false,
+}) => {
   const [flippedPages, setFlippedPages] = useState<number[]>([]);
+
+  useEffect(() => {
+    setFlippedPages([]);
+  }, [coverImage]);
 
   const turnNext = () => {
     if (flippedPages.length < totalLeaves) {
@@ -39,39 +49,50 @@ const FlipBook: React.FC<FlipBookProps> = ({ coverImage, totalLeaves = 8 }) => {
   };
 
   return (
-    <div className="flex-1 flex flex-col w-full">
+    <div className="flex min-h-0 w-full flex-1 flex-col">
       <style>{`
         .preserve-3d { transform-style: preserve-3d; -webkit-transform-style: preserve-3d; }
         .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
       `}</style>
 
-      <div className="text-center text-white text-[16px] md:text-[18px] font-bold shrink-0">
-        {getPageIndicator()}
-      </div>
+      {!compact ? (
+        <div className="shrink-0 text-center text-[14px] font-bold text-white md:text-[16px]">
+          {getPageIndicator()}
+        </div>
+      ) : null}
 
-      {/* Arrows live OUTSIDE the perspective container so 3D stacking never hides them */}
-      <div className="flex-1 flex items-center justify-center relative w-full my-6">
+      <div
+        className={`relative mx-auto flex w-[90%] flex-1 items-center justify-center ${
+          compact ? 'my-3 min-h-[260px] md:min-h-[300px]' : 'my-5 min-h-[380px] md:min-h-[440px]'
+        }`}
+      >
         <button
           type="button"
           onClick={turnPrev}
           disabled={flippedPages.length === 0}
-          className={`absolute left-0 md:left-4 w-[45px] h-[45px] md:w-[50px] md:h-[50px] rounded-full flex items-center justify-center shrink-0 z-[100] transition-all shadow-md ${
+          aria-label="Previous page"
+          className={`absolute left-0 z-[100] flex shrink-0 items-center justify-center rounded-full shadow-md transition-all md:left-2 ${
+            compact ? 'h-[38px] w-[38px] md:h-[42px] md:w-[42px]' : 'h-[45px] w-[45px] md:h-[50px] md:w-[50px]'
+          } ${
             flippedPages.length === 0
-              ? 'bg-white/20 opacity-30 cursor-not-allowed'
+              ? 'cursor-not-allowed bg-white/20 opacity-30'
               : 'bg-white hover:bg-gray-100'
           }`}
         >
-          <ChevronLeft size={28} className="text-[#01285A]" />
+          <ChevronLeft size={compact ? 22 : 28} className="text-[#01285A]" />
         </button>
 
-        {/* Book — perspective scoped here so it never affects button z-index */}
-        <div className="perspective-[2000px]">
-          <div className={`relative flex transition-transform duration-700 ease-in-out w-fit ${getBookTranslation()}`}>
-            {/* Invisible Left Half */}
-            <div className="w-[140px] h-[200px] sm:w-[190px] sm:h-[260px] md:w-[250px] md:h-[340px] bg-transparent shrink-0" />
+        <div
+          className={`flex w-full justify-center perspective-[2000px] ${
+            compact ? 'max-w-[480px]' : 'max-w-[720px]'
+          }`}
+        >
+          <div
+            className={`relative flex w-full transition-transform duration-700 ease-in-out ${getBookTranslation()}`}
+          >
+            <div className="aspect-[2/3] w-1/2 shrink-0 bg-transparent" />
 
-            {/* Right Half – stacked leaves */}
-            <div className="relative w-[140px] h-[200px] sm:w-[190px] sm:h-[260px] md:w-[250px] md:h-[340px] preserve-3d shrink-0">
+            <div className="relative aspect-[2/3] w-1/2 shrink-0 preserve-3d">
               {Array.from({ length: totalLeaves }).map((_, index) => {
                 const isFlipped = flippedPages.includes(index);
                 const zIndex = isFlipped ? index : totalLeaves - index;
@@ -79,58 +100,70 @@ const FlipBook: React.FC<FlipBookProps> = ({ coverImage, totalLeaves = 8 }) => {
                 return (
                   <div
                     key={index}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => (isFlipped ? turnPrev() : turnNext())}
-                    className="absolute top-0 left-0 w-full h-full origin-left transition-transform duration-700 ease-in-out cursor-pointer preserve-3d shadow-xl"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        if (isFlipped) turnPrev();
+                        else turnNext();
+                      }
+                    }}
+                    className="absolute left-0 top-0 h-full w-full origin-left cursor-pointer preserve-3d shadow-xl transition-transform duration-700 ease-in-out"
                     style={{
                       transform: isFlipped ? 'rotateY(-180deg)' : 'rotateY(0deg)',
                       zIndex,
                     }}
                   >
-                    {/* FRONT */}
-                    <div className="absolute inset-0 backface-hidden bg-white rounded-r-[8px] md:rounded-r-[12px] border border-gray-200 overflow-hidden shadow-[inset_4px_0_10px_rgba(0,0,0,0.05)] flex items-center justify-center">
+                    <div className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-r-[8px] border border-gray-200 bg-white backface-hidden shadow-[inset_4px_0_10px_rgba(0,0,0,0.05)] md:rounded-r-[12px]">
                       {index === 0 ? (
                         <Image src={coverImage} alt="Cover" fill className="object-cover" />
                       ) : (
-                        <div className="p-4 md:p-6 text-[#01285A] w-full h-full text-left bg-[#FDFDFD]">
-                          <h4 className="font-bold text-sm md:text-lg border-b pb-2 mb-2 border-gray-200">
+                        <div className="h-full w-full bg-[#FDFDFD] p-4 text-left text-[#01285A] md:p-6">
+                          <h4 className="mb-2 border-b border-gray-200 pb-2 text-sm font-bold md:text-lg">
                             Chapter {index}
                           </h4>
-                          <div className="w-full h-2 bg-gray-200 rounded mb-2" />
-                          <div className="w-5/6 h-2 bg-gray-200 rounded mb-2" />
-                          <div className="w-full h-2 bg-gray-200 rounded mb-2" />
-                          <div className="w-4/6 h-2 bg-gray-200 rounded" />
+                          <div className="mb-2 h-2 w-full rounded bg-gray-200" />
+                          <div className="mb-2 h-2 w-5/6 rounded bg-gray-200" />
+                          <div className="mb-2 h-2 w-full rounded bg-gray-200" />
+                          <div className="h-2 w-4/6 rounded bg-gray-200" />
                         </div>
                       )}
-                      <div className="absolute inset-y-0 left-0 w-4 bg-gradient-to-r from-black/20 to-transparent pointer-events-none" />
+                      <div className="pointer-events-none absolute inset-y-0 left-0 w-4 bg-gradient-to-r from-black/20 to-transparent" />
                       {index !== 0 && index !== totalLeaves - 1 && (
-                        <div className="absolute bottom-2 right-3 text-[10px] md:text-xs font-bold text-gray-400">
+                        <div className="absolute bottom-2 right-3 text-[10px] font-bold text-gray-400 md:text-xs">
                           {index * 2 - 1}
                         </div>
                       )}
                     </div>
 
-                    {/* BACK */}
                     <div
-                      className="absolute inset-0 backface-hidden bg-white rounded-l-[8px] md:rounded-l-[12px] border border-gray-200 overflow-hidden shadow-[inset_-4px_0_10px_rgba(0,0,0,0.05)] flex items-center justify-center"
+                      className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-l-[8px] border border-gray-200 bg-white backface-hidden shadow-[inset_-4px_0_10px_rgba(0,0,0,0.05)] md:rounded-l-[12px]"
                       style={{ transform: 'rotateY(180deg)' }}
                     >
                       {index === 0 ? (
-                        <div className="w-full h-full bg-[#E2E6F8] flex items-center justify-center text-[#01285A] font-bold text-sm">
+                        <div className="flex h-full w-full items-center justify-center bg-[#E2E6F8] text-sm font-bold text-[#01285A]">
                           Inside Cover
                         </div>
                       ) : index === totalLeaves - 1 ? (
-                        <Image src={coverImage} alt="Back Cover" fill className="object-cover opacity-90 blur-[2px]" />
+                        <Image
+                          src={coverImage}
+                          alt="Back Cover"
+                          fill
+                          className="object-cover opacity-90 blur-[2px]"
+                        />
                       ) : (
-                        <div className="p-4 md:p-6 text-[#01285A] w-full h-full text-left bg-[#FDFDFD]">
-                          <div className="w-full h-2 bg-gray-200 rounded mb-2 mt-4" />
-                          <div className="w-full h-2 bg-gray-200 rounded mb-2" />
-                          <div className="w-3/6 h-2 bg-gray-200 rounded mb-2" />
-                          <div className="w-full h-2 bg-gray-200 rounded" />
+                        <div className="h-full w-full bg-[#FDFDFD] p-4 text-left text-[#01285A] md:p-6">
+                          <div className="mb-2 mt-4 h-2 w-full rounded bg-gray-200" />
+                          <div className="mb-2 h-2 w-full rounded bg-gray-200" />
+                          <div className="mb-2 h-2 w-3/6 rounded bg-gray-200" />
+                          <div className="h-2 w-full rounded bg-gray-200" />
                         </div>
                       )}
-                      <div className="absolute inset-y-0 right-0 w-4 bg-gradient-to-l from-black/20 to-transparent pointer-events-none" />
+                      <div className="pointer-events-none absolute inset-y-0 right-0 w-4 bg-gradient-to-l from-black/20 to-transparent" />
                       {index !== 0 && index !== totalLeaves - 1 && (
-                        <div className="absolute bottom-2 left-3 text-[10px] md:text-xs font-bold text-gray-400">
+                        <div className="absolute bottom-2 left-3 text-[10px] font-bold text-gray-400 md:text-xs">
                           {index * 2}
                         </div>
                       )}
@@ -142,18 +175,20 @@ const FlipBook: React.FC<FlipBookProps> = ({ coverImage, totalLeaves = 8 }) => {
           </div>
         </div>
 
-        {/* Right Control */}
         <button
           type="button"
           onClick={turnNext}
           disabled={flippedPages.length === totalLeaves}
-          className={`absolute right-0 md:right-4 w-[45px] h-[45px] md:w-[50px] md:h-[50px] rounded-full flex items-center justify-center shrink-0 z-[100] transition-all shadow-md ${
+          aria-label="Next page"
+          className={`absolute right-0 z-[100] flex shrink-0 items-center justify-center rounded-full shadow-md transition-all md:right-2 ${
+            compact ? 'h-[38px] w-[38px] md:h-[42px] md:w-[42px]' : 'h-[45px] w-[45px] md:h-[50px] md:w-[50px]'
+          } ${
             flippedPages.length === totalLeaves
-              ? 'bg-white/20 opacity-30 cursor-not-allowed'
+              ? 'cursor-not-allowed bg-white/20 opacity-30'
               : 'bg-white hover:bg-gray-100'
           }`}
         >
-          <ChevronRight size={28} className="text-[#01285A]" />
+          <ChevronRight size={compact ? 22 : 28} className="text-[#01285A]" />
         </button>
       </div>
     </div>

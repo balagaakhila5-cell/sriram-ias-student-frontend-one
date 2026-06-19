@@ -29,7 +29,7 @@ const categories = [
     image: "/assets/current-affairs/monthly-magazine.png",
   },
   {
-    title: "Daily Practice Questions",
+    title: "Daily Practice Quiz",
     href: "/current-affairs/daily-practice-questions",
     image: "/assets/current-affairs/daily-practice-questions.png",
   },
@@ -129,7 +129,7 @@ export default function CurrentAffairsPage() {
 
       <main
         ref={containerRef}
-        className="w-full overflow-hidden bg-[#f7f8fb] font-['Montserrat',sans-serif]"
+        className="w-full overflow-hidden bg-[#f2f6fa] font-['Montserrat',sans-serif]"
       >
         {/* Banner */}
         <section className="relative h-[280px] w-full overflow-hidden md:h-[340px] lg:h-[390px]">
@@ -144,7 +144,7 @@ export default function CurrentAffairsPage() {
         </section>
 
         {/* Content Section with Corner Dots */}
-        <section className="relative bg-white bg-[url('/dot_background.svg'),url('/dot_background.svg')] bg-[position:top_left,bottom_right] bg-[size:450px_auto] bg-no-repeat px-6 py-14 md:px-8 lg:px-10 xl:px-12">
+        <section className="relative bg-[#f2f6fa] bg-[url('/dot_background.svg'),url('/dot_background.svg')] bg-[position:top_left,bottom_right] bg-[size:450px_auto] bg-no-repeat px-6 py-14 md:px-8 lg:px-10 xl:px-12">
           <div className="relative z-10 mx-auto grid max-w-[1385px] grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-14">
             {/* Left side */}
             <div>

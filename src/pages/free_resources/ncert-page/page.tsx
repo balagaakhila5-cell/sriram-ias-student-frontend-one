@@ -188,7 +188,7 @@ export default function NcertBooksPage() {
 
       <main
         ref={containerRef}
-        className="min-h-screen bg-[#f7f7f7] font-['Montserrat',sans-serif]"
+        className="min-h-screen bg-[#f2f6fa] font-['Montserrat',sans-serif]"
       >
         <section className="relative h-[300px] w-full overflow-hidden md:h-[380px] lg:h-[400px]">
           <Image
@@ -267,7 +267,7 @@ export default function NcertBooksPage() {
               </div>
 
               <aside className="animate-sidebar sticky top-[120px] mx-auto w-full max-w-[310px] shrink-0 isolate self-start space-y-7 xl:ml-auto xl:mt-[40px]">
-                <FreeResourcesCourseSlider centerActions hideStar />
+                <FreeResourcesCourseSlider />
 
                 {/* OUR TOPPERS */}
                 <div className="toppers-card">

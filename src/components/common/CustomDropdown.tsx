@@ -171,7 +171,7 @@ const CustomDropdown = ({
                     onChange(opt);
                     setIsOpen(false);
                   }}
-                  className={`rounded-[14px] px-4 py-3 text-center text-[15px] font-bold transition-all ${
+                  className={`rounded-full px-4 py-3 text-center text-[15px] font-bold transition-all ${
                     value === opt ? styles.optionActive : styles.optionIdle
                   }`}
                 >

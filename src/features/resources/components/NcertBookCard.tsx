@@ -7,6 +7,7 @@ import {
   resourceViewPath,
 } from "@/features/resources/catalog/routes";
 import { NCERT_BOOK_CARD } from "./cardStyles";
+import ResourcePdfIconThumb from "./ResourcePdfIconThumb";
 
 interface NcertBookCardProps {
   item: CatalogDocument;
@@ -23,9 +24,10 @@ export default function NcertBookCard({
 
   return (
     <Tag className={`${NCERT_BOOK_CARD.shell} ${className}`}>
-      <div className={NCERT_BOOK_CARD.bodyCentered}>
+      <ResourcePdfIconThumb />
+      <div className={NCERT_BOOK_CARD.body}>
         <h3 className={NCERT_BOOK_CARD.title}>{item.title}</h3>
-        <div className={NCERT_BOOK_CARD.actionsCentered}>
+        <div className={NCERT_BOOK_CARD.actions}>
           <Link
             href={resourceViewPath(item, variant === "portal" ? "portal" : "public")}
             className={NCERT_BOOK_CARD.button}

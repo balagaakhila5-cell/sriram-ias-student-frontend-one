@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { usePathname } from 'next/navigation';
 import Header from '@/components/common/Header';
 import HeaderLogoOnly from '@/components/common/HeaderLogoOnly';
 import Footer from '@/components/common/Footer';
@@ -13,14 +14,26 @@ type MainLayoutProps = {
   headerVariant?: 'transparent' | 'light';
 };
 
+function resolveSiteSection(pathname: string) {
+  if (pathname.startsWith('/current-affairs')) return 'current-affairs';
+  if (pathname.startsWith('/free_resources')) return 'free-resources';
+  return 'default';
+}
+
 const MainLayout: React.FC<MainLayoutProps> = ({
   children,
   logoOnlyHeader = false,
   logoOnlyTransparent = false,
   headerVariant = 'transparent',
 }) => {
+  const pathname = usePathname() ?? '';
+  const siteSection = resolveSiteSection(pathname);
+
   return (
-    <div className="min-h-screen flex flex-col font-sans">
+    <div
+      className="flex min-h-screen flex-col font-sans"
+      data-site-section={siteSection}
+    >
       {logoOnlyHeader ? (
         <HeaderLogoOnly transparent={logoOnlyTransparent} />
       ) : (

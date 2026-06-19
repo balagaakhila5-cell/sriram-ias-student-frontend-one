@@ -201,7 +201,7 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
                         </div>
                         <p className="text-xs text-[#00000099] mb-3">{offer.description}</p>
                         <div className="text-right absolute bottom-[-10%] right-4">
-                           <button className="bg-gradient-to-r from-[#1897D8CC] to-[#021C29] hover:bg-[#0e3b58] text-white text-xs font-bold px-4 py-1.5 rounded-md transition-colors">
+                           <button className="rounded-full bg-gradient-to-r from-[#1897D8CC] to-[#021C29] px-4 py-1.5 text-xs font-bold text-white transition-colors hover:bg-[#0e3b58]">
                               5% Off
                            </button>
                         </div>
@@ -231,7 +231,7 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
                         <button
                            type="button"
                            onClick={handleCheckPincode}
-                           className="shrink-0 rounded-md bg-gradient-to-r from-[#1897D8CC] to-[#021C29] px-4 py-2 text-xs font-bold text-white transition-opacity hover:opacity-90"
+                           className="shrink-0 rounded-full bg-gradient-to-r from-[#1897D8CC] to-[#021C29] px-4 py-2 text-xs font-bold text-white transition-opacity hover:opacity-90"
                         >
                            Check
                         </button>

@@ -39,7 +39,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const quickLinks = [
   {
-    title: "Daily Practice Questions",
+    title: "Daily Practice Quiz",
     href: "/current-affairs/daily-practice-questions",
     border: "border-[#7B72C4]",
     hoverBg: "hover:bg-[#7B72C4] hover:border-[#7B72C4]",
@@ -206,7 +206,7 @@ export default function InfographicsPage() {
 
       <main
         ref={containerRef}
-        className="w-full overflow-hidden bg-[#f7f8fb] font-['Montserrat',sans-serif]"
+        className="w-full overflow-hidden bg-[#f2f6fa] font-['Montserrat',sans-serif]"
       >
         {/* Banner */}
         <section className="relative h-[280px] w-full overflow-hidden md:h-[340px] lg:h-[390px]">

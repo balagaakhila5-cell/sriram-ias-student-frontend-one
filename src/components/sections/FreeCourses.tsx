@@ -191,7 +191,7 @@ const FreeCourses: React.FC = () => {
         {sections.map((section) => (
           <div
             key={section.id}
-            className={`section-card relative h-screen w-full overflow-visible ${section.bg} text-white flex items-center justify-center px-4 md:px-10 lg:px-16 xl:px-20 shadow-2xl`}
+            className={`section-card relative h-screen w-full overflow-hidden ${section.bg} text-white flex items-center justify-center px-4 md:px-10 lg:px-16 xl:px-20 shadow-2xl`}
           >
             {/* BACKGROUND IMAGE WITH MOTION */}
             {section.backgroundImage && (
@@ -208,9 +208,9 @@ const FreeCourses: React.FC = () => {
               </div>
             )}
 
-            <div className="relative z-10 grid w-full max-w-[1450px] mx-auto grid-cols-1 md:grid-cols-[58%_42%] items-center gap-8 md:gap-10 lg:gap-12">
+            <div className="relative z-10 grid w-full max-w-[1450px] mx-auto grid-cols-1 md:grid-cols-[44%_56%] items-center gap-8 md:gap-8 lg:gap-10">
               {/* Text */}
-              <div className="section-text w-full min-w-0 overflow-visible">
+              <div className="section-text w-full min-w-0">
                 <h3 className="whitespace-nowrap text-[24px] font-extrabold leading-[1.05] sm:text-[32px] md:text-[44px] lg:text-[52px] xl:text-[58px]">
                   <span className={section.accentColor}>{section.title}</span>
                 </h3>
@@ -223,7 +223,7 @@ const FreeCourses: React.FC = () => {
                   <div className="mt-4 flex justify-center md:mt-5">
                     <Link
                       href={section.href}
-                      className="bg-white text-[#1E6F9F] px-10 py-3 rounded-lg font-semibold text-base md:text-lg hover:bg-[#1E6F9F] hover:text-white transition-all duration-150 w-fit shadow-md cursor-pointer"
+                      className="w-fit cursor-pointer rounded-full bg-white px-10 py-3 text-base font-semibold text-[#1E6F9F] shadow-md transition-all duration-150 hover:bg-[#1E6F9F] hover:text-white md:text-lg"
                     >
                       Explore
                     </Link>
@@ -231,21 +231,21 @@ const FreeCourses: React.FC = () => {
                 </div>
               </div>
 
-              {/* Image */}
-              <div className="relative w-full min-w-0 overflow-visible md:flex md:justify-end">
+              {/* Image — scale by height; center + clip so wide PNGs grow without right overflow */}
+              <div className="relative w-full min-w-0 overflow-hidden">
                 {section.rightImage && (
-                  <div className="section-image-wrapper relative flex w-full items-center justify-center overflow-visible md:justify-end">
+                  <div className="free-learning-image-wrapper group flex h-[clamp(360px,58vh,840px)] w-full cursor-pointer items-center justify-center overflow-hidden">
                     <img
                       src={section.rightImage}
                       alt={section.title}
-                      className="section-image h-[clamp(280px,42vh,660px)] w-auto max-w-none object-contain drop-shadow-2xl transition-transform duration-200 hover:scale-105 cursor-pointer md:origin-right"
+                      className="free-learning-section-image h-full w-auto max-w-none object-contain object-center drop-shadow-2xl transition-transform duration-500 ease-out group-hover:scale-[1.12]"
                     />
 
                     {section.floatingImage && (
                       <img
                         src={section.floatingImage}
                         alt=""
-                        className="absolute -bottom-8 left-4 w-[125px] md:w-[160px] lg:w-[184px] rotate-[-6deg] rounded-xl shadow-2xl"
+                        className="absolute bottom-0 left-4 w-[114px] rotate-[-6deg] rounded-xl shadow-2xl transition-transform duration-500 ease-out group-hover:scale-110 md:w-[145px] lg:w-[167px]"
                       />
                     )}
                   </div>

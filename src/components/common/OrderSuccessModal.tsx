@@ -101,7 +101,7 @@ export default function OrderSuccessModal({ isOpen, orderId }: OrderSuccessModal
         <div className="flex justify-center gap-5 w-full max-w-[400px] mb-4">
           {/* Download Invoice */}
           <button
-            className="flex-1 py-3 rounded-lg text-white font-medium text-[15px] font-['Montserrat'] hover:opacity-90 transition-opacity shadow-md"
+            className="flex-1 rounded-full py-3 text-[15px] font-medium text-white shadow-md transition-opacity hover:opacity-90 font-['Montserrat']"
             style={{
               background: 'linear-gradient(90deg, rgba(24, 151, 216, 0.8) 0%, #021C29 100%)',
             }}
@@ -112,7 +112,7 @@ export default function OrderSuccessModal({ isOpen, orderId }: OrderSuccessModal
           {/* Go Home */}
           <button
             onClick={() => router.push('/')}
-            className="flex-1 py-3 rounded-lg font-medium text-[15px] font-['Montserrat'] hover:opacity-80 transition-opacity"
+            className="flex-1 rounded-full py-3 text-[15px] font-medium transition-opacity hover:opacity-80 font-['Montserrat']"
             style={{
               border: '1.5px solid transparent',
               backgroundClip: 'padding-box',

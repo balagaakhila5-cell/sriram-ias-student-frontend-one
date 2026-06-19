@@ -142,7 +142,7 @@ export default function DailyPracticeQuestionsPage() {
 
       <main
         ref={containerRef}
-        className="w-full overflow-hidden bg-[#F7F8FB] font-['Montserrat',sans-serif]"
+        className="w-full overflow-hidden bg-[#f2f6fa] font-['Montserrat',sans-serif]"
       >
         <section className="relative h-[280px] w-full overflow-hidden md:h-[340px] lg:h-[390px]">
           <Image
