@@ -33,8 +33,8 @@ function resolveBanner(item: CatalogDocument) {
 
   if (isMagazine) {
     return {
-      src: item.image || RESOURCE_ASSETS.MAGAZINE,
-      fit: "magazine" as const,
+      src: RESOURCE_ASSETS.PDF_ICON,
+      fit: "cover" as const,
     };
   }
 
@@ -68,13 +68,17 @@ export default function ResourceDocumentCard({
   const actionCount = 2 + (item.hasSample ? 1 : 0);
   const useSingleRow =
     singleRowActions || isMagazine || actionCount >= 3;
-  const useCompactButtons = useSingleRow && actionCount >= 3;
-  const actionsClass = useSingleRow
-    ? PREMIUM_CARD.actionsRow
-    : PREMIUM_CARD.actions;
-  const buttonClass = useCompactButtons
-    ? RESOURCE_BUTTON.compact
-    : RESOURCE_BUTTON.base;
+  const useCompactButtons = useSingleRow && actionCount >= 3 && !isMagazine;
+  const actionsClass = isMagazine
+    ? PREMIUM_CARD.magazineActionsRow
+    : useSingleRow
+      ? PREMIUM_CARD.actionsRow
+      : PREMIUM_CARD.actions;
+  const buttonClass = isMagazine
+    ? RESOURCE_BUTTON.magazine
+    : useCompactButtons
+      ? RESOURCE_BUTTON.compact
+      : RESOURCE_BUTTON.base;
 
   return (
     <Tag className={`${PREMIUM_CARD.shell} ${className}`}>
@@ -84,9 +88,7 @@ export default function ResourceDocumentCard({
       <div
         className={banner ? PREMIUM_CARD.body : PREMIUM_CARD.bodyCentered}
       >
-        <h3
-          className={`${PREMIUM_CARD.title}${isMagazine ? " line-clamp-1" : ""}`}
-        >
+        <h3 className={PREMIUM_CARD.title}>
           {item.title}
         </h3>
         {description ? (

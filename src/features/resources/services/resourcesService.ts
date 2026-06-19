@@ -7,6 +7,7 @@ import {
   listFreeResourceDocuments,
 } from "../catalog/freeResources";
 import type { FreeResourcesSubtopicId } from "../catalog/types";
+import { buildYearOptions } from "@/utils/yearFilterOptions";
 
 /* ------------------------------------------------------------------ */
 /*  Shared / raw shapes                                                */
@@ -260,11 +261,11 @@ export const resourcesService = {
         },
       ];
     }
-    return [
-      { _id: "filter-year-2026", type: "YEAR", value: "2026" },
-      { _id: "filter-year-2025", type: "YEAR", value: "2025" },
-      { _id: "filter-year-2024", type: "YEAR", value: "2024" },
-    ];
+    return buildYearOptions().map((year) => ({
+      _id: `filter-year-${year}`,
+      type: "YEAR" as const,
+      value: year,
+    }));
   },
 
   listFiles: async (query: FilesQuery = {}): Promise<ResourceFile[]> => {

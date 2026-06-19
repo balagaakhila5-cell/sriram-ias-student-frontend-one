@@ -121,15 +121,20 @@ const DemoFormSelect: React.FC<DemoFormSelectProps> = ({
       setOpen(false);
     };
     const handleDismiss = () => setOpen(false);
+    const handleScroll = (event: Event) => {
+      const target = event.target as Node;
+      if (menuRef.current?.contains(target)) return;
+      setOpen(false);
+    };
 
     document.addEventListener("mousedown", handlePointerDown);
     window.addEventListener("resize", handleDismiss);
     // capture: true so the modal's own scroll container also dismisses it.
-    window.addEventListener("scroll", handleDismiss, true);
+    window.addEventListener("scroll", handleScroll, true);
     return () => {
       document.removeEventListener("mousedown", handlePointerDown);
       window.removeEventListener("resize", handleDismiss);
-      window.removeEventListener("scroll", handleDismiss, true);
+      window.removeEventListener("scroll", handleScroll, true);
     };
   }, [open]);
 

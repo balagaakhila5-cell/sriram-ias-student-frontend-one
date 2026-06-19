@@ -425,27 +425,19 @@
   left: 50%;
   bottom: 22px;
   z-index: 20;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
   transform: translateX(-50%);
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  background: rgba(58, 78, 94, 0.88);
-  padding: 10px 24px;
-  color: #ffffff;
-  font-size: 15px;
-  font-weight: 800;
   cursor: pointer;
-  transition: background 0.3s ease;
 }
 
 .our-books-card .buy-now-btn {
-  background: rgba(58, 78, 94, 0.88);
+  background: transparent;
 }
 
 .our-books-card:hover .buy-now-btn {
-  background: rgba(26, 116, 170, 0.94);
+  border-color: transparent;
+  background: linear-gradient(to right, #38aee5, #07344d);
+  color: #ffffff;
+  opacity: 0.9;
 }
 
 @media (min-width: 640px) {

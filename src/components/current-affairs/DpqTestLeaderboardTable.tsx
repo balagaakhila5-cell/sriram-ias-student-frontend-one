@@ -58,7 +58,7 @@ export default function DpqTestLeaderboardTable({
               className="flex items-center justify-between rounded-xl border border-gray-50 bg-white p-3 shadow-[0_4px_12px_rgba(0,0,0,0.08)]"
             >
               <div className="w-12 shrink-0 text-[18px] font-bold text-[#111111]">
-                {entry.rank}.
+                {entry.rank}
               </div>
 
               <div className="flex min-w-0 flex-1 items-center justify-center gap-3">
@@ -95,7 +95,7 @@ export default function DpqTestLeaderboardTable({
             className="rounded-xl border border-gray-50 bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-transform hover:scale-[1.01] md:grid md:grid-cols-[72px_minmax(0,1.4fr)_88px_88px_120px] md:items-center md:gap-3"
           >
             <div className="text-[18px] font-bold text-[#111111]">
-              {entry.rank}.
+              {entry.rank}
             </div>
 
             <div className="mt-3 flex min-w-0 items-center gap-3 md:mt-0">

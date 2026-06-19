@@ -103,14 +103,19 @@ const CustomDropdown = ({
       setIsOpen(false);
     };
     const handleDismiss = () => setIsOpen(false);
+    const handleScroll = (event: Event) => {
+      const target = event.target as Node;
+      if (menuRef.current?.contains(target)) return;
+      setIsOpen(false);
+    };
 
     document.addEventListener("mousedown", handlePointerDown);
     window.addEventListener("resize", handleDismiss);
-    window.addEventListener("scroll", handleDismiss, true);
+    window.addEventListener("scroll", handleScroll, true);
     return () => {
       document.removeEventListener("mousedown", handlePointerDown);
       window.removeEventListener("resize", handleDismiss);
-      window.removeEventListener("scroll", handleDismiss, true);
+      window.removeEventListener("scroll", handleScroll, true);
     };
   }, [isOpen]);
 
@@ -162,7 +167,10 @@ const CustomDropdown = ({
             }}
             className={`overflow-hidden ${styles.menu}`}
           >
-            <div className="flex max-h-[260px] flex-col overflow-y-auto px-2">
+            <div
+              className="flex max-h-[260px] flex-col overflow-y-auto overscroll-contain px-2"
+              onWheel={(event) => event.stopPropagation()}
+            >
               {options.map((opt) => (
                 <button
                   key={opt}

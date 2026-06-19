@@ -10,15 +10,15 @@ export const RESOURCE_CARD_LIMIT = 10;
 /** @deprecated Pagination removed — kept for any legacy imports */
 export const RESOURCE_DOCUMENTS_PAGE_SIZE = 6;
 
-/** Shared low-opacity section backgrounds (Free Resources + Current Affairs) */
+/** Shared section backgrounds (Free Resources + Current Affairs) */
 export const RESOURCE_SECTION_SHELL = "relative bg-[#f2f6fa]";
 export const RESOURCE_SECTION_TEXTURE_OVERLAY =
-  "pointer-events-none absolute inset-0 bg-[url('/assets/free-resources/free-resource-bg-1.png')] bg-cover bg-center bg-no-repeat opacity-[0.14]";
+  "pointer-events-none absolute inset-0 bg-[url('/assets/free-resources/free-resource-bg-1.png')] bg-cover bg-center bg-no-repeat opacity-90";
 export const RESOURCE_SECTION_WAVE_OVERLAY =
-  "pointer-events-none absolute inset-0 bg-[url('/assets/bg-wave.png')] bg-cover bg-center bg-no-repeat opacity-[0.14]";
+  "pointer-events-none absolute inset-0 bg-[url('/assets/bg-wave.png')] bg-cover bg-center bg-no-repeat opacity-90";
 /** Free Resources gateway (NCERT books hub) */
 export const RESOURCE_SECTION_GATEWAY_OVERLAY =
-  "pointer-events-none absolute inset-0 bg-[url('/assets/image-91.png')] bg-[position:center_35%] bg-cover bg-no-repeat opacity-[0.14]";
+  "pointer-events-none absolute inset-0 bg-[url('/assets/image-91.png')] bg-[position:center_35%] bg-cover bg-no-repeat opacity-90";
 
 /** Responsive grid — matches Monthly Magazine reference (2 columns) */
 export const RESOURCE_CARD_GRID =
@@ -36,30 +36,38 @@ export const RESOURCE_CARD_BORDER_HOVER = "#F5E4D4";
 const CARD_SURFACE =
   "resource-card-surface relative z-0 rounded-[14px]";
 
-/** Figma card title — Montserrat SemiBold 15px, 160% line-height, #000000 */
+/** Figma card title — single line, centered, ellipsis when long */
 export const RESOURCE_CARD_TITLE =
-  "line-clamp-2 font-['Montserrat'] text-[15px] font-semibold leading-[1.6] tracking-normal text-[#000000]";
+  "truncate w-full text-center font-['Montserrat'] text-[14px] font-semibold leading-tight tracking-normal text-[#000000]";
 
 const CARD_TITLE = RESOURCE_CARD_TITLE;
 
+/** Title sits slightly below card top; small gap before action buttons */
+const CARD_BODY_STACK =
+  "flex min-w-0 flex-1 flex-col items-center justify-start gap-4 px-2.5 pt-2.5 pb-2 text-center";
+
+const CARD_SHELL_COMPACT = "h-[96px] min-h-[96px]";
+
 /** Unified horizontal card — image left, content right */
 export const PREMIUM_CARD = {
-  shell: `group flex h-[112px] min-h-[112px] w-full min-w-0 flex-row overflow-visible ${CARD_SURFACE}`,
+  shell: `group flex ${CARD_SHELL_COMPACT} w-full min-w-0 flex-row overflow-visible ${CARD_SURFACE}`,
   thumb:
-    "resource-card-thumb relative h-full w-[88px] shrink-0 overflow-hidden rounded-l-[14px]",
+    "resource-card-thumb relative h-full w-[72px] shrink-0 overflow-hidden rounded-l-[14px]",
   thumbInner:
-    "relative flex h-full w-full items-center justify-center bg-transparent p-1.5",
-  body:
-    "flex min-w-0 flex-1 flex-col justify-center gap-1 px-3 py-2",
+    "relative flex h-full w-full items-center justify-center bg-transparent p-1",
+  body: CARD_BODY_STACK,
   bodyCentered:
-    "flex h-full w-full flex-col items-center justify-center gap-1.5 px-3 py-2 text-center",
+    `flex h-full w-full flex-col items-center justify-start gap-4 px-2.5 pt-2.5 pb-2 text-center`,
   title: CARD_TITLE,
   description:
     "line-clamp-1 text-[11px] font-medium leading-relaxed text-[#5A6573]",
   meta: "line-clamp-1 text-[11px] font-medium text-[#5A6573]",
-  actions: "mt-0.5 flex flex-wrap items-center gap-2",
+  actions: "flex flex-wrap items-center justify-center gap-1",
   actionsRow:
-    "mt-1 flex w-full min-w-0 flex-wrap items-center gap-1.5",
+    "flex w-full min-w-0 flex-wrap items-center justify-center gap-1",
+  /** Monthly magazine — centered 3-button row */
+  magazineActionsRow:
+    "flex w-full min-w-0 flex-wrap items-center justify-center gap-1",
   actionsCentered:
     "mt-1 flex w-full flex-nowrap items-center justify-center gap-2",
 } as const;
@@ -92,6 +100,8 @@ export const RESOURCE_BUTTON = {
   base: `${BUTTON_CORE} shrink-0 px-4 py-1.5 text-[12px] hover:border-[#2AA7DF] hover:bg-[#2AA7DF] hover:text-white`,
   /** 3-button row (Read + Sample + Download PDF) — equal width, centered text */
   compact: `${BUTTON_CORE} min-w-0 flex-1 px-2.5 py-1.5 text-[12px] hover:border-[#2AA7DF] hover:bg-[#2AA7DF] hover:text-white`,
+  /** Monthly magazine — natural width, left-aligned row */
+  magazine: `${BUTTON_CORE} shrink-0 px-2.5 py-1.5 text-[11px] hover:border-[#2AA7DF] hover:bg-[#2AA7DF] hover:text-white`,
   primary: `${BUTTON_CORE} shrink-0 px-4 py-1.5 text-[12px] hover:border-[#005B88] hover:bg-[linear-gradient(90deg,#2aa7df_0%,#03283b_100%)] hover:text-white`,
   attempt: `${BUTTON_CORE} shrink-0 px-4 py-1.5 text-[12px] hover:border-[#005B88] hover:bg-[#005B88] hover:text-white`,
   attemptLink: `${BUTTON_CORE} shrink-0 px-4 py-1.5 text-[12px] hover:border-[#005B88] hover:bg-[#005B88] hover:text-white`,
@@ -100,14 +110,14 @@ export const RESOURCE_BUTTON = {
 
 /** Study materials list — Figma cream cards (PDF icon left, title + actions) */
 export const STUDY_MATERIAL_CARD = {
-  shell: `study-material-card group flex h-[132px] min-h-[132px] w-full min-w-0 flex-row overflow-visible rounded-[12px] resource-card-surface`,
-  body: "flex min-w-0 flex-1 flex-col justify-center gap-2 px-4 py-3",
+  shell: `study-material-card group flex ${CARD_SHELL_COMPACT} w-full min-w-0 flex-row overflow-visible rounded-[12px] resource-card-surface`,
+  body: CARD_BODY_STACK,
   title: CARD_TITLE,
-  actions: "flex w-full min-w-0 flex-wrap items-center gap-2.5",
+  actions: "flex w-full min-w-0 flex-wrap items-center justify-center gap-1.5",
   viewButton:
-    "inline-flex shrink-0 items-center justify-center rounded-full border border-[#7EB4E2] bg-transparent px-5 py-2 text-center text-[13px] font-semibold text-[#7EB4E2] transition-all duration-300 hover:border-[#5BA3E0] hover:bg-[#7EB4E2] hover:text-white",
+    "inline-flex shrink-0 items-center justify-center rounded-full border border-[#7EB4E2] bg-transparent px-4 py-1.5 text-center text-[12px] font-semibold text-[#7EB4E2] transition-all duration-300 hover:border-[#5BA3E0] hover:bg-[#7EB4E2] hover:text-white",
   downloadButton:
-    "inline-flex shrink-0 items-center justify-center rounded-full border border-[#57B0F2] bg-transparent px-5 py-2 text-center text-[13px] font-semibold text-[#57B0F2] transition-all duration-300 hover:border-[#4599d9] hover:bg-[#57B0F2] hover:text-white",
+    "inline-flex shrink-0 items-center justify-center rounded-full border border-[#57B0F2] bg-transparent px-4 py-1.5 text-center text-[12px] font-semibold text-[#57B0F2] transition-all duration-300 hover:border-[#4599d9] hover:bg-[#57B0F2] hover:text-white",
 } as const;
 
 export const RESOURCE_EMPTY =
@@ -116,39 +126,53 @@ export const RESOURCE_EMPTY =
 const NCERT_BUTTON =
   "inline-flex min-w-0 items-center justify-center rounded-full border border-[#7EB4E2] bg-transparent px-4 py-2 text-center text-[12px] font-semibold text-[#7EB4E2] transition-all duration-300 ease-in-out hover:border-[#5BA3E0] hover:bg-[#7EB4E2] hover:text-white sm:px-5 sm:text-[13px]";
 
-/** Daily Practice Questions — icon left, centered title, Attempt Test bottom-right pill */
+/** Daily Practice Quiz — compact card, title then Attempt Test on the right */
 export const PRACTICE_TEST_CARD = {
   shell:
-    "practice-test-card group relative flex h-[132px] min-h-[132px] w-full min-w-0 flex-row overflow-visible rounded-[12px] resource-card-surface",
+    `practice-test-card group relative mx-auto flex ${CARD_SHELL_COMPACT} w-full max-w-[380px] min-w-0 flex-row overflow-visible rounded-[12px] resource-card-surface`,
   body:
-    "relative flex min-w-0 flex-1 flex-col items-center justify-center px-4 py-3 text-center",
-  title:
-    "line-clamp-2 w-full px-10 text-center font-['Montserrat'] text-[17px] font-bold leading-[1.35] tracking-normal text-[#000000] sm:text-[18px]",
+    "flex min-w-0 flex-1 flex-col items-center justify-start gap-4 px-2.5 pt-2.5 pb-2 text-center",
+  title: `${RESOURCE_CARD_TITLE} w-full`,
   attemptButton:
-    "absolute bottom-3 right-3 z-10 inline-flex items-center gap-2 rounded-full border border-[#57B0F2] bg-white px-4 py-1.5 text-[12px] font-semibold text-[#46A7ED] shadow-sm transition-all duration-300 group-hover:border-[#2AA7DF] group-hover:bg-[#2AA7DF] group-hover:text-white",
+    "self-end inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[#57B0F2] bg-white px-3 py-1 text-[11px] font-semibold text-[#46A7ED] shadow-sm transition-all duration-300 group-hover:border-[#2AA7DF] group-hover:bg-[#2AA7DF] group-hover:text-white",
+} as const;
+
+/** Grid for Daily Practice Quiz cards — centers narrower cards in each column */
+export const PRACTICE_TEST_CARD_GRID =
+  "grid w-full grid-cols-1 gap-6 overflow-visible px-1 py-2 justify-items-center md:grid-cols-2 md:gap-x-6 md:gap-y-6";
+
+/** Free mock test cards — photo left, title top, Attempt Test bottom-right */
+export const MOCK_TEST_CARD = {
+  shell: `mock-test-card group flex ${CARD_SHELL_COMPACT} w-full min-w-0 flex-row overflow-visible rounded-[12px] ${CARD_SURFACE}`,
+  thumb:
+    "resource-card-thumb relative h-full w-[80px] shrink-0 overflow-hidden rounded-l-[12px]",
+  body: CARD_BODY_STACK,
+  title: `${RESOURCE_CARD_TITLE} w-full`,
+  attemptButton:
+    "self-end shrink-0 inline-flex items-center justify-center rounded-full border border-[#57B0F2] bg-transparent px-3 py-1 text-[11px] font-semibold text-[#46A7ED] transition-all duration-300 ease-in-out hover:border-[#005B88] hover:bg-[#005B88] hover:text-white",
 } as const;
 
 /** PYQ question paper cards — Figma horizontal layout (Prelims / Mains lists) */
 export const PYQ_PAPER_CARD = {
-  shell: `pyq-paper-card group flex h-[132px] min-h-[132px] w-full min-w-0 flex-row overflow-visible rounded-[12px] ${CARD_SURFACE}`,
+  shell: `pyq-paper-card group flex ${CARD_SHELL_COMPACT} w-full min-w-0 flex-row overflow-visible rounded-[12px] ${CARD_SURFACE}`,
   thumb:
-    "resource-card-thumb relative h-full w-[108px] shrink-0 overflow-hidden rounded-l-[12px]",
+    "resource-card-thumb relative h-full w-[80px] shrink-0 overflow-hidden rounded-l-[12px]",
   thumbInner:
-    "relative flex h-full w-full items-center justify-center bg-transparent p-2",
-  body: "flex min-w-0 flex-1 flex-col justify-center gap-2 px-4 py-3",
+    "relative flex h-full w-full items-center justify-center bg-transparent p-1.5",
+  body: CARD_BODY_STACK,
   title: CARD_TITLE,
-  actions: "flex w-full min-w-0 flex-wrap items-center gap-2.5",
+  actions: "flex w-full min-w-0 flex-wrap items-center justify-center gap-1.5",
   viewButton:
-    "inline-flex shrink-0 items-center justify-center rounded-full border border-[#7EB4E2] bg-transparent px-5 py-2 text-center text-[13px] font-semibold text-[#7EB4E2] transition-all duration-300 hover:border-[#5BA3E0] hover:bg-[#7EB4E2] hover:text-white",
+    "inline-flex shrink-0 items-center justify-center rounded-full border border-[#7EB4E2] bg-transparent px-4 py-1.5 text-center text-[12px] font-semibold text-[#7EB4E2] transition-all duration-300 hover:border-[#5BA3E0] hover:bg-[#7EB4E2] hover:text-white",
   downloadButton:
-    "inline-flex shrink-0 items-center justify-center rounded-full border border-[#57B0F2] bg-transparent px-5 py-2 text-center text-[13px] font-semibold text-[#57B0F2] transition-all duration-300 hover:border-[#4599d9] hover:bg-[#57B0F2] hover:text-white",
+    "inline-flex shrink-0 items-center justify-center rounded-full border border-[#57B0F2] bg-transparent px-4 py-1.5 text-center text-[12px] font-semibold text-[#57B0F2] transition-all duration-300 hover:border-[#4599d9] hover:bg-[#57B0F2] hover:text-white",
 } as const;
 
 export const NCERT_BOOK_CARD = {
-  shell: `ncert-book-card group flex h-[120px] min-h-[120px] w-full min-w-0 flex-row overflow-visible rounded-[12px] ${CARD_SURFACE}`,
-  body: "flex min-w-0 flex-1 flex-col justify-center gap-2 px-4 py-3",
+  shell: `ncert-book-card group flex ${CARD_SHELL_COMPACT} w-full min-w-0 flex-row overflow-visible rounded-[12px] ${CARD_SURFACE}`,
+  body: CARD_BODY_STACK,
   title: CARD_TITLE,
-  actions: "flex w-full min-w-0 flex-wrap items-center gap-2",
+  actions: "flex w-full min-w-0 flex-wrap items-center justify-center gap-1.5",
   button: NCERT_BUTTON,
 } as const;
 

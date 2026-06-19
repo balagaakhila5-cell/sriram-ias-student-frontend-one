@@ -1,12 +1,14 @@
 /** PYQ public + portal — Select Paper / Year options (Figma) */
 
+import { RESOURCE_YEAR_OPTIONS } from '@/utils/yearFilterOptions';
+
 export const PYQ_SELECT_PAPER_OPTIONS = ["General Studies", "CSAT"] as const;
 
-export const PYQ_YEAR_OPTIONS = ["2026", "2025", "2024"] as const;
+export const PYQ_YEAR_OPTIONS = RESOURCE_YEAR_OPTIONS;
 
 export type PyqSelectPaper = (typeof PYQ_SELECT_PAPER_OPTIONS)[number];
 
-export type PyqYear = (typeof PYQ_YEAR_OPTIONS)[number];
+export type PyqYear = string;
 
 const PAPER_MATCH_KEYS: Record<PyqSelectPaper, string[]> = {
   "General Studies": ["general studies", "general", "gs"],

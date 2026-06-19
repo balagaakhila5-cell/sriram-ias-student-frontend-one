@@ -1,12 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import type { DemoMockTestCard } from "@/features/resources/catalog/demoMockTests";
 import { getMockTestCardDisplay } from "@/features/resources/catalog/demoMockTests";
 import type { MockTestSummary } from "@/features/resources/services/resourcesService";
 import { RESOURCE_ASSETS } from "@/features/resources/catalog/assets";
-import PremiumCardBanner from "./PremiumCardBanner";
-import { PREMIUM_CARD, RESOURCE_BUTTON } from "./cardStyles";
+import { MOCK_TEST_CARD } from "./cardStyles";
 
 type MockTestCardItem = MockTestSummary | DemoMockTestCard;
 
@@ -30,22 +30,29 @@ export default function MockTestCard({
       : RESOURCE_ASSETS.MOCK_TEST_CARD;
 
   const attemptHref = `/free_resources/free-mocktests/${test._id}`;
-
-  const { title, subtitle } = getMockTestCardDisplay(test, examType, index);
+  const { title } = getMockTestCardDisplay(test, examType, index);
 
   return (
-    <div className={`${PREMIUM_CARD.shell} ${className}`}>
-      <PremiumCardBanner src={image} alt={title} fit="cover" />
-      <div className={PREMIUM_CARD.body}>
-        <h3 className={PREMIUM_CARD.title}>{title}</h3>
-        {subtitle ? (
-          <p className={PREMIUM_CARD.description}>{subtitle}</p>
-        ) : null}
-        <div className={PREMIUM_CARD.actions}>
-          <Link href={attemptHref} className={RESOURCE_BUTTON.attempt}>
-            Attempt Test
-          </Link>
-        </div>
+    <div className={`${MOCK_TEST_CARD.shell} ${className}`}>
+      <div className={MOCK_TEST_CARD.thumb}>
+        <Image
+          src={image}
+          alt={title}
+          fill
+          className="object-cover"
+          sizes="96px"
+          onError={(e) => {
+            const target = e.currentTarget;
+            if (target.src.includes(RESOURCE_ASSETS.MOCK_TEST_CARD)) return;
+            target.src = RESOURCE_ASSETS.MOCK_TEST_CARD;
+          }}
+        />
+      </div>
+      <div className={MOCK_TEST_CARD.body}>
+        <h3 className={MOCK_TEST_CARD.title}>{title}</h3>
+        <Link href={attemptHref} className={MOCK_TEST_CARD.attemptButton}>
+          Attempt Test
+        </Link>
       </div>
     </div>
   );

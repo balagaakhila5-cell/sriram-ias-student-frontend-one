@@ -8,7 +8,7 @@ import { useGSAP } from "@gsap/react";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 
 import { FileText, ClipboardList } from "lucide-react";
-import { buildTextDateOptions } from "@/features/resources/catalog/currentAffairs";
+import { buildDpqDateFilterOptions } from "@/features/resources/catalog/currentAffairs";
 import { useDailyPracticeTests } from "@/features/currentAffairs/hooks/useCurrentAffairs";
 import {
   ALL_FILTER,
@@ -16,15 +16,10 @@ import {
   CA_FILTER_YEARS,
   toFilterValue,
 } from "@/features/currentAffairs/filters";
-
-/** Text-only date labels for the Date filter (no digits in the closed button). */
-function getDpqDateOptions(month: string) {
-  return buildTextDateOptions(month);
-}
 import PracticeTestCard from "@/features/resources/components/PracticeTestCard";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 import {
-  FREE_RESOURCE_CARD_GRID,
+  PRACTICE_TEST_CARD_GRID,
   RESOURCE_PAGE_HEADING_GRADIENT,
   RESOURCE_SECTION_SHELL,
   RESOURCE_SECTION_TEXTURE_OVERLAY,
@@ -56,8 +51,7 @@ export default function DailyPracticeQuestionsPage() {
   const [filterMonth, setFilterMonth] = useState<string>(ALL_FILTER);
 
   const dateOptions = useMemo(
-    () =>
-      filterMonth === ALL_FILTER ? [ALL_FILTER] : getDpqDateOptions(filterMonth),
+    () => buildDpqDateFilterOptions(filterMonth, ALL_FILTER),
     [filterMonth],
   );
 
@@ -163,7 +157,7 @@ export default function DailyPracticeQuestionsPage() {
               <div>
                 <h1 className="dpq-animate-heading mb-10 text-center text-[22px] font-extrabold uppercase leading-tight tracking-tight sm:text-[30px] md:text-[40px] lg:text-[48px] xl:text-[52px]">
                   <span className={RESOURCE_PAGE_HEADING_GRADIENT}>
-                    Daily Practice Questions
+                    Daily Practice Quiz
                   </span>
                 </h1>
 
@@ -227,7 +221,6 @@ export default function DailyPracticeQuestionsPage() {
                     value={selectedDate}
                     onChange={setSelectedDate}
                     placeholder="Date"
-                    buttonLabel="Date"
                   />
                 </div>
 
@@ -245,7 +238,7 @@ export default function DailyPracticeQuestionsPage() {
                       No practice tests found for the selected filters.
                     </p>
                   ) : (
-                    <ResourceCardGrid className={FREE_RESOURCE_CARD_GRID}>
+                    <ResourceCardGrid className={PRACTICE_TEST_CARD_GRID}>
                       {practiceTests.map((card) => (
                         <PracticeTestCard
                           key={card.id}

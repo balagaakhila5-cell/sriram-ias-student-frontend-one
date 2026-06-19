@@ -76,7 +76,7 @@ function buildDemoTest(
   };
 }
 
-/** Portal / public card lines — e.g. "Prelims Exam Paper-2" + "Test-1" */
+/** Portal / public card title — e.g. "Prelims Exam Paper-2" */
 export function buildMockTestCardLines(
   examType: "prelims" | "mains",
   testNumber: number,
@@ -93,21 +93,21 @@ export function getMockTestCardDisplay(
   test: { title: string; subtitle?: string },
   examType?: "prelims" | "mains",
   index?: number,
-): { title: string; subtitle: string } {
+): { title: string } {
   if (test.subtitle) {
-    return { title: test.title, subtitle: test.subtitle };
+    return { title: test.title };
   }
 
   const parts = test.title.split(" — ");
   if (parts.length === 2) {
-    return { title: parts[0].trim(), subtitle: parts[1].trim() };
+    return { title: parts[0].trim() };
   }
 
   if (examType != null && index != null) {
-    return buildMockTestCardLines(examType, index + 1);
+    return { title: buildMockTestCardLines(examType, index + 1).title };
   }
 
-  return { title: test.title, subtitle: "" };
+  return { title: test.title };
 }
 
 /** Default mock test opened from the home page Daily Quiz Explore button */

@@ -3,9 +3,10 @@ import { resourceDownloadPath } from "./routes";
 import { registerDocuments } from "./registry";
 import { RESOURCE_CARD_LIMIT } from "../components/cardStyles";
 import { buildPyqCardTitle } from "../utils/pyqCardTitle";
+import { RESOURCE_YEAR_OPTIONS } from "@/utils/yearFilterOptions";
 import type { CatalogDocument, FreeResourcesSubtopicId } from "./types";
 
-const PYQ_YEARS = ["2026", "2025", "2024"] as const;
+const PYQ_YEARS = RESOURCE_YEAR_OPTIONS;
 const PYQ_EXAM_TYPES = ["prelims", "mains"] as const;
 
 function freeDoc(

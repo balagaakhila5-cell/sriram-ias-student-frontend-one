@@ -2,8 +2,17 @@
 
 import { useMemo } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  listCurrentAffairsDocuments,
+  listPracticeTests,
+} from "@/features/resources/catalog/currentAffairs";
 import { currentAffairsService } from "../services/currentAffairsService";
-import { toCatalogDocument, toPracticeTestCard } from "../mappers";
+import {
+  CATEGORY_TO_SUBTOPIC,
+  toCatalogDocument,
+  toPracticeTestCard,
+} from "../mappers";
+import { matchesYearMonth } from "../filters";
 import type {
   CurrentAffairsCategory,
   CurrentAffairsListFilters,
@@ -20,7 +29,7 @@ export function useCurrentAffairsList(filters: CurrentAffairsListFilters = {}) {
 
 /**
  * Document-list pages (daily current affairs, monthly magazine, infographics,
- * monthly recap). Returns items already mapped to the card shape.
+ * monthly recap). Uses API data when available; falls back to catalog seed data.
  */
 export function useCurrentAffairsDocuments(
   category: CurrentAffairsCategory,
@@ -28,11 +37,27 @@ export function useCurrentAffairsDocuments(
   month?: string,
 ) {
   const query = useCurrentAffairsList({ category, year, month, limit: 24 });
-  const documents = useMemo(
-    () => (query.data?.items ?? []).map(toCatalogDocument),
-    [query.data],
-  );
-  return { ...query, documents };
+
+  const fallbackDocuments = useMemo(() => {
+    const subtopic = CATEGORY_TO_SUBTOPIC[category];
+    if (!subtopic) return [];
+    return listCurrentAffairsDocuments(subtopic, year, month);
+  }, [category, year, month]);
+
+  const documents = useMemo(() => {
+    const apiItems = (query.data?.items ?? [])
+      .map(toCatalogDocument)
+      .filter((doc) => matchesYearMonth(doc, year, month));
+    if (apiItems.length > 0) return apiItems;
+    if (query.isLoading) return [];
+    return fallbackDocuments;
+  }, [query.data, query.isLoading, fallbackDocuments, year, month]);
+
+  return {
+    ...query,
+    documents,
+    isError: query.isError && documents.length === 0,
+  };
 }
 
 /**
@@ -54,11 +79,31 @@ export function useDailyPracticeTests(
     date,
     limit: 12,
   });
-  const tests = useMemo(
-    () => (query.data?.items ?? []).map(toPracticeTestCard),
-    [query.data],
+
+  const fallbackTests = useMemo(
+    () =>
+      listPracticeTests(year, month, examType, date, {
+        filterByDay: Boolean(date),
+        limit: 12,
+        mainSite: true,
+      }),
+    [year, month, examType, date],
   );
-  return { ...query, tests };
+
+  const tests = useMemo(() => {
+    const apiItems = (query.data?.items ?? [])
+      .map(toPracticeTestCard)
+      .filter((test) => matchesYearMonth(test, year, month));
+    if (apiItems.length > 0) return apiItems;
+    if (query.isLoading) return [];
+    return fallbackTests;
+  }, [query.data, query.isLoading, fallbackTests, year, month]);
+
+  return {
+    ...query,
+    tests,
+    isError: query.isError && tests.length === 0,
+  };
 }
 
 /** Questions for a single current-affairs paper (by id). */

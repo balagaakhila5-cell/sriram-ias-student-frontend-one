@@ -771,8 +771,8 @@
   .practice-test-card.resource-card-surface {
     --resource-card-bg: #fdfbf7;
     --resource-card-border: #efe9e0;
-    min-height: 132px;
-    height: 132px;
+    min-height: 112px;
+    height: 112px;
     border-radius: 12px;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
   }
@@ -786,7 +786,7 @@
   }
 
   .practice-test-card .resource-card-thumb {
-    width: 108px;
+    width: 88px;
     background: linear-gradient(135deg, #dceef7 0%, #b5daee 100%) !important;
   }
 

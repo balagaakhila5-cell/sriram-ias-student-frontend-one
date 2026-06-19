@@ -4,10 +4,6 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import {
-  COURSE_EXPLORE_BUTTON_CLASS,
-  COURSE_EXPLORE_BUTTON_LABEL,
-} from '@/components/common/courseExploreButton';
 
 export const DAILY_LEARNING_BANNER_IMAGE =
   '/assets/current-affairs/daily-practice-questions/daily-practice-questions-banner.png';
@@ -98,8 +94,6 @@ export default function DailyLearningTopicCarousel() {
     setActiveIndex((index + slideCount) % slideCount);
   };
 
-  const activeTopic = DAILY_LEARNING_TOPICS[activeIndex];
-
   return (
     <div className="mx-auto w-full max-w-[720px]">
       <div ref={viewportRef} className="relative w-full overflow-hidden rounded-[16px]">
@@ -129,18 +123,6 @@ export default function DailyLearningTopicCarousel() {
                   sizes="(max-width: 768px) 100vw, 720px"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.05)_35%,rgba(0,0,0,0.88)_100%)]" />
-                <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
-                  <h3 className="text-[28px] font-bold leading-tight sm:text-[32px]">
-                    {topic.title}
-                  </h3>
-                  <p className="mt-2 max-w-[90%] text-[14px] font-medium leading-relaxed text-white/90 sm:text-[15px]">
-                    {topic.description}
-                  </p>
-                  <span className={`mt-5 ${COURSE_EXPLORE_BUTTON_CLASS}`}>
-                    {COURSE_EXPLORE_BUTTON_LABEL}
-                  </span>
-                </div>
               </Link>
             </article>
           ))}
@@ -180,10 +162,6 @@ export default function DailyLearningTopicCarousel() {
           <ChevronRight size={22} />
         </button>
       </div>
-
-      <p className="mt-3 text-center text-[13px] font-medium text-[#5A6573]">
-        Now showing: {activeTopic.title}
-      </p>
     </div>
   );
 }

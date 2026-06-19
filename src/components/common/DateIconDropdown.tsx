@@ -57,7 +57,11 @@ export default function DateIconDropdown({
       setIsOpen(false);
     };
 
-    const onReposition = () => updateMenuPosition();
+    const onReposition = (event: Event) => {
+      const target = event.target as Node;
+      if (menuRef.current?.contains(target)) return;
+      updateMenuPosition();
+    };
 
     document.addEventListener("mousedown", handleClickOutside);
     window.addEventListener("resize", onReposition);
@@ -81,7 +85,10 @@ export default function DateIconDropdown({
           width: menuStyle.width,
         }}
       >
-        <div className="flex max-h-[260px] flex-col overflow-y-auto px-2">
+        <div
+          className="flex max-h-[260px] flex-col overflow-y-auto overscroll-contain px-2"
+          onWheel={(event) => event.stopPropagation()}
+        >
           {options.map((opt) => (
             <button
               key={opt}

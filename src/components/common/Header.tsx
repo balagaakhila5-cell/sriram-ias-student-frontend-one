@@ -220,11 +220,14 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
     return { primary: label, secondary: null, twoLines: false };
   };
 
-  const BulletArrow = () => (
-    <img
-      src="/assets/arrow.png"
+  const CourseLinkIcon = () => (
+    <Image
+      src="/assets/why-choose/tdesign_course-filled.png"
       alt=""
-      className="h-[22px] w-[22px] shrink-0 object-contain"
+      width={22}
+      height={22}
+      unoptimized
+      className="h-[22px] w-[22px] shrink-0 object-contain transition-opacity group-hover/course-item:opacity-80"
     />
   );
 
@@ -236,10 +239,10 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
         href={course.href}
         key={course.slug}
         onClick={() => setIsCoursesOpen(false)}
-        className="group/course-item flex w-full items-start gap-4"
+        className="group/course-item flex w-full items-start gap-3"
       >
-        <span className="shrink-0 pt-[2px] transition-opacity group-hover/course-item:opacity-80">
-          <BulletArrow />
+        <span className="shrink-0 pt-[2px]">
+          <CourseLinkIcon />
         </span>
         <span
           className={`font-[Montserrat] text-[16px] font-semibold leading-[1.25] text-black transition-colors group-hover/course-item:text-[#1376B1] md:text-[17px] ${
@@ -580,7 +583,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                 </button>
               </div>
 
-              <div ref={freeResourcesMenuRef} className="flex items-center cursor-pointer">
+              <div ref={freeResourcesMenuRef} className="relative flex items-center cursor-pointer">
                 <div className="flex items-center rounded-[6px] transition-all duration-300 cursor-pointer">
                   <Link
                     href="/free_resources/ncert-books"
@@ -615,9 +618,70 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                     />
                   </button>
                 </div>
+
+                {isFreeResourcesOpen && (
+                  <div
+                    ref={freeResourcesDropdownRef}
+                    className="absolute top-full left-1/2 z-50 mt-3 w-[min(620px,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-[12px] bg-white shadow-[0px_10px_28px_rgba(0,0,0,0.14)]"
+                  >
+                    <div className="relative z-20 flex items-center justify-center gap-3 px-6 py-6">
+                      <Link
+                        href="/free_resources/ncert-page"
+                        onClick={() => setIsFreeResourcesOpen(false)}
+                        className="group flex h-[108px] w-[118px] shrink-0 flex-col items-center justify-center rounded-[10px] bg-white px-2 text-center shadow-[0px_6px_16px_rgba(0,0,0,0.07)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_10px_22px_rgba(0,0,0,0.1)]"
+                      >
+                        <div className="mb-1.5 flex h-[36px] w-[36px] items-center justify-center rounded-[10px] bg-[#E8F3C9]">
+                          <BookOpen className="h-[18px] w-[18px] text-[#6E9331]" strokeWidth={2} />
+                        </div>
+                        <h3 className="text-[12px] font-semibold leading-[16px] normal-case text-[#6E9331]">
+                          NCERT Books
+                        </h3>
+                      </Link>
+
+                      <Link
+                        href="/free_resources/previous-year"
+                        onClick={() => setIsFreeResourcesOpen(false)}
+                        className="group flex h-[108px] w-[148px] shrink-0 flex-col items-center justify-center rounded-[10px] bg-white px-2 text-center shadow-[0px_6px_16px_rgba(0,0,0,0.07)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_10px_22px_rgba(0,0,0,0.1)]"
+                      >
+                        <div className="mb-1.5 flex h-[36px] w-[36px] items-center justify-center rounded-[10px] bg-[#F7DDE0]">
+                          <FileText className="h-[18px] w-[18px] text-[#C57A7E]" strokeWidth={2} />
+                        </div>
+                        <h3 className="text-[11px] font-semibold leading-[14px] normal-case text-[#C57A7E]">
+                          Previous Year Question Papers
+                        </h3>
+                      </Link>
+
+                      <Link
+                        href="/free_resources/free-mocktests"
+                        onClick={() => setIsFreeResourcesOpen(false)}
+                        className="group flex h-[108px] w-[118px] shrink-0 flex-col items-center justify-center rounded-[10px] bg-white px-2 text-center shadow-[0px_6px_16px_rgba(0,0,0,0.07)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_10px_22px_rgba(0,0,0,0.1)]"
+                      >
+                        <div className="mb-1.5 flex h-[36px] w-[36px] items-center justify-center rounded-[10px] bg-[#E8F3C9]">
+                          <ClipboardCheck className="h-[18px] w-[18px] text-[#6E9331]" strokeWidth={2} />
+                        </div>
+                        <h3 className="text-[12px] font-semibold leading-[16px] normal-case text-[#6E9331]">
+                          Free Mock Tests
+                        </h3>
+                      </Link>
+
+                      <Link
+                        href="/free_resources/study-materials"
+                        onClick={() => setIsFreeResourcesOpen(false)}
+                        className="group flex h-[108px] w-[118px] shrink-0 flex-col items-center justify-center rounded-[10px] bg-white px-2 text-center shadow-[0px_6px_16px_rgba(0,0,0,0.07)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_10px_22px_rgba(0,0,0,0.1)]"
+                      >
+                        <div className="mb-1.5 flex h-[36px] w-[36px] items-center justify-center rounded-[10px] bg-[#F7DDE0]">
+                          <LibraryBig className="h-[18px] w-[18px] text-[#FF4B55]" strokeWidth={2} />
+                        </div>
+                        <h3 className="text-[12px] font-semibold leading-[16px] normal-case text-[#FF4B55]">
+                          Study Material
+                        </h3>
+                      </Link>
+                    </div>
+                  </div>
+                )}
               </div>
 
-              <div ref={currentAffairsMenuRef} className="flex items-center cursor-pointer">
+              <div ref={currentAffairsMenuRef} className="relative flex items-center cursor-pointer">
                 <div className="flex items-center rounded-[6px] transition-all duration-300 cursor-pointer">
                   <Link
                     href="/current-affairs"
@@ -652,6 +716,93 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                     />
                   </button>
                 </div>
+
+                {isCurrentAffairsOpen && (
+                  <div
+                    ref={currentAffairsDropdownRef}
+                    className="absolute top-full left-1/2 z-50 mt-3 w-[min(830px,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-[12px] bg-white shadow-[0px_10px_28px_rgba(0,0,0,0.14)]"
+                  >
+                    <div className="relative z-20 flex flex-wrap items-center justify-center gap-3 px-6 py-6 sm:flex-nowrap">
+                      <Link
+                        href="/current-affairs/daily-current-affairs"
+                        onClick={() => setIsCurrentAffairsOpen(false)}
+                        className="group flex h-[108px] w-[118px] shrink-0 flex-col items-center justify-center rounded-[10px] bg-white px-2 text-center shadow-[0px_6px_16px_rgba(0,0,0,0.07)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_10px_22px_rgba(0,0,0,0.1)]"
+                      >
+                        <div className="mb-1.5 flex h-[36px] w-[36px] items-center justify-center rounded-[10px] bg-[#DCEEFF]">
+                          <Newspaper className="h-[18px] w-[18px] text-[#4A90D9]" strokeWidth={2} />
+                        </div>
+                        <h3 className="text-[11px] font-semibold leading-[14px] normal-case text-[#4A90D9]">
+                          Daily Current Affairs
+                        </h3>
+                      </Link>
+
+                      <Link
+                        href="/current-affairs/monthly-magazine"
+                        onClick={() => setIsCurrentAffairsOpen(false)}
+                        className="group flex h-[108px] w-[118px] shrink-0 flex-col items-center justify-center rounded-[10px] bg-white px-2 text-center shadow-[0px_6px_16px_rgba(0,0,0,0.07)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_10px_22px_rgba(0,0,0,0.1)]"
+                      >
+                        <div className="mb-1.5 flex h-[36px] w-[36px] items-center justify-center rounded-[10px] bg-[#EDE8F7]">
+                          <BookMarked className="h-[18px] w-[18px] text-[#7B6FCF]" strokeWidth={2} />
+                        </div>
+                        <h3 className="text-[12px] font-semibold leading-[16px] normal-case text-[#7B6FCF]">
+                          Monthly Magazine
+                        </h3>
+                      </Link>
+
+                      <Link
+                        href="/current-affairs/daily-practice-questions"
+                        onClick={() => setIsCurrentAffairsOpen(false)}
+                        className="group flex h-[108px] w-[132px] shrink-0 flex-col items-center justify-center rounded-[10px] bg-white px-2 text-center shadow-[0px_6px_16px_rgba(0,0,0,0.07)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_10px_22px_rgba(0,0,0,0.1)]"
+                      >
+                        <div className="mb-1.5 flex h-[36px] w-[36px] items-center justify-center rounded-[10px] bg-[#E8F3C9]">
+                          <ClipboardList className="h-[18px] w-[18px] text-[#6E9331]" strokeWidth={2} />
+                        </div>
+                        <h3 className="text-[11px] font-semibold leading-[14px] normal-case text-[#6E9331]">
+                          Daily Practice Questions
+                        </h3>
+                      </Link>
+
+                      <Link
+                        href="/current-affairs/infographics"
+                        onClick={() => setIsCurrentAffairsOpen(false)}
+                        className="group flex h-[108px] w-[118px] shrink-0 flex-col items-center justify-center rounded-[10px] bg-white px-2 text-center shadow-[0px_6px_16px_rgba(0,0,0,0.07)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_10px_22px_rgba(0,0,0,0.1)]"
+                      >
+                        <div className="mb-1.5 flex h-[36px] w-[36px] items-center justify-center rounded-[10px] bg-[#F7DDE0]">
+                          <BarChart2 className="h-[18px] w-[18px] text-[#C57A7E]" strokeWidth={2} />
+                        </div>
+                        <h3 className="text-[12px] font-semibold leading-[16px] normal-case text-[#C57A7E]">
+                          Infographics
+                        </h3>
+                      </Link>
+
+                      <Link
+                        href="/current-affairs/monthly-recap"
+                        onClick={() => setIsCurrentAffairsOpen(false)}
+                        className="group flex h-[108px] w-[118px] shrink-0 flex-col items-center justify-center rounded-[10px] bg-white px-2 text-center shadow-[0px_6px_16px_rgba(0,0,0,0.07)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_10px_22px_rgba(0,0,0,0.1)]"
+                      >
+                        <div className="mb-1.5 flex h-[36px] w-[36px] items-center justify-center rounded-[10px] bg-[#FEF0DC]">
+                          <CalendarDays className="h-[18px] w-[18px] text-[#D9833A]" strokeWidth={2} />
+                        </div>
+                        <h3 className="text-[12px] font-semibold leading-[16px] normal-case text-[#D9833A]">
+                          Monthly Recap
+                        </h3>
+                      </Link>
+
+                      <Link
+                        href="/current-affairs/daily-learning"
+                        onClick={() => setIsCurrentAffairsOpen(false)}
+                        className="group flex h-[108px] w-[118px] shrink-0 flex-col items-center justify-center rounded-[10px] bg-white px-2 text-center shadow-[0px_6px_16px_rgba(0,0,0,0.07)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_10px_22px_rgba(0,0,0,0.1)]"
+                      >
+                        <div className="mb-1.5 flex h-[36px] w-[36px] items-center justify-center rounded-[10px] bg-[#E3F4FC]">
+                          <BookOpen className="h-[18px] w-[18px] text-[#349EE3]" strokeWidth={2} />
+                        </div>
+                        <h3 className="text-[12px] font-semibold leading-[16px] normal-case text-[#349EE3]">
+                          Daily Learning
+                        </h3>
+                      </Link>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <Link href="/books" className={secondNavItemClass}>
@@ -772,156 +923,6 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
           </div>
         </div>
 
-        {isFreeResourcesOpen && (
-          <div ref={freeResourcesDropdownRef} className="absolute top-full left-0 right-0 z-50 mt-3">
-            <div className="w-full border-t border-b border-[#E9E9E9] bg-white/95 py-7">
-              <div className="mx-auto w-full max-w-[1100px] px-6 md:px-8">
-                <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:gap-4">
-                  <Link
-                    href="/free_resources/ncert-page"
-                    onClick={() => setIsFreeResourcesOpen(false)}
-                    className="group flex h-[140px] flex-col items-center justify-center rounded-[16px] bg-[#F8F8F8] px-4 text-center shadow-[0px_8px_22px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
-                  >
-                    <div className="mb-2.5 flex h-[46px] w-[46px] items-center justify-center rounded-[12px] bg-[#E8F3C9]">
-                      <BookOpen className="h-6 w-6 text-[#6E9331]" strokeWidth={2} />
-                    </div>
-                    <h3 className="text-[14px] font-semibold leading-[20px] normal-case text-[#6E9331]">
-                      NCERT Books
-                    </h3>
-                  </Link>
-
-                  <Link
-                    href="/free_resources/previous-year"
-                    onClick={() => setIsFreeResourcesOpen(false)}
-                    className="group flex h-[140px] flex-col items-center justify-center rounded-[16px] bg-[#F8F8F8] px-4 text-center shadow-[0px_8px_22px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
-                  >
-                    <div className="mb-2.5 flex h-[46px] w-[46px] items-center justify-center rounded-[12px] bg-[#F7DDE0]">
-                      <FileText className="h-6 w-6 text-[#C57A7E]" strokeWidth={2} />
-                    </div>
-                    <h3 className="max-w-[170px] text-[14px] font-semibold leading-[20px] normal-case text-[#C57A7E]">
-                      Previous Year Question Papers
-                    </h3>
-                  </Link>
-
-                  <Link
-                    href="/free_resources/free-mocktests"
-                    onClick={() => setIsFreeResourcesOpen(false)}
-                    className="group flex h-[140px] flex-col items-center justify-center rounded-[16px] bg-[#F8F8F8] px-4 text-center shadow-[0px_8px_22px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
-                  >
-                    <div className="mb-2.5 flex h-[46px] w-[46px] items-center justify-center rounded-[12px] bg-[#E8F3C9]">
-                      <ClipboardCheck className="h-6 w-6 text-[#6E9331]" strokeWidth={2} />
-                    </div>
-                    <h3 className="text-[14px] font-semibold leading-[20px] normal-case text-[#6E9331]">
-                      Free Mock Tests
-                    </h3>
-                  </Link>
-
-                  <Link
-                    href="/free_resources/study-materials"
-                    onClick={() => setIsFreeResourcesOpen(false)}
-                    className="group flex h-[140px] flex-col items-center justify-center rounded-[16px] bg-[#F8F8F8] px-4 text-center shadow-[0px_8px_22px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
-                  >
-                    <div className="mb-2.5 flex h-[46px] w-[46px] items-center justify-center rounded-[12px] bg-[#F7DDE0]">
-                      <LibraryBig className="h-6 w-6 text-[#FF4B55]" strokeWidth={2} />
-                    </div>
-                    <h3 className="text-[14px] font-semibold leading-[20px] normal-case text-[#FF4B55]">
-                      Study Material
-                    </h3>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {isCurrentAffairsOpen && (
-          <div ref={currentAffairsDropdownRef} className="absolute top-full left-0 right-0 z-50 mt-3">
-            <div className="w-full border-t border-b border-[#E9E9E9] bg-white/95 py-7">
-              <div className="mx-auto w-full max-w-[1100px] px-6 md:px-8">
-                <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6 lg:gap-4">
-                  <Link
-                    href="/current-affairs"
-                    onClick={() => setIsCurrentAffairsOpen(false)}
-                    className="group flex h-[140px] flex-col items-center justify-center rounded-[16px] bg-[#F8F8F8] px-4 text-center shadow-[0px_8px_22px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
-                  >
-                    <div className="mb-2.5 flex h-[46px] w-[46px] items-center justify-center rounded-[12px] bg-[#DCEEFF]">
-                      <Newspaper className="h-6 w-6 text-[#4A90D9]" strokeWidth={2} />
-                    </div>
-                    <h3 className="text-[14px] leading-[20px] font-semibold normal-case text-[#4A90D9]">
-                      Daily Current Affairs
-                    </h3>
-                  </Link>
-
-                  <Link
-                    href="/current-affairs"
-                    onClick={() => setIsCurrentAffairsOpen(false)}
-                    className="group flex h-[140px] flex-col items-center justify-center rounded-[16px] bg-[#F8F8F8] px-4 text-center shadow-[0px_8px_22px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
-                  >
-                    <div className="mb-2.5 flex h-[46px] w-[46px] items-center justify-center rounded-[12px] bg-[#EDE8F7]">
-                      <BookMarked className="h-6 w-6 text-[#7B6FCF]" strokeWidth={2} />
-                    </div>
-                    <h3 className="text-[14px] leading-[20px] font-semibold normal-case text-[#7B6FCF]">
-                      Monthly Magazine
-                    </h3>
-                  </Link>
-
-                  <Link
-                    href="/current-affairs"
-                    onClick={() => setIsCurrentAffairsOpen(false)}
-                    className="group flex h-[140px] flex-col items-center justify-center rounded-[16px] bg-[#F8F8F8] px-4 text-center shadow-[0px_8px_22px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
-                  >
-                    <div className="mb-2.5 flex h-[46px] w-[46px] items-center justify-center rounded-[12px] bg-[#E8F3C9]">
-                      <ClipboardList className="h-6 w-6 text-[#6E9331]" strokeWidth={2} />
-                    </div>
-                    <h3 className="text-[14px] leading-[20px] font-semibold normal-case text-[#6E9331]">
-                      Daily Practice Questions
-                    </h3>
-                  </Link>
-
-                  <Link
-                    href="/current-affairs"
-                    onClick={() => setIsCurrentAffairsOpen(false)}
-                    className="group flex h-[140px] flex-col items-center justify-center rounded-[16px] bg-[#F8F8F8] px-4 text-center shadow-[0px_8px_22px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
-                  >
-                    <div className="mb-2.5 flex h-[46px] w-[46px] items-center justify-center rounded-[12px] bg-[#F7DDE0]">
-                      <BarChart2 className="h-6 w-6 text-[#C57A7E]" strokeWidth={2} />
-                    </div>
-                    <h3 className="text-[14px] leading-[20px] font-semibold normal-case text-[#C57A7E]">
-                      Infographics
-                    </h3>
-                  </Link>
-
-                  <Link
-                    href="/current-affairs"
-                    onClick={() => setIsCurrentAffairsOpen(false)}
-                    className="group flex h-[140px] flex-col items-center justify-center rounded-[16px] bg-[#F8F8F8] px-4 text-center shadow-[0px_8px_22px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
-                  >
-                    <div className="mb-2.5 flex h-[46px] w-[46px] items-center justify-center rounded-[12px] bg-[#FEF0DC]">
-                      <CalendarDays className="h-6 w-6 text-[#D9833A]" strokeWidth={2} />
-                    </div>
-                    <h3 className="text-[14px] leading-[20px] font-semibold normal-case text-[#D9833A]">
-                      Monthly Recap
-                    </h3>
-                  </Link>
-
-                  <Link
-                    href="/current-affairs/daily-learning"
-                    onClick={() => setIsCurrentAffairsOpen(false)}
-                    className="group flex h-[140px] flex-col items-center justify-center rounded-[16px] bg-[#F8F8F8] px-4 text-center shadow-[0px_8px_22px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
-                  >
-                    <div className="mb-2.5 flex h-[46px] w-[46px] items-center justify-center rounded-[12px] bg-[#E3F4FC]">
-                      <BookOpen className="h-6 w-6 text-[#349EE3]" strokeWidth={2} />
-                    </div>
-                    <h3 className="text-[14px] leading-[20px] font-semibold normal-case text-[#349EE3]">
-                      Daily Learning
-                    </h3>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
         <div
           ref={megaMenuRef}
           className={`absolute top-full left-0 right-0 z-50 mt-4 flex min-h-[380px] origin-top transform cursor-default overflow-hidden rounded-[32px] border border-gray-100/80 bg-white text-left shadow-2xl transition-all duration-300 ${
@@ -932,7 +933,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
 
           <div className="relative z-10 isolate flex min-h-[380px] w-full">
             <div className="relative flex w-[300px] shrink-0 flex-col items-center overflow-hidden px-4 pb-6 pt-6">
-              <h3 className="relative z-10 mb-8 w-full border-0 text-center font-[Montserrat] text-[26px] font-black uppercase tracking-[0.08em] sm:text-[28px]">
+              <h3 className="relative z-10 mb-8 w-full border-0 text-center font-[Montserrat] text-[30px] font-black uppercase tracking-[0.08em] sm:text-[34px]">
                 <span className="bg-gradient-to-r from-[#20A0E0] to-[#E16165] bg-clip-text font-black text-transparent">
                   COURSES
                 </span>

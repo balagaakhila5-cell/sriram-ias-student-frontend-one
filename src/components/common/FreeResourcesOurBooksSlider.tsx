@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { RESOURCE_PAGE_HEADING_GRADIENT } from "@/features/resources/components/cardStyles";
+import { COURSE_EXPLORE_BUTTON_CLASS } from "@/components/common/courseExploreButton";
 
 export const FREE_RESOURCES_OUR_BOOKS_IMAGES = [
   "/assets/free-resources/NCERT/prelims-revision.png",
@@ -63,7 +64,7 @@ export default function FreeResourcesOurBooksSlider({
           ))}
         </div>
 
-        <span className="buy-now-btn">
+        <span className={`buy-now-btn ${COURSE_EXPLORE_BUTTON_CLASS}`}>
           Buy Now <span aria-hidden>→</span>
         </span>
       </div>

@@ -17,6 +17,8 @@ const CATEGORY_TO_SUBTOPIC: Record<string, CurrentAffairsSubtopicId> = {
   MONTHLY_RECAP: "monthly-recap",
 };
 
+export { CATEGORY_TO_SUBTOPIC };
+
 /** Map an API record to the document-card shape used by ResourceDocumentCard. */
 export function toCatalogDocument(item: CurrentAffairItem): CatalogDocument {
   const subtopic =

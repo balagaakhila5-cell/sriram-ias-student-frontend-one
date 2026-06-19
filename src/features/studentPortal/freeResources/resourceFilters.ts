@@ -24,7 +24,9 @@ export function buildDayOnlyOptions(month: string, _year: string): string[] {
   return Array.from({ length: count }, (_, i) => String(i + 1));
 }
 
-export const CA_FILTER_YEARS = ["2026", "2025", "2024"] as const;
+import { RESOURCE_YEAR_OPTIONS } from "@/utils/yearFilterOptions";
+
+export const CA_FILTER_YEARS = RESOURCE_YEAR_OPTIONS;
 
 export const CA_FILTER_MONTHS = [
   "January",

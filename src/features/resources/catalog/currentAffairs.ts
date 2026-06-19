@@ -11,6 +11,7 @@ import type {
   CurrentAffairsSubtopicId,
 } from "./types";
 import { RESOURCE_CARD_LIMIT } from "../components/cardStyles";
+import { matchesYearMonth } from "@/features/currentAffairs/filters";
 
 const MONTHS = [
   "January",
@@ -27,7 +28,9 @@ const MONTHS = [
   "December",
 ] as const;
 
-export const PORTAL_FILTER_YEARS = ["2026", "2025", "2024"] as const;
+import { RESOURCE_YEAR_OPTIONS } from "@/utils/yearFilterOptions";
+
+export const PORTAL_FILTER_YEARS = RESOURCE_YEAR_OPTIONS;
 export const PORTAL_FILTER_MONTHS = [...MONTHS];
 
 const DAYS_IN_MONTH: Record<string, number> = {
@@ -58,6 +61,17 @@ export function buildDateFilterOptions(month: string, year: string): string[] {
 export function buildDayOnlyDateOptions(month: string, _year?: string): string[] {
   const count = DAYS_IN_MONTH[month] ?? 30;
   return Array.from({ length: count }, (_, i) => String(i + 1));
+}
+
+/** DPQ Date filter — "All" plus day numbers; when month is "All", shows 1–31. */
+export function buildDpqDateFilterOptions(
+  month: string,
+  allLabel = "All",
+): string[] {
+  const count =
+    !month || month === allLabel ? 31 : (DAYS_IN_MONTH[month] ?? 31);
+  const days = Array.from({ length: count }, (_, i) => String(i + 1));
+  return [allLabel, ...days];
 }
 
 const DAY_ORDINALS = [
@@ -148,60 +162,75 @@ function magazineTitle(month: string, year: string) {
   return `${month} Month Magazine ${year}`;
 }
 
+function yearlyCatalogDocs(
+  subtopic: CurrentAffairsSubtopicId,
+  titleForYearMonth: (year: string, month: string, index: number) => string,
+  options?: Omit<NonNullable<Parameters<typeof doc>[3]>, "year" | "month">,
+): CatalogDocument[] {
+  let index = 0;
+  return PORTAL_FILTER_YEARS.flatMap((year) =>
+    MONTHS.map((month) =>
+      doc(subtopic, index++, titleForYearMonth(year, month, index), {
+        ...options,
+        year,
+        month,
+      }),
+    ),
+  );
+}
+
 const currentAffairsDocs: CatalogDocument[] = [
-  ...Array.from({ length: 10 }, (_, i) =>
-    doc("daily-current-affairs", i, "Apr 10 News today from Jammu Kashmir", {
-      year: "2026",
-      month: "April",
-    }),
+  ...yearlyCatalogDocs(
+    "daily-current-affairs",
+    (year, month) => `Daily Current Affairs - ${month} ${year}`,
   ),
-  ...Array.from({ length: 10 }, (_, i) =>
-    doc("infographics", i, `Infographic summary ${i + 1}`, {
-      year: "2026",
-      month: "April",
-    }),
+  ...yearlyCatalogDocs(
+    "infographics",
+    (year, month, index) => `Infographic summary ${index} - ${month} ${year}`,
   ),
-  ...Array.from({ length: 10 }, (_, i) =>
-    doc("monthly-magazine", i, magazineTitle("April", "2026"), {
-      image: RESOURCE_ASSETS.MAGAZINE,
+  ...yearlyCatalogDocs(
+    "monthly-magazine",
+    (year, month) => magazineTitle(month, year),
+    {
+      image: RESOURCE_ASSETS.PDF_ICON,
       hasSample: true,
-      year: "2026",
-      month: "April",
-    }),
+    },
   ),
-  ...Array.from({ length: 10 }, (_, i) =>
-    doc("monthly-recap", i, "April Month - Recap", {
-      year: "2026",
-      month: "April",
-    }),
+  ...yearlyCatalogDocs(
+    "monthly-recap",
+    (year, month) => `${month} ${year} - Recap`,
   ),
 ];
 
 registerDocuments(currentAffairsDocs);
 
 export const dailyPracticeItems: CatalogPracticeTest[] = [
-  ...Array.from({ length: 10 }, (_, i) => ({
-    id: `dpq-prelims-${i + 1}`,
-    subtopic: "daily-practice-questions" as const,
-    year: "2026",
-    month: "April",
-    day: String((i % 10) + 1),
-    examType: "prelims" as const,
-    title: `Prelims practice test ${i + 1} - April 2026`,
-    image: RESOURCE_ASSETS.PRACTICE_TEST,
-    attemptPath: `/current-affairs/daily-practice-questions/prelims-test-${i + 1}`,
-  })),
-  ...Array.from({ length: 10 }, (_, i) => ({
-    id: `dpq-mains-${i + 1}`,
-    subtopic: "daily-practice-questions" as const,
-    year: "2026",
-    month: "April",
-    day: String((i % 10) + 1),
-    examType: "mains" as const,
-    title: `Mains practice test ${i + 1} - April 2026`,
-    image: RESOURCE_ASSETS.PRACTICE_TEST,
-    attemptPath: `/current-affairs/daily-practice-questions/mains-test-${i + 1}`,
-  })),
+  ...PORTAL_FILTER_YEARS.flatMap((year) =>
+    MONTHS.flatMap((month, monthIndex) => ({
+      id: `dpq-prelims-${year}-${month}`,
+      subtopic: "daily-practice-questions" as const,
+      year,
+      month,
+      day: "1",
+      examType: "prelims" as const,
+      title: `Prelims practice test - ${month} ${year}`,
+      image: RESOURCE_ASSETS.PRACTICE_TEST,
+      attemptPath: `/current-affairs/daily-practice-questions/prelims-${year}-${monthIndex + 1}`,
+    })),
+  ),
+  ...PORTAL_FILTER_YEARS.flatMap((year) =>
+    MONTHS.flatMap((month, monthIndex) => ({
+      id: `dpq-mains-${year}-${month}`,
+      subtopic: "daily-practice-questions" as const,
+      year,
+      month,
+      day: "1",
+      examType: "mains" as const,
+      title: `Mains practice test - ${month} ${year}`,
+      image: RESOURCE_ASSETS.PRACTICE_TEST,
+      attemptPath: `/current-affairs/daily-practice-questions/mains-${year}-${monthIndex + 1}`,
+    })),
+  ),
 ];
 
 export function listCurrentAffairsDocuments(
@@ -212,9 +241,7 @@ export function listCurrentAffairsDocuments(
   return currentAffairsDocs
     .filter(
       (item) =>
-        item.subtopic === subtopic &&
-        (!year || item.year === year) &&
-        (!month || item.month === month),
+        item.subtopic === subtopic && matchesYearMonth(item, year, month),
     )
     .slice(0, RESOURCE_CARD_LIMIT);
 }
@@ -245,6 +272,7 @@ export function listPracticeTests(
     .filter(
       (item) =>
         (!examType || item.examType === examType) &&
+        matchesYearMonth(item, year, month) &&
         (!filterByDay || !day || item.day === day),
     )
     .slice(0, limit)
