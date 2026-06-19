@@ -130,7 +130,9 @@ const OfflineCentres: React.FC = () => {
 
   return (
     <section ref={sectionRef} className="relative pt-6 pb-12 px-4 md:px-16 bg-white">
-      <DiamondLayer config={heroDiamondConfig} />
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-70">
+        <DiamondLayer config={heroDiamondConfig} />
+      </div>
 
       <div className="relative z-10 max-w-7xl mx-auto space-y-10">
         <div className="offline-header text-center">

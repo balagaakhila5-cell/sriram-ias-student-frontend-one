@@ -1463,3 +1463,40 @@
     animation: none;
   }
 }
+
+/* Buy Our Books — product card image area */
+.book-card-image-container {
+  width: 100%;
+  overflow: hidden;
+}
+
+.book-card-image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s ease;
+}
+
+.book-card:hover .book-card-image {
+  transform: scale(1.04);
+}
+
+.book-card-outline-btn {
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.book-card-outline-btn:hover {
+  background: linear-gradient(88.42deg, #249edc 15.64%, #135576 93.77%);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.1);
+}

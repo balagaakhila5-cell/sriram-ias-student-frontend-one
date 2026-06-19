@@ -8,7 +8,7 @@ import { useGSAP } from '@gsap/react';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import { useHomepage } from '@/features/homepage/hooks/useHomepage';
 import DiamondLayer from '../DiamondLayer';
-import { heroDiamondConfig } from '../diamondConfigs';
+import { freeLearningDiamondConfig } from '../diamondConfigs';
 import {
   FREE_LEARNING_EXPLORE_HREFS,
   freeLearningHref,
@@ -180,7 +180,7 @@ const FreeCourses: React.FC = () => {
   return (
     <section ref={containerRef} className="bg-white">
       <div className="section-header relative overflow-hidden bg-[#EAF7FF] px-4 py-20 text-center sm:px-6 md:px-10">
-        <DiamondLayer config={heroDiamondConfig} />
+        <DiamondLayer config={freeLearningDiamondConfig} />
 
         <h2 className="free-learning-section-heading global-section-heading relative z-10">
           {sectionTitle}
@@ -191,7 +191,7 @@ const FreeCourses: React.FC = () => {
         {sections.map((section) => (
           <div
             key={section.id}
-            className={`section-card relative h-screen w-full overflow-hidden ${section.bg} text-white flex items-center justify-center px-4 md:px-10 lg:px-16 xl:px-20 shadow-2xl`}
+            className={`section-card relative h-screen w-full overflow-visible ${section.bg} text-white flex items-center justify-center px-4 md:px-10 lg:px-16 xl:px-20 shadow-2xl`}
           >
             {/* BACKGROUND IMAGE WITH MOTION */}
             {section.backgroundImage && (
@@ -232,20 +232,20 @@ const FreeCourses: React.FC = () => {
               </div>
 
               {/* Image */}
-              <div className="w-full min-w-0 flex justify-center md:justify-end overflow-visible">
+              <div className="relative w-full min-w-0 overflow-visible md:flex md:justify-end">
                 {section.rightImage && (
-                  <div className="section-image-wrapper relative w-full h-[240px] md:h-[330px] lg:h-[400px] xl:h-[440px] flex items-center justify-center overflow-visible">
+                  <div className="section-image-wrapper relative flex w-full items-center justify-center overflow-visible md:justify-end">
                     <img
                       src={section.rightImage}
                       alt={section.title}
-                      className="section-image h-full w-auto max-w-none object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-200 cursor-pointer"
+                      className="section-image h-[clamp(280px,42vh,660px)] w-auto max-w-none object-contain drop-shadow-2xl transition-transform duration-200 hover:scale-105 cursor-pointer md:origin-right"
                     />
 
                     {section.floatingImage && (
                       <img
                         src={section.floatingImage}
                         alt=""
-                        className="absolute -bottom-8 left-4 w-[110px] md:w-[140px] lg:w-[160px] rotate-[-6deg] rounded-xl shadow-2xl"
+                        className="absolute -bottom-8 left-4 w-[125px] md:w-[160px] lg:w-[184px] rotate-[-6deg] rounded-xl shadow-2xl"
                       />
                     )}
                   </div>

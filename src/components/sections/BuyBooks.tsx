@@ -31,6 +31,12 @@ const fallbackBooks = [
   { id: '6', title: 'UPSC Book sciences - 6', summary: 'The Four Hour Workweek', priceLabel: 'Rs.14,000/-', image: '/assets/books.png' },
 ];
 
+const BUY_NOW_BUTTON_GRADIENT =
+  'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)';
+
+const OUTLINE_BOOK_BUTTON_CLASS =
+  'book-card-outline-btn cursor-pointer rounded-full border border-[#249EDC] bg-white text-[#007BB5]';
+
 const formatPrice = (value?: number) =>
   typeof value === 'number'
     ? `Rs. ${value.toLocaleString('en-IN')} /-`
@@ -82,105 +88,100 @@ const BookCard: React.FC<BookCardProps> = ({ book, onOpenSample }) => {
   };
 
   return (
-    <div className="book-card min-w-[85vw] w-[85vw] sm:min-w-[280px] sm:w-[320px] bg-white rounded-2xl shadow-xl border border-gray-100 flex flex-col overflow-hidden group hover:shadow-2xl transition-shadow duration-300 transform-gpu backface-visibility-hidden">
-      <div className="relative aspect-6/5 w-full bg-[#F5D060]">
+    <div className="book-card group flex w-[85vw] min-w-[85vw] flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl transition-shadow duration-300 transform-gpu backface-visibility-hidden hover:shadow-2xl sm:w-[320px] sm:min-w-[280px]">
+      <div className="book-card-image-container relative h-[280px] w-full shrink-0 overflow-hidden bg-[#F5D060] sm:h-[300px] md:h-[320px] lg:h-[350px]">
         <Image
           src={book.image}
           alt={book.title}
           fill
-          sizes="280px"
-          className="object-cover object-center group-hover:scale-110 transition-transform duration-700"
+          unoptimized
+          sizes="320px"
+          className="book-card-image"
         />
       </div>
 
-      <div className="flex flex-col flex-1 p-5 space-y-3">
-        <h3 className="font-bold text-lg text-gray-800 line-clamp-1 text-center">
+      <div className="flex flex-col items-center p-5 text-center">
+        <h3 className="line-clamp-2 w-full font-bold text-lg text-gray-800">
           {book.title}
         </h3>
 
-        <div className="flex flex-col gap-3 pt-1">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1">
-              <span
-                className="font-bold text-base sm:text-lg text-transparent bg-clip-text"
-                style={{
-                  backgroundImage:
-                    'linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)',
-                }}
+        <span
+          className="mt-2 font-bold text-base text-transparent bg-clip-text sm:text-lg"
+          style={{
+            backgroundImage:
+              'linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)',
+          }}
+        >
+          {book.priceLabel}
+        </span>
+
+        <p className="mt-1 text-[9px] leading-tight text-gray-400 sm:text-[10px]">
+          * Excluding GST
+        </p>
+
+        <button
+          type="button"
+          onClick={() =>
+            onOpenSample({
+              title: book.title,
+              image: book.image,
+              slug: book.slug,
+            })
+          }
+          className={`${OUTLINE_BOOK_BUTTON_CLASS} mt-3 w-full max-w-[180px] px-5 py-2.5 text-[10px] font-semibold uppercase tracking-wide sm:text-xs`}
+        >
+          VIEW SAMPLE
+        </button>
+
+        <div className="mt-4 flex w-full gap-3">
+          {cartQuantity > 0 ? (
+            <div className="flex h-[38px] min-w-0 flex-1 items-center justify-between rounded-full border border-[#249EDC] bg-[#EAF7FF] px-2">
+              <button
+                type="button"
+                onClick={handleDecrement}
+                aria-label="Decrease quantity"
+                className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white"
               >
-                {book.priceLabel}
-              </span>
-              <p className="text-[9px] leading-tight text-gray-400 sm:text-[10px]">
-                * Excluding GST
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={() =>
-                onOpenSample({
-                  title: book.title,
-                  image: book.image,
-                  slug: book.slug,
-                })
-              }
-              className="h-fit w-full cursor-pointer rounded-md border border-[#249EDC] px-2 py-2 text-[10px] font-semibold uppercase tracking-wide text-[#007BB5] transition-all hover:bg-gray-50 sm:text-xs"
-            >
-              VIEW SAMPLE
-            </button>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => router.push(`/books/${book.slug}`)}
-              className="w-full cursor-pointer rounded-md py-2 text-xs font-medium text-white transition-all hover:opacity-90"
-              style={{
-                background:
-                  'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)',
-                boxShadow: '0px 4px 32px 0px #0000001A',
-              }}
-            >
-              Buy Now
-            </button>
-
-            {cartQuantity > 0 ? (
-              <div className="flex h-[34px] w-full items-center justify-between rounded-md border border-[#249EDC] bg-[#EAF7FF] px-2">
-                <button
-                  type="button"
-                  onClick={handleDecrement}
-                  aria-label="Decrease quantity"
-                  className="flex h-7 w-7 items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white cursor-pointer"
-                >
-                  −
-                </button>
-                <button
-                  type="button"
-                  onClick={handleGoToCheckout}
-                  aria-label="Go to checkout"
-                  className="min-w-[20px] cursor-pointer text-center text-sm font-bold text-[#007BB5] hover:underline"
-                >
-                  {cartQuantity}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleIncrement}
-                  aria-label="Increase quantity"
-                  className="flex h-7 w-7 items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white cursor-pointer"
-                >
-                  +
-                </button>
-              </div>
-            ) : (
+                −
+              </button>
+              <button
+                type="button"
+                onClick={handleGoToCheckout}
+                aria-label="Go to checkout"
+                className="min-w-[20px] cursor-pointer text-center text-sm font-bold text-[#007BB5] hover:underline"
+              >
+                {cartQuantity}
+              </button>
               <button
                 type="button"
                 onClick={handleIncrement}
-                className="w-full cursor-pointer rounded-md border border-[#249EDC] py-2 text-xs font-medium text-[#007BB5] transition-all hover:bg-gray-50"
+                aria-label="Increase quantity"
+                className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white"
               >
-                Add to Cart
+                +
               </button>
-            )}
-          </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={handleIncrement}
+              className={`${OUTLINE_BOOK_BUTTON_CLASS} min-w-0 flex-1 px-3 py-2.5 text-xs font-medium`}
+            >
+              Add to Cart
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => router.push(`/books/${book.slug}`)}
+            className="min-w-0 flex-1 cursor-pointer rounded-full px-3 py-2.5 text-xs font-medium text-white transition-all duration-300 hover:opacity-90"
+            style={{
+              background: BUY_NOW_BUTTON_GRADIENT,
+              boxShadow: '0px 4px 32px 0px #0000001A',
+            }}
+          >
+            Buy Now
+          </button>
         </div>
       </div>
     </div>

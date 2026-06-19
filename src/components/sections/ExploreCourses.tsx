@@ -306,9 +306,9 @@ const ExploreCourses: React.FC = () => {
                         className="object-cover transition-transform duration-1000 group-hover:scale-110"
                       />
 
-                      <div className="absolute inset-0 z-10 flex flex-col justify-end p-5 transition-opacity duration-300 group-hover:opacity-0">
-                        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/90 to-transparent" />
-                        <h3 className="relative font-bold text-base leading-tight text-[#FFE81C] drop-shadow-md">
+                      <div className="absolute inset-0 z-10 flex items-end justify-center p-5 pb-6 text-center transition-opacity duration-300 group-hover:opacity-0 sm:pb-7">
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/25 to-transparent" />
+                        <h3 className="relative max-w-[92%] font-bold text-base leading-snug text-[#FFE81C] drop-shadow-md sm:text-lg md:text-xl">
                         {course.title}
                       </h3>
                     </div>

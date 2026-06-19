@@ -58,3 +58,6 @@ export const heroDiamondConfig: DiamondConfig[] = [
 ];
 
 export const buyBooksDiamondConfig = withReducedOpacity(heroDiamondConfig, 0.4);
+
+/** Access Free Learning Resources header — peak diamond opacity ~30% */
+export const freeLearningDiamondConfig = withReducedOpacity(heroDiamondConfig, 0.75);
