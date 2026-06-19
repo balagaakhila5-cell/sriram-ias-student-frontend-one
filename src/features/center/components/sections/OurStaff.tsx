@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
-import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -32,39 +31,61 @@ const FEATURED_INFO = {
   ],
 };
 
-/** Four person images — slot 0 = featured (left), slots 1–3 = thumbnails (right) */
+/** Square faculty portraits (400×400, arch mask cropped out) */
+const FACULTY_PHOTO_VERSION = '2';
+
 const STAFF_MEMBERS: StaffMember[] = [
   {
     id: 1,
     name: STAFF_NAME,
     subject: 'Social Studies',
     bg: 'bg-[#D3DAE8]',
-    image: '/assets/our-centers/person-2.png',
+    image: `/assets/our-centers/person-2.png?v=${FACULTY_PHOTO_VERSION}`,
   },
   {
     id: 2,
     name: STAFF_NAME,
     subject: 'Polity',
     bg: 'bg-[#ECA01D]',
-    image: '/assets/our-centers/person-1.png',
+    image: `/assets/our-centers/person-1.png?v=${FACULTY_PHOTO_VERSION}`,
   },
   {
     id: 3,
     name: STAFF_NAME,
     subject: 'Current Affairs',
     bg: 'bg-[#8E74A2]',
-    image: '/assets/our-centers/person-3.png',
+    image: `/assets/our-centers/person-3.png?v=${FACULTY_PHOTO_VERSION}`,
   },
   {
     id: 4,
     name: STAFF_NAME,
     subject: 'Essay & Ethics',
     bg: 'bg-[#B8A4C8]',
-    image: '/assets/our-centers/person-4.png',
+    image: `/assets/our-centers/person-4.png?v=${FACULTY_PHOTO_VERSION}`,
   },
 ];
 
 const INITIAL_SLOT_ORDER = [0, 1, 2, 3];
+
+function StaffSquarePhoto({
+  src,
+  alt,
+  featured = false,
+}: {
+  src: string;
+  alt: string;
+  featured?: boolean;
+}) {
+  return (
+    <div
+      className={`our-faculty-photo-frame w-full shrink-0 ${
+        featured ? 'our-faculty-photo-frame--featured' : ''
+      }`}
+    >
+      <img src={src} alt={alt} className="our-faculty-photo" loading="lazy" />
+    </div>
+  );
+}
 
 const OurStaff: React.FC<Props> = ({ city: _city }) => {
   const containerRef = useRef<HTMLElement>(null);
@@ -171,17 +192,12 @@ const OurStaff: React.FC<Props> = ({ city: _city }) => {
           <div
             ref={featuredRef}
             key={`featured-${slotOrder[0]}`}
-            className="our-faculty-card flex w-full shrink-0 flex-col overflow-hidden rounded-none bg-white shadow-[0_10px_40px_rgba(0,0,0,0.08)] sm:flex-row lg:w-[46%]"
+            className="our-faculty-card flex w-full shrink-0 flex-col overflow-hidden rounded-none bg-white shadow-[0_10px_40px_rgba(0,0,0,0.08)] sm:flex-row sm:items-stretch lg:w-[46%]"
           >
-            <div
-              className={`relative h-[300px] w-full shrink-0 overflow-hidden sm:h-[340px] sm:w-[240px] ${featuredStaff.bg}`}
-            >
-              <Image
-                unoptimized
+            <div className="our-faculty-featured-media w-full shrink-0 sm:w-[280px]">
+              <StaffSquarePhoto
+                featured
                 src={featuredStaff.image}
-                fill
-                sizes="(max-width: 640px) 100vw, 240px"
-                className="object-cover object-bottom"
                 alt={featuredStaff.name}
               />
             </div>
@@ -222,7 +238,7 @@ const OurStaff: React.FC<Props> = ({ city: _city }) => {
           </div>
 
           {/* Thumbnails — slots 1–3, always side by side */}
-          <div className="flex min-w-0 flex-1 flex-row items-stretch gap-4 sm:gap-5">
+          <div className="our-faculty-thumbs flex min-w-0 flex-1 flex-row items-stretch gap-4 sm:gap-5">
             {thumbnailSlots.map((staffIndex, thumbIndex) => {
               const staff = STAFF_MEMBERS[staffIndex];
 
@@ -231,21 +247,13 @@ const OurStaff: React.FC<Props> = ({ city: _city }) => {
                   key={`thumb-slot-${thumbIndex}`}
                   type="button"
                   onClick={() => handleThumbnailClick(thumbIndex)}
-                  className="our-faculty-card group flex min-w-0 flex-1 cursor-pointer flex-col overflow-hidden rounded-none bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_38px_rgba(0,0,0,0.12)] focus:outline-none focus:ring-2 focus:ring-[#20A0E0]"
+                  className="our-faculty-card no-pill group flex min-w-0 flex-1 cursor-pointer flex-col overflow-hidden rounded-none bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_38px_rgba(0,0,0,0.12)] focus:outline-none focus:ring-2 focus:ring-[#20A0E0]"
                   aria-label={`Show ${STAFF_NAME} photo ${thumbIndex + 2} as featured`}
                 >
-                  <div
-                    className={`relative aspect-square w-full shrink-0 overflow-hidden ${staff.bg}`}
-                  >
-                    <Image
-                      unoptimized
-                      src={staff.image}
-                      fill
-                      sizes="(max-width: 1024px) 30vw, 200px"
-                      className="object-cover object-bottom transition-transform duration-300 group-hover:scale-[1.03]"
-                      alt={staff.name}
-                    />
-                  </div>
+                  <StaffSquarePhoto
+                    src={staff.image}
+                    alt={staff.name}
+                  />
                   <div className="shrink-0 bg-white px-2 py-4 text-center">
                     <h4 className="text-[14px] font-bold text-gray-900 sm:text-[16px]">
                       {STAFF_NAME}

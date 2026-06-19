@@ -933,8 +933,8 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
 
           <div className="relative z-10 isolate flex min-h-[380px] w-full">
             <div className="relative flex w-[300px] shrink-0 flex-col items-center overflow-hidden px-4 pb-6 pt-6">
-              <h3 className="relative z-10 mb-8 w-full border-0 text-center font-[Montserrat] text-[30px] font-black uppercase tracking-[0.08em] sm:text-[34px]">
-                <span className="bg-gradient-to-r from-[#20A0E0] to-[#E16165] bg-clip-text font-black text-transparent">
+              <h3 className="courses-mega-menu-title relative z-10 mb-8 w-full border-0 text-center uppercase">
+                <span className="courses-mega-menu-title__text bg-gradient-to-r from-[#20A0E0] to-[#E16165] bg-clip-text text-transparent">
                   COURSES
                 </span>
               </h3>

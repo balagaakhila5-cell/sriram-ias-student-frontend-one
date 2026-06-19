@@ -52,7 +52,7 @@ const CenterGallery: React.FC<Props> = ({ city }) => {
   }, { dependencies: [prefersReducedMotion], scope: containerRef });
 
   return (
-    <section ref={containerRef} className="relative w-full py-24 bg-white flex flex-col items-center px-6 md:px-12 lg:px-24 overflow-hidden">
+    <section ref={containerRef} className="relative w-full pt-14 pb-20 md:pt-16 md:pb-24 bg-white flex flex-col items-center px-6 md:px-12 lg:px-24 overflow-hidden">
 
       {/* Decorative Blob Left */}
       <svg className="absolute left-[-150px] top-[10%] opacity-30 w-[500px] h-[500px] z-0 pointer-events-none" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -68,7 +68,7 @@ const CenterGallery: React.FC<Props> = ({ city }) => {
       </svg>
 
       <h2
-        className="gallery-heading text-[32px] md:text-[50px] font-black uppercase tracking-wider mb-20 relative z-10 font-['Montserrat']"
+        className="gallery-heading text-[32px] md:text-[50px] font-black uppercase tracking-wider mb-10 md:mb-12 relative z-10 font-['Montserrat']"
         style={{
           background:
             'linear-gradient(90deg, #46A1D4 0%, #908CAF 45%, #D47B83 100%)',
