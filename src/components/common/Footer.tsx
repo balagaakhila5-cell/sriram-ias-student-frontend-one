@@ -28,6 +28,7 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
   const [isBookDemoOpen, setIsBookDemoOpen] = useState(false);
+  const [isBookMentorshipOpen, setIsBookMentorshipOpen] = useState(false);
   const footerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const isInViewport = useInViewport(footerRef, {
@@ -151,16 +152,17 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
               BOOK A DEMO
             </button>
 
-            <Link
-              href="/course/mentorship-program"
-              className="rounded-full px-7 py-2.5 text-[15px] font-bold tracking-wide text-white transition-all"
+            <button
+              type="button"
+              onClick={() => setIsBookMentorshipOpen(true)}
+              className="cursor-pointer rounded-full px-7 py-2.5 text-[15px] font-bold tracking-wide text-white transition-all"
               style={{
                 background:
                   'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)',
               }}
             >
               Book Free 1:1 Mentorship Session
-            </Link>
+            </button>
           </div>
 
           <div className="flex flex-wrap items-center justify-start gap-4 sm:gap-6 xl:justify-end">
@@ -348,6 +350,11 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
       <BookFreeDemoModal
         isOpen={isBookDemoOpen}
         onClose={() => setIsBookDemoOpen(false)}
+      />
+      <BookFreeDemoModal
+        isOpen={isBookMentorshipOpen}
+        onClose={() => setIsBookMentorshipOpen(false)}
+        variant="mentorship"
       />
     </footer>
   );

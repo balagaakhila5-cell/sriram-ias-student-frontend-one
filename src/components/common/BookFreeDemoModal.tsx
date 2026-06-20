@@ -24,6 +24,7 @@ import type { Category, Center } from '@/features/course/services/coursesService
 interface BookFreeDemoModalProps {
   isOpen: boolean;
   onClose: () => void;
+  variant?: 'demo' | 'mentorship';
 }
 
 const demoInputClassName =
@@ -61,7 +62,12 @@ function normalizeCategories(items: Category[]): Category[] {
     .filter((item) => item._id && item.name);
 }
 
-const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }) => {
+const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({
+  isOpen,
+  onClose,
+  variant = 'demo',
+}) => {
+  const isMentorship = variant === 'mentorship';
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -179,13 +185,12 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
     setError(null);
     setSuccess(false);
 
-    if (
-      !form.name.trim() ||
-      !form.email.trim() ||
-      !form.phone.trim() ||
-      !form.centerId ||
-      !form.courseId
-    ) {
+    if (!form.name.trim() || !form.email.trim() || !form.phone.trim()) {
+      setError('Please fill in all required fields.');
+      return;
+    }
+
+    if (!isMentorship && (!form.centerId || !form.courseId)) {
       setError('Please fill in all required fields.');
       return;
     }
@@ -197,18 +202,28 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
 
     const selectedCourse = courses.find((course) => course._id === form.courseId);
 
-    const payload = {
-      name: form.name.trim(),
-      email: form.email.trim(),
-      phone: form.phone.trim(),
-      center: form.centerId,
-      category: form.categoryId,
-      course: form.courseId,
-      centerName: selectedCenter?.name,
-      courseTitle: selectedCourse?.title,
-      targetYear: form.targetYear,
-      expectation: form.expectation.trim(),
-    };
+    const payload = isMentorship
+      ? {
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          targetYear: form.targetYear,
+          expectation: form.expectation.trim(),
+          courseTitle: 'Book Free 1:1 Mentorship Session',
+          source: 'main' as const,
+        }
+      : {
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          center: form.centerId,
+          category: form.categoryId,
+          course: form.courseId,
+          centerName: selectedCenter?.name,
+          courseTitle: selectedCourse?.title,
+          targetYear: form.targetYear,
+          expectation: form.expectation.trim(),
+        };
 
     try {
       await submit.mutateAsync(payload);
@@ -264,27 +279,27 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
 
         <div className="relative z-10 hidden w-[40%] items-center justify-center py-6 pl-4 md:flex">
           <div className="relative h-[430px] w-[320px]">
-            <div className="absolute left-[8px] top-[16px] z-10 h-[165px] w-[150px] overflow-hidden rounded-[32px] bg-gray-200 shadow-lg">
+            <div className="absolute left-[8px] top-[12px] z-10 h-[158px] w-[146px] overflow-hidden rounded-[32px] bg-gray-200 shadow-lg">
               <Image src="/assets/why-choose/how-will-3.png" alt="Student writing" fill className="object-cover" />
             </div>
-            <div className="absolute right-[-16%] top-[8px] z-20 h-[255px] w-[250px] overflow-hidden rounded-[125px] bg-gray-200 shadow-md">
+            <div className="absolute left-[108px] top-[6px] z-20 h-[186px] w-[176px] overflow-hidden rounded-[125px] bg-gray-200 shadow-md">
               <Image src="/assets/why-choose/how-will-1.png" alt="Students discussing" fill className="object-cover" />
             </div>
-            <div className="absolute bottom-[-4%] left-[20px] z-30 h-[280px] w-[320px] overflow-hidden rounded-[240px] shadow-2xl">
-              <Image src="/assets/why-choose/how-will-2.png" alt="Student thinking" fill className="object-cover" />
+            <div className="absolute bottom-[3%] left-[calc(50%-18px)] z-30 h-[268px] w-[300px] -translate-x-1/2 overflow-hidden rounded-[240px] shadow-2xl">
+              <Image src="/assets/why-choose/how-will-2.png" alt="Students reviewing notes" fill className="object-cover" />
             </div>
           </div>
         </div>
 
         <div className="relative z-10 flex w-full flex-col justify-center p-6 md:w-[60%] md:p-8">
           <h2 className="mb-5 text-center text-xl font-bold text-black md:text-[22px]">
-            Book Free Demo
+            {isMentorship ? 'Book Free 1:1 Mentorship Session' : 'Book Free Demo'}
           </h2>
 
           {success ? (
             <div className="text-center space-y-4">
               <p className="text-[18px] font-semibold text-green-700">
-                Thanks! Your demo request has been received.
+                Thanks! Your {isMentorship ? 'mentorship' : 'demo'} request has been received.
               </p>
               <p className="text-[14px] text-gray-600">
                 Our team will reach out to you shortly.
@@ -338,6 +353,20 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                 />
               </div>
 
+              {isMentorship ? (
+                <div className="max-w-sm mx-auto w-full">
+                  <DemoFormSelect
+                    value={form.targetYear}
+                    onChange={(value) =>
+                      setForm((prev) => ({ ...prev, targetYear: value }))
+                    }
+                    options={targetYearOptions}
+                    placeholder="Target Year"
+                    centerText
+                  />
+                </div>
+              ) : (
+                <>
               <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="flex-1 min-w-0">
                   <DemoFormSelect
@@ -402,6 +431,8 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                   />
                 </div>
               </div>
+                </>
+              )}
 
               <div>
                 <textarea
@@ -410,7 +441,11 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                   onChange={handleChange}
                   rows={2}
                   className={demoTextareaClassName}
-                  placeholder="What are your expectation from the Course ?"
+                  placeholder={
+                    isMentorship
+                      ? 'What are your expectations from the mentorship session?'
+                      : 'What are your expectation from the Course ?'
+                  }
                 />
               </div>
 

@@ -69,6 +69,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
   const [isCentersOpen, setIsCentersOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBookDemoOpen, setIsBookDemoOpen] = useState(false);
+  const [isBookMentorshipOpen, setIsBookMentorshipOpen] = useState(false);
   const [isFreeResourcesOpen, setIsFreeResourcesOpen] = useState(false);
   const [isCurrentAffairsOpen, setIsCurrentAffairsOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
@@ -976,11 +977,19 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
           isOpen={isBookDemoOpen}
           onClose={() => setIsBookDemoOpen(false)}
         />
+        <BookFreeDemoModal
+          isOpen={isBookMentorshipOpen}
+          onClose={() => setIsBookMentorshipOpen(false)}
+          variant="mentorship"
+        />
 
         <SearchPopup
           isOpen={isSearchOpen}
           onClose={() => setIsSearchOpen(false)}
-          onBookMentorship={() => setIsBookDemoOpen(true)}
+          onBookMentorship={() => {
+            setIsSearchOpen(false);
+            setIsBookMentorshipOpen(true);
+          }}
         />
       </header>
 
