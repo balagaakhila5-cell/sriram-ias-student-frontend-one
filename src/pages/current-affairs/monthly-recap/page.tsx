@@ -243,8 +243,8 @@ import {
 import Header from "@/components/common/Header";
 import {
   RESOURCE_PAGE_HEADING_GRADIENT,
-  RESOURCE_SECTION_SHELL,
-  RESOURCE_SECTION_TEXTURE_OVERLAY,
+  CURRENT_AFFAIRS_SECTION_SHELL,
+  CURRENT_AFFAIRS_SECTION_TEXTURE_OVERLAY,
 } from "@/features/resources/components/cardStyles";
 import Footer from "@/components/common/Footer";
 import FloatingActions from "@/components/common/FloatingActions";
@@ -357,8 +357,8 @@ export default function MonthlyRecapPage() {
         </section>
 
         {/* Content */}
-        <section className={`${RESOURCE_SECTION_SHELL} px-4 py-14 md:px-8 lg:px-10 xl:px-14`}>
-          <div className={RESOURCE_SECTION_TEXTURE_OVERLAY} aria-hidden />
+        <section className={`${CURRENT_AFFAIRS_SECTION_SHELL} px-4 py-14 md:px-8 lg:px-10 xl:px-14`}>
+          <div className={CURRENT_AFFAIRS_SECTION_TEXTURE_OVERLAY} aria-hidden />
           <div className="relative z-10 mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-14">
               {/* Left */}

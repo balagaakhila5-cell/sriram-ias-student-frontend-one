@@ -731,6 +731,79 @@
     transform: translate3d(12px, 0, 0) scale(1.03) !important;
   }
 
+  /* Current Affairs — lighter wavy background */
+  .current-affairs-section .ca-section-texture {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: url("/assets/free-resources/free-resource-bg-1.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.35;
+  }
+
+  /* Free Resources — section backgrounds at 35% opacity */
+  .free-resources-section .fr-section-texture {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: url("/assets/free-resources/free-resource-bg-1.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.35;
+  }
+
+  .free-resources-section .fr-section-wave {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: url("/assets/bg-wave.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.35;
+  }
+
+  .free-resources-section .fr-section-gateway {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: url("/assets/image-91.png");
+    background-position: center 35%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 0.35;
+  }
+
+  /* Current Affairs — softer cards so section texture shows through */
+  .current-affairs-section .resource-card-surface {
+    --resource-card-bg: rgba(249, 249, 249, 0.88);
+    --resource-card-border: rgba(238, 238, 238, 0.92);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .current-affairs-section .resource-card-surface:hover {
+    --resource-card-bg: rgba(255, 242, 230, 0.9);
+    --resource-card-border: rgba(245, 228, 212, 0.94);
+    box-shadow: 0 10px 24px rgba(255, 165, 110, 0.12);
+  }
+
+  .current-affairs-section .practice-test-card.resource-card-surface {
+    --resource-card-bg: rgba(253, 251, 247, 0.88);
+    --resource-card-border: rgba(239, 233, 224, 0.92);
+  }
+
+  .current-affairs-section .practice-test-card.resource-card-surface:hover {
+    --resource-card-bg: rgba(255, 248, 240, 0.9);
+    --resource-card-border: rgba(232, 221, 208, 0.94);
+  }
+
   /* NCERT Books — Figma cream cards; hover: scale + slight shift right */
   .ncert-book-card.resource-card-surface {
     --resource-card-bg: #fdfbf7;

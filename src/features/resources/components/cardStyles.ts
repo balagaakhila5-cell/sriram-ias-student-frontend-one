@@ -17,15 +17,14 @@ export const RESOURCE_CARD_LIMIT = 10;
 /** @deprecated Pagination removed — kept for any legacy imports */
 export const RESOURCE_DOCUMENTS_PAGE_SIZE = 6;
 
-/** Shared section backgrounds (Free Resources + Current Affairs) */
-export const RESOURCE_SECTION_SHELL = "relative bg-[#f2f6fa]";
-export const RESOURCE_SECTION_TEXTURE_OVERLAY =
-  "pointer-events-none absolute inset-0 bg-[url('/assets/free-resources/free-resource-bg-1.png')] bg-cover bg-center bg-no-repeat opacity-90";
-export const RESOURCE_SECTION_WAVE_OVERLAY =
-  "pointer-events-none absolute inset-0 bg-[url('/assets/bg-wave.png')] bg-cover bg-center bg-no-repeat opacity-90";
-/** Free Resources gateway (NCERT books hub) */
-export const RESOURCE_SECTION_GATEWAY_OVERLAY =
-  "pointer-events-none absolute inset-0 bg-[url('/assets/image-91.png')] bg-[position:center_35%] bg-cover bg-no-repeat opacity-90";
+/** Free Resources section backgrounds — 35% opacity (see globals.css `.fr-section-*`) */
+export const RESOURCE_SECTION_SHELL = "relative free-resources-section bg-[#f2f6fa]";
+export const RESOURCE_SECTION_TEXTURE_OVERLAY = "fr-section-texture";
+export const RESOURCE_SECTION_WAVE_OVERLAY = "fr-section-wave";
+export const RESOURCE_SECTION_GATEWAY_OVERLAY = "fr-section-gateway";
+
+export const CURRENT_AFFAIRS_SECTION_SHELL = "relative current-affairs-section bg-[#f2f6fa]";
+export const CURRENT_AFFAIRS_SECTION_TEXTURE_OVERLAY = "ca-section-texture";
 
 /** Responsive grid — matches Monthly Magazine reference (2 columns) */
 export const RESOURCE_CARD_GRID =

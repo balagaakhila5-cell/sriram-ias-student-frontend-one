@@ -17,8 +17,8 @@ import DailyLearningTopicCarousel, {
 } from '@/features/currentAffairs/components/DailyLearningTopicCarousel';
 import {
   RESOURCE_PAGE_HEADING_GRADIENT,
-  RESOURCE_SECTION_SHELL,
-  RESOURCE_SECTION_TEXTURE_OVERLAY,
+  CURRENT_AFFAIRS_SECTION_SHELL,
+  CURRENT_AFFAIRS_SECTION_TEXTURE_OVERLAY,
 } from '@/features/resources/components/cardStyles';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -148,8 +148,8 @@ export default function DailyLearningPage() {
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.22)_0%,rgba(0,0,0,0.08)_40%,rgba(0,0,0,0)_100%)]" />
         </section>
 
-        <section className={`${RESOURCE_SECTION_SHELL} px-5 py-12 md:px-8 lg:px-12 xl:px-16`}>
-          <div className={RESOURCE_SECTION_TEXTURE_OVERLAY} aria-hidden />
+        <section className={`${CURRENT_AFFAIRS_SECTION_SHELL} px-5 py-12 md:px-8 lg:px-12 xl:px-16`}>
+          <div className={CURRENT_AFFAIRS_SECTION_TEXTURE_OVERLAY} aria-hidden />
           <div className="relative z-10 mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-14">
               <div>
