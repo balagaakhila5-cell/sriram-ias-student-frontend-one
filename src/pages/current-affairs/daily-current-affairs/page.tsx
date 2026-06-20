@@ -20,7 +20,9 @@ import {
 
 import Header from "@/components/common/Header";
 import {
+  RESOURCE_PAGE_HEADING_BLUE,
   RESOURCE_PAGE_HEADING_GRADIENT,
+  RESOURCE_PAGE_HEADING_RED,
   RESOURCE_SECTION_SHELL,
   RESOURCE_SECTION_TEXTURE_OVERLAY,
 } from "@/features/resources/components/cardStyles";
@@ -223,9 +225,8 @@ export default function DailyCurrentAffairsPage() {
               {/* Left */}
               <div>
                <h1 className="animate-heading mb-10 text-center text-[36px] font-extrabold uppercase leading-none md:text-[48px] lg:text-[56px]">
-                <span className={RESOURCE_PAGE_HEADING_GRADIENT}>
-                  Daily Current Affairs
-                </span>
+                <span className={RESOURCE_PAGE_HEADING_BLUE}>Daily </span>
+                <span className={RESOURCE_PAGE_HEADING_RED}>Current Affairs</span>
               </h1>
 
                 <div className="animate-filters relative z-20 mb-12 flex flex-col items-center justify-center gap-5 md:flex-row md:gap-6">

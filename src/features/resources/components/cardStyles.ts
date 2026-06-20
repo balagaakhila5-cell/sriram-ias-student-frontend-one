@@ -4,6 +4,13 @@
 export const RESOURCE_PAGE_HEADING_GRADIENT =
   "bg-[linear-gradient(90deg,#3E9CDB_0%,#8E9BC8_38%,#D57E89_72%,#E53935_100%)] bg-clip-text text-transparent";
 
+/** Split heading — Daily (blue) + Current Affairs (softer red) */
+export const RESOURCE_PAGE_HEADING_BLUE =
+  "bg-[linear-gradient(90deg,#3E9CDB_0%,#8E9BC8_100%)] bg-clip-text text-transparent";
+
+export const RESOURCE_PAGE_HEADING_RED =
+  "bg-[linear-gradient(90deg,#D57E89_0%,#E53935_100%)] bg-clip-text text-transparent opacity-[0.86]";
+
 /** Max cards shown per section */
 export const RESOURCE_CARD_LIMIT = 10;
 

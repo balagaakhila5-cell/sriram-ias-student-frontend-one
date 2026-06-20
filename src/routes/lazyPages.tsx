@@ -65,6 +65,14 @@ export const FreeResourcesStudyMaterialsPage = lazy(
   () => import("@/pages/free_resources/study-materials/page"),
 );
 
+export const ResourceViewPage = lazy(
+  () => import("@/pages/resources/view/[id]/page"),
+);
+
+export const ResourceSamplePage = lazy(
+  () => import("@/pages/resources/sample/[id]/page"),
+);
+
 export const BookDetailsPage = withParams(
   lazy(() => import("@/pages/books/[slug]/page"))
 );

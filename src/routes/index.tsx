@@ -43,6 +43,8 @@ import {
   FreeResourcesMocktestResultsPage,
   FreeResourcesMocktestCheckAnswersPage,
   FreeResourcesStudyMaterialsPage,
+  ResourceViewPage,
+  ResourceSamplePage,
 } from "./lazyPages";
 
 export default function AppRoutes() {
@@ -163,6 +165,9 @@ export default function AppRoutes() {
           path="/free_resources/study-materials"
           element={<FreeResourcesStudyMaterialsPage />}
         />
+
+        <Route path="/resources/view/:id" element={<ResourceViewPage />} />
+        <Route path="/resources/sample/:id" element={<ResourceSamplePage />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
