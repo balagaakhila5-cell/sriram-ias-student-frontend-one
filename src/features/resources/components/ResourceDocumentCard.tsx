@@ -40,7 +40,9 @@ function resolveBanner(item: CatalogDocument) {
 
   const src =
     item.image ||
-    (isCurrentAffairs || item.subtopic === "previous-year"
+    (isCurrentAffairs ||
+    item.subtopic === "previous-year" ||
+    item.module === "free-resources"
       ? RESOURCE_ASSETS.PDF_ICON
       : RESOURCE_ASSETS.PDF_THUMBNAIL);
 

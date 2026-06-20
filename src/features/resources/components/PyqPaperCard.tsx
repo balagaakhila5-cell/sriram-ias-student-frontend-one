@@ -8,7 +8,7 @@ import {
   resourceDownloadPath,
   resourceViewPath,
 } from "@/features/resources/catalog/routes";
-import { PYQ_PAPER_CARD } from "./cardStyles";
+import { PYQ_PAPER_CARD, PREMIUM_CARD, RESOURCE_THUMB } from "./cardStyles";
 
 interface PyqPaperCardProps {
   item: CatalogDocument;
@@ -26,21 +26,19 @@ export default function PyqPaperCard({
 
   return (
     <Tag className={`${PYQ_PAPER_CARD.shell} ${className}`}>
-      <div className={PYQ_PAPER_CARD.thumb}>
-        <div className={PYQ_PAPER_CARD.thumbInner}>
-          <Image
-            src={iconSrc}
-            alt=""
-            width={72}
-            height={88}
-            className="h-auto w-[72px] object-contain"
-            onError={(e) => {
-              const target = e.currentTarget;
-              if (target.src.includes(RESOURCE_ASSETS.PDF_ICON)) return;
-              target.src = RESOURCE_ASSETS.PDF_ICON;
-            }}
-          />
-        </div>
+      <div className={PREMIUM_CARD.thumb}>
+        <Image
+          src={iconSrc}
+          alt=""
+          fill
+          className={RESOURCE_THUMB.imageCover}
+          sizes="72px"
+          onError={(e) => {
+            const target = e.currentTarget;
+            if (target.src.includes(RESOURCE_ASSETS.PDF_ICON)) return;
+            target.src = RESOURCE_ASSETS.PDF_ICON;
+          }}
+        />
       </div>
       <div className={PYQ_PAPER_CARD.body}>
         <h3 className={PYQ_PAPER_CARD.title}>{item.title}</h3>

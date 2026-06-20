@@ -2,29 +2,25 @@
 
 import Image from "next/image";
 import { RESOURCE_ASSETS } from "@/features/resources/catalog/assets";
+import { PREMIUM_CARD, RESOURCE_THUMB } from "./cardStyles";
 
 interface ResourcePdfIconThumbProps {
   thumbClassName?: string;
-  imageClassName?: string;
 }
 
+/** PDF icon thumb — matches Current Affairs ResourceDocumentCard banner sizing */
 export default function ResourcePdfIconThumb({
   thumbClassName = "",
-  imageClassName = "h-auto w-[72px] object-contain",
 }: ResourcePdfIconThumbProps) {
   return (
-    <div
-      className={`resource-card-thumb relative h-full w-[88px] shrink-0 overflow-hidden rounded-l-[12px] ${thumbClassName}`}
-    >
-      <div className="relative flex h-full w-full items-center justify-center bg-transparent p-2">
-        <Image
-          src={RESOURCE_ASSETS.PDF_ICON}
-          alt=""
-          width={72}
-          height={88}
-          className={imageClassName}
-        />
-      </div>
+    <div className={`${PREMIUM_CARD.thumb} ${thumbClassName}`.trim()}>
+      <Image
+        src={RESOURCE_ASSETS.PDF_ICON}
+        alt=""
+        fill
+        className={RESOURCE_THUMB.imageCover}
+        sizes="72px"
+      />
     </div>
   );
 }

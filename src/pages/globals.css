@@ -757,30 +757,6 @@
     opacity: 0.35;
   }
 
-  .free-resources-section .fr-section-wave {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background-image: url("/assets/bg-wave.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0.35;
-  }
-
-  .free-resources-section .fr-section-gateway {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background-image: url("/assets/image-91.png");
-    background-position: center 35%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    opacity: 0.35;
-  }
-
   /* Current Affairs — softer cards so section texture shows through */
   .current-affairs-section .resource-card-surface {
     --resource-card-bg: rgba(249, 249, 249, 0.88);
@@ -808,8 +784,8 @@
   .ncert-book-card.resource-card-surface {
     --resource-card-bg: #fdfbf7;
     --resource-card-border: #efe9e0;
-    min-height: 120px;
-    height: 120px;
+    min-height: 96px;
+    height: 96px;
     border-radius: 12px;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
   }
@@ -826,8 +802,8 @@
   .pyq-paper-card.resource-card-surface {
     --resource-card-bg: #fdfbf7;
     --resource-card-border: #efe9e0;
-    min-height: 132px;
-    height: 132px;
+    min-height: 96px;
+    height: 96px;
     border-radius: 12px;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
   }
@@ -867,8 +843,8 @@
   .study-material-card.resource-card-surface {
     --resource-card-bg: #fdfbf7;
     --resource-card-border: #efe9e0;
-    min-height: 132px;
-    height: 132px;
+    min-height: 96px;
+    height: 96px;
     border-radius: 12px;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
   }

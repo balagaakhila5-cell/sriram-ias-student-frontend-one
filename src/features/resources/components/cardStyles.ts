@@ -17,11 +17,13 @@ export const RESOURCE_CARD_LIMIT = 10;
 /** @deprecated Pagination removed — kept for any legacy imports */
 export const RESOURCE_DOCUMENTS_PAGE_SIZE = 6;
 
-/** Free Resources section backgrounds — 35% opacity (see globals.css `.fr-section-*`) */
+/** Free Resources section backgrounds — same texture as Current Affairs at 35% */
 export const RESOURCE_SECTION_SHELL = "relative free-resources-section bg-[#f2f6fa]";
 export const RESOURCE_SECTION_TEXTURE_OVERLAY = "fr-section-texture";
-export const RESOURCE_SECTION_WAVE_OVERLAY = "fr-section-wave";
-export const RESOURCE_SECTION_GATEWAY_OVERLAY = "fr-section-gateway";
+/** @deprecated Use RESOURCE_SECTION_TEXTURE_OVERLAY — same CA wavy background */
+export const RESOURCE_SECTION_WAVE_OVERLAY = "fr-section-texture";
+/** @deprecated Use RESOURCE_SECTION_TEXTURE_OVERLAY — same CA wavy background */
+export const RESOURCE_SECTION_GATEWAY_OVERLAY = "fr-section-texture";
 
 export const CURRENT_AFFAIRS_SECTION_SHELL = "relative current-affairs-section bg-[#f2f6fa]";
 export const CURRENT_AFFAIRS_SECTION_TEXTURE_OVERLAY = "ca-section-texture";
