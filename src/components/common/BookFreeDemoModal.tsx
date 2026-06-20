@@ -27,10 +27,10 @@ interface BookFreeDemoModalProps {
 }
 
 const demoInputClassName =
-  'h-9 w-full rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-center text-sm text-gray-800 outline-none placeholder:text-center focus:ring-2 focus:ring-[#1897D8]/50';
+  'h-9 w-full rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-center text-sm text-gray-800 outline-none placeholder:text-center placeholder:text-[#00000080] focus:ring-2 focus:ring-[#1897D8]/50';
 
 const demoTextareaClassName =
-  'w-full resize-none rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-center text-sm text-gray-800 outline-none placeholder:text-center focus:ring-2 focus:ring-[#1897D8]/50';
+  'w-full resize-none rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-center text-sm text-gray-800 outline-none placeholder:text-center placeholder:text-[#00000080] focus:ring-2 focus:ring-[#1897D8]/50';
 
 const initialForm = {
   name: '',
@@ -39,7 +39,7 @@ const initialForm = {
   centerId: '',
   categoryId: '',
   courseId: '',
-  targetYear: '2026',
+  targetYear: '',
   expectation: '',
 };
 
@@ -302,18 +302,17 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
             <form className="space-y-3" onSubmit={handleSubmit}>
               <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="flex-1">
-                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Full Name</label>
                   <input
                     type="text"
                     name="name"
                     value={form.name}
                     onChange={handleChange}
                     required
+                    placeholder="Full Name"
                     className={demoInputClassName}
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Mobile Number</label>
                   <input
                     type="tel"
                     name="phone"
@@ -321,26 +320,26 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                     onChange={handleChange}
                     required
                     pattern="[0-9]{10}"
+                    placeholder="Mobile Number"
                     className={demoInputClassName}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Email</label>
                 <input
                   type="email"
                   name="email"
                   value={form.email}
                   onChange={handleChange}
                   required
+                  placeholder="Email"
                   className={demoInputClassName}
                 />
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="flex-1 min-w-0">
-                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Center</label>
                   <DemoFormSelect
                     value={form.centerId}
                     onChange={(value) =>
@@ -353,7 +352,6 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Category</label>
                   <DemoFormSelect
                     value={form.categoryId}
                     onChange={(value) =>
@@ -368,7 +366,6 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
 
               <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="min-w-0 flex-[2]">
-                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Course</label>
                   <DemoFormSelect
                     value={form.courseId}
                     onChange={(value) =>
@@ -394,28 +391,26 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({ isOpen, onClose }
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">Target Year</label>
                   <DemoFormSelect
                     value={form.targetYear}
                     onChange={(value) =>
                       setForm((prev) => ({ ...prev, targetYear: value }))
                     }
                     options={targetYearOptions}
-                    placeholder="Choose Year"
+                    placeholder="Target Year"
                     centerText
                   />
                 </div>
               </div>
 
               <div>
-                <label className="mb-1 ml-1 block text-sm font-medium text-[#00000080]">What are your expectation from the Course ?</label>
                 <textarea
                   name="expectation"
                   value={form.expectation}
                   onChange={handleChange}
                   rows={2}
                   className={demoTextareaClassName}
-                  placeholder="Share your expectations"
+                  placeholder="What are your expectation from the Course ?"
                 />
               </div>
 

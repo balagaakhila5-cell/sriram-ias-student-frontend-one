@@ -168,10 +168,10 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
         <Image
           src={CENTER_CITY_ICONS.delhi}
           alt="New Delhi"
-          width={52}
-          height={52}
+          width={40}
+          height={40}
           unoptimized
-          className="h-[52px] w-[52px] object-contain"
+          className="h-[40px] w-[40px] object-contain"
         />
       ),
     },
@@ -181,10 +181,10 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
         <Image
           src={CENTER_CITY_ICONS.hyderabad}
           alt="Hyderabad"
-          width={52}
-          height={52}
+          width={40}
+          height={40}
           unoptimized
-          className="h-[52px] w-[52px] object-contain"
+          className="h-[40px] w-[40px] object-contain"
         />
       ),
     },
@@ -194,10 +194,10 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
         <Image
           src={CENTER_CITY_ICONS.pune}
           alt="Pune"
-          width={52}
-          height={52}
+          width={40}
+          height={40}
           unoptimized
-          className="h-[52px] w-[52px] object-contain"
+          className="h-[40px] w-[40px] object-contain"
         />
       ),
     },
@@ -239,13 +239,13 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
         href={course.href}
         key={course.slug}
         onClick={() => setIsCoursesOpen(false)}
-        className="group/course-item flex w-full items-start gap-3"
+        className="group/course-item flex w-full items-start gap-2.5"
       >
-        <span className="shrink-0 pt-[2px]">
+        <span className="shrink-0 pt-[1px]">
           <CourseLinkIcon />
         </span>
         <span
-          className={`font-[Montserrat] text-[16px] font-semibold leading-[1.25] text-black transition-colors group-hover/course-item:text-[#1376B1] md:text-[17px] ${
+          className={`font-[Montserrat] text-[15px] font-semibold leading-[1.25] text-black transition-colors group-hover/course-item:text-[#1376B1] ${
             parts.twoLines ? '' : 'whitespace-nowrap'
           }`}
         >
@@ -925,37 +925,37 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
 
         <div
           ref={megaMenuRef}
-          className={`absolute top-full left-0 right-0 z-50 mt-4 flex min-h-[380px] origin-top transform cursor-default overflow-hidden rounded-[32px] border border-gray-100/80 bg-white text-left shadow-2xl transition-all duration-300 ${
+          className={`absolute top-full left-1/2 z-50 mt-3 w-[min(1120px,calc(100vw-2rem))] -translate-x-1/2 flex min-h-[300px] origin-top transform cursor-default overflow-hidden rounded-[24px] border border-gray-100/80 bg-white text-left shadow-2xl transition-all duration-300 ${
             isCoursesOpen ? 'scale-100 opacity-100 pointer-events-auto' : 'scale-95 opacity-0 pointer-events-none'
           }`}
         >
           <CoursesMegaMenuBackground />
 
-          <div className="relative z-10 isolate flex min-h-[380px] w-full">
-            <div className="relative flex w-[300px] shrink-0 flex-col items-center overflow-hidden px-4 pb-6 pt-6">
-              <h3 className="courses-mega-menu-title relative z-10 mb-8 w-full border-0 text-center uppercase">
+          <div className="relative z-10 isolate flex min-h-[300px] w-full">
+            <div className="relative flex w-[240px] shrink-0 flex-col items-center overflow-hidden px-3 pb-4 pt-4">
+              <h3 className="courses-mega-menu-title relative z-10 mb-5 w-full border-0 text-center uppercase">
                 <span className="courses-mega-menu-title__text bg-gradient-to-r from-[#20A0E0] to-[#E16165] bg-clip-text text-transparent">
                   COURSES
                 </span>
               </h3>
 
-              <div className="relative z-10 w-full max-w-[230px] space-y-3">
+              <div className="relative z-10 mx-auto w-full max-w-[210px] space-y-2">
                 {cities.map((city) => (
                   <button
                     key={city.name}
                     onClick={() => setActiveCity(city.name)}
-                    className={`grid w-full grid-cols-[52px_1fr] items-center gap-3 rounded-[16px] px-3 py-3 transition-all duration-300 ${
+                    className={`grid w-full grid-cols-[44px_1fr] items-center gap-2.5 rounded-[14px] px-2.5 py-2 transition-all duration-300 ${
                       activeCity === city.name
                         ? 'bg-[#E3F2F9]/90 text-[#0A73B7] shadow-sm ring-2 ring-[#20A0E0]/30'
                         : 'text-gray-500 hover:bg-[#E8F4FC] hover:text-[#1E86C1]'
                     }`}
                   >
-                    <div className="flex h-[52px] w-[52px] items-center justify-center overflow-hidden bg-transparent">
+                    <div className="flex h-[44px] w-[44px] items-center justify-center overflow-hidden bg-transparent">
                       {city.icon}
                     </div>
 
                     <span
-                      className={`text-left font-[Montserrat] text-[18px] font-semibold leading-tight tracking-tight sm:text-[19px] ${
+                      className={`text-left font-[Montserrat] text-[16px] font-semibold leading-tight tracking-tight ${
                         activeCity === city.name ? 'text-[#1E86C1]' : 'text-[#2D8CC6]'
                       }`}
                     >
@@ -966,15 +966,15 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
               </div>
             </div>
 
-            <div className="relative flex-1 overflow-hidden p-6 md:p-8 md:pl-10">
-              <div className="relative z-10">
-                <div className="relative mb-8 overflow-hidden rounded-full border border-[#D6EBF5] bg-[#F0F8FD]/95 p-1.5 backdrop-blur-sm">
+            <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden p-4 md:p-5 md:pl-6">
+              <div className="relative z-10 flex h-full min-h-0 flex-1 flex-col">
+                <div className="relative mb-4 shrink-0 overflow-hidden rounded-full border border-[#D6EBF5] bg-[#F0F8FD]/95 p-1 backdrop-blur-sm">
                   <div className="relative z-10 flex w-full justify-between gap-1">
                     {tabs.map((tab) => (
                       <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className={`flex-1 rounded-full px-4 py-2.5 text-sm font-semibold font-[Montserrat] transition-all duration-300 whitespace-nowrap ${
+                        className={`flex-1 rounded-full px-3 py-2 text-[13px] font-semibold font-[Montserrat] transition-all duration-300 whitespace-nowrap ${
                           activeTab === tab
                             ? 'text-white shadow-sm'
                             : 'bg-transparent text-[#333333] hover:text-[#15658D]'
@@ -987,7 +987,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-4">
+                <div className="grid flex-1 grid-cols-1 content-start gap-3 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-3">
                   {courseList.map((course) => renderMegaMenuCourseLink(course))}
                 </div>
               </div>

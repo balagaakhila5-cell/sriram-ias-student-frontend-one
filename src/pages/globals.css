@@ -1413,7 +1413,7 @@
 .courses-mega-menu-title {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  font-size: clamp(26px, 2.2vw, 30px);
+  font-size: clamp(26px, 2.4vw, 32px);
   line-height: 1;
   letter-spacing: 0.1em;
   -webkit-font-smoothing: antialiased;

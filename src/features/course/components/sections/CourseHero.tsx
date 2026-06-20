@@ -29,9 +29,9 @@ const titleGradientStyle: React.CSSProperties = {
 
 const LINE_FONT_SIZE_PX = 56;
 /** Taller than text block — Montserrat digits sit inside the em box (Y top → F bottom). */
-const LEADING_NUMBER_HEIGHT_SCALE = 1.18;
-/** Base nudge for Montserrat vertical metrics. */
-const LEADING_NUMBER_BASE_TOP_OFFSET_PX = -3;
+const LEADING_NUMBER_HEIGHT_SCALE = 1.22;
+/** Base nudge for Montserrat vertical metrics — negative pulls the digit up at the top. */
+const LEADING_NUMBER_BASE_TOP_OFFSET_PX = -1;
 
 const getLeadingNumberSize = (textLineCount: number, measuredHeight?: number) => {
   const textHeight = measuredHeight ?? LINE_FONT_SIZE_PX * textLineCount;
