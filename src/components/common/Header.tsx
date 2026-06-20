@@ -215,12 +215,12 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
 
   const CourseLinkIcon = () => (
     <Image
-      src="/assets/why-choose/tdesign_course-filled.png"
+      src="/assets/course/course-icon.png"
       alt=""
-      width={22}
-      height={22}
+      width={24}
+      height={24}
       unoptimized
-      className="h-[22px] w-[22px] shrink-0 object-contain transition-opacity group-hover/course-item:opacity-80"
+      className="h-[24px] w-[24px] shrink-0 object-contain transition-opacity group-hover/course-item:opacity-80"
     />
   );
 

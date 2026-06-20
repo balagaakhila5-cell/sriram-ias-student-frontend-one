@@ -146,7 +146,7 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
                 value={form.name}
                 onChange={handleChange('name')}
                 required
-                className="h-9 w-full rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
+                className="h-11 w-full rounded-[9999px] border-none bg-[#E0F2F9] px-5 py-2 text-sm outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
               />
             </div>
 
@@ -159,7 +159,7 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
                 value={form.phone}
                 onChange={handleChange('phone')}
                 required
-                className="h-9 w-full rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
+                className="h-11 w-full rounded-[9999px] border-none bg-[#E0F2F9] px-5 py-2 text-sm outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
               />
             </div>
 
@@ -172,7 +172,7 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
                 value={form.email}
                 onChange={handleChange('email')}
                 required
-                className="h-9 w-full rounded-lg border-none bg-[#E0F2F9] px-3 py-2 text-sm outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
+                className="h-11 w-full rounded-[9999px] border-none bg-[#E0F2F9] px-5 py-2 text-sm outline-none transition-all focus:ring-1 focus:ring-[#20A0E0]"
               />
             </div>
 
@@ -217,7 +217,7 @@ const EnquiryFormModal: React.FC<EnquiryFormModalProps> = ({
               <button
                 type="submit"
                 disabled={isPending}
-                className="h-10 w-full rounded-full text-sm font-medium text-white shadow-md transition-all hover:brightness-105 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-12 w-full items-center justify-center rounded-[9999px] text-sm font-semibold text-white shadow-md transition-all hover:brightness-105 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                 style={{
                   background:
                     'linear-gradient(90deg, #37B6E9 0%, #0077B6 100%)',

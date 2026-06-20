@@ -93,7 +93,7 @@ const FloatingActions: React.FC = () => {
         onClick={() => setIsEnquiryModalOpen(true)}
       >
          <div 
-           className={`rounded-l-2xl font-black uppercase [writing-mode:vertical-lr] shadow-2xl transition-[padding] duration-500 flex items-center justify-center min-w-[36px] font-['Montserrat'] ${
+           className={`rounded-l-[28px] font-black uppercase [writing-mode:vertical-lr] shadow-2xl transition-[padding] duration-500 flex items-center justify-center min-w-[36px] font-['Montserrat'] ${
              isScrolledSafe ? 'py-2 px-1.5' : 'py-3 px-2.5'
            } group-hover:py-3 group-hover:px-2.5 group-hover:min-w-[36px] text-white backdrop-blur-md`}
            style={{

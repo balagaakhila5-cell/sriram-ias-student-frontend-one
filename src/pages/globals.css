@@ -1632,3 +1632,12 @@ button:not(.no-pill):not(.course-dots button):not([role="tab"]),
 a.course-slider-enroll {
   border-radius: 9999px !important;
 }
+
+.join-cta-bg-wave {
+  transform-origin: left center;
+}
+
+.join-cta-center-wave {
+  transform-box: fill-box;
+  transform-origin: center center;
+}

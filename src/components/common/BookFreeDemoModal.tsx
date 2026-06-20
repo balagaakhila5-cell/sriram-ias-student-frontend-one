@@ -28,10 +28,10 @@ interface BookFreeDemoModalProps {
 }
 
 const demoInputClassName =
-  'h-9 w-full rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-center text-sm text-gray-800 outline-none placeholder:text-center placeholder:text-[#00000080] focus:ring-2 focus:ring-[#1897D8]/50';
+  'h-11 w-full rounded-full border-none bg-[#D7EEF7] px-5 py-2 text-center text-sm text-gray-800 outline-none placeholder:text-center placeholder:text-[#00000080] focus:ring-2 focus:ring-[#1897D8]/50';
 
 const demoTextareaClassName =
-  'w-full resize-none rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-center text-sm text-gray-800 outline-none placeholder:text-center placeholder:text-[#00000080] focus:ring-2 focus:ring-[#1897D8]/50';
+  'w-full resize-none rounded-[28px] border-none bg-[#D7EEF7] px-5 py-2 text-center text-sm text-gray-800 outline-none placeholder:text-center placeholder:text-[#00000080] focus:ring-2 focus:ring-[#1897D8]/50';
 
 const initialForm = {
   name: '',
@@ -307,7 +307,7 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({
               <button
                 type="button"
                 onClick={resetAndClose}
-                className="mt-2 inline-block text-white font-semibold text-[16px] px-8 py-3 rounded-full"
+                className="mt-2 inline-flex h-12 min-w-[180px] items-center justify-center rounded-[9999px] px-12 text-[16px] font-semibold text-white"
                 style={{ background: 'linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)' }}
               >
                 Done
@@ -459,7 +459,7 @@ const BookFreeDemoModal: React.FC<BookFreeDemoModalProps> = ({
                 <button
                   type="submit"
                   disabled={submit.isPending}
-                  className="rounded-full px-8 py-2.5 text-[16px] font-semibold text-white shadow-[0px_4px_32px_0px_#0000001A] transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-70"
+                  className="inline-flex h-12 min-w-[240px] items-center justify-center rounded-[9999px] px-12 text-[16px] font-semibold text-white shadow-[0px_4px_32px_0px_#0000001A] transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-70"
                   style={{ background: 'linear-gradient(90deg, rgba(0, 159, 238, 0.8) 34.5%, #005B88 100%)' }}
                 >
                   {submit.isPending ? 'Submitting...' : 'Book Your Session'}

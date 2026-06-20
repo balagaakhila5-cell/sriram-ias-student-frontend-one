@@ -12,6 +12,7 @@ import {
   getEnquiryCenterName,
 } from '@/features/center/data/centerCourseCategories';
 import DemoFormSelect from '@/components/common/DemoFormSelect';
+import JoinCtaAnimatedBackground from './JoinCtaAnimatedBackground';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -42,27 +43,6 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
   useGSAP(
     () => {
       if (prefersReducedMotion) return;
-
-      // Animate ribbon shapes with left-to-right wipe fill effect
-      const bgShapes = gsap.utils.toArray<Element>('.cta-bg-shape');
-      bgShapes.forEach((shape, i) => {
-        gsap.fromTo(
-          shape,
-          { clipPath: 'inset(0 100% 0 0)', opacity: 0 },
-          {
-            clipPath: 'inset(0 0% 0 0)',
-            opacity: 1,
-            duration: 1.6,
-            delay: i * 0.18,
-            ease: 'power2.inOut',
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: 'top 88%',
-              once: true,
-            },
-          }
-        );
-      });
 
       gsap.fromTo(
         '.join-cta-heading',
@@ -177,32 +157,10 @@ const JoinCTA: React.FC<Props> = ({ course, title, city: propCity }) => {
       className="relative w-full overflow-hidden font-['Montserrat',sans-serif]"
       style={{ background: sectionBg }}
     >
-      {/* Animated background shapes - Matches the thick sweeps of Image 1 */}
-      <div className="pointer-events-none absolute inset-0 z-0">
-        <svg
-          className="absolute inset-0 h-full w-full"
-          viewBox="0 0 1440 600"
-          preserveAspectRatio="xMidYMid slice"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          {/* Main thick sweeping ribbon */}
-          <path
-            className="cta-bg-shape"
-            d="M-100,350 C200,250 450,50 900,100 C1250,140 1450,-50 1550,-100 L1550,150 C1350,300 1050,350 750,250 C400,100 150,350 -100,450 Z"
-            fill="#B8B850"
-            fillOpacity="0.3"
-          />
-
-          {/* Bottom right curved blob */}
-          <path
-            className="cta-bg-shape"
-            d="M700,650 C800,450 1100,400 1550,550 L1550,650 Z"
-            fill="#B8B850"
-            fillOpacity="0.4"
-          />
-        </svg>
-      </div>
+      <JoinCtaAnimatedBackground
+        containerRef={containerRef}
+        prefersReducedMotion={prefersReducedMotion}
+      />
 
       {/* Main Content */}
       <div className="relative z-10 mx-auto flex max-w-[1300px] flex-col items-stretch justify-between gap-8 px-6 pt-12 md:px-12 md:pt-16 lg:flex-row lg:gap-12 lg:px-20">

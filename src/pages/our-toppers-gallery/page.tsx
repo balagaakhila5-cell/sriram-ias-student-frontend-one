@@ -8,8 +8,7 @@ import Footer from '@/components/common/Footer';
 import ToppersGalleryTabs from '@/features/ourToppers/components/ToppersGalleryTabs';
 import TestimonialsCarousel from '@/features/ourToppers/components/TestimonialsCarousel';
 import type { YearWiseSelection } from '@/features/ourToppers/components/YearWiseDropdown';
-import { useSessionBooking } from '@/features/course/hooks/useSessionBooking';
-import SessionBookingDialog from '@/features/course/components/SessionBookingDialog';
+import JoinCTA from '@/features/course/components/sections/JoinCTA';
 
 type Topper = {
   name: string;
@@ -138,52 +137,6 @@ const imagePath = (fileName: string) =>
 const OurToppersGalleryPage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'Toppers' | 'Testimonials'>('Toppers');
-  const [formData, setFormData] = useState({
-    fullName: '',
-    mobile: '',
-    email: '',
-    targetYear: '',
-    city: 'Delhi',
-  });
-  const [authorized, setAuthorized] = useState(false);
-  const [dialog, setDialog] = useState<{
-    variant: 'success' | 'error';
-    message: string;
-  } | null>(null);
-  const { bookSession, isPending } = useSessionBooking();
-
-  const handleFormChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleSessionSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const result = await bookSession(formData, formData.city, authorized);
-
-    if (result.ok) {
-      setDialog({
-        variant: 'success',
-        message: 'Your session has been booked. Our team will reach out shortly.',
-      });
-      setFormData({
-        fullName: '',
-        mobile: '',
-        email: '',
-        targetYear: '',
-        city: 'Delhi',
-      });
-      setAuthorized(false);
-      return;
-    }
-
-    setDialog({
-      variant: 'error',
-      message: result.message,
-    });
-  };
 
   const handleTabChange = (tab: 'Toppers' | 'Testimonials') => {
     setActiveTab(tab);
@@ -316,177 +269,7 @@ const OurToppersGalleryPage = () => {
         </div>
       </section>
 
-      {/* WANT TO BECOME IAS / IPS CTA */}
-      <section className="relative w-full overflow-hidden bg-[#EFEFD0] font-['Montserrat',sans-serif]">
-        <div className="want-cta-bg pointer-events-none absolute inset-0 z-0" />
-
-        <div className="relative z-10 mx-auto flex max-w-[1300px] flex-col items-center justify-between gap-8 px-4 pt-10 sm:px-6 md:px-12 md:pt-16 lg:flex-row lg:items-stretch lg:gap-12 lg:px-20">
-          <div className="z-10 flex w-full flex-col justify-center pb-8 text-center md:pb-12 lg:text-left">
-            <h2 className="mb-3 text-[25px] font-bold leading-tight tracking-wide text-[#3A340099] sm:text-[28px] md:text-[34px] lg:text-[30px]">
-              Want to Become an IAS/IPS?
-            </h2>
-
-            <p className="mx-auto mb-8 max-w-[620px] text-[14px] font-medium text-[#3A340099] sm:text-[15px] md:text-[18px] lg:mx-0">
-              Get Your One to One Personalised Session with Our Expert Mentors
-            </p>
-
-            <form className="mx-auto w-full max-w-[640px] lg:mx-0" onSubmit={handleSessionSubmit}>
-              <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                  <input
-                    type="text"
-                    name="fullName"
-                    placeholder="Full Name"
-                    value={formData.fullName}
-                    onChange={handleFormChange}
-                    required
-                    className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
-                  />
-                </div>
-
-                <div>
-                  <input
-                    type="tel"
-                    name="mobile"
-                    placeholder="Mobile Number"
-                    value={formData.mobile}
-                    onChange={handleFormChange}
-                    required
-                    pattern="[0-9]{10}"
-                    className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
-                  />
-                </div>
-
-                <div>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Email Id"
-                    value={formData.email}
-                    onChange={handleFormChange}
-                    required
-                    className="w-full rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-800 shadow-sm outline-none transition-all placeholder:text-center placeholder:text-gray-400 focus:ring-2 focus:ring-blue-300"
-                  />
-                </div>
-
-                <div className="w-full">
-                  <div className="relative w-full">
-                    <select
-                      name="targetYear"
-                      value={formData.targetYear}
-                      onChange={handleFormChange}
-                      required
-                      className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300"
-                    >
-                      <option value="" disabled>
-                        Target UPSC Attempt Year
-                      </option>
-                      <option value="2025">2025</option>
-                      <option value="2026">2026</option>
-                      <option value="2027">2027</option>
-                      <option value="2028">2028</option>
-                      <option value="2029">2029</option>
-                    </select>
-
-                    <svg
-                      className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#999"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="6 9 12 15 18 9" />
-                    </svg>
-                  </div>
-                </div>
-
-                <div className="w-full">
-                  <div className="relative w-full">
-                    <select
-                      name="city"
-                      value={formData.city}
-                      onChange={handleFormChange}
-                      required
-                      className="text-center-last w-full cursor-pointer appearance-none rounded-3xl border-none bg-white px-4 py-3.5 text-center text-[16px] font-medium text-gray-500 shadow-sm outline-none transition-all focus:ring-2 focus:ring-blue-300"
-                    >
-                      <option value="" disabled>
-                        City
-                      </option>
-                      <option value="Delhi">Delhi</option>
-                      <option value="Hyderabad">Hyderabad</option>
-                      <option value="Pune">Pune</option>
-                    </select>
-
-                    <svg
-                      className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#999"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="6 9 12 15 18 9" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-
-              <label className="group mb-8 mt-2 flex cursor-pointer items-start gap-3 text-left">
-                <input
-                  type="checkbox"
-                  checked={authorized}
-                  onChange={(e) => setAuthorized(e.target.checked)}
-                  className="mt-1 h-[18px] w-[18px] shrink-0 cursor-pointer rounded-sm border-none bg-white/80 checked:bg-blue-500"
-                />
-
-                <span className="text-[12px] font-medium leading-[1.6] text-[#00000099]">
-                  I authorize SRIRAM&apos;s IAS and its associates to contact me
-                  with updates notifications via email, SMS, WhatsApp, and voice
-                  call. This consent will override any registration for DNC /
-                  NDNC.
-                </span>
-              </label>
-
-              <div className="mt-4 flex justify-center lg:justify-center">
-                <button
-                  type="submit"
-                  disabled={isPending}
-                  className="rounded-3xl px-7 py-3.5 text-[16px] font-semibold text-white shadow-md transition-all hover:opacity-95 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-70 sm:px-8 sm:text-[18px]"
-                  style={{
-                    background:
-                      'linear-gradient(90deg, rgba(24, 151, 216, 0.8) 0%, #021C29 100%)',
-                  }}
-                >
-                  {isPending ? 'Booking...' : 'Book your session now'}
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <div className="relative z-10 flex w-full justify-center lg:self-end lg:justify-end">
-            <div className="relative -mb-1 flex origin-bottom scale-[0.9] items-end justify-center sm:scale-100 md:scale-[1.1] lg:scale-[1.35]">
-              <img
-                src="/assets/course/cta-img.png"
-                alt="Professional man"
-                className="relative z-10 w-[220px] object-contain object-bottom drop-shadow-xl sm:w-[280px] md:w-[380px] lg:-ml-[-30%] lg:w-[650px]"
-              />
-
-              <img
-                src="/assets/course/cta-img-1.png"
-                alt="Professional woman"
-                className="relative z-20 -ml-[34%] w-[170px] object-contain object-bottom drop-shadow-2xl sm:w-[220px] md:w-[300px] lg:-ml-[60%] lg:w-[360px]"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      <JoinCTA />
 
       <Footer />
 
@@ -496,41 +279,7 @@ const OurToppersGalleryPage = () => {
         .testimonial-quote-text {
           font-family: 'Caveat', 'Segoe Script', 'Bradley Hand', cursive;
         }
-
-        @keyframes wantCtaBgMove {
-          0% {
-            transform: translate3d(0, 0, 0) scale(1.08);
-          }
-
-          50% {
-            transform: translate3d(-28px, 14px, 0) scale(1.12);
-          }
-
-          100% {
-            transform: translate3d(24px, -12px, 0) scale(1.1);
-          }
-        }
-
-        .want-cta-bg {
-          background-image: url('/assets/our-toppers-gallery/want-to-become-bg.png');
-          background-size: cover;
-          background-position: center;
-          background-repeat: no-repeat;
-          animation: wantCtaBgMove 4s ease-in-out infinite alternate;
-          will-change: transform;
-        }
-
-        .text-center-last {
-          text-align-last: center;
-        }
       `}</style>
-
-      <SessionBookingDialog
-        open={dialog !== null}
-        variant={dialog?.variant ?? 'success'}
-        message={dialog?.message ?? ''}
-        onClose={() => setDialog(null)}
-      />
     </main>
   );
 };

@@ -34,9 +34,9 @@ const VARIANTS: Record<
 > = {
   modal: {
     trigger:
-      "flex h-9 w-full items-center justify-between rounded-lg border-none bg-[#D7EEF7] px-3 py-2 text-left text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50 disabled:cursor-not-allowed disabled:opacity-60",
+      "flex h-11 w-full items-center justify-between rounded-[9999px] border-none bg-[#D7EEF7] px-5 py-2 text-left text-sm text-gray-800 outline-none focus:ring-2 focus:ring-[#1897D8]/50 disabled:cursor-not-allowed disabled:opacity-60",
     placeholder: "text-gray-600",
-    menu: "max-h-[220px] overflow-y-auto rounded-lg border border-[#c5e3f0] bg-white py-1 shadow-lg",
+    menu: "max-h-[220px] overflow-y-auto rounded-2xl border border-[#c5e3f0] bg-white py-1 shadow-lg",
     option:
       "block w-full px-3 py-2 text-left text-sm transition-colors hover:bg-[#D7EEF7]",
     optionSelected: "font-semibold text-[#005B88]",

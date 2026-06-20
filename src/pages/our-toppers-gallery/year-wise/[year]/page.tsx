@@ -7,6 +7,7 @@ import Footer from '@/components/common/Footer';
 import FloatingActions from '@/components/common/FloatingActions';
 import YearWiseDropdown from '@/features/ourToppers/components/YearWiseDropdown';
 import YearWiseToppersGrid from '@/features/ourToppers/components/YearWiseToppersGrid';
+import JoinCTA from '@/features/course/components/sections/JoinCTA';
 import type { YearWiseSelection } from '@/features/ourToppers/components/YearWiseDropdown';
 import {
   getAllYearsTopperItems,
@@ -84,6 +85,8 @@ export default function OurToppersYearWisePage() {
             </div>
           </div>
         </section>
+
+        <JoinCTA />
       </main>
 
       <Footer />
