@@ -25,9 +25,46 @@ const getBrochureFileName = (course: CourseData) => {
 };
 
 const getFeeDisplay = (fee?: string, fallback?: string) => {
-  if (!fee || fee === 'ΓÇö' || fee === '-') return fallback ?? '';
+  if (!fee || fee === 'ΓÇö' || fee === '-' || fee === '—') return fallback ?? '';
   return fee;
 };
+
+const normalizeFeeAmount = (fee?: string, fallback?: string) => {
+  const raw = getFeeDisplay(fee, fallback);
+  if (!raw) return '';
+
+  return raw
+    .replace(/\/-\s*$/i, '')
+    .replace(/\*\s*$/i, '')
+    .replace(/^\s*Rs\.?\s*/i, '')
+    .trim();
+};
+
+function FeeAmountLine({
+  fee,
+  fallback,
+  mode,
+}: {
+  fee?: string;
+  fallback: string;
+  mode: 'ONLINE' | 'OFFLINE';
+}) {
+  const amount = normalizeFeeAmount(fee, fallback);
+
+  return (
+    <div className="flex flex-col gap-0.5">
+      <span className="whitespace-nowrap text-[15px] font-extrabold leading-tight text-[#000000] md:text-[16px]">
+        {amount}
+        <span className="text-black">*</span>
+        {' '}
+        | {mode}
+      </span>
+      <span className="whitespace-nowrap pl-2 text-[10px] font-normal leading-tight text-[#00000099] md:pl-2.5 md:text-[11px]">
+        *excluding GST
+      </span>
+    </div>
+  );
+}
 
 const downloadBrochure = (url: string, fileName: string) => {
   const link = document.createElement('a');
@@ -106,8 +143,8 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
       }}
     >
       <div className="relative z-10 mx-auto max-w-[1400px] min-h-[88px] md:min-h-[96px]">
-        <div className="flex h-full w-full flex-col items-stretch gap-4 lg:flex-row lg:items-center lg:gap-5 xl:gap-6">
-          <div className="flex min-w-0 flex-1 items-center gap-3 overflow-x-auto pb-1 lg:gap-4 xl:gap-5 xl:overflow-visible xl:pb-0">
+        <div className="flex h-full w-full flex-col items-stretch gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-3">
+          <div className="flex min-w-0 flex-1 items-center gap-3 overflow-x-auto pb-1 pl-6 lg:gap-4 xl:gap-5 xl:overflow-visible xl:pb-0">
             {/* Date */}
             <div className="info-item flex shrink-0 items-center gap-3">
               <div className="h-11 w-11 shrink-0 md:h-12 md:w-12">
@@ -184,21 +221,25 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
             <div className="hidden h-10 w-px shrink-0 bg-black/10 lg:block" aria-hidden />
 
             {/* Fees */}
-            <div className="info-item flex shrink-0 items-center gap-3">
+            <div className="info-item flex shrink-0 items-start gap-3">
               <div className="h-11 w-11 shrink-0 md:h-12 md:w-12">
                 <img
-                  src="/assets/course/money.png"
+                  src="/assets/course/money-rupee.png"
                   alt="Fees"
                   className="h-full w-full object-contain drop-shadow-sm"
                 />
               </div>
-              <div className="flex min-w-0 flex-col gap-0.5">
-                <span className="whitespace-nowrap text-[15px] font-extrabold leading-tight text-[#000000] md:text-[16px]">
-                  {getFeeDisplay(course.feesOnline, 'Rs.2,10,000')} | ONLINE
-                </span>
-                <span className="whitespace-nowrap text-[15px] font-extrabold leading-tight text-[#000000] md:text-[16px]">
-                  {getFeeDisplay(course.feesOffline, 'Rs.1,75,000')} | OFFLINE
-                </span>
+              <div className="flex min-w-0 flex-col gap-1.5">
+                <FeeAmountLine
+                  fee={course.feesOnline}
+                  fallback="1,75,000"
+                  mode="ONLINE"
+                />
+                <FeeAmountLine
+                  fee={course.feesOffline}
+                  fallback="2,10,000"
+                  mode="OFFLINE"
+                />
                 <span className="mt-0.5 text-[12px] font-semibold text-[#00000099] md:text-[13px]">
                   Fees
                 </span>
@@ -207,8 +248,8 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex w-full shrink-0 flex-col items-center justify-center gap-2.5 lg:w-[290px] xl:w-[310px]">
-              <div className="flex w-full max-w-[290px] gap-2.5">
+          <div className="flex w-full shrink-0 flex-col items-stretch justify-center gap-1 sm:w-[290px] xl:w-[310px]">
+              <div className="flex w-full gap-2">
                 <button
                   type="button"
                   onClick={handleBrochureClick}
@@ -262,7 +303,7 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
               <button
                 type="button"
                 onClick={() => setIsEnrollOpen(true)}
-                className="cta-button h-[42px] w-full max-w-[290px] cursor-pointer whitespace-nowrap rounded-full px-5 text-[13px] font-extrabold uppercase tracking-wide text-white transition-transform hover:scale-[1.03] md:h-[44px] md:px-6 md:text-[14px]"
+                className="cta-button h-[42px] w-full cursor-pointer whitespace-nowrap rounded-full px-5 text-[13px] font-extrabold uppercase tracking-wide text-white transition-transform hover:scale-[1.03] md:h-[44px] md:px-6 md:text-[14px]"
                 style={{
                   background:
                     'linear-gradient(90deg, #00679C 0%, #002436 100%)',
@@ -271,9 +312,9 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
               >
                 ENROLL NOW
               </button>
-            </div>
           </div>
         </div>
+      </div>
       </section>
 
       <EnrollAuthModal

@@ -339,7 +339,7 @@ const ExploreCourses: React.FC = () => {
                               <span className="text-[#FFE81C]">*</span>
                             </p>
                             <p className="mt-0.5 whitespace-nowrap text-[9px] text-white/60 sm:text-[10px]">
-                              <span className="text-black">*</span> Excluding GST
+                              * Excluding GST
                             </p>
                           </div>
                         </div>

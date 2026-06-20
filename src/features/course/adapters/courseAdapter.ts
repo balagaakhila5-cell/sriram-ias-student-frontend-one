@@ -3,7 +3,7 @@ import type { CourseData } from "../types";
 import { courses as staticCourses, getCourseBySlug } from "../data/courses";
 
 const formatFee = (fee?: number): string | undefined =>
-  typeof fee === "number" ? `${fee.toLocaleString("en-IN")}/-` : undefined;
+  typeof fee === "number" ? `${fee.toLocaleString("en-IN")}*` : undefined;
 
 const firstNonEmpty = <T,>(...values: (T | undefined | null)[]): T | undefined => {
   for (const v of values) {

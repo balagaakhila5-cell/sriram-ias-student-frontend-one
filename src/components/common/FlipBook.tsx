@@ -9,12 +9,14 @@ interface FlipBookProps {
   totalLeaves?: number;
   /** Smaller layout for Buy Books sample popup */
   compact?: boolean;
+  zoom?: number;
 }
 
 const FlipBook: React.FC<FlipBookProps> = ({
   coverImage,
   totalLeaves = 8,
   compact = false,
+  zoom = 1,
 }) => {
   const [flippedPages, setFlippedPages] = useState<number[]>([]);
 
@@ -63,7 +65,7 @@ const FlipBook: React.FC<FlipBookProps> = ({
 
       <div
         className={`relative mx-auto flex w-[90%] flex-1 items-center justify-center ${
-          compact ? 'my-3 min-h-[260px] md:min-h-[300px]' : 'my-5 min-h-[380px] md:min-h-[440px]'
+          compact ? 'my-3 min-h-[340px] md:min-h-[420px]' : 'my-5 min-h-[380px] md:min-h-[440px]'
         }`}
       >
         <button
@@ -83,9 +85,10 @@ const FlipBook: React.FC<FlipBookProps> = ({
         </button>
 
         <div
-          className={`flex w-full justify-center perspective-[2000px] ${
-            compact ? 'max-w-[480px]' : 'max-w-[720px]'
+          className={`flex w-full justify-center perspective-[2000px] transition-transform duration-300 ease-out ${
+            compact ? 'max-w-[640px]' : 'max-w-[720px]'
           }`}
+          style={{ transform: `scale(${zoom})`, transformOrigin: 'center center' }}
         >
           <div
             className={`relative flex w-full transition-transform duration-700 ease-in-out ${getBookTranslation()}`}

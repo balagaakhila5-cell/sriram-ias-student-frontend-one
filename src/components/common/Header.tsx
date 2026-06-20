@@ -451,11 +451,11 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                 </div>
 
                 {isLangOpen && (
-                  <div className="absolute top-full right-0 mt-2 w-32 overflow-hidden rounded-lg border border-white/50 py-2 z-50 shadow-xl bg-[linear-gradient(145deg,#B8E4F7_0%,#D8E6F5_42%,#EAC8D0_100%)]">
+                  <div className="absolute top-full right-0 mt-2 w-32 overflow-hidden rounded-lg border border-white/50 py-2 text-center z-50 shadow-xl bg-[linear-gradient(145deg,#B8E4F7_0%,#D8E6F5_42%,#EAC8D0_100%)]">
                     {['English', 'Telugu', 'Marathi'].map((lang) => (
                       <div
                         key={lang}
-                        className="cursor-pointer px-4 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-white/40 hover:text-[#1897D8]"
+                        className="block w-full cursor-pointer px-4 py-2 text-center text-sm font-medium text-gray-800 transition-colors hover:bg-white/40 hover:text-[#1897D8]"
                         onClick={() => {
                           setSelectedLang(lang);
                           setIsLangOpen(false);
@@ -1082,11 +1082,11 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
               </div>
 
               {isLangOpen && (
-                <div className="mt-1 flex flex-col gap-1 overflow-hidden rounded-lg border border-white/50 py-2 pl-0 shadow-md bg-[linear-gradient(145deg,#B8E4F7_0%,#D8E6F5_42%,#EAC8D0_100%)]">
+                <div className="mt-1 flex flex-col gap-1 overflow-hidden rounded-lg border border-white/50 py-2 pl-0 text-center shadow-md bg-[linear-gradient(145deg,#B8E4F7_0%,#D8E6F5_42%,#EAC8D0_100%)]">
                   {['English', 'Telugu', 'Marathi'].map((lang) => (
                     <div
                       key={lang}
-                      className={`cursor-pointer px-4 py-2 text-sm transition-colors hover:bg-white/40 hover:text-primary ${
+                      className={`block w-full cursor-pointer px-4 py-2 text-center text-sm transition-colors hover:bg-white/40 hover:text-primary ${
                         selectedLang === lang ? 'font-bold text-primary' : 'font-medium text-gray-800'
                       }`}
                       onClick={() => {

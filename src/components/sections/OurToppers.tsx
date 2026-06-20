@@ -39,7 +39,7 @@ const OurToppers: React.FC = () => {
     [displayToppers],
   );
 
-  const heading = section?.title ?? 'OUR TOPPERS';
+  const heading = section?.title ?? "Our Toppers'";
   const subTitle =
     section?.subTitle ??
     'Driven by a commitment to success, we stand behind our toppers with constant support, expert mentorship, and personalized attention.';
@@ -57,7 +57,7 @@ const OurToppers: React.FC = () => {
 
       <div className="relative z-10 w-full max-w-[1900px] flex flex-col items-center">
         <div className="text-center mt-8 md:mt-10 pt-2">
-          <h2 className="global-section-heading">{heading}</h2>
+          <h2 className="global-section-heading normal-case">{heading}</h2>
         </div>
 
         <p className="text-center text-[#2A3742] font-medium max-w-[800px] mx-auto text-[13px] md:text-[15px] leading-snug px-6 mb-0">

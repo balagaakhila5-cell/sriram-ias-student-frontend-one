@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, X } from 'lucide-react';
+import { ArrowRight, X, ZoomIn, ZoomOut } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -196,15 +196,18 @@ const BuyBooks: React.FC = () => {
   const [selectedSampleBook, setSelectedSampleBook] = useState<SampleBook | null>(
     null,
   );
+  const [sampleZoom, setSampleZoom] = useState(1);
 
   const openSamplePopup = (book: SampleBook) => {
     setSelectedSampleBook(book);
+    setSampleZoom(1);
     setShowSamplePopup(true);
   };
 
   const closeSamplePopup = () => {
     setShowSamplePopup(false);
     setSelectedSampleBook(null);
+    setSampleZoom(1);
   };
 
   const books = useMemo(() => {
@@ -336,19 +339,37 @@ const BuyBooks: React.FC = () => {
         onClick={closeSamplePopup}
       >
         <div
-          className="relative w-full max-w-[620px] rounded-[16px] bg-[#01285A] px-4 pb-5 pt-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)] md:px-6 md:pb-6 md:pt-5"
+          className="relative w-full max-w-[920px] rounded-[16px] bg-[#01285A] px-4 pb-5 pt-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)] md:px-8 md:pb-7 md:pt-5"
           onClick={(event) => event.stopPropagation()}
         >
-          <button
-            type="button"
-            onClick={closeSamplePopup}
-            aria-label="Close sample preview"
-            className="absolute right-3 top-3 z-20 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-[#FF0000] shadow-md transition-transform hover:scale-105 md:right-4 md:top-4 md:h-9 md:w-9"
-          >
-            <X size={18} className="text-white" strokeWidth={3} />
-          </button>
+          <div className="absolute right-3 top-3 z-20 flex items-center gap-2 md:right-4 md:top-4">
+            <button
+              type="button"
+              onClick={() => setSampleZoom((value) => Math.max(0.8, Number((value - 0.1).toFixed(1))))}
+              aria-label="Zoom out"
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white/15 text-white shadow-md transition-all hover:bg-white/25 md:h-9 md:w-9"
+            >
+              <ZoomOut size={18} strokeWidth={2.5} />
+            </button>
+            <button
+              type="button"
+              onClick={() => setSampleZoom((value) => Math.min(1.4, Number((value + 0.1).toFixed(1))))}
+              aria-label="Zoom in"
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white/15 text-white shadow-md transition-all hover:bg-white/25 md:h-9 md:w-9"
+            >
+              <ZoomIn size={18} strokeWidth={2.5} />
+            </button>
+            <button
+              type="button"
+              onClick={closeSamplePopup}
+              aria-label="Close sample preview"
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-[#FF0000] shadow-md transition-transform hover:scale-105 md:h-9 md:w-9"
+            >
+              <X size={18} className="text-white" strokeWidth={3} />
+            </button>
+          </div>
 
-          <h2 className="mb-3 px-10 text-center text-[24px] font-extrabold uppercase leading-none tracking-[0.5px] md:mb-4 md:text-[28px]">
+          <h2 className="mb-3 px-12 text-center text-[24px] font-extrabold uppercase leading-none tracking-[0.5px] md:mb-4 md:text-[28px]">
             <span className="bg-[linear-gradient(90deg,#B8DDF5_0%,#E8B4BE_100%)] bg-clip-text text-transparent">
               Sample
             </span>
@@ -358,6 +379,7 @@ const BuyBooks: React.FC = () => {
             key={selectedSampleBook.image}
             coverImage={selectedSampleBook.image}
             compact
+            zoom={sampleZoom}
           />
 
           <div className="mt-1 flex shrink-0 justify-center">
