@@ -218,7 +218,11 @@ export function getCenterCategory(
 }
 
 export function formatCourseTitle(title: string): string {
-  return title.replace(/\n/g, ' ').trim();
+  return title
+    .replace(/\n/g, ' ')
+    .replace(/\bGeneral Studies\b/gi, 'GS')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 const CITY_TITLE_SUFFIXES: Record<CenterCity, string[]> = {

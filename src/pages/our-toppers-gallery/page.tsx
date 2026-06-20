@@ -6,8 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import ToppersGalleryTabs from '@/features/ourToppers/components/ToppersGalleryTabs';
-import TestimonialQuoteCard from '@/features/ourToppers/components/TestimonialQuoteCard';
-import { TESTIMONIALS } from '@/features/ourToppers/data/testimonials';
+import TestimonialsCarousel from '@/features/ourToppers/components/TestimonialsCarousel';
 import type { YearWiseSelection } from '@/features/ourToppers/components/YearWiseDropdown';
 import { useSessionBooking } from '@/features/course/hooks/useSessionBooking';
 import SessionBookingDialog from '@/features/course/components/SessionBookingDialog';
@@ -248,11 +247,7 @@ const OurToppersGalleryPage = () => {
           {/* Topper cards / Testimonials / Year wise */}
           <div className="w-full px-4 sm:px-6 lg:px-0">
             {activeTab === 'Testimonials' ? (
-              <div className="mx-auto grid w-full max-w-[980px] grid-cols-1 gap-5 px-4 sm:grid-cols-2 sm:gap-6 lg:px-0">
-                {TESTIMONIALS.map((testimonial) => (
-                  <TestimonialQuoteCard key={testimonial.url} testimonial={testimonial} />
-                ))}
-              </div>
+              <TestimonialsCarousel />
             ) : (
             <div className="grid w-full grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
               {fallbackToppers.map((topper, index) => {

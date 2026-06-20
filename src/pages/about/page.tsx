@@ -45,28 +45,23 @@ const AboutPage = () => {
     <main className="min-h-screen overflow-hidden bg-white">
       <Header />
 
-      <section className="relative h-[300px] w-full overflow-hidden sm:h-[340px] md:h-[390px]">
-        <Image
-          src="/assets/about/about-us/About-banner.png"
-          alt="About Us Banner"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center"
-        />
+      <div className="relative">
+        <section className="relative h-[300px] w-full overflow-hidden sm:h-[340px] md:h-[390px]">
+          <Image
+            src="/assets/about/about-us/About-banner.png"
+            alt="About Us Banner"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
 
-        <div className="absolute inset-0 bg-black/20" />
-        <div className="absolute inset-y-0 left-0 w-[78%] bg-gradient-to-r from-black/95 via-black/75 to-transparent md:w-[52%]" />
-        <div className="absolute inset-y-0 right-0 w-[38%] bg-gradient-to-l from-black/20 to-transparent" />
-      </section>
+          <div className="absolute inset-0 bg-black/20" />
+          <div className="absolute inset-y-0 left-0 w-[78%] bg-gradient-to-r from-black/95 via-black/75 to-transparent md:w-[52%]" />
+          <div className="absolute inset-y-0 right-0 w-[38%] bg-gradient-to-l from-black/20 to-transparent" />
+        </section>
 
-      <div className="relative z-10 mx-auto w-full max-w-[1366px] px-4 pt-6 sm:px-6 md:px-8 lg:px-5 lg:pt-8">
-        <h1 className="text-center font-['Montserrat'] text-[clamp(28px,6vw,52px)] font-extrabold uppercase leading-[1.1] tracking-[1px] text-[#1f3442] md:text-left">
-          ABOUT <span className="text-[#6B8FD4]">US</span>
-        </h1>
-      </div>
-
-      <section className="about-section-bg relative w-full overflow-hidden px-4 pb-10 pt-4 sm:px-6 sm:pb-12 sm:pt-5 md:px-8 lg:px-6 lg:pb-[28px] lg:pt-6 xl:px-0">
+        <section className="about-section-bg relative w-full overflow-hidden px-4 pb-10 sm:px-6 sm:pb-12 md:px-8 lg:px-6 lg:pb-[28px] xl:px-0">
         <div className="side-circle-left pointer-events-none" />
         <div className="side-circle-right pointer-events-none" />
         <div className="bottom-wave-lines pointer-events-none" />
@@ -78,6 +73,12 @@ const AboutPage = () => {
           <div className="clean-orbit clean-orbit-two">
             <span className="clean-dot clean-dot-two" />
           </div>
+        </div>
+
+        <div className="relative z-10 mx-auto w-full max-w-[1366px] px-0 pt-6 sm:pt-6 md:pt-7 lg:px-3 lg:pt-8 xl:px-5">
+          <h1 className="mb-4 text-center font-['Montserrat'] text-[clamp(28px,6vw,52px)] font-extrabold uppercase leading-[1.1] tracking-[1px] text-[#1f3442] sm:mb-5 md:text-left lg:mb-6">
+            ABOUT <span className="text-[#6B8FD4]">US</span>
+          </h1>
         </div>
 
         <div className="about-main-grid relative z-10 mx-auto grid w-full max-w-[1366px] grid-cols-1 items-start justify-center gap-8 md:gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:items-start lg:gap-4 lg:px-3 xl:grid-cols-[minmax(0,677px)_minmax(0,627px)] xl:gap-5 xl:px-5">
@@ -184,7 +185,7 @@ const AboutPage = () => {
             transform: none;
             max-width: 677px;
             width: 100%;
-            padding-top: 12px;
+            padding-top: 0;
             margin: 0 auto;
           }
 
@@ -396,6 +397,7 @@ const AboutPage = () => {
             .about-left-cards {
               transform: translateX(42px);
               margin: 0;
+              padding-top: 0;
             }
 
             .about-circle-network {
@@ -407,11 +409,11 @@ const AboutPage = () => {
             }
 
             .about-text-card--one {
-              margin-bottom: 16px;
+              margin-bottom: 0;
             }
 
             .about-text-card--two {
-              margin-top: 28px;
+              margin-top: 0;
             }
 
             .about-text-card--three {
@@ -441,7 +443,7 @@ const AboutPage = () => {
               margin: 0;
               max-width: 100%;
               width: 100%;
-              padding-top: 8px;
+              padding-top: 0;
             }
 
             .about-text-card {
@@ -451,11 +453,11 @@ const AboutPage = () => {
             }
 
             .about-text-card--one {
-              margin-bottom: 10px;
+              margin-bottom: 0;
             }
 
             .about-text-card--two {
-              margin-top: 12px;
+              margin-top: 0;
             }
 
             .about-text-card--three {
@@ -561,6 +563,7 @@ const AboutPage = () => {
           }
         `}</style>
       </section>
+      </div>
 
       <Footer />
     </main>

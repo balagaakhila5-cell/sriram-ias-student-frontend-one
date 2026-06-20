@@ -5,11 +5,20 @@ import Image from 'next/image';
 
 type FoundersMessageSectionProps = {
   id?: string;
+  showHeading?: boolean;
+  overlapBanner?: boolean;
 };
 
-const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
+const FoundersMessageSection = ({
+  id,
+  showHeading = false,
+  overlapBanner = false,
+}: FoundersMessageSectionProps) => {
   return (
-    <section id={id} className="founder-section relative bg-[#f8fbff]">
+    <section
+      id={id}
+      className={`founder-section relative bg-[#f8fbff] ${overlapBanner ? 'founder-section--overlap' : ''}`}
+    >
       <div className="founder-page-bg absolute inset-0" />
 
       <div className="founder-moving-bg-clip" aria-hidden>
@@ -24,7 +33,13 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
         </div>
       </div>
 
-      <div className="relative z-10 mx-auto w-full max-w-[1440px] box-border px-4 pb-12 pt-8 sm:px-6 sm:pb-14 sm:pt-10 lg:px-8 lg:pb-16 lg:pt-10">
+      <div className="relative z-10 mx-auto w-full max-w-[1440px] box-border px-4 pb-12 pt-0 sm:px-6 sm:pb-14 lg:px-8 lg:pb-16">
+        {showHeading ? (
+          <h1 className="founder-page-heading mb-3 text-center font-['Montserrat'] text-[clamp(28px,6vw,52px)] font-extrabold uppercase leading-[1.1] tracking-[1px] text-[#1f3442] sm:mb-4 md:text-left lg:mb-5">
+            FOUNDER&apos;S <span className="text-[#6B8FD4]">MESSAGE</span>
+          </h1>
+        ) : null}
+
         <div className="founder-main-grid">
           <div className="dialog-left-col relative z-20 w-full max-w-full">
             <div className="dialog-box-wrap">
@@ -61,7 +76,7 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
                 alt="Sriram Srirangam Founder"
                 fill
                 priority
-                sizes="(max-width: 768px) 88vw, 560px"
+                sizes="(max-width: 768px) 72vw, 420px"
                 className="founder-main-img"
               />
             </div>
@@ -80,21 +95,43 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
         .founder-section {
           --fm-dialog-w: min(803px, 100%);
           --fm-founder-group-w: min(680px, 100%);
-          --fm-founder-photo: min(300px, 78vw);
+          --fm-founder-photo: min(260px, 72vw);
           --fm-font-size: 16px;
           --fm-line-height: 26px;
           overflow: hidden;
         }
 
+        .founder-section--overlap {
+          margin-top: -3.5rem;
+        }
+
+        @media (min-width: 640px) {
+          .founder-section--overlap {
+            margin-top: -4.5rem;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .founder-section--overlap {
+            margin-top: -5.5rem;
+          }
+        }
+
+        .founder-page-heading {
+          position: relative;
+          z-index: 20;
+          margin-top: clamp(16px, 2.5vw, 32px);
+        }
+
         @media (min-width: 640px) {
           .founder-section {
-            --fm-founder-photo: min(380px, 68vw);
+            --fm-founder-photo: min(320px, 58vw);
           }
         }
 
         @media (min-width: 1024px) {
           .founder-section {
-            --fm-founder-photo: min(480px, 96%);
+            --fm-founder-photo: min(400px, 82%);
           }
         }
 
@@ -155,7 +192,7 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
             grid-template-columns: minmax(min-content, 1fr) minmax(min-content, 1fr);
             column-gap: clamp(20px, 3vw, 40px);
             row-gap: 0;
-            align-items: start;
+            align-items: center;
           }
         }
 
@@ -173,7 +210,7 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
 
         @media (min-width: 1024px) {
           .dialog-left-col {
-            margin-top: 40px;
+            margin-top: 0;
           }
         }
 
@@ -209,7 +246,7 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
           height: auto;
           max-height: none;
           margin: 0;
-          padding: 28px 24px 92px 22px;
+          padding: 38px 24px 92px 22px;
           color: #4d5961;
           font-family: 'Montserrat', sans-serif;
           font-size: 10.5px;
@@ -241,7 +278,7 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
 
         @media (max-width: 360px) {
           .dialog-text-content {
-            padding: 26px 20px 76px 20px;
+            padding: 34px 20px 76px 20px;
             font-size: 10px;
             line-height: 15px;
           }
@@ -253,7 +290,7 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
 
         @media (min-width: 425px) {
           .dialog-text-content {
-            padding: 32px 28px 96px 26px;
+            padding: 42px 28px 96px 26px;
             font-size: 11px;
             line-height: 17px;
           }
@@ -269,7 +306,7 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
 
         @media (min-width: 640px) {
           .dialog-text-content {
-            padding: 38px 32px 104px 30px;
+            padding: 48px 32px 104px 30px;
             font-size: 12px;
             line-height: 19px;
           }
@@ -281,7 +318,7 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
 
         @media (min-width: 768px) and (max-width: 1023px) {
           .dialog-text-content {
-            padding: 42px 36px 112px 34px;
+            padding: 52px 36px 112px 34px;
             font-size: 13px;
             line-height: 21px;
           }
@@ -304,7 +341,7 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
             width: 84%;
             max-width: none;
             margin: 0 auto;
-            padding: 44px 36px 148px 52px;
+            padding: 56px 36px 148px 52px;
             font-size: var(--fm-font-size);
             line-height: var(--fm-line-height);
             min-height: 280px;
@@ -335,7 +372,7 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
           justify-content: flex-start;
           justify-self: center;
           align-self: start;
-          margin-top: clamp(20px, 4vw, 32px);
+          margin-top: clamp(8px, 2vw, 16px);
           overflow: visible;
           height: auto;
           max-height: none;
@@ -343,7 +380,7 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
 
         @media (min-width: 1024px) {
           .right-founder-col {
-            margin-top: 40px;
+            margin-top: 0;
             justify-self: center;
             align-self: start;
           }
@@ -375,14 +412,20 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
           max-width: 100%;
           flex-direction: column;
           align-items: center;
-          margin-top: clamp(12px, 2vw, 18px);
+          margin-top: clamp(8px, 1.5vw, 14px);
           text-align: center;
-          gap: clamp(10px, 1.4vw, 16px);
+          gap: clamp(4px, 0.8vw, 10px);
+        }
+
+        @media (min-width: 1024px) {
+          .founder-details {
+            margin-top: 12px;
+          }
         }
 
         .best-wishes-text {
           margin: 0;
-          font-size: clamp(22px, 2.3vw, 33px);
+          font-size: clamp(18px, 2vw, 28px);
           line-height: 1.05;
           font-weight: 800;
           letter-spacing: -0.02em;
@@ -400,7 +443,7 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
 
         .founder-name {
           margin: 0;
-          font-size: clamp(22px, 2.4vw, 34px);
+          font-size: clamp(18px, 2.1vw, 28px);
           line-height: 1.1;
           font-weight: 700;
           letter-spacing: -0.03em;
@@ -409,7 +452,7 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
 
         .founder-role {
           margin: 0;
-          font-size: clamp(18px, 1.8vw, 26px);
+          font-size: clamp(15px, 1.5vw, 22px);
           line-height: 1.15;
           font-weight: 600;
           color: #56616b;
@@ -417,7 +460,7 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
 
         .founder-brand {
           margin: 0;
-          font-size: clamp(18px, 1.7vw, 25px);
+          font-size: clamp(15px, 1.4vw, 21px);
           line-height: 1.15;
           font-weight: 700;
           color: #4f5964;
@@ -431,7 +474,7 @@ const FoundersMessageSection = ({ id }: FoundersMessageSectionProps) => {
 
           .dialog-text-content {
             width: 86%;
-            padding: 40px 30px 148px 44px;
+            padding: 52px 30px 148px 44px;
             min-height: 270px;
           }
 

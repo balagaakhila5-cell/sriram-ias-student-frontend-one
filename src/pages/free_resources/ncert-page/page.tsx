@@ -269,10 +269,10 @@ export default function NcertBooksPage() {
               <aside className="animate-sidebar sticky top-[120px] mx-auto w-full max-w-[310px] shrink-0 isolate self-start space-y-7 xl:ml-auto xl:mt-[40px]">
                 <FreeResourcesCourseSlider />
 
-                {/* OUR TOPPERS */}
+                {/* OUR TOPPERS' */}
                 <div className="toppers-card">
                   <h2 className="toppers-title">
-                    <span>Our Toppers</span>
+                    <span>Our Toppers&apos;</span>
                   </h2>
 
                   <div className="toppers-image-area">

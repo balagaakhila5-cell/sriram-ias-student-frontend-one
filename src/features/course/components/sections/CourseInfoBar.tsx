@@ -54,7 +54,7 @@ function FeeAmountLine({
   return (
     <div className="flex flex-col gap-0.5">
       <span className="whitespace-nowrap text-[15px] font-extrabold leading-tight text-[#000000] md:text-[16px]">
-        {amount}
+        Rs.{amount}
         <span className="text-black">*</span>
         {' '}
         | {mode}
@@ -143,8 +143,7 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
       }}
     >
       <div className="relative z-10 mx-auto max-w-[1400px] min-h-[88px] md:min-h-[96px]">
-        <div className="flex h-full w-full flex-col items-stretch gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-3">
-          <div className="flex min-w-0 flex-1 items-center gap-3 overflow-x-auto pb-1 pl-6 lg:gap-4 xl:gap-5 xl:overflow-visible xl:pb-0">
+        <div className="flex h-full w-full flex-col items-stretch gap-4 lg:flex-row lg:items-center lg:justify-center lg:gap-6 xl:gap-8">
             {/* Date */}
             <div className="info-item flex shrink-0 items-center gap-3">
               <div className="h-11 w-11 shrink-0 md:h-12 md:w-12">
@@ -163,8 +162,6 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
                 </span>
               </div>
             </div>
-
-            <div className="hidden h-10 w-px shrink-0 bg-black/10 sm:block" aria-hidden />
 
             {/* Modes — stacked vertically */}
             <div className="info-item flex shrink-0 items-center">
@@ -197,8 +194,6 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
               </div>
             </div>
 
-            <div className="hidden h-10 w-px shrink-0 bg-black/10 sm:block" aria-hidden />
-
             {/* Duration */}
             <div className="info-item flex shrink-0 items-center gap-3">
               <div className="h-11 w-11 shrink-0 md:h-12 md:w-12">
@@ -218,13 +213,11 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
               </div>
             </div>
 
-            <div className="hidden h-10 w-px shrink-0 bg-black/10 lg:block" aria-hidden />
-
             {/* Fees */}
             <div className="info-item flex shrink-0 items-start gap-3">
               <div className="h-11 w-11 shrink-0 md:h-12 md:w-12">
                 <img
-                  src="/assets/course/money-rupee.png"
+                  src="/assets/course/rupee-icon.png"
                   alt="Fees"
                   className="h-full w-full object-contain drop-shadow-sm"
                 />
@@ -245,10 +238,9 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
                 </span>
               </div>
             </div>
-          </div>
 
           {/* CTA Buttons */}
-          <div className="flex w-full shrink-0 flex-col items-stretch justify-center gap-1 sm:w-[290px] xl:w-[310px]">
+          <div className="info-item flex w-full shrink-0 flex-col items-stretch justify-center gap-1 sm:max-w-[290px] lg:w-auto lg:max-w-none">
               <div className="flex w-full gap-2">
                 <button
                   type="button"

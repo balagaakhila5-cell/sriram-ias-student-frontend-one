@@ -212,14 +212,6 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
     }
   }, [activeCity, activeTab, tabs]);
 
-  const splitMegaMenuCourseLabel = (label: string) => {
-    const numberLed = label.match(/^(\d+\s+Years?)\s+(.+)$/i);
-    if (numberLed) {
-      return { primary: numberLed[1], secondary: numberLed[2], twoLines: true };
-    }
-    return { primary: label, secondary: null, twoLines: false };
-  };
-
   const CourseLinkIcon = () => (
     <Image
       src="/assets/why-choose/tdesign_course-filled.png"
@@ -231,36 +223,21 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
     />
   );
 
-  const renderMegaMenuCourseLink = (course: { href: string; slug: string; label: string }) => {
-    const parts = splitMegaMenuCourseLabel(course.label);
-
-    return (
-      <Link
-        href={course.href}
-        key={course.slug}
-        onClick={() => setIsCoursesOpen(false)}
-        className="group/course-item flex w-full items-start gap-2.5"
-      >
-        <span className="shrink-0 pt-[1px]">
-          <CourseLinkIcon />
-        </span>
-        <span
-          className={`font-[Montserrat] text-[15px] font-semibold leading-[1.25] text-black transition-colors group-hover/course-item:text-[#1376B1] ${
-            parts.twoLines ? '' : 'whitespace-nowrap'
-          }`}
-        >
-          {parts.twoLines ? (
-            <>
-              <span className="block">{parts.primary}</span>
-              <span className="block">{parts.secondary}</span>
-            </>
-          ) : (
-            parts.primary
-          )}
-        </span>
-      </Link>
-    );
-  };
+  const renderMegaMenuCourseLink = (course: { href: string; slug: string; label: string }) => (
+    <Link
+      href={course.href}
+      key={course.slug}
+      onClick={() => setIsCoursesOpen(false)}
+      className="group/course-item flex w-full min-w-0 items-center gap-2.5"
+    >
+      <span className="shrink-0">
+        <CourseLinkIcon />
+      </span>
+      <span className="min-w-0 font-[Montserrat] text-[15px] font-semibold leading-tight text-black transition-colors group-hover/course-item:text-[#1376B1] whitespace-nowrap">
+        {course.label}
+      </span>
+    </Link>
+  );
 
   const topNavItemClass = isLightHeader
     ? 'px-2 xl:px-2.5 py-1.5 rounded-[6px] transition-all duration-300 text-[14px] xl:text-[14px] uppercase text-[#333333] font-bold cursor-pointer hover:text-black active:bg-transparent focus:bg-transparent'
@@ -1061,7 +1038,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
             <a href="/free_resources/ncert-books" className="hover:text-primary transition-colors">Free Resources</a>
             <a href="/current-affairs" className="hover:text-primary transition-colors">Current Affairs</a>
             <a href="/books" className="hover:text-primary transition-colors">Books</a>
-            <a href="/our-toppers-gallery" className="hover:text-primary transition-colors">Our Toppers</a>
+            <a href="/our-toppers-gallery" className="hover:text-primary transition-colors">Our Toppers&apos;</a>
             <a href="/about" className="hover:text-primary transition-colors">About us</a>
             <a href="/founders-message" className="hover:text-primary transition-colors">Founder&apos;s Message</a>
             <a href="/blogs?lang=english" className="hover:text-primary transition-colors">Blogs - English</a>

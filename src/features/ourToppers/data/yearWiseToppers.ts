@@ -35,7 +35,7 @@ export function parseYearWiseRouteParam(param: string): YearWiseRouteParam | nul
 export function getYearWiseTopperItem(year: number): YearWiseTopperItem {
   return {
     id: `${year}-toppers-list`,
-    title: `${year} Toppers List`,
+    title: `${year} Toppers' List`,
     pdfUrl: getTopperYearPdfUrl(year),
     downloadFileName: `toppers-${year}.pdf`,
   };
@@ -50,5 +50,5 @@ export function getAllYearsTopperItems(): YearWiseTopperItem[] {
 }
 
 export function getYearWisePageTitle(_year?: YearWiseRouteParam) {
-  return 'Toppers List';
+  return "Toppers' List";
 }

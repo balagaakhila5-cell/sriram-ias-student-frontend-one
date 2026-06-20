@@ -69,7 +69,7 @@ const OurToppers: React.FC<Props> = () => {
 
       <div className="relative z-10 flex w-full max-w-[1900px] flex-col items-center">
         <div className="our-toppers-heading mt-6 text-center md:mt-8">
-          <h2 className="global-section-heading">OUR TOPPERS</h2>
+          <h2 className="global-section-heading">OUR TOPPERS&apos;</h2>
         </div>
 
         <p className="our-toppers-heading mx-auto mb-0 max-w-[800px] px-6 text-center text-[13px] font-medium leading-snug text-[#2A3742] md:text-[15px]">
