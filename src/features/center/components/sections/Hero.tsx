@@ -17,7 +17,7 @@ interface Props {
 }
 
 const CENTER_HERO_IMAGES: Record<CenterCity, string> = {
-  delhi: '/assets/our-centers/delhi-image.jpeg',
+  delhi: '/assets/our-centers/new-delhi-image.jpeg',
   hyderabad: '/assets/our-centers/charminar-image.jpeg',
   pune: '/assets/our-centers/pune-historical-icon-1.png',
 };
@@ -31,9 +31,17 @@ const CENTER_HERO_COPY: Record<CenterCity, string> = {
     "Guiding aspirants across Western India, SRIRAM's IAS Pune center delivers focused mentorship, comprehensive programs, and a proven path to UPSC success.",
 };
 
-function CenterHeroDecorations() {
+function CenterHeroDecorations({ cityKey }: { cityKey: CenterCity }) {
+  const isPune = cityKey === 'pune';
+
   return (
     <div className="pointer-events-none absolute inset-0" aria-hidden>
+      {isPune && (
+        <>
+          <div className="center-hero-monument-shimmer absolute inset-y-0 right-0 w-[58%] opacity-0" />
+          <div className="center-hero-monument-glow absolute bottom-[8%] right-[4%] h-[min(42vw,320px)] w-[min(42vw,320px)] rounded-full opacity-0" />
+        </>
+      )}
       <div
         className="center-hero-glow absolute -right-[8%] top-[10%] h-[min(52vw,420px)] w-[min(52vw,420px)] rounded-full opacity-60"
         style={{
@@ -71,12 +79,19 @@ const Hero: React.FC<Props> = ({ city }) => {
   const branchContact = getCenterBranchContact(city);
   const heroImage = CENTER_HERO_IMAGES[cityKey] ?? CENTER_HERO_IMAGES.delhi;
   const heroCopy = CENTER_HERO_COPY[cityKey] ?? CENTER_HERO_COPY.delhi;
+  const isPune = cityKey === 'pune';
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   useGSAP(
     () => {
-      if (prefersReducedMotion) return;
+      if (prefersReducedMotion) {
+        if (isPune) {
+          gsap.set('.center-hero-monument-shimmer', { opacity: 0.35, xPercent: 0 });
+          gsap.set('.center-hero-monument-glow', { opacity: 0.7, scale: 1 });
+        }
+        return;
+      }
 
       gsap.from('.center-hero-title', {
         y: 40,
@@ -111,6 +126,42 @@ const Hero: React.FC<Props> = ({ city }) => {
         delay: 0.25,
       });
 
+      if (isPune) {
+        gsap.fromTo(
+          '.center-hero-monument-shimmer',
+          { opacity: 0, xPercent: -12 },
+          {
+            opacity: 0.55,
+            xPercent: 0,
+            duration: 2.2,
+            ease: 'power2.inOut',
+            delay: 0.35,
+          },
+        );
+
+        gsap.fromTo(
+          '.center-hero-monument-glow',
+          { opacity: 0, scale: 0.85 },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 1.6,
+            ease: 'power2.out',
+            delay: 0.5,
+          },
+        );
+
+        gsap.to('.center-hero-monument-glow', {
+          opacity: 0.65,
+          scale: 1.06,
+          duration: 5,
+          ease: 'sine.inOut',
+          repeat: -1,
+          yoyo: true,
+          delay: 2.2,
+        });
+      }
+
       gsap.from('.center-hero-glow', {
         scale: 0.9,
         opacity: 0,
@@ -120,7 +171,7 @@ const Hero: React.FC<Props> = ({ city }) => {
         delay: 0.2,
       });
     },
-    { dependencies: [prefersReducedMotion], scope: containerRef },
+    { dependencies: [prefersReducedMotion, isPune], scope: containerRef },
   );
 
   return (
@@ -137,7 +188,7 @@ const Hero: React.FC<Props> = ({ city }) => {
             priority
             unoptimized
             sizes="100vw"
-            className="object-cover object-right"
+            className="center-hero-bg-photo object-cover object-right"
             aria-hidden
           />
         </div>
@@ -164,7 +215,7 @@ const Hero: React.FC<Props> = ({ city }) => {
           }}
         />
 
-        <CenterHeroDecorations />
+        <CenterHeroDecorations cityKey={cityKey} />
       </div>
 
       <div className="relative z-10 mx-auto flex min-h-[min(88vh,860px)] w-full max-w-[1440px] items-center px-4 py-10 sm:px-6 md:px-10 lg:px-12 lg:py-14 xl:px-16">

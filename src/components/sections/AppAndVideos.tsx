@@ -425,22 +425,8 @@ const AppAndVideos: React.FC = () => {
           </h2>
         </div>
 
+        {!playingVideo ? (
         <div className="youtube-carousel relative group max-w-[1440px] mx-auto px-6 md:px-16">
-          <div
-            className="absolute -top-40 -right-20 w-[600px] h-[600px] pointer-events-none opacity-40 mix-blend-multiply"
-            style={{
-              background: 'linear-gradient(181.87deg, rgba(201, 149, 61, 0.4) -157.44%, rgba(192, 138, 44, 0.384) -157.4%, rgba(190, 132, 32, 0.268) 216.94%, rgba(246, 166, 28, 0.32) 216.94%)',
-              filter: 'blur(100px)'
-            }}
-          />
-          <div
-            className="absolute -bottom-40 -left-20 w-[600px] h-[600px] pointer-events-none opacity-40 mix-blend-multiply"
-            style={{
-              background: 'linear-gradient(181.87deg, rgba(201, 149, 61, 0.4) -157.44%, rgba(192, 138, 44, 0.384) -157.4%, rgba(190, 132, 32, 0.268) 216.94%, rgba(246, 166, 28, 0.32) 216.94%)',
-              filter: 'blur(100px)'
-            }}
-          />
-
           <div
             className="relative h-[360px] md:h-[480px] lg:h-[520px] w-full flex items-center justify-center py-4 px-6 z-10 touch-pan-y md:px-10 md:py-6"
             onMouseEnter={() => setIsPaused(true)}
@@ -467,7 +453,7 @@ const AppAndVideos: React.FC = () => {
                     opacity,
                   }}
                 >
-                  <div className="relative aspect-[16/9] rounded-[1.75rem] overflow-hidden shadow-[0_30px_70px_rgba(0,0,0,0.4)] transition-colors duration-500">
+                  <div className="relative aspect-[16/9] overflow-hidden transition-colors duration-500">
                     {opacity > 0 ? (
                       <img
                         src={video.image}
@@ -532,6 +518,7 @@ const AppAndVideos: React.FC = () => {
             ))}
           </div>
         </div>
+        ) : null}
       </div>
 
       <YouTubeVideoModal

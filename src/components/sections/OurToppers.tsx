@@ -7,6 +7,7 @@ import { OUR_TOPPERS, topperImageSrc } from '@/data/ourToppers';
 const fallbackToppers = OUR_TOPPERS.map((topper, index) => ({
   name: topper.name,
   rank: topper.rank,
+  year: topper.year,
   description: topper.course,
   img: topper.img,
   y: [35, 15, 45, 28, 18, 10, 5, 12][index] ?? 20,
@@ -26,6 +27,7 @@ const OurToppers: React.FC = () => {
       return {
         name: topper.name,
         rank: topper.rank,
+        year: fallback.year,
         description: topper.description ?? fallback.description,
         img: fallback.img,
         y: fallback.y,
@@ -92,10 +94,10 @@ const OurToppers: React.FC = () => {
                   </h3>
 
                   <span className="topper-air-badge mt-1.5">
-                    {topper.rank}
+                    {topper.rank} - 2026
                   </span>
 
-                  <span className="text-white text-[12px] opacity-90 text-center mt-2.5">
+                  <span className="text-white text-[12px] opacity-90 text-center mt-2">
                     {topper.description}
                   </span>
                 </div>

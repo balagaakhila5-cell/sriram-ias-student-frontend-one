@@ -1,5 +1,11 @@
 import { Book } from '../types';
 
+export const INDIAN_ECONOMY_SAMPLE_BOOK = {
+  title: 'Indian Economy General Studies Book -1',
+  image: '/assets/books/indianEconomy.png',
+  slug: 'indian-economy-general-studies-book-1',
+} as const;
+
 export const mockBooks: Book[] = Array(8).fill(null).map((_, i) => ({
   id: `${i + 1}`,
   slug: `indian-economy-general-studies-book-${i + 1}`,

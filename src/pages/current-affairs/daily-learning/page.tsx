@@ -14,6 +14,7 @@ import FloatingActions from '@/components/common/FloatingActions';
 import TrendingVideosCard from '@/components/common/TrendingVideosCard';
 import DailyLearningTopicCarousel, {
   DAILY_LEARNING_BANNER_IMAGE,
+  DAILY_LEARNING_IMAGE_SLIDES,
 } from '@/features/currentAffairs/components/DailyLearningTopicCarousel';
 import {
   RESOURCE_PAGE_HEADING_GRADIENT,
@@ -114,6 +115,19 @@ export default function DailyLearningPage() {
       );
 
       gsap.fromTo(
+        '.animate-carousel-secondary',
+        { y: 28, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.75,
+          ease: 'power3.out',
+          delay: 0.15,
+          scrollTrigger: { trigger: '.animate-carousel-secondary', start: 'top 85%' },
+        },
+      );
+
+      gsap.fromTo(
         '.animate-sidebar',
         { x: 40, opacity: 0 },
         {
@@ -157,8 +171,11 @@ export default function DailyLearningPage() {
                   <span className={RESOURCE_PAGE_HEADING_GRADIENT}>Daily Learning</span>
                 </h1>
 
-                <div className="animate-carousel flex justify-center px-2">
+                <div className="animate-carousel flex flex-col items-center gap-10 px-2">
                   <DailyLearningTopicCarousel />
+                  <div className="animate-carousel-secondary w-full">
+                    <DailyLearningTopicCarousel topics={DAILY_LEARNING_IMAGE_SLIDES} />
+                  </div>
                 </div>
               </div>
 

@@ -1641,3 +1641,21 @@ a.course-slider-enroll {
   transform-box: fill-box;
   transform-origin: center center;
 }
+
+.center-hero-monument-shimmer {
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(126, 184, 232, 0.08) 35%,
+    rgba(162, 164, 251, 0.18) 52%,
+    rgba(255, 255, 255, 0.12) 58%,
+    transparent 72%
+  );
+  transform-origin: left center;
+}
+
+.center-hero-monument-glow {
+  background:
+    radial-gradient(circle, rgba(126, 184, 232, 0.22) 0%, rgba(162, 164, 251, 0.1) 42%, transparent 72%);
+  box-shadow: 0 0 80px rgba(126, 184, 232, 0.18);
+}

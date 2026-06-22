@@ -187,10 +187,10 @@ export default function SearchPopup({
                       className="group flex items-start gap-3 transition-opacity hover:opacity-80"
                     >
                       <img
-                        src="/assets/arrow.png"
+                        src="/assets/course/course-icon.png"
                         alt=""
                         aria-hidden="true"
-                        className="mt-[3px] h-[16px] w-[16px] shrink-0 object-contain"
+                        className="mt-[2px] h-[20px] w-[20px] shrink-0 object-contain"
                       />
 
                       <span className="max-w-[230px] font-['Montserrat'] text-[15px] font-medium leading-[22px] text-black group-hover:text-[#1897D8]">

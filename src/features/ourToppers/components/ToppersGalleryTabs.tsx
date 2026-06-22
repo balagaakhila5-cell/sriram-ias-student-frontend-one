@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import YearWiseDropdown, {
   type YearWiseSelection,
 } from '@/features/ourToppers/components/YearWiseDropdown';
+import ToppersYearFilterDropdown, {
+  type ToppersYearFilter,
+} from '@/features/ourToppers/components/ToppersYearFilterDropdown';
 
 export type ToppersGalleryTab = 'Toppers' | 'Testimonials';
 
@@ -13,6 +16,9 @@ type ToppersGalleryTabsProps = {
   selectedYear?: YearWiseSelection | null;
   onYearSelect?: (selection: YearWiseSelection) => void;
   showBackToGallery?: boolean;
+  filterYear?: ToppersYearFilter;
+  filterYears?: number[];
+  onFilterYearChange?: (year: ToppersYearFilter) => void;
 };
 
 export default function ToppersGalleryTabs({
@@ -21,6 +27,9 @@ export default function ToppersGalleryTabs({
   selectedYear = null,
   onYearSelect,
   showBackToGallery = false,
+  filterYear,
+  filterYears = [],
+  onFilterYearChange,
 }: ToppersGalleryTabsProps) {
   const navigate = useNavigate();
 
@@ -76,6 +85,16 @@ export default function ToppersGalleryTabs({
           </button>
         </div>
       )}
+
+      {activeTab === 'Toppers' &&
+        filterYear !== undefined &&
+        onFilterYearChange && (
+          <ToppersYearFilterDropdown
+            years={filterYears}
+            selectedYear={filterYear}
+            onYearChange={onFilterYearChange}
+          />
+        )}
 
       <YearWiseDropdown
         selectedYear={selectedYear}

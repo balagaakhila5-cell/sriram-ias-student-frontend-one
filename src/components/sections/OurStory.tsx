@@ -76,8 +76,8 @@ const OurStory: React.FC = () => {
   ];
 
   const fallbackStats = [
-    { value: '300 +', label: 'Selections in UPSC CSE 2026' },
-    { value: '3500 +', label: 'Selections in UPSC' },
+    { value: '255 +', label: 'Selections in UPSC CSE 2026' },
+    { value: '3800 +', label: 'Selections in UPSC' },
     { value: '40 +', label: 'Years of Excellence' },
     { value: '3', label: 'Centers Over all India' },
   ];

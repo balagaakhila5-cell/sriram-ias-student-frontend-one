@@ -3,27 +3,18 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { X, ArrowRight } from 'lucide-react';
 import { Book } from '../types';
-import FlipBook from '@/components/common/FlipBook';
+import BookSampleModal from './BookSampleModal';
 import { useCartStore } from '@/store/cartStore';
 
 interface BooksGridProps {
   books: Book[];
 }
 
-type PopupBook = {
-  title: string;
-  image: string;
-  slug: string;
-};
-
-type BookGridCardProps = {
+const BookGridCard: React.FC<{
   book: Book;
-  onOpenSample: (book: PopupBook) => void;
-};
-
-const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
+  onOpenSample: () => void;
+}> = ({ book, onOpenSample }) => {
   const router = useRouter();
   const addItem = useCartStore((state) => state.addItem);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
@@ -32,12 +23,6 @@ const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
   const cartQuantity = useCartStore(
     (state) => state.items.find((item) => item.book.id === book.id)?.quantity ?? 0,
   );
-
-  const popupBook = {
-    title: book.title,
-    image: book.coverImage,
-    slug: book.slug,
-  };
 
   const handleAddToCart = (event: React.MouseEvent) => {
     event.preventDefault();
@@ -82,7 +67,7 @@ const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
       <div className="relative mb-6 w-full">
         <div
           className="relative aspect-[3/4] w-full cursor-pointer overflow-hidden rounded-xl shadow-lg transition-shadow duration-300 group-hover:shadow-2xl"
-          onClick={() => onOpenSample(popupBook)}
+          onClick={onOpenSample}
         >
           <Image
             src={book.coverImage}
@@ -101,7 +86,7 @@ const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                onOpenSample(popupBook);
+                onOpenSample();
               }}
               className="cursor-pointer rounded-full border-[1.5px] border-white bg-transparent px-5 py-2 font-[Montserrat] text-[16px] font-semibold text-white transition-colors hover:border-[#0F8EDB] hover:bg-[#0F8EDB]"
             >
@@ -120,23 +105,23 @@ const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
         </p>
       </div>
 
-      <div className="flex items-center justify-center gap-2 mt-1">
-        <span className="font-bold text-[#4999C6] text-xl">
+      <div className="mt-1 flex items-center justify-center gap-2">
+        <span className="text-xl font-bold text-[#4999C6]">
           {book.discountedPrice.toLocaleString('en-IN')}
         </span>
-        <span className="text-gray-400 line-through text-sm font-bold">
+        <span className="text-sm font-bold text-gray-400 line-through">
           ({book.originalPrice.toLocaleString('en-IN')})
         </span>
-        <span className="text-sm font-semibold text-gray-800 ml-1">
+        <span className="ml-1 text-sm font-semibold text-gray-800">
           {book.discountPercentage}
         </span>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 w-full max-w-[280px] mt-5">
+      <div className="mt-5 grid w-full max-w-[280px] grid-cols-2 gap-3">
         <button
           type="button"
           onClick={handleBuyNow}
-          className="rounded-full py-2 text-xs font-medium text-white transition-all hover:opacity-90 cursor-pointer"
+          className="cursor-pointer rounded-full py-2 text-xs font-medium text-white transition-all hover:opacity-90"
           style={{
             background:
               'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)',
@@ -152,7 +137,7 @@ const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
               type="button"
               onClick={handleDecrement}
               aria-label="Decrease quantity"
-              className="flex h-7 w-7 items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white cursor-pointer"
+              className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white"
             >
               −
             </button>
@@ -168,7 +153,7 @@ const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
               type="button"
               onClick={handleIncrement}
               aria-label="Increase quantity"
-              className="flex h-7 w-7 items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white cursor-pointer"
+              className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-lg font-bold leading-none text-[#007BB5] transition-colors hover:bg-white"
             >
               +
             </button>
@@ -188,93 +173,44 @@ const BookGridCard: React.FC<BookGridCardProps> = ({ book, onOpenSample }) => {
 };
 
 const BooksGrid: React.FC<BooksGridProps> = ({ books }) => {
-  const router = useRouter();
-  const [showPopup, setShowPopup] = useState(false);
-  const [selectedBook, setSelectedBook] = useState<PopupBook | null>(null);
-
-  const openSamplePopup = (book: PopupBook) => {
-    setSelectedBook(book);
-    setShowPopup(true);
-  };
-
-  const closePopup = () => {
-    setShowPopup(false);
-    setSelectedBook(null);
-  };
+  const [showSamplePopup, setShowSamplePopup] = useState(false);
 
   return (
     <>
-      <section className="relative w-full py-16 bg-[#Fdfdfd] overflow-hidden">
+      <section className="relative w-full overflow-hidden bg-[#Fdfdfd] py-16">
         <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          className="pointer-events-none absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage: 'radial-gradient(#000 2px, transparent 2px)',
             backgroundSize: '30px 30px',
           }}
         />
 
-        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 md:px-12">
-          <div className="text-center mb-16 flex justify-center">
-            <h2 className="font-[Montserrat] font-black text-[56px] leading-none text-center uppercase tracking-normal">
-              <span className="text-transparent bg-clip-text bg-[linear-gradient(90deg,#20A0E0_0%,rgba(225,97,101,0.8)_100%)]">
+        <div className="relative z-10 mx-auto w-full max-w-[1400px] px-6 md:px-12">
+          <div className="mb-16 flex justify-center text-center">
+            <h2 className="text-center font-[Montserrat] text-[56px] font-black uppercase leading-none tracking-normal">
+              <span className="bg-[linear-gradient(90deg,#20A0E0_0%,rgba(225,97,101,0.8)_100%)] bg-clip-text text-transparent">
                 OUR BEST SELLERS
               </span>
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+          <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
             {books.map((book) => (
               <BookGridCard
                 key={book.id}
                 book={book}
-                onOpenSample={openSamplePopup}
+                onOpenSample={() => setShowSamplePopup(true)}
               />
             ))}
           </div>
         </div>
       </section>
 
-      {showPopup && selectedBook && (
-        <div className="fixed inset-0 z-[9999] bg-black/55 flex items-center justify-center px-4 py-6">
-          <div className="relative w-full max-w-[860px] rounded-[20px] bg-[#F5F5F5] shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-            <div className="relative px-8 pb-4 pt-6">
-              <h2 className="text-center text-[34px] font-extrabold uppercase leading-none tracking-[0.5px] md:text-[42px]">
-                <span className="bg-[linear-gradient(90deg,#6AA9D8_0%,#C88EA0_100%)] bg-clip-text text-transparent">
-                  SAMPLE
-                </span>
-              </h2>
-
-              <button
-                type="button"
-                onClick={closePopup}
-                className="absolute right-8 top-6 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-[#FF0000] md:h-[32px] md:w-[32px]"
-              >
-                <X size={20} className="text-white" strokeWidth={3} />
-              </button>
-            </div>
-
-            <div className="px-8 pb-8">
-              <div className="relative flex min-h-[540px] flex-col rounded-[16px] bg-[#01285A] px-4 py-6 md:px-8 md:py-8">
-                <FlipBook key={selectedBook.image} coverImage={selectedBook.image} />
-
-                <div className="flex justify-center mt-2 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      router.push(`/books/${selectedBook.slug}`);
-                      closePopup();
-                    }}
-                    className="min-w-[160px] h-[46px] md:h-[48px] px-7 rounded-full border border-white bg-transparent text-white text-[18px] md:text-[20px] font-semibold leading-none transition-all duration-300 hover:bg-[#0F8EDB] hover:border-[#0F8EDB] flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    Buy Now
-                    <ArrowRight size={20} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <BookSampleModal
+        isOpen={showSamplePopup}
+        onClose={() => setShowSamplePopup(false)}
+      />
     </>
   );
 };

@@ -56,14 +56,47 @@ export const DAILY_LEARNING_TOPICS: DailyLearningTopic[] = [
   },
 ];
 
+export const DAILY_LEARNING_IMAGE_SLIDES: DailyLearningTopic[] = [
+  {
+    title: 'NCERT Books',
+    description: 'Free NCERT books and resources for foundation building.',
+    image: '/assets/free-resources/NCERT/NCERT-books.png',
+    href: '/free_resources/ncert-books',
+  },
+  {
+    title: 'Previous Year Question Papers',
+    description: 'Access previous year prelims and mains question papers.',
+    image: '/assets/free-resources/NCERT/Previous-year-questionpaper.png',
+    href: '/free_resources/previous-year',
+  },
+  {
+    title: 'Free Mock Tests',
+    description: 'Practice with free mock tests for UPSC prelims.',
+    image: '/assets/free-resources/NCERT/free-mocktest.png',
+    href: '/free_resources/free-mocktests',
+  },
+  {
+    title: 'Study Materials',
+    description: 'Download free study materials for every GS subject.',
+    image: '/assets/free-resources/NCERT/studymaterials.png',
+    href: '/free_resources/study-materials',
+  },
+];
+
 const SLIDE_INTERVAL_MS = 5000;
 
-export default function DailyLearningTopicCarousel() {
+type DailyLearningTopicCarouselProps = {
+  topics?: DailyLearningTopic[];
+};
+
+export default function DailyLearningTopicCarousel({
+  topics = DAILY_LEARNING_TOPICS,
+}: DailyLearningTopicCarouselProps) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [slideWidth, setSlideWidth] = useState(0);
 
-  const slideCount = DAILY_LEARNING_TOPICS.length;
+  const slideCount = topics.length;
 
   useLayoutEffect(() => {
     const viewport = viewportRef.current;
@@ -106,9 +139,9 @@ export default function DailyLearningTopicCarousel() {
                 : 'translateX(0)',
           }}
         >
-          {DAILY_LEARNING_TOPICS.map((topic) => (
+          {topics.map((topic) => (
             <article
-              key={topic.title}
+              key={topic.href}
               className="relative shrink-0 overflow-hidden rounded-[16px]"
               style={{ width: slideWidth > 0 ? slideWidth : '100%' }}
             >
@@ -140,9 +173,9 @@ export default function DailyLearningTopicCarousel() {
         </button>
 
         <div className="flex items-center gap-2">
-          {DAILY_LEARNING_TOPICS.map((topic, index) => (
+          {topics.map((topic, index) => (
             <button
-              key={topic.title}
+              key={topic.href}
               type="button"
               aria-label={`Go to ${topic.title}`}
               onClick={() => goTo(index)}

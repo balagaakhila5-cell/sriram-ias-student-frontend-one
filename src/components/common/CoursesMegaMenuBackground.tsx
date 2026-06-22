@@ -1,9 +1,7 @@
 'use client';
 
-import BookDemoAnimatedBackground from './BookDemoAnimatedBackground';
+import NavbarDropdownGradientBackground from './NavbarDropdownGradientBackground';
 
-const CoursesMegaMenuBackground = () => (
-  <BookDemoAnimatedBackground variant="lines-only" />
-);
+const CoursesMegaMenuBackground = () => <NavbarDropdownGradientBackground />;
 
 export default CoursesMegaMenuBackground;

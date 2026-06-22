@@ -347,7 +347,7 @@ const BuyBooks: React.FC = () => {
               type="button"
               onClick={() => setSampleZoom((value) => Math.max(0.8, Number((value - 0.1).toFixed(1))))}
               aria-label="Zoom out"
-              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white/15 text-white shadow-md transition-all hover:bg-white/25 md:h-9 md:w-9"
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-md transition-all hover:bg-white/30 md:h-9 md:w-9"
             >
               <ZoomOut size={18} strokeWidth={2.5} />
             </button>
@@ -355,7 +355,7 @@ const BuyBooks: React.FC = () => {
               type="button"
               onClick={() => setSampleZoom((value) => Math.min(1.4, Number((value + 0.1).toFixed(1))))}
               aria-label="Zoom in"
-              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white/15 text-white shadow-md transition-all hover:bg-white/25 md:h-9 md:w-9"
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-md transition-all hover:bg-white/30 md:h-9 md:w-9"
             >
               <ZoomIn size={18} strokeWidth={2.5} />
             </button>
@@ -363,7 +363,7 @@ const BuyBooks: React.FC = () => {
               type="button"
               onClick={closeSamplePopup}
               aria-label="Close sample preview"
-              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-[#FF0000] shadow-md transition-transform hover:scale-105 md:h-9 md:w-9"
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-[#FF0000] shadow-md transition-transform hover:scale-105 md:h-9 md:w-9"
             >
               <X size={18} className="text-white" strokeWidth={3} />
             </button>

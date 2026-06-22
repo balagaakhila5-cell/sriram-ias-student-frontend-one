@@ -35,6 +35,7 @@ const API = {
     submit: (id: string) =>
       `/api/portal/current-affairs/${encodeURIComponent(id)}/submit`,
   },
+  toppersGallery: "/api/toppers-gallery",
 } as const;
 
 /* ================================================================== */
@@ -268,6 +269,22 @@ export const submitCurrentAffairsAnswers = async (
     review,
   };
 };
+
+/* ================================================================== */
+/*  TOPPERS GALLERY                                                    */
+/* ================================================================== */
+
+export async function fetchToppersGallery(params: {
+  year: number | "all";
+  page: number;
+  limit: number;
+}): Promise<unknown> {
+  return apiRequestGet(API.toppersGallery, {
+    year: params.year === "all" ? "all" : String(params.year),
+    page: String(params.page),
+    limit: String(params.limit),
+  });
+}
 
 /* Re-export endpoint registry for debugging / reference. */
 export { API as API_ENDPOINTS };

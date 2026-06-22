@@ -1,142 +1,40 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import ToppersGalleryTabs from '@/features/ourToppers/components/ToppersGalleryTabs';
 import TestimonialsCarousel from '@/features/ourToppers/components/TestimonialsCarousel';
+import TopperGalleryCard from '@/features/ourToppers/components/TopperGalleryCard';
+import ToppersGalleryPagination from '@/features/ourToppers/components/ToppersGalleryPagination';
+import ToppersGallerySkeleton from '@/features/ourToppers/components/ToppersGallerySkeleton';
 import type { YearWiseSelection } from '@/features/ourToppers/components/YearWiseDropdown';
+import type { ToppersYearFilter } from '@/features/ourToppers/components/ToppersYearFilterDropdown';
+import { useToppersGallery } from '@/features/ourToppers/hooks/useToppersGallery';
+import { FALLBACK_GALLERY_YEARS } from '@/features/ourToppers/data/galleryToppersFallback';
+import { TOPPERS_GALLERY_PAGE_SIZE } from '@/features/ourToppers/types';
 import JoinCTA from '@/features/course/components/sections/JoinCTA';
-
-type Topper = {
-  name: string;
-  rank: string;
-  description: string;
-  img: string;
-  y: number;
-  scale: number;
-  course: 'GS Course' | 'Optional Course' | 'Test Series' | 'Other';
-};
-
-const fallbackToppers: Topper[] = [
-  {
-    name: 'AAKASH GARG',
-    rank: 'AIR 5',
-    description: 'GS Foundation Course',
-    img: 'AAKASH GARG(AIR-5) .png',
-    y: 35,
-    scale: 1,
-    course: 'GS Course',
-  },
-  {
-    name: 'ABHI JAIN',
-    rank: 'AIR 34',
-    description: 'GS Foundation Course',
-    img: 'ABHI-JAIN(AIR-34).png',
-    y: 45,
-    scale: 1.03,
-    course: 'GS Course',
-  },
-  {
-    name: 'ABHISHEK SHARMA',
-    rank: 'AIR 38',
-    description: 'GS Foundation Course',
-    img: 'ABHISHEK-SHARMA-(AIR-38) .png',
-    y: 35,
-    scale: 1.01,
-    course: 'GS Course',
-  },
-  {
-    name: 'DIKSHA RAI',
-    rank: 'AIR 40',
-    description: 'GS Foundation Course',
-    img: 'DIKSHA-RAI(AIR-40).png',
-    y: 41,
-    scale: 0.98,
-    course: 'GS Course',
-  },
-  {
-    name: 'NABIYA PARVEZ',
-    rank: 'AIR 29',
-    description: 'GS Foundation Course',
-    img: 'NABIYA-PARVEZ(AIR-29).png',
-    y: 45,
-    scale: 0.92,
-    course: 'GS Course',
-  },
-  {
-    name: 'RAGHAV JHUNJHUNWALA',
-    rank: 'AIR 4',
-    description: 'GS Foundation Course',
-    img: 'RAGHAV-JHUNJWALA(AIR-4).png',
-    y: 10,
-    scale: 1,
-    course: 'GS Course',
-  },
-  {
-    name: 'RAJ KRISHNA JHA',
-    rank: 'AIR 8',
-    description: 'GS Foundation Course',
-    img: 'RAJ-KRISHNA JHA(AIR-8).png',
-    y: 5,
-    scale: 1,
-    course: 'GS Course',
-  },
-  {
-    name: 'ROHIN KUMAR',
-    rank: 'AIR 39',
-    description: 'GS Foundation Course',
-    img: 'ROHIN-KUMAR(AIR-39).png',
-    y: 12,
-    scale: 1,
-    course: 'GS Course',
-  },
-  {
-    name: 'ADITYA VIKRAM AGARWAL',
-    rank: 'AIR 9',
-    description: 'GS Foundation Course',
-    img: 'Aditya-Vikram-Agarwal (AIR - 9).png',
-    y: 13,
-    scale: 0.97,
-    course: 'GS Course',
-  },
-  {
-    name: 'ETTABOINA SAI SHIVANI',
-    rank: 'AIR 11',
-    description: 'GS Foundation Course',
-    img: 'ETTABOINA-SAI-SHIVANI(AIR-11).png',
-    y: 35,
-    scale: 0.84,
-    course: 'GS Course',
-  },
-
-  /*
-    Add more students here.
-
-    For Top 10 tab, add ranks AIR 1, AIR 2, AIR 3, AIR 6, AIR 7, AIR 10 also.
-
-    Example:
-
-    {
-      name: 'STUDENT NAME',
-      rank: 'AIR 1',
-      description: 'GS Foundation Course',
-      img: 'student-image.png',
-      y: 20,
-      scale: 1,
-      course: 'GS Course',
-    },
-  */
-];
-
-const imagePath = (fileName: string) =>
-  `/assets/our-toppers-gallery/${fileName.replaceAll(' ', '%20')}`;
 
 const OurToppersGalleryPage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'Toppers' | 'Testimonials'>('Toppers');
+  const [filterYear, setFilterYear] = useState<ToppersYearFilter>('all');
+  const [page, setPage] = useState(1);
+
+  const { data, isLoading, isFetching } = useToppersGallery({
+    year: filterYear,
+    page,
+    limit: TOPPERS_GALLERY_PAGE_SIZE,
+  });
+
+  const toppers = data?.toppers ?? [];
+  const total = data?.total ?? 0;
+  const filterYears =
+    data?.years && data.years.length > 0
+      ? data.years
+      : [...FALLBACK_GALLERY_YEARS];
 
   const handleTabChange = (tab: 'Toppers' | 'Testimonials') => {
     setActiveTab(tab);
@@ -145,6 +43,18 @@ const OurToppersGalleryPage = () => {
   const handleYearSelect = (selection: YearWiseSelection) => {
     navigate(`/our-toppers-gallery/year-wise/${selection}`);
   };
+
+  const handleFilterYearChange = (year: ToppersYearFilter) => {
+    setFilterYear(year);
+    setPage(1);
+  };
+
+  const handlePageChange = (nextPage: number) => {
+    setPage(nextPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const showSkeleton = isLoading && !data;
 
   return (
     <main className="min-h-screen overflow-hidden bg-white font-['Montserrat',sans-serif]">
@@ -194,76 +104,47 @@ const OurToppersGalleryPage = () => {
               activeTab={activeTab}
               onTabChange={handleTabChange}
               onYearSelect={handleYearSelect}
+              filterYear={filterYear}
+              filterYears={filterYears}
+              onFilterYearChange={handleFilterYearChange}
             />
           </div>
 
-          {/* Topper cards / Testimonials / Year wise */}
           <div className="w-full px-4 sm:px-6 lg:px-0">
             {activeTab === 'Testimonials' ? (
               <TestimonialsCarousel />
+            ) : showSkeleton ? (
+              <ToppersGallerySkeleton />
             ) : (
-            <div className="grid w-full grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
-              {fallbackToppers.map((topper, index) => {
-                const isSecondRow = index >= 5;
+              <>
+                <div
+                  className={`grid w-full grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 ${
+                    isFetching ? 'opacity-70' : ''
+                  }`}
+                >
+                  {toppers.map((topper, index) => (
+                    <TopperGalleryCard
+                      key={topper.id}
+                      topper={topper}
+                      index={index}
+                    />
+                  ))}
+                </div>
 
-                return (
-                  <article
-                    key={`${topper.name}-${topper.rank}-${index}`}
-                    className="group relative flex w-full flex-col items-center bg-transparent text-center"
-                  >
-                    {/* Image area */}
-                    <div
-                      className={`relative w-full overflow-visible bg-transparent ${
-                        isSecondRow
-                          ? 'h-[250px] sm:h-[280px] lg:h-[310px]'
-                          : 'h-[280px] sm:h-[310px] lg:h-[360px]'
-                      }`}
-                    >
-                      <div
-                        className={`absolute left-1/2 h-[330px] w-[280px] -translate-x-1/2 bg-transparent sm:h-[380px] sm:w-[325px] lg:h-[455px] lg:w-[390px] lg:-translate-x-[55%] ${
-                          isSecondRow
-                            ? 'top-[-6px] lg:top-[-8px]'
-                            : 'top-[-10px] lg:top-[-22px]'
-                        }`}
-                      >
-                        <img
-                          src={imagePath(topper.img)}
-                          alt={`${topper.name} ${topper.rank}`}
-                          className="mx-auto h-full w-full bg-transparent object-contain object-top drop-shadow-[0_20px_26px_rgba(0,0,0,0.25)] transition-transform duration-500 group-hover:scale-105 lg:drop-shadow-[0_24px_30px_rgba(0,0,0,0.28)]"
-                          style={{
-                            transform: `translateY(${topper.y}px) scale(${
-                              topper.scale * 1.08
-                            })`,
-                            transformOrigin: 'center top',
-                          }}
-                        />
-                      </div>
-                    </div>
+                {toppers.length === 0 && !isLoading && (
+                  <p className="py-12 text-center text-[15px] font-semibold text-[#1f3442]">
+                    No toppers found for{' '}
+                    {filterYear === 'all' ? 'the selected filters' : filterYear}.
+                  </p>
+                )}
 
-                    {/* Text area */}
-                    <div
-                      className={`relative z-10 flex min-h-[90px] flex-col items-center bg-transparent ${
-                        isSecondRow
-                          ? '-mt-[44px] lg:-mt-[58px]'
-                          : '-mt-[56px] lg:-mt-[72px]'
-                      }`}
-                    >
-                      <h3 className="max-w-[250px] pt-2 text-center text-[14px] font-extrabold uppercase leading-[1.25] tracking-[0.2px] text-white drop-shadow-sm md:text-[16px]">
-                        {topper.name}
-                      </h3>
-
-                      <span className="topper-air-badge mt-[6px] shadow-sm">
-                        {topper.rank}
-                      </span>
-
-                      <p className="mt-[6px] text-[13px] font-semibold leading-[1.2] text-white/95">
-                        {topper.description}
-                      </p>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
+                <ToppersGalleryPagination
+                  page={page}
+                  total={total}
+                  pageSize={TOPPERS_GALLERY_PAGE_SIZE}
+                  onPageChange={handlePageChange}
+                />
+              </>
             )}
           </div>
         </div>

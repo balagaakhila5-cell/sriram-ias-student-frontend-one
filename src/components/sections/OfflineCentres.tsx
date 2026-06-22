@@ -30,7 +30,7 @@ const fallbackCentres = [
   },
   {
     id: 'hyderabad',
-    name: 'Hyderabad',
+    name: 'HYDERABAD',
     image: '/assets/hyd.png',
     address: hyderabadBranch.address,
     phone: hyderabadBranch.phone,
@@ -38,7 +38,7 @@ const fallbackCentres = [
   },
   {
     id: 'pune',
-    name: 'Pune',
+    name: 'PUNE',
     image: '/assets/pune.png',
     address: puneBranch.address,
     phone: puneBranch.phone,
@@ -51,8 +51,8 @@ const centreDirectory: Record<string, typeof fallbackCentres[number]> = {
   delhi: { ...fallbackCentres[0], name: 'NEW DELHI' },
   hyderabad: fallbackCentres[1],
   pune: fallbackCentres[2],
-  bengaluru: { ...fallbackCentres[1], name: 'Bengaluru', image: '/assets/hyd.png' },
-  bangalore: { ...fallbackCentres[1], name: 'Bangalore', image: '/assets/hyd.png' },
+  bengaluru: { ...fallbackCentres[1], name: 'BENGALURU', image: '/assets/hyd.png' },
+  bangalore: { ...fallbackCentres[1], name: 'BANGALORE', image: '/assets/hyd.png' },
 };
 
 const normalizeKey = (value: string) =>
@@ -82,7 +82,7 @@ const OfflineCentres: React.FC = () => {
       return {
         ...base,
         id: card._id ?? base.id,
-        name: card.name ?? base.name,
+        name: (card.name ?? base.name).toUpperCase(),
       };
     });
   }, [section5?.cards]);

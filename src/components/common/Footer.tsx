@@ -209,7 +209,7 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
         </div>
 
         {/* Links & Vertical Text Section */}
-        <div className="relative flex w-full min-w-0 flex-col items-start gap-6 xl:flex-row xl:gap-8 2xl:gap-10">
+        <div className="relative flex w-full min-w-0 flex-col items-start gap-6 xl:min-h-[450px] xl:flex-row xl:gap-8 2xl:gap-10">
           {/* Left Side */}
           <div className="min-w-0 w-full flex-1">
             {/* Website Links */}
@@ -299,7 +299,7 @@ const Footer: React.FC<FooterProps> = ({ lightweight = false }) => {
           </div>
 
           {/* Right Side: Masked Sliced Effect Zone */}
-          <div className="footer-vertical-text-container pointer-events-none mt-2 hidden h-[300px] shrink-0 select-none items-start justify-end gap-2 pr-2 sm:pr-4 xl:flex xl:h-[360px] xl:gap-3">
+          <div className="footer-vertical-text-container pointer-events-none mt-2 hidden h-[380px] shrink-0 select-none items-start justify-end gap-2 pr-2 sm:pr-4 xl:flex xl:h-[450px] xl:gap-3">
             {/* IFS */}
             <div className="relative w-[42px] h-full overflow-hidden z-10">
               <div className="moving-col absolute inset-0 flex flex-col gap-5 text-[38px] font-black leading-[0.7] text-white tracking-widest uppercase items-center justify-center">

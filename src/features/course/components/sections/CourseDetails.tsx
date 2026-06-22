@@ -1,14 +1,7 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React from 'react';
 import type { CourseData } from '../../types';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
-import NetworkDotsBackground from '@/components/common/NetworkDotsBackground';
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface Props {
   course: CourseData;
@@ -16,77 +9,6 @@ interface Props {
 
 const CourseDetailsSection: React.FC<Props> = ({ course }) => {
   const displayHighlights = course.highlights;
-  const containerRef = useRef<HTMLDivElement>(null);
-  const prefersReducedMotion = usePrefersReducedMotion();
-
-  useGSAP(() => {
-    if (prefersReducedMotion) return;
-
-    // Top Heading animation
-    gsap.fromTo('.course-details-top-heading',
-      { y: 30, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: '.course-details-top-heading',
-          start: 'top 85%',
-          once: true,
-        }
-      }
-    );
-
-    // Heading animation
-    gsap.fromTo('.course-details-heading',
-      { y: 50, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: '.course-details-heading',
-          start: 'top 85%',
-          once: true,
-        }
-      }
-    );
-
-    // Highlights list animation
-    gsap.fromTo('.highlight-item',
-      { x: -30, opacity: 0 },
-      {
-        x: 0,
-        opacity: 1,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: '.highlight-item',
-          start: 'top 85%',
-          once: true,
-        }
-      }
-    );
-
-    // Image/Visuals animation
-    gsap.fromTo('.course-details-image',
-      { scale: 0.8, opacity: 0 },
-      {
-        scale: 1,
-        opacity: 1,
-        duration: 1,
-        ease: 'back.out(1.5)',
-        scrollTrigger: {
-          trigger: '.course-details-image',
-          start: 'top 85%',
-          once: true,
-        }
-      }
-    );
-  }, { dependencies: [prefersReducedMotion], scope: containerRef });
 
   // Theme selection based on city
   const city = course.city || 'delhi';
@@ -124,22 +46,10 @@ const CourseDetailsSection: React.FC<Props> = ({ course }) => {
 
   if (city === 'hyderabad') {
     return (
-      <div ref={containerRef} className="w-full flex flex-col font-['Montserrat',sans-serif] bg-white">
-        <style>
-          {`
-            @keyframes float {
-              0%, 100% { transform: translateY(0px); }
-              50% { transform: translateY(-12px); }
-            }
-            .animate-float {
-              animation: float 6s ease-in-out infinite;
-            }
-          `}
-        </style>
+      <div className="w-full flex flex-col font-['Montserrat',sans-serif] bg-white">
         <section
           className={`relative w-full overflow-hidden ${textColor} md:pt-15`}
         >
-          <NetworkDotsBackground variant="light" />
           {/* New Background Image for the whole section */}
           <img
             src="/assets/course/hyd-coourse-details-bg.png" /* Replace with your actual background image path */
@@ -161,8 +71,7 @@ const CourseDetailsSection: React.FC<Props> = ({ course }) => {
               {/* LEFT Side: Person Image */}
               <div className="course-details-image relative -ml-2 flex w-full shrink-0 justify-center md:-ml-6 md:w-[34%] md:justify-start lg:-ml-8 lg:w-[32%]">
                 <svg
-                  className="pointer-events-none absolute -top-10 left-0 z-0 h-auto w-12 animate-float text-[#C76B74] drop-shadow-md md:-top-12 md:left-2 md:w-16"
-                  style={{ animationDelay: '1.5s' }}
+                  className="pointer-events-none absolute -top-10 left-0 z-0 h-auto w-12 text-[#C76B74] drop-shadow-md md:-top-12 md:left-2 md:w-16"
                   viewBox="0 0 62 90"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -172,7 +81,7 @@ const CourseDetailsSection: React.FC<Props> = ({ course }) => {
                 </svg>
 
                 <svg
-                  className="pointer-events-none absolute -top-6 right-2 z-0 h-auto w-14 animate-float text-[#555e65] drop-shadow-md md:-top-8 md:right-0 md:w-20"
+                  className="pointer-events-none absolute -top-6 right-2 z-0 h-auto w-14 text-[#555e65] drop-shadow-md md:-top-8 md:right-0 md:w-20"
                   viewBox="0 0 100 100"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -209,12 +118,11 @@ const CourseDetailsSection: React.FC<Props> = ({ course }) => {
   }
   else if (city === 'pune') {
     return (
-      <div ref={containerRef} className="w-full flex flex-col font-['Montserrat',sans-serif] bg-white">
+      <div className="w-full flex flex-col font-['Montserrat',sans-serif] bg-white">
         <section
           className={`relative w-full overflow-hidden ${textColor} md:pt-15`}
           style={{ background: 'linear-gradient(90deg, #8780D7 0%, #CECDE2 100%)' }}
         >
-          <NetworkDotsBackground variant="light" />
           <div className="max-w-[1400px] mx-auto relative z-10 px-6 md:px-12 lg:px-20">
             {/* Heading */}
             <div className="course-details-heading mb-10 xl:mb-16">
@@ -231,8 +139,7 @@ const CourseDetailsSection: React.FC<Props> = ({ course }) => {
 
                 {/* SHAPE 1: Left White Arrow */}
                 <svg
-                  className="absolute -top-12 left-4 md:-top-12 md:left-18 lg:left-20 w-12 md:w-16 h-auto text-white z-0 pointer-events-none animate-float drop-shadow-md"
-                  style={{ animationDelay: '1.5s' }}
+                  className="absolute -top-12 left-4 md:-top-12 md:left-18 lg:left-20 w-12 md:w-16 h-auto text-white z-0 pointer-events-none drop-shadow-md"
                   viewBox="0 0 62 90"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -242,7 +149,7 @@ const CourseDetailsSection: React.FC<Props> = ({ course }) => {
 
                 {/* SHAPE 2: Right Looping Arrow (Using your provided SVG, colored beige) */}
                 <svg
-                  className="absolute -top-8 right-0 md:-top-9 md:-right-12 lg:-right-[-70px] w-16 md:w-20 h-auto  z-0 pointer-events-none animate-float drop-shadow-md"
+                  className="absolute -top-8 right-0 md:-top-9 md:-right-12 lg:-right-[-70px] w-16 md:w-20 h-auto z-0 pointer-events-none drop-shadow-md"
                   viewBox="0 0 100 100"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -280,35 +187,12 @@ const CourseDetailsSection: React.FC<Props> = ({ course }) => {
 
   // Delhi: Original layout (Highlights LEFT, Person RIGHT)
   return (
-    <div ref={containerRef} className="w-full flex flex-col font-['Montserrat',sans-serif] bg-white">
-      {/* {topHeadingNode} */}
-      {/* Dynamic Styles for Animations */}
-      <style>
-        {`
-          @keyframes drawPath {
-            0% { stroke-dashoffset: 300; }
-            100% { stroke-dashoffset: 0; }
-          }
-          @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-12px); }
-          }
-          .animate-draw {
-            stroke-dasharray: 300;
-            animation: drawPath 2.5s ease-in-out infinite alternate;
-          }
-          .animate-float {
-            animation: float 6s ease-in-out infinite;
-          }
-        `}
-      </style>
-
+    <div className="w-full flex flex-col font-['Montserrat',sans-serif] bg-white">
       {/* Blue Gradient Content Section */}
       <section
         className={`relative w-full overflow-hidden ${textColor} py-16 px-6 md:px-12 lg:px-24`}
         style={{ background: sectionBg }}
       >
-        <NetworkDotsBackground variant="dark" />
         <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
 
           {/* Left Side: Text Content */}
@@ -337,7 +221,7 @@ const CourseDetailsSection: React.FC<Props> = ({ course }) => {
 
             <>
               {/* 1. The Single Floating Cluster: Person inside Blob */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] md:w-[380px] md:h-[380px] z-10 animate-float flex items-center justify-center pointer-events-none drop-shadow-2xl">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] md:w-[380px] md:h-[380px] z-10 flex items-center justify-center pointer-events-none drop-shadow-2xl">
                 <svg viewBox="-20 -20 240 240" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
                   <defs>
                     <clipPath id="blobClip">
@@ -362,7 +246,7 @@ const CourseDetailsSection: React.FC<Props> = ({ course }) => {
               {/* UNGROUPED TOP-RIGHT DECORATIONS */}
               <div className="absolute -top-12 -right-8 w-32 h-32 md:-top-40 md:-right-40 md:w-44 md:h-44 bg-[#C4B5D6] rounded-full z-0 pointer-events-none" />
               <div className="absolute top-4 right-8 w-40 h-40 md:-top-30 md:-right-30 md:w-44 md:h-44 border-[2px] border-[#D4C3EC] rounded-full z-0 pointer-events-none" />
-              <svg className="absolute bottom-[250px] right-[10px] md:right-[400px] w-12 md:w-16 h-12 md:h-20 text-white z-10 animate-float" style={{ animationDelay: '1.5s' }} width="62" height="90" viewBox="0 0 62 90" fill="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <svg className="absolute bottom-[250px] right-[10px] md:right-[400px] w-12 md:w-16 h-12 md:h-20 text-white z-10" width="62" height="90" viewBox="0 0 62 90" fill="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <path d="M11.9061 59.007C14.0399 56.5574 15.8161 54.0248 18.0799 52.0519C20.5823 49.871 23.3433 47.7932 26.3353 46.418C29.8446 44.8052 33.2959 46.2527 35.1085 49.2559C37.0537 52.4786 36.4436 56.0161 33.3341 58.7212C29.3168 62.216 24.4634 63.7529 19.286 64.4306C18.0217 64.5962 16.7447 64.6638 15.5494 64.7697C11.2899 71.7057 12.2397 74.3952 23.8318 88.3259C21.9151 90.6212 19.9264 89.6858 18.011 88.428C11.5895 84.2112 7.381 74.0322 8.9194 66.5463C9.075 65.7887 9.2672 65.0385 9.4774 64.1346C8.5276 63.5829 7.68681 63.1466 6.89951 62.629C1.22211 58.8965 -1.37299 52.8372 0.719513 46.3735C1.92801 42.6402 3.93461 39.031 6.20651 35.8059C10.1248 30.2436 15.4029 25.941 21.1064 22.3069C27.9984 17.9155 35.1027 13.8574 42.1096 9.64581C43.1586 9.01531 44.1773 8.33442 45.5222 7.47812C42.8938 6.37782 40.6539 5.62922 38.6289 4.49652C37.8557 4.06402 36.9346 2.33782 37.2011 1.92572C37.7735 1.04062 39.0572 0.595235 40.089 0.0433345C40.3194 -0.0798655 40.7127 0.093918 41.0294 0.141418C46.0793 0.900418 51.1191 1.73633 56.1815 2.39883C60.6526 2.98393 61.463 3.84902 60.8888 8.27582C60.2297 13.3565 57.9174 17.726 54.8043 21.6912C53.798 22.9729 52.5564 24.1143 50.5335 22.5651C50.221 18.0027 54.1896 14.7185 55.0628 9.76282C53.4469 10.4832 52.3049 10.8753 51.2787 11.468C42.3972 16.5983 33.3616 21.4924 24.7395 27.0293C20.0679 30.0294 15.8439 33.8799 11.9321 37.853C9.52771 40.2953 7.6347 43.506 6.3284 46.705C4.1392 52.0657 6.16631 56.2195 11.9061 59.007ZM18.9614 58.096L19.6457 59.1661C22.8097 58.9717 25.7536 58.0054 28.4548 56.2896C30.9511 54.7039 31.8011 53.0737 30.7087 51.8348C29.1529 50.0704 27.4087 51.0416 26.0518 52.071C23.5847 53.9427 21.3141 56.0734 18.9614 58.096Z" fill="white" />
               </svg>
 

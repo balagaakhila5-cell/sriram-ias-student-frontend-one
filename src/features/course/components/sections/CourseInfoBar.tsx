@@ -240,7 +240,7 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
             </div>
 
           {/* CTA Buttons */}
-          <div className="info-item flex w-full shrink-0 flex-col items-stretch justify-center gap-1 sm:max-w-[290px] lg:w-auto lg:max-w-none">
+          <div className="info-item flex w-full shrink-0 flex-col items-stretch justify-center gap-3 sm:max-w-[290px] lg:w-auto lg:max-w-none">
               <div className="flex w-full gap-2">
                 <button
                   type="button"

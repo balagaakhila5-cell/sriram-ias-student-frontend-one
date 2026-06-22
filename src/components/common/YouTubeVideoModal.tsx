@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 interface YouTubeVideoModalProps {
@@ -16,6 +17,12 @@ const YouTubeVideoModal: React.FC<YouTubeVideoModalProps> = ({
   title,
   onClose,
 }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -33,15 +40,15 @@ const YouTubeVideoModal: React.FC<YouTubeVideoModalProps> = ({
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen || !videoId) return null;
+  if (!isOpen || !videoId || !mounted) return null;
 
   const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 md:p-8">
+  return createPortal(
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 p-4 sm:p-6 md:p-8">
       <button
         type="button"
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="absolute inset-0 cursor-default"
         onClick={onClose}
         aria-label="Close video"
       />
@@ -52,12 +59,12 @@ const YouTubeVideoModal: React.FC<YouTubeVideoModalProps> = ({
         aria-modal="true"
         aria-label={title ? `Playing: ${title}` : 'YouTube video player'}
       >
-        <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-2xl">
+        <div className="relative aspect-video w-full overflow-hidden bg-black">
           <iframe
             key={videoId}
             src={embedUrl}
             title={title ?? 'YouTube video'}
-            className="absolute inset-0 h-full w-full"
+            className="absolute inset-0 h-full w-full border-0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
           />
@@ -72,7 +79,8 @@ const YouTubeVideoModal: React.FC<YouTubeVideoModalProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

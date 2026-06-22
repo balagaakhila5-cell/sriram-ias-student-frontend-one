@@ -30,11 +30,14 @@ import {
 } from '@/features/center/data/centerCourseCategories';
 import CoursesMegaMenuBackground from './CoursesMegaMenuBackground';
 import CentersDropdownBackground from './CentersDropdownBackground';
+import NavbarDropdownGradientBackground, {
+  NAV_DROPDOWN_GRADIENT_CLASS,
+} from './NavbarDropdownGradientBackground';
 
 const CENTER_CITY_ICONS = {
   delhi: '/assets/our-centers/new-delhi-india-gate-icon-1.png',
   hyderabad: '/assets/our-centers/hyderabad-charminar-icon-1.png',
-  pune: '/assets/our-centers/pune-historical-icon-1.png',
+  pune: '/assets/our-centers/shanvivar-wada-icon-1.png',
 } as const;
 
 const CENTER_DROPDOWN_ITEMS = [
@@ -265,24 +268,30 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
         }
       >
         <div className="w-full max-w-[1440px] mx-auto flex justify-between items-start relative">
-        <div className="flex items-center">
-            <Link href="/" className="inline-flex cursor-pointer items-center">
+        <div className="flex shrink-0 items-center">
+            <Link
+              href="/"
+              className="inline-flex w-fit shrink-0 cursor-pointer items-center gap-0 leading-none"
+            >
               <Image
                 src="/assets/40_years_experience.png"
                 alt="40 Years of Excellence"
                 width={66}
                 height={66}
-                className="h-11 md:h-14 lg:h-[66px] w-auto object-contain hidden md:block transition-transform hover:scale-105 mr-[1px]"
+                className="hidden h-11 w-auto shrink-0 object-contain transition-transform hover:scale-105 md:block md:h-14 md:-mr-0.5 lg:h-[66px]"
               />
-            </Link>
-
-            <Link href="/" className="inline-flex cursor-pointer items-center">
+              <span
+                className={`hidden h-[44px] w-[2px] shrink-0 md:ml-2 md:block md:h-[52px] lg:ml-2.5 lg:h-[60px] ${
+                  isLightHeader ? 'bg-[#D1D5DB]' : 'bg-white'
+                }`}
+                aria-hidden
+              />
               <Image
                 src="/assets/Logo.png"
                 alt="SRIRAM's IAS"
                 width={70}
                 height={76}
-                className="h-11 md:h-14 lg:h-[76px] w-auto object-contain transition-transform hover:scale-105"
+                className="-ml-2.5 h-11 w-auto shrink-0 object-contain transition-transform hover:scale-105 md:-ml-3.5 md:h-14 lg:-ml-4 lg:h-[76px]"
               />
             </Link>
           </div>
@@ -323,7 +332,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                 </button>
 
                 {isBlogLangOpen && (
-                  <div className="absolute top-full left-0 z-50 mt-2 w-36 overflow-hidden rounded-lg border border-white/50 py-2 text-center shadow-xl bg-[linear-gradient(145deg,#B8E4F7_0%,#D8E6F5_42%,#EAC8D0_100%)]">
+                  <div className={`absolute top-full left-0 z-50 mt-2 w-36 overflow-hidden rounded-lg border border-white/50 py-2 text-center shadow-xl ${NAV_DROPDOWN_GRADIENT_CLASS}`}>
                     {[
                       { label: 'English', href: '/blogs?lang=english' },
                       { label: 'Marathi', href: '/blogs?lang=marathi' },
@@ -429,7 +438,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                 </div>
 
                 {isLangOpen && (
-                  <div className="absolute top-full right-0 mt-2 w-32 overflow-hidden rounded-lg border border-white/50 py-2 text-center z-50 shadow-xl bg-[linear-gradient(145deg,#B8E4F7_0%,#D8E6F5_42%,#EAC8D0_100%)]">
+                  <div className={`absolute top-full right-0 mt-2 w-32 overflow-hidden rounded-lg border border-white/50 py-2 text-center z-50 shadow-xl ${NAV_DROPDOWN_GRADIENT_CLASS}`}>
                     {['English', 'Telugu', 'Marathi'].map((lang) => (
                       <div
                         key={lang}
@@ -602,6 +611,9 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                     ref={freeResourcesDropdownRef}
                     className="absolute top-full left-1/2 z-50 mt-3 w-[min(620px,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-[12px] bg-white shadow-[0px_10px_28px_rgba(0,0,0,0.14)]"
                   >
+                    <NavbarDropdownGradientBackground />
+                    <div className="pointer-events-none absolute inset-0 bg-white/10" aria-hidden />
+
                     <div className="relative z-20 flex items-center justify-center gap-3 px-6 py-6">
                       <Link
                         href="/free_resources/ncert-page"
@@ -700,6 +712,9 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                     ref={currentAffairsDropdownRef}
                     className="absolute top-full left-1/2 z-50 mt-3 w-[min(830px,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-[12px] bg-white shadow-[0px_10px_28px_rgba(0,0,0,0.14)]"
                   >
+                    <NavbarDropdownGradientBackground />
+                    <div className="pointer-events-none absolute inset-0 bg-white/10" aria-hidden />
+
                     <div className="relative z-20 flex flex-wrap items-center justify-center gap-3 px-6 py-6 sm:flex-nowrap">
                       <Link
                         href="/current-affairs/daily-current-affairs"
@@ -952,7 +967,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                       <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className={`flex-1 rounded-full px-3 py-2 text-[13px] font-semibold font-[Montserrat] transition-all duration-300 whitespace-nowrap ${
+                        className={`flex-1 rounded-full px-3 py-2.5 text-[14px] md:text-[15px] font-semibold font-[Montserrat] transition-all duration-300 whitespace-nowrap ${
                           activeTab === tab
                             ? 'text-white shadow-sm'
                             : 'bg-transparent text-[#333333] hover:text-[#15658D]'
@@ -1068,7 +1083,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
               </div>
 
               {isLangOpen && (
-                <div className="mt-1 flex flex-col gap-1 overflow-hidden rounded-lg border border-white/50 py-2 pl-0 text-center shadow-md bg-[linear-gradient(145deg,#B8E4F7_0%,#D8E6F5_42%,#EAC8D0_100%)]">
+                <div className={`mt-1 flex flex-col gap-1 overflow-hidden rounded-lg border border-white/50 py-2 pl-0 text-center shadow-md ${NAV_DROPDOWN_GRADIENT_CLASS}`}>
                   {['English', 'Telugu', 'Marathi'].map((lang) => (
                     <div
                       key={lang}

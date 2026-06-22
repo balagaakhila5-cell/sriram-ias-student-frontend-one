@@ -1,6 +1,7 @@
 export type OurTopper = {
   name: string;
   rank: string;
+  year: number;
   course: string;
   img: string;
 };
@@ -12,48 +13,56 @@ export const OUR_TOPPERS: OurTopper[] = [
   {
     name: "AAKASH GARG",
     rank: "AIR 5",
+    year: 2023,
     course: "GS Foundation Course",
     img: "AAKASH GARG(AIR-5) .png",
   },
   {
     name: "ABHI JAIN",
     rank: "AIR 34",
+    year: 2021,
     course: "GS Foundation Course",
     img: "ABHI-JAIN(AIR-34).png",
   },
   {
     name: "ABHISHEK SHARMA",
     rank: "AIR 38",
+    year: 2024,
     course: "GS Foundation Course",
     img: "ABHISHEK-SHARMA-(AIR-38) .png",
   },
   {
     name: "DIKSHA RAI",
     rank: "AIR 40",
+    year: 2020,
     course: "GS Foundation Course",
     img: "DIKSHA-RAI(AIR-40).png",
   },
   {
     name: "NABIYA PARVEZ",
     rank: "AIR 29",
+    year: 2022,
     course: "GS Foundation Course",
     img: "NABIYA-PARVEZ(AIR-29).png",
   },
   {
     name: "RAGHAV JHUNJHUNWALA",
     rank: "AIR 4",
+    year: 2019,
     course: "GS Foundation Course",
     img: "RAGHAV-JHUNJWALA(AIR-4).png",
   },
   {
     name: "RAJ KRISHNA JHA",
     rank: "AIR 8",
+    year: 2024,
     course: "GS Foundation Course",
     img: "RAJ-KRISHNA JHA(AIR-8).png",
   },
   {
     name: "ROHIN KUMAR",
     rank: "AIR 39",
+    year: 2021,
     course: "GS Foundation Course",
     img: "ROHIN-KUMAR(AIR-39).png",
   },

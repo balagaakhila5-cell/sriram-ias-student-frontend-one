@@ -7,7 +7,7 @@ export type FooterLinkItem = {
 };
 
 export const FOOTER_COPYRIGHT = {
-  brandName: "panacea it services private limited",
+  brandName: "SRIRAM'S",
 } as const;
 
 export function getFooterCopyrightText() {
@@ -95,7 +95,7 @@ export const FOOTER_BRANCHES = [
     address:
       "SRIRAM'S IAS, Opposite Sudharshan Theatre, Pillar No 40, Ashoka Nagar, Hyderabad, 500020",
     phone: "8121191985",
-    email: "sriramsias@gmail.com",
+    email: "hyderabad@sriramsias.com",
   },
   {
     city: "PUNE",
@@ -103,8 +103,8 @@ export const FOOTER_BRANCHES = [
     image: "/assets/pune-footer.png",
     alt: "Pune",
     address:
-      "SRIRAM'S IAS, 385, Near Modi Ganpati Mandir, Patrya Maruti Chowk Narayan Peth, Pune 41211",
+      "SRIRAM'S IAS, 385, Near Modi Ganpati Mandir, Patrya Maruti Chowk Narayan Peth, Pune 411030",
     phone: "9689000979",
-    email: "sriramsias@gmail.com",
+    email: "pune@sriramsias.com",
   },
 ] as const;

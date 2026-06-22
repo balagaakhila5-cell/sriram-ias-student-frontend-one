@@ -9,8 +9,9 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import FlipBook from '@/components/common/FlipBook';
+import BookSamplePanel from '@/features/books/components/BookSamplePanel';
 import { useCartStore } from '@/store/cartStore';
-import { mockBooks } from '@/features/books/data/books';
+import { INDIAN_ECONOMY_SAMPLE_BOOK, mockBooks } from '@/features/books/data/books';
 
 const featuredBook = mockBooks[0];
 
@@ -47,22 +48,22 @@ const BooksOverviewTabs: React.FC = () => {
     {
       id: 'overview',
       label: 'Overview',
-      icon: <LayoutDashboard size={34} strokeWidth={2.2} />,
+      icon: <LayoutDashboard size={28} strokeWidth={2.2} />,
     },
     {
       id: 'toppers',
       label: "Topper's Recommendations",
-      icon: <GraduationCap size={30} strokeWidth={2.2} />,
+      icon: <GraduationCap size={26} strokeWidth={2.2} />,
     },
     {
       id: 'sample',
       label: 'View Sample',
-      icon: <FileText size={34} strokeWidth={2.2} />,
+      icon: <FileText size={28} strokeWidth={2.2} />,
     },
     {
       id: 'buy',
       label: 'Buy Now',
-      icon: <ShoppingBag size={34} strokeWidth={2.2} />,
+      icon: <ShoppingBag size={28} strokeWidth={2.2} />,
     },
   ];
 
@@ -84,7 +85,7 @@ const BooksOverviewTabs: React.FC = () => {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full rounded-[40px] flex items-center gap-4 px-6 md:px-8 py-5 md:py-6 transition-all duration-300 ${
+                className={`w-full rounded-[40px] flex items-center justify-center gap-2.5 px-4 md:px-6 py-4 md:py-5 transition-all duration-300 ${
                   activeTab === tab.id
                     ? 'bg-[linear-gradient(90deg,#43A9E7_0%,#001C2D_100%)] text-white shadow-lg'
                     : 'bg-[#EDEFFC] text-[#6D7484] hover:bg-[#E2E6F8]'
@@ -95,7 +96,7 @@ const BooksOverviewTabs: React.FC = () => {
                 >
                   {tab.icon}
                 </span>
-                <span className="min-w-0 flex-1 text-left font-semibold text-[15px] md:text-[17px] leading-snug tracking-[-0.2px]">
+                <span className="whitespace-nowrap text-center font-semibold text-[12px] sm:text-[13px] md:text-[14px] leading-none tracking-[-0.2px]">
                   {tab.label}
                 </span>
               </button>
@@ -129,29 +130,33 @@ const BooksOverviewTabs: React.FC = () => {
           )}
 
           {(activeTab === 'sample' || activeTab === 'buy') && (
-            <div className="absolute inset-0 w-full h-full bg-[#01285A] px-4 sm:px-8 py-10 flex flex-col z-20">
-              <FlipBook coverImage={featuredBook.coverImage} />
+            <>
+              {activeTab === 'sample' ? (
+                <BookSamplePanel
+                  onBuyNow={handleBuyNow}
+                  onClose={() => setActiveTab('overview')}
+                />
+              ) : (
+                <div className="absolute inset-0 z-20 flex w-full flex-col bg-[#01285A] px-4 py-10 sm:px-8">
+                  <FlipBook coverImage={INDIAN_ECONOMY_SAMPLE_BOOK.image} />
 
-              {/* Bottom Button */}
-              <div className="flex justify-center shrink-0 pb-4">
-                <button
-                  type="button"
-                  onClick={activeTab === 'sample' ? handleBuyNow : handleAddToCart}
-                  className={`min-w-[180px] h-[50px] md:h-[54px] px-8 rounded-full border-[1.5px] text-[18px] md:text-[20px] font-extrabold leading-none transition-all duration-300 flex items-center justify-center gap-2 shadow-lg ${
-                    activeTab === 'buy' && showAddedLabel
-                      ? 'border-[#0F8EDB] bg-[#0F8EDB] text-white'
-                      : 'border-white bg-transparent text-white hover:bg-[#0F8EDB] hover:border-[#0F8EDB] hover:shadow-xl'
-                  }`}
-                >
-                  {activeTab === 'sample'
-                    ? 'Buy Now'
-                    : showAddedLabel
-                      ? 'Added to Cart'
-                      : 'Add to Cart'}
-                  <ArrowRight size={20} />
-                </button>
-              </div>
-            </div>
+                  <div className="flex shrink-0 justify-center pb-4">
+                    <button
+                      type="button"
+                      onClick={handleAddToCart}
+                      className={`flex h-[50px] min-w-[180px] items-center justify-center gap-2 rounded-full border-[1.5px] px-8 text-[18px] font-extrabold leading-none shadow-lg transition-all duration-300 md:h-[54px] md:text-[20px] ${
+                        showAddedLabel
+                          ? 'border-[#0F8EDB] bg-[#0F8EDB] text-white'
+                          : 'border-white bg-transparent text-white hover:border-[#0F8EDB] hover:bg-[#0F8EDB] hover:shadow-xl'
+                      }`}
+                    >
+                      {showAddedLabel ? 'Added to Cart' : 'Add to Cart'}
+                      <ArrowRight size={20} />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
