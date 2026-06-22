@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import useInViewport from '@/hooks/useInViewport';
 
-const HERO_POSTER = '/assets/course/course-hero-bg.jpg';
 const HERO_VIDEO_SRC = '/assets/HOME PAGE_BANNER VIDEO.mp4';
 
 const Hero: React.FC = () => {
@@ -12,7 +11,6 @@ const Hero: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const isHeroVisible = useInViewport(sectionRef, { threshold: 0.15 });
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -34,17 +32,6 @@ const Hero: React.FC = () => {
     <div>
       <section ref={sectionRef} className="relative h-[95vh] min-h-[500px] w-full overflow-hidden bg-[#012439]">
         <div className="absolute inset-0 z-0 h-full">
-          <img
-            src={HERO_POSTER}
-            alt=""
-            aria-hidden
-            fetchPriority="high"
-            decoding="async"
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
-              isVideoPlaying ? 'opacity-0' : 'opacity-100'
-            }`}
-          />
-
           {!prefersReducedMotion ? (
             <video
               ref={videoRef}
@@ -53,7 +40,6 @@ const Hero: React.FC = () => {
               loop
               playsInline
               preload="auto"
-              onPlaying={() => setIsVideoPlaying(true)}
               className="absolute inset-0 h-full w-full object-cover"
             >
               <source src={HERO_VIDEO_SRC} type="video/mp4" />
