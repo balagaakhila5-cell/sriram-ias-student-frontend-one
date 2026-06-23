@@ -2,7 +2,7 @@ import CenterDetails from '@/features/center/components/sections/CenterDetails';
 import JoinCTA from '@/features/course/components/sections/JoinCTA';
 import MainLayout from '@/components/common/MainLayout';
 import { ALLOWED_CENTER_CITIES } from '@/features/center/data/centerCourseCategories';
-import { notFound } from 'next/navigation';
+import { notFound } from '@/lib/appRouter';
 
 export default async function CenterPage({ params }: { params: Promise<{ city: string }> }) {
   const { city } = await params;

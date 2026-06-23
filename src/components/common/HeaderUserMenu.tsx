@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import Link from "@/components/common/AppLink";
+import { useRouter } from "@/lib/appRouter";
 import { Home, LogOut, User } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import type { ServerRole } from "@/features/auth/types";

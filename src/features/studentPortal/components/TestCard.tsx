@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/common/AppLink";
 import { useEffect, useState } from "react";
 import { ArrowRight, Bookmark } from "lucide-react";
 import type { TestItem } from "../data/tests";

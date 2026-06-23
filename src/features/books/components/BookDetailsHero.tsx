@@ -1,7 +1,7 @@
 // 'use client';
 
 // import React from 'react';
-// import Image from 'next/image';
+// import Image from '@/components/common/AppImage';
 
 // const BookDetailsHero: React.FC = () => {
 //   return (
@@ -35,7 +35,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import Image from '@/components/common/AppImage';
 
 const BookDetailsHero: React.FC = () => {
   return (

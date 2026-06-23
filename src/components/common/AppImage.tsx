@@ -1,6 +1,6 @@
 import React from "react";
 
-interface NextImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface AppImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
   alt: string;
   fill?: boolean;
@@ -11,7 +11,7 @@ interface NextImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   unoptimized?: boolean;
 }
 
-export default function Image({
+export default function AppImage({
   src,
   alt,
   fill,
@@ -20,7 +20,7 @@ export default function Image({
   quality: _quality,
   priority: _priority,
   ...props
-}: NextImageProps) {
+}: AppImageProps) {
   const imageStyle: React.CSSProperties = fill
     ? {
         position: "absolute",

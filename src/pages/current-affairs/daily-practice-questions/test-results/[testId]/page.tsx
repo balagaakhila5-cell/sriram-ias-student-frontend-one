@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "@/shims/next/link";
+import Link from "@/components/common/AppLink";
 import { use, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";

@@ -1,8 +1,8 @@
 'use client';
 
 import React, { use, useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import Link from '@/components/common/AppLink';
+import { useRouter } from '@/lib/appRouter';
 import { Clock3, FileText, House, X } from 'lucide-react';
 import {
   useCurrentAffairsQuestions,

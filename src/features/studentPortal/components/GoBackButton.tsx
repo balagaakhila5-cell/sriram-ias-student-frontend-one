@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/appRouter";
 import { ChevronLeft } from "lucide-react";
 
 interface GoBackButtonProps {

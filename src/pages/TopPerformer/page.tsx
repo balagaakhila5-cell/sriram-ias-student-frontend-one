@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/common/AppLink";
 
 const TopPerformance = () => {
   // Added 'image' and 'points' to match your second screenshot

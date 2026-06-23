@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { useRouter } from '@/shims/next/navigation';
+import { useRouter } from '@/lib/appRouter';
 import { useSearchParams } from 'react-router-dom';
 import { useCartStore } from '@/store/cartStore';
 import PaymentReceiptSuccess from '@/components/common/PaymentReceiptSuccess';

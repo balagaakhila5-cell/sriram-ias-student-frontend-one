@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/components/common/AppImage';
+import Link from '@/components/common/AppLink';
 import { Book } from '../types';
 import { useCartStore } from '@/store/cartStore';
 

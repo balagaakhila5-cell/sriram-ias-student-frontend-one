@@ -18,9 +18,7 @@
     "types": ["vite/client"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "next": ["src/shims/next/index.ts"],
-      "next/*": ["src/shims/next/*"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src"],

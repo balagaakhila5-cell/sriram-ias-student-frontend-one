@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/common/AppLink";
 import type { DpqTestResultSummary } from "@/features/currentAffairs/data/dpqTestResultsMock";
 import { buildTestLeaderboardHref } from "@/features/currentAffairs/data/dpqTestResultsMock";
 

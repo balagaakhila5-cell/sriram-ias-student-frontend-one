@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/lib/appRouter';
 import { ArrowRight, X, ZoomIn, ZoomOut } from 'lucide-react';
 import FlipBook from '@/components/common/FlipBook';
 import { INDIAN_ECONOMY_SAMPLE_BOOK } from '@/features/books/data/books';

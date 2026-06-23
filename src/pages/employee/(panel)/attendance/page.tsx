@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/common/AppLink";
 import CompactDropdown from "@/features/studentPortal/components/CompactDropdown";
 import HorizontalStatCard from "@/features/employeePortal/components/HorizontalStatCard";
 import SearchInput from "@/features/employeePortal/components/SearchInput";

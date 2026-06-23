@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import Image from '@/components/common/AppImage';
 
 export const BOOK_DEMO_BG_GRADIENT =
   'linear-gradient(180deg, #20A0E0 0%, #1897D8 50%, #005B88 100%)';

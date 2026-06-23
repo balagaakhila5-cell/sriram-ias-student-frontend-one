@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/lib/appRouter';
 
 const CONFIRMED_BAG = '/assets/course/confirmed-bag.png';
 

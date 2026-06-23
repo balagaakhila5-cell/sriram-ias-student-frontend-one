@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import Link from "@/components/common/AppLink";
 import type { LiveSession } from "../data/liveClass";
 
 interface NextClassCardProps {

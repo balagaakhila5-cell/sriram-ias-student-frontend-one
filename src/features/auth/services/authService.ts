@@ -1,10 +1,3 @@
-import {
-  authLogin,
-  authStudentSignup,
-  authVerifyOtp,
-  authVerifyStudentSignup,
-} from "@/lib/allApi";
-import type { ApiRequestBody } from "@/types/api";
 import type {
   AuthResponse,
   AuthUser,
@@ -18,62 +11,33 @@ import type {
   StudentSignupResponse,
   VerifyOtpPayload,
   VerifyStudentSignupPayload,
-} from "../types";
+} from '../types';
 import {
   assertLoginCredentialAllowed,
   verifyStaffLogin,
-} from "../utils/registeredAuthCredentials";
+} from '../utils/registeredAuthCredentials';
 
 const delay = (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const mockToken = () => `mock-token-${Date.now()}`;
 
 const mockUser = (
-  role: AuthUser["role"],
+  role: AuthUser['role'],
   overrides: Partial<AuthUser> = {},
 ): AuthUser => ({
   id: `mock-${Date.now()}`,
-  name: "User",
+  name: 'User',
   role,
   ...overrides,
 });
 
-const normalizeAuthResponse = (
-  raw: unknown,
-  fallbackRole: ServerRole = "student",
-): AuthResponse => {
-  const data = (raw ?? {}) as Record<string, unknown>;
-  const payload = (data.data ?? data) as Record<string, unknown>;
+const pendingSignups = new Map<string, StudentSignupPayload>();
 
-  const token = (payload.token ??
-    payload.accessToken ??
-    payload.access_token ??
-    "") as string;
-
-  const rawUser = (payload.user ??
-    payload.student ??
-    payload.parent ??
-    payload.profile ??
-    null) as Record<string, unknown> | null;
-
-  const user: AuthUser = rawUser
-    ? {
-        id: String(rawUser._id ?? rawUser.id ?? payload.userId ?? ""),
-        name: String(rawUser.name ?? rawUser.fullName ?? ""),
-        email: (rawUser.email as string | undefined) ?? undefined,
-        mobile: (rawUser.mobile as string | undefined) ?? undefined,
-        role: (rawUser.role as ServerRole | undefined) ?? fallbackRole,
-        center: (rawUser.center as string | undefined) ?? undefined,
-        permissions: (rawUser.permissions as string[] | undefined) ?? undefined,
-      }
-    : {
-        id: String(payload.userId ?? ""),
-        name: "",
-        role: fallbackRole,
-      };
-
-  return { user, token };
-};
+function assertValidOtp(otp: string) {
+  if (!/^\d{6}$/.test(otp.trim())) {
+    throw new Error('Invalid OTP. Please enter the 6-digit code.');
+  }
+}
 
 export const authService = {
   loginSuperAdmin: async (
@@ -81,8 +45,8 @@ export const authService = {
   ): Promise<AuthResponse> => {
     await delay();
     return {
-      user: mockUser("super_admin", {
-        name: credentials.email.split("@")[0],
+      user: mockUser('super_admin', {
+        name: credentials.email.split('@')[0],
         email: credentials.email,
       }),
       token: mockToken(),
@@ -93,11 +57,11 @@ export const authService = {
     credentials: StaffLoginCredentials,
   ): Promise<AuthResponse> => {
     await delay();
-    assertLoginCredentialAllowed("faculty", { email: credentials.email });
+    assertLoginCredentialAllowed('faculty', { email: credentials.email });
     const account = verifyStaffLogin(credentials);
     return {
-      user: mockUser("employee", {
-        name: account.name ?? credentials.email.split("@")[0],
+      user: mockUser('employee', {
+        name: account.name ?? credentials.email.split('@')[0],
         email: credentials.email,
       }),
       token: mockToken(),
@@ -107,42 +71,61 @@ export const authService = {
   studentSignup: async (
     payload: StudentSignupPayload,
   ): Promise<StudentSignupResponse> => {
-    const data = (await authStudentSignup(
-      payload as unknown as ApiRequestBody,
-    )) as Record<string, unknown>;
-    const user = data.user as Record<string, unknown> | undefined;
+    await delay();
+    const userId = `mock-student-${Date.now()}`;
+    pendingSignups.set(userId, payload);
     return {
-      userId: String(data.userId ?? user?.id ?? user?._id ?? ""),
-      message: data.message as string | undefined,
+      userId,
+      message: 'OTP sent successfully. Please check your email.',
     };
   },
 
   verifyStudentSignup: async (
     payload: VerifyStudentSignupPayload,
   ): Promise<AuthResponse> => {
-    const data = await authVerifyStudentSignup(
-      payload as unknown as ApiRequestBody,
-    );
-    return normalizeAuthResponse(data, "student");
+    await delay();
+    assertValidOtp(payload.otp);
+    const signup = pendingSignups.get(payload.userId);
+
+    return {
+      user: mockUser('student', {
+        id: payload.userId,
+        name: signup?.name ?? 'Student',
+        email: signup?.email,
+        mobile: signup?.mobile,
+      }),
+      token: mockToken(),
+    };
   },
 
   login: async (payload: LoginPayload): Promise<LoginRequestResponse> => {
-    const data = (await authLogin(
-      payload as unknown as ApiRequestBody,
-    )) as Record<string, unknown>;
+    await delay();
+    const identifier = payload.mobile ?? payload.email ?? 'user';
     return {
-      userId: data.userId ? String(data.userId) : undefined,
-      message: data.message as string | undefined,
+      userId: `mock-login-${identifier}`,
+      message: 'OTP sent successfully.',
     };
   },
 
   verifyOtp: async (payload: VerifyOtpPayload): Promise<AuthResponse> => {
-    const data = await authVerifyOtp(payload as unknown as ApiRequestBody);
-    return normalizeAuthResponse(data, "student");
+    await delay();
+    assertValidOtp(payload.otp);
+
+    const fallbackRole: ServerRole = payload.email ? 'employee' : 'student';
+
+    return {
+      user: mockUser(fallbackRole, {
+        id: payload.userId ?? `mock-${Date.now()}`,
+        email: payload.email,
+        mobile: payload.mobile,
+        name: payload.email?.split('@')[0] ?? payload.mobile ?? 'User',
+      }),
+      token: mockToken(),
+    };
   },
 
   sendOtp: async (_payload: SendOtpPayload): Promise<OtpRequestResponse> => {
     await delay();
-    return { message: "OTP sent successfully." };
+    return { message: 'OTP sent successfully.' };
   },
 };

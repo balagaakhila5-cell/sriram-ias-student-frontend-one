@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/common/AppLink";
 import { ArrowRight } from "lucide-react";
 import type { Recording } from "../data/recordings";
-import Image from "next/image";
+import Image from "@/components/common/AppImage";
 
 interface RecordingCardProps {
   recording: Recording;

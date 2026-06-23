@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/components/common/AppImage";
 import { useMemo, useRef, useState } from "react";
 import { listFreeResourceDocuments } from "@/features/resources/catalog/freeResources";
 import StudyMaterialsGrid from "@/features/resources/components/StudyMaterialsGrid";

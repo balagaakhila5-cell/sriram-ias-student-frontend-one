@@ -4,7 +4,7 @@ import FormFieldLabel from "@/components/common/FormFieldLabel";
 import { ContactLink } from "@/components/common/ContactLinks";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/appRouter";
 import { Camera, UserRound } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import StudentIdCardModal from "@/features/studentPortal/components/StudentIdCardModal";

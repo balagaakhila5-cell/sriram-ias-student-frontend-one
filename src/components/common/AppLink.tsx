@@ -1,12 +1,11 @@
 import { Link as RouterLink, type LinkProps as RouterLinkProps } from "react-router-dom";
 
-interface NextLinkProps extends Omit<RouterLinkProps, "to"> {
+interface AppLinkProps extends Omit<RouterLinkProps, "to"> {
   href: string;
-  legacyBehavior?: boolean;
   prefetch?: boolean;
 }
 
-export default function Link({ href, children, prefetch: _prefetch, ...props }: NextLinkProps) {
+export default function AppLink({ href, children, prefetch: _prefetch, ...props }: AppLinkProps) {
   return (
     <RouterLink to={href} {...props}>
       {children}

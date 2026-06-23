@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/common/AppLink";
 import { Calendar } from "lucide-react";
 
 interface CourseSummary {

@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link from "@/components/common/AppLink";
+import { usePathname } from "@/lib/appRouter";
 import type { PortalNavItem } from "../nav";
 
 interface PortalSidebarProps {

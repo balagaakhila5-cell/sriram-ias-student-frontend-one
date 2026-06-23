@@ -5,7 +5,7 @@ import {
   PORTAL_SUPPORT_PHONE,
 } from "@/config/supportContact";
 import { emailHref, phoneHref } from "@/utils/contactLinks";
-import Image from "next/image";
+import Image from "@/components/common/AppImage";
 
 export default function ImportantContactsPage() {
   return (

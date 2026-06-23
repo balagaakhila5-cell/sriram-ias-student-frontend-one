@@ -1,8 +1,7 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
+import Image from "@/components/common/AppImage";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
@@ -30,15 +29,7 @@ import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import FloatingActions from "@/components/common/FloatingActions";
 import CustomDropdown from "@/components/common/CustomDropdown";
-
-const TrendingArticles = dynamic(
-  () => import("@/components/common/TrendingArticles"),
-  {
-    loading: () => (
-      <div className="h-48 animate-pulse rounded-[22px] bg-[#EEF2F6]" aria-hidden />
-    ),
-  },
-);
+import TrendingArticles from "@/components/common/TrendingArticles";
 
 type ExamType = "prelims" | "mains";
 

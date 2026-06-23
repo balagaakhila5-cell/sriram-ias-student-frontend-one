@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/components/common/AppImage';
+import Link from '@/components/common/AppLink';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import { COURSE_EXPLORE_BUTTON_CLASS, COURSE_EXPLORE_BUTTON_LABEL } from '@/components/common/courseExploreButton';
 

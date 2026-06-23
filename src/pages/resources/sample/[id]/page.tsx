@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '@/components/common/AppLink';
 import { Navigate, useParams, useSearchParams } from 'react-router-dom';
 import '@/features/resources/catalog';
 import {

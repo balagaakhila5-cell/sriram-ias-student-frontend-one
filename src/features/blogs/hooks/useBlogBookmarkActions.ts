@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "@/lib/appRouter";
 import { useAuthStore } from "@/store/authStore";
 import type { BlogBookmarkInput } from "../types";
 import {

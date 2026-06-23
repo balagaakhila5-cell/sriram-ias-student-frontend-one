@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '@/components/common/AppLink';
 import React, { useEffect, useRef } from 'react';
-import Image from 'next/image';
+import Image from '@/components/common/AppImage';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import BlogGridCard from '@/features/blogs/components/BlogGridCard';

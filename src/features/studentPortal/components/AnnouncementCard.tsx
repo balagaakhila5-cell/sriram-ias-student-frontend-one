@@ -2,7 +2,7 @@
 
 import { Pin } from "lucide-react";
 import type { Announcement } from "../data/announcements";
-import Image from "next/image";
+import Image from "@/components/common/AppImage";
 
 interface AnnouncementCardProps {
   announcement: Announcement;

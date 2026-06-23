@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/common/AppLink";
 import type { CatalogDocument } from "@/features/resources/catalog/types";
 import {
   resourceDownloadPath,

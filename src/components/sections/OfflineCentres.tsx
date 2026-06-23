@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useMemo, useRef } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/components/common/AppImage';
+import Link from '@/components/common/AppLink';
 import { MapPin, Building2, Phone, Mail } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';

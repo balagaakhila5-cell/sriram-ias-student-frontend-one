@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/common/AppLink";
 import { useEffect, useState } from "react";
 import DpqTopPerformersSkeleton from "@/components/current-affairs/DpqTopPerformersSkeleton";
 import DpqTestLeaderboardTable from "@/components/current-affairs/DpqTestLeaderboardTable";

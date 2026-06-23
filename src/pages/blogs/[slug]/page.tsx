@@ -1,11 +1,11 @@
 'use client';
 
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/components/common/AppImage';
+import Link from '@/components/common/AppLink';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams } from '@/lib/appRouter';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import FreeResourcesCourseSlider from '@/components/common/FreeResourcesCourseSlider';

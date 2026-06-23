@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import Image from "next/image";
+import Image from "@/components/common/AppImage";
 import { UserRound, X } from "lucide-react";
 import type { ServerRole } from "@/features/auth/types";
 import { getRoleDisplayLabel } from "@/features/auth/utils/roleDisplay";

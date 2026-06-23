@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams } from "@/lib/appRouter";
 import StudyMaterialsExamTabs from "@/components/common/StudyMaterialsExamTabs";
 import DpqExamTabs from "@/features/studentPortal/components/DpqExamTabs";
 import FilterBar from "@/features/studentPortal/components/FilterBar";

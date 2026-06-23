@@ -1,7 +1,7 @@
 'use client';
 
 import { useLayoutEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname } from '@/lib/appRouter';
 
 function resolveSiteSection(pathname: string) {
   if (pathname.startsWith('/current-affairs')) return 'current-affairs';

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/lib/appRouter';
 import { Home, ArrowLeft, AlertCircle } from 'lucide-react';
 
 const NotFoundPage: React.FC = () => {

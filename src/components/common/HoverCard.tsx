@@ -1,7 +1,7 @@
 
 
-import Image from "next/image";
-import Link from "next/link";
+import Image from "@/components/common/AppImage";
+import Link from "@/components/common/AppLink";
 
 interface HoverCardProps {
   title: string;

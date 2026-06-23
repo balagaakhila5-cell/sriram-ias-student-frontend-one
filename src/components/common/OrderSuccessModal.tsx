@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import Image from '@/components/common/AppImage';
+import { useRouter } from '@/lib/appRouter';
 
 interface OrderSuccessModalProps {
   isOpen: boolean;

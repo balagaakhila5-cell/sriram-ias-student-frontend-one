@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Image from "next/image";
+import Image from "@/components/common/AppImage";
 import DonutChart from "./DonutChart";
 import SectionTitle from "./SectionTitle";
 import StatCard from "./StatCard";

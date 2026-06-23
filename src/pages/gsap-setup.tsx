@@ -3,7 +3,7 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname } from '@/lib/appRouter';
 import { refreshScrollAnimations } from '@/utils/gsapNavigation';
 
 gsap.registerPlugin(ScrollTrigger);

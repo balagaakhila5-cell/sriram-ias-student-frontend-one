@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
+import Link from '@/components/common/AppLink';
 import { X } from 'lucide-react';
 import CheckoutPaymentMethods, {
   type PaymentMethod,

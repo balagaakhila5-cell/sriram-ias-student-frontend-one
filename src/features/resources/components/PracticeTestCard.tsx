@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/common/AppLink";
 import { ArrowRight } from "lucide-react";
 import type { CatalogPracticeTest } from "@/features/resources/catalog/types";
 import { RESOURCE_ASSETS } from "@/features/resources/catalog/assets";

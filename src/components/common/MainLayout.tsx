@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname } from '@/lib/appRouter';
 import Header from '@/components/common/Header';
 import HeaderLogoOnly from '@/components/common/HeaderLogoOnly';
 import Footer from '@/components/common/Footer';

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import Image from '@/components/common/AppImage';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import FoundersMessageSection from '@/components/sections/FoundersMessageSection';

@@ -7,63 +7,39 @@ import {
   listPracticeTests,
 } from "@/features/resources/catalog/currentAffairs";
 import { currentAffairsService } from "../services/currentAffairsService";
-import {
-  CATEGORY_TO_SUBTOPIC,
-  toCatalogDocument,
-  toPracticeTestCard,
-} from "../mappers";
-import { matchesYearMonth } from "../filters";
+import { CATEGORY_TO_SUBTOPIC } from "../mappers";
 import type {
   CurrentAffairsCategory,
-  CurrentAffairsListFilters,
   SubmitAnswerInput,
 } from "../types";
 
-/** Raw paginated list query. */
-export function useCurrentAffairsList(filters: CurrentAffairsListFilters = {}) {
-  return useQuery({
-    queryKey: ["current-affairs", "list", filters],
-    queryFn: () => currentAffairsService.list(filters),
-  });
-}
-
 /**
  * Document-list pages (daily current affairs, monthly magazine, infographics,
- * monthly recap). Uses API data when available; falls back to catalog seed data.
+ * monthly recap). Uses local catalog data only.
  */
 export function useCurrentAffairsDocuments(
   category: CurrentAffairsCategory,
   year?: string,
   month?: string,
 ) {
-  const query = useCurrentAffairsList({ category, year, month, limit: 24 });
-
-  const fallbackDocuments = useMemo(() => {
+  const documents = useMemo(() => {
     const subtopic = CATEGORY_TO_SUBTOPIC[category];
     if (!subtopic) return [];
     return listCurrentAffairsDocuments(subtopic, year, month);
   }, [category, year, month]);
 
-  const documents = useMemo(() => {
-    const apiItems = (query.data?.items ?? [])
-      .map(toCatalogDocument)
-      .filter((doc) => matchesYearMonth(doc, year, month));
-    if (apiItems.length > 0) return apiItems;
-    if (query.isLoading) return [];
-    return fallbackDocuments;
-  }, [query.data, query.isLoading, fallbackDocuments, year, month]);
-
   return {
-    ...query,
     documents,
-    isError: query.isError && documents.length === 0,
+    isLoading: false,
+    isFetching: false,
+    isError: false,
+    error: null as Error | null,
   };
 }
 
 /**
- * Daily Practice Questions list. The prelims/mains split is filtered server-side
- * via the `mainsCategory` param; `date` (YYYY-MM-DD) is an optional exact-date
- * filter.
+ * Daily Practice Questions list. The prelims/mains split is filtered locally;
+ * `date` (YYYY-MM-DD) is an optional exact-date filter.
  */
 export function useDailyPracticeTests(
   examType: "prelims" | "mains",
@@ -71,16 +47,7 @@ export function useDailyPracticeTests(
   month?: string,
   date?: string,
 ) {
-  const query = useCurrentAffairsList({
-    category: "DAILY_PRACTICE_QUESTIONS",
-    mainsCategory: examType === "mains" ? "MAINS" : "PRELIMS",
-    year,
-    month,
-    date,
-    limit: 12,
-  });
-
-  const fallbackTests = useMemo(
+  const tests = useMemo(
     () =>
       listPracticeTests(year, month, examType, date, {
         filterByDay: Boolean(date),
@@ -90,19 +57,12 @@ export function useDailyPracticeTests(
     [year, month, examType, date],
   );
 
-  const tests = useMemo(() => {
-    const apiItems = (query.data?.items ?? [])
-      .map(toPracticeTestCard)
-      .filter((test) => matchesYearMonth(test, year, month));
-    if (apiItems.length > 0) return apiItems;
-    if (query.isLoading) return [];
-    return fallbackTests;
-  }, [query.data, query.isLoading, fallbackTests, year, month]);
-
   return {
-    ...query,
     tests,
-    isError: query.isError && tests.length === 0,
+    isLoading: false,
+    isFetching: false,
+    isError: false,
+    error: null as Error | null,
   };
 }
 

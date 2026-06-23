@@ -6,7 +6,7 @@ import {
   isCenterCity,
   isCourseCategoryKey,
 } from '@/features/center/data/centerCourseCategories';
-import { notFound } from 'next/navigation';
+import { notFound } from '@/lib/appRouter';
 
 export default async function CenterCategoryPage({
   params,

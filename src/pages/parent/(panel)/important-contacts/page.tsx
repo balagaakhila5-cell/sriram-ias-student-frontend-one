@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/common/AppImage";
 import { Mail, Phone } from "lucide-react";
 import ContactCard from "@/features/studentPortal/components/ContactCard";
 import {

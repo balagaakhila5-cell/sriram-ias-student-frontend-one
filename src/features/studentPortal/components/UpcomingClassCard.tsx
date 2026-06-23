@@ -1,5 +1,5 @@
 import type { UpcomingSession } from "../data/liveClass";
-import Image from "next/image";
+import Image from "@/components/common/AppImage";
 
 interface UpcomingClassCardProps {
   session: UpcomingSession;

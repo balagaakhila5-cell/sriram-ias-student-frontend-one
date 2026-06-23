@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/common/AppLink";
 import { useMemo, useState } from "react";
 import SearchInput from "@/features/employeePortal/components/SearchInput";
 import StudentGradeCard from "@/features/employeePortal/components/StudentGradeCard";

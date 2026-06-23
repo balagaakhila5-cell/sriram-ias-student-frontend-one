@@ -1,11 +1,6 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-
-const DynamicCalendar = dynamic(
-  () => import('@/components/common/DynamicCalendar'),
-  { ssr: false },
-);
+import DynamicCalendar from '@/components/common/DynamicCalendar';
 
 export default function BlogsCalendar() {
   return (

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/common/AppLink";
 import SectionTitle from "@/features/studentPortal/components/SectionTitle";
 import EnrolledCourseCard from "@/features/studentPortal/components/EnrolledCourseCard";
 import { enrolledCourses } from "@/features/studentPortal/data/courses";

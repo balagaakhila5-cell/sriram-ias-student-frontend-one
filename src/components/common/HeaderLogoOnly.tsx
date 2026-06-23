@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+import Link from '@/components/common/AppLink';
+import Image from '@/components/common/AppImage';
 
 type HeaderLogoOnlyProps = {
   transparent?: boolean;

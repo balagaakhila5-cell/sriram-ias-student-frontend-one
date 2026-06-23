@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/components/common/AppImage";
 import { RESOURCE_ASSETS } from "@/features/resources/catalog/assets";
 import { RESOURCE_THUMB } from "./cardStyles";
 

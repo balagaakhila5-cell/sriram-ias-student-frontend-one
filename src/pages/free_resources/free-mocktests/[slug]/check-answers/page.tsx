@@ -1,7 +1,7 @@
 'use client';
 
 import React, { use, useEffect, useMemo, useState } from 'react';
-import Link from '@/shims/next/link';
+import Link from '@/components/common/AppLink';
 import { useSearchParams } from 'react-router-dom';
 import { Check, X, House } from 'lucide-react';
 

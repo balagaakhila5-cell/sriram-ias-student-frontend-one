@@ -1,8 +1,8 @@
 'use client';
 
 import React, { use, useEffect, useMemo, useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/components/common/AppImage';
+import Link from '@/components/common/AppLink';
 import { Check, X, House } from 'lucide-react';
 import { RESOURCE_PAGE_HEADING_GRADIENT } from '@/features/resources/components/cardStyles';
 
