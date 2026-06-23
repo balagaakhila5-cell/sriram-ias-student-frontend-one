@@ -16,8 +16,30 @@ import {
   assertLoginCredentialAllowed,
   verifyStaffLogin,
 } from '../utils/registeredAuthCredentials';
+import { http } from '@/lib/http';
+import type { ApiEnvelope } from '@/lib/apiResult';
 
 const delay = (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms));
+
+interface StudentSignupApiData {
+  userId: string;
+  flow?: string;
+  nextStep?: string;
+  center?: unknown;
+}
+
+interface StudentAuthApiData {
+  token: string;
+  user: {
+    id: string;
+    name: string;
+    email?: string;
+    mobile?: string;
+    role: ServerRole;
+    isActive?: boolean;
+    center?: { _id: string; centerName?: string; centerCode?: string } | null;
+  };
+}
 
 const mockToken = () => `mock-token-${Date.now()}`;
 
@@ -30,8 +52,6 @@ const mockUser = (
   role,
   ...overrides,
 });
-
-const pendingSignups = new Map<string, StudentSignupPayload>();
 
 function assertValidOtp(otp: string) {
   if (!/^\d{6}$/.test(otp.trim())) {
@@ -71,30 +91,44 @@ export const authService = {
   studentSignup: async (
     payload: StudentSignupPayload,
   ): Promise<StudentSignupResponse> => {
-    await delay();
-    const userId = `mock-student-${Date.now()}`;
-    pendingSignups.set(userId, payload);
+    const { data } = await http.post<ApiEnvelope<StudentSignupApiData>>(
+      '/auth/student-signup',
+      {
+        name: payload.name,
+        mobile: payload.mobile,
+        email: payload.email,
+      },
+    );
+
     return {
-      userId,
-      message: 'OTP sent successfully. Please check your email.',
+      userId: data.data.userId,
+      message: data.message,
     };
   },
 
   verifyStudentSignup: async (
     payload: VerifyStudentSignupPayload,
   ): Promise<AuthResponse> => {
-    await delay();
-    assertValidOtp(payload.otp);
-    const signup = pendingSignups.get(payload.userId);
+    const { data } = await http.post<ApiEnvelope<StudentAuthApiData>>(
+      '/auth/verify-student-signup',
+      {
+        userId: payload.userId,
+        otp: payload.otp,
+      },
+    );
+
+    const apiUser = data.data.user;
 
     return {
-      user: mockUser('student', {
-        id: payload.userId,
-        name: signup?.name ?? 'Student',
-        email: signup?.email,
-        mobile: signup?.mobile,
-      }),
-      token: mockToken(),
+      token: data.data.token,
+      user: {
+        id: apiUser.id,
+        name: apiUser.name,
+        email: apiUser.email,
+        mobile: apiUser.mobile,
+        role: apiUser.role,
+        center: apiUser.center?.centerName ?? undefined,
+      },
     };
   },
 

@@ -11,13 +11,22 @@ import AuthSuccessView from "./AuthSuccessView";
 import OtpVerificationForm from "./OtpVerificationForm";
 import { useStudentSignup, useVerifyStudentSignup } from "../hooks/useAuth";
 import type { StudentSignupPayload } from "../types";
+import { toast } from "@/store/toastStore";
 
-const mobileRegex = /^\d{10}$/;
+const mobileRegex = /^[6-9]\d{9}$/;
 
 const studentSchema = z.object({
   name: z.string().min(2, "Enter your full name"),
-  email: z.string().email("Enter a valid email"),
-  mobile: z.string().regex(mobileRegex, "Enter a valid 10-digit mobile"),
+  email: z
+    .string()
+    .email("Enter a valid email")
+    .refine(
+      (value) => value.trim().toLowerCase().endsWith("@gmail.com"),
+      "Use a Gmail address (e.g. name@gmail.com)",
+    ),
+  mobile: z
+    .string()
+    .regex(mobileRegex, "Enter a valid 10-digit Indian mobile number"),
 });
 
 type StudentSignupForm = z.infer<typeof studentSchema>;
@@ -72,6 +81,10 @@ const SignupPortal: React.FC = () => {
         setOtpError(null);
         setResendMessage(null);
         setScreen("otp");
+        toast(res.message ?? "OTP sent successfully.", "success");
+      },
+      onError: (err) => {
+        toast(err.message, "error");
       },
     });
   });
@@ -107,7 +120,16 @@ const SignupPortal: React.FC = () => {
     setOtpError(null);
     verifyStudentSignup.mutate(
       { userId, otp },
-      { onSuccess: () => setScreen("success") },
+      {
+        onSuccess: () => {
+          setScreen("success");
+          toast("Registration completed successfully.", "success");
+        },
+        onError: (err) => {
+          setOtpError(err.message);
+          toast(err.message, "error");
+        },
+      },
     );
   };
 

@@ -25,6 +25,7 @@ export function useStaffLogin(variant: "staff" | "super_admin" = "staff") {
 
 export function useStudentSignup() {
   return useMutation({
+    retry: false,
     mutationFn: (payload: StudentSignupPayload) =>
       authService.studentSignup(payload),
   });
@@ -45,6 +46,7 @@ export function useLoginRequest() {
 export function useVerifyStudentSignup() {
   const setAuth = useAuthStore((s) => s.setAuth);
   return useMutation({
+    retry: false,
     mutationFn: (payload: VerifyStudentSignupPayload) =>
       authService.verifyStudentSignup(payload),
     onSuccess: (data) => setAuth(data.user, data.token),
