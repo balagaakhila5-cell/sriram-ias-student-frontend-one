@@ -1,19 +1,19 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Link from "@/components/common/AppLink";
 import { useRouter } from "@/lib/appRouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import AuthPortalShell, { UserRole } from "./AuthPortalShell";
-import AuthSuccessView from "./AuthSuccessView";
 import OtpVerificationForm from "./OtpVerificationForm";
-import { useLoginRequest, useStaffLogin, useVerifyOtp } from "../hooks/useAuth";
+import { useLoginRequest, useParentLoginRequest, useStaffLogin, useVerifyOtp } from "../hooks/useAuth";
+import { getPortalHomeHref } from "../utils/roleDisplay";
 
 const isEmail = (value: string) => /.+@.+\..+/.test(value);
 
-type StudentScreen = "form" | "otp" | "success";
+type StudentScreen = "form" | "otp";
 
 const titleByRole: Record<UserRole, string> = {
   student: "Login Portal",
@@ -48,6 +48,7 @@ const LoginPortal: React.FC = () => {
   const router = useRouter();
   const [role, setRole] = useState<UserRole>("student");
   const [parentOtpSent, setParentOtpSent] = useState(false);
+  const [parentUserId, setParentUserId] = useState<string | null>(null);
   const [studentScreen, setStudentScreen] = useState<StudentScreen>("form");
   const [studentIdentifier, setStudentIdentifier] = useState("");
   const [studentUserId, setStudentUserId] = useState<string | null>(null);
@@ -55,7 +56,7 @@ const LoginPortal: React.FC = () => {
 
   const studentLoginRequest = useLoginRequest();
   const verifyStudentOtp = useVerifyOtp();
-  const parentLoginRequest = useLoginRequest();
+  const parentLoginRequest = useParentLoginRequest();
   const verifyParentOtp = useVerifyOtp();
   const staffLogin = useStaffLogin("staff");
 
@@ -78,22 +79,13 @@ const LoginPortal: React.FC = () => {
     setStudentUserId(null);
     setOtpError(null);
     setParentOtpSent(false);
+    setParentUserId(null);
     parentForm.reset();
     studentLoginRequest.reset();
     verifyStudentOtp.reset();
     parentLoginRequest.reset();
     verifyParentOtp.reset();
   };
-
-  useEffect(() => {
-    if (studentScreen !== "success") return;
-
-    const timer = window.setTimeout(() => {
-      router.push("/");
-    }, 1600);
-
-    return () => window.clearTimeout(timer);
-  }, [studentScreen, router]);
 
   const onStudentSubmit = studentForm.handleSubmit((values) => {
     const identifier = values.identifier.trim();
@@ -125,14 +117,19 @@ const LoginPortal: React.FC = () => {
           ? { email: studentIdentifier }
           : { mobile: studentIdentifier }),
       },
-      { onSuccess: () => setStudentScreen("success") },
+      { onSuccess: () => router.push(getPortalHomeHref("student")) },
     );
   };
 
   const onParentSendOtp = parentForm.handleSubmit((values) => {
     parentLoginRequest.mutate(
       { mobile: values.mobile.trim() },
-      { onSuccess: () => setParentOtpSent(true) },
+      {
+        onSuccess: (res) => {
+          setParentUserId(res.userId ?? null);
+          setParentOtpSent(true);
+        },
+      },
     );
   });
 
@@ -144,8 +141,12 @@ const LoginPortal: React.FC = () => {
     }
 
     verifyParentOtp.mutate(
-      { mobile: values.mobile.trim(), otp },
-      { onSuccess: () => router.push("/parent") },
+      {
+        mobile: values.mobile.trim(),
+        otp,
+        ...(parentUserId ? { userId: parentUserId } : {}),
+      },
+      { onSuccess: () => router.push(getPortalHomeHref("parent")) },
     );
   });
 
@@ -172,19 +173,6 @@ const LoginPortal: React.FC = () => {
       : role === "faculty"
         ? staffLogin.isPending
         : false;
-
-  if (role === "student" && studentScreen === "success") {
-    return (
-      <AuthPortalShell
-        activeRole={role}
-        onRoleChange={handleRoleChange}
-        loginMode
-        title=""
-      >
-        <AuthSuccessView title="Log In Successful" />
-      </AuthPortalShell>
-    );
-  }
 
   const studentTitle =
     studentScreen === "otp" ? "OTP Verification" : titleByRole.student;

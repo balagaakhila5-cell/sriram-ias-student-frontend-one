@@ -1,9 +1,20 @@
+"use client";
+
 import Link from "@/components/common/AppLink";
 import SectionTitle from "@/features/studentPortal/components/SectionTitle";
 import EnrolledCourseCard from "@/features/studentPortal/components/EnrolledCourseCard";
-import { enrolledCourses } from "@/features/studentPortal/data/courses";
+import { useStudentDetails } from "@/features/studentPortal/hooks/useStudentProfile";
+import { useAuthStore } from "@/store/authStore";
 
 export default function EnrollmentsPage() {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isHydrated = useAuthStore((s) => s.isHydrated);
+  const { data, isLoading, isError, error } = useStudentDetails(
+    isHydrated && isAuthenticated,
+  );
+
+  const courses = data?.courseEnrollments ?? [];
+
   return (
     <div>
       <div className="flex items-center justify-between gap-4">
@@ -30,15 +41,40 @@ export default function EnrollmentsPage() {
         </Link>
       </div>
 
-      <div className="mt-8 flex flex-wrap gap-6">
-        {enrolledCourses.map((c) => (
-          <EnrolledCourseCard
-            key={c.id}
-            course={c}
-            href={`/student/enrollments/${c.id}`}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <p
+          className="mt-8 text-[16px] font-medium text-[#00000080]"
+          style={{ fontFamily: "Montserrat, sans-serif" }}
+        >
+          Loading your courses...
+        </p>
+      ) : isError ? (
+        <p
+          className="mt-8 text-[16px] font-medium text-[#E53935]"
+          style={{ fontFamily: "Montserrat, sans-serif" }}
+        >
+          {error instanceof Error
+            ? error.message
+            : "Could not load your courses. Please try again."}
+        </p>
+      ) : courses.length === 0 ? (
+        <p
+          className="mt-8 text-[16px] font-medium text-[#00000080]"
+          style={{ fontFamily: "Montserrat, sans-serif" }}
+        >
+          You are not enrolled in any courses yet.
+        </p>
+      ) : (
+        <div className="mt-8 flex flex-wrap gap-6">
+          {courses.map((c) => (
+            <EnrolledCourseCard
+              key={c.id}
+              course={c}
+              href={`/student/enrollments/${c.id}`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

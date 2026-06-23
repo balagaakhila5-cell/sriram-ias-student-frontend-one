@@ -8,14 +8,21 @@ import { useParams, useSearchParams } from 'react-router-dom';
 export function withPageParams<T extends Record<string, any>>(
   Component: React.ComponentType<{
     params: Promise<T>;
-    searchParams: URLSearchParams;
-  }>
+    searchParams: Promise<Record<string, string | undefined>>;
+  }>,
 ) {
   return function WrappedComponent() {
     const params = useParams() as T;
     const [searchParams] = useSearchParams();
-    
-    return <Component params={Promise.resolve(params)} searchParams={searchParams} />;
+
+    return (
+      <Component
+        params={Promise.resolve(params)}
+        searchParams={Promise.resolve(
+          Object.fromEntries(searchParams.entries()),
+        )}
+      />
+    );
   };
 }
 

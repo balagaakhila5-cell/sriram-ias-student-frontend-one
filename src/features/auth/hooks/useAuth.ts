@@ -39,7 +39,15 @@ export function useSendOtp() {
 
 export function useLoginRequest() {
   return useMutation({
+    retry: false,
     mutationFn: (payload: LoginPayload) => authService.login(payload),
+  });
+}
+
+export function useParentLoginRequest() {
+  return useMutation({
+    retry: false,
+    mutationFn: (payload: LoginPayload) => authService.parentLoginRequest(payload),
   });
 }
 
@@ -56,6 +64,7 @@ export function useVerifyStudentSignup() {
 export function useVerifyOtp() {
   const setAuth = useAuthStore((s) => s.setAuth);
   return useMutation({
+    retry: false,
     mutationFn: (payload: VerifyOtpPayload) => authService.verifyOtp(payload),
     onSuccess: (data) => setAuth(data.user, data.token),
   });

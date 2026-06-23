@@ -3,11 +3,15 @@
 import FormFieldLabel from "@/components/common/FormFieldLabel";
 import { ContactLink } from "@/components/common/ContactLinks";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "@/lib/appRouter";
 import { Camera, UserRound } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import StudentIdCardModal from "@/features/studentPortal/components/StudentIdCardModal";
+import {
+  useStudentDetails,
+  useUpdateStudentProfile,
+} from "@/features/studentPortal/hooks/useStudentProfile";
 
 const PROFILE_PHOTO_INPUT_ID = "portal-profile-photo-upload";
 
@@ -24,6 +28,7 @@ interface PortalProfilePageProps {
   showParentFields?: boolean;
   storageKeyPrefix?: string;
   fallbackDisplayName?: string;
+  profileSource?: "api" | "local";
 }
 
 function profileDetailsKey(prefix: string, userId: string) {
@@ -88,6 +93,8 @@ const NAME_PATTERN = /^[A-Za-z]+(?:\s+[A-Za-z]+)*$/;
 function validateProfileForm(
   form: ProfileForm,
   showParentFields: boolean,
+  requireAddress: boolean,
+  requireParentFields: boolean,
 ): ProfileFieldErrors {
   const errors: ProfileFieldErrors = {};
 
@@ -118,25 +125,42 @@ function validateProfileForm(
 
   if (showParentFields) {
     const parentName = form.parentName.trim();
-    if (!parentName) {
-      errors.parentName = "Parent name is required.";
-    } else if (!NAME_PATTERN.test(parentName)) {
-      errors.parentName = "Parent name can only contain letters and spaces.";
-    } else if (parentName.length > FIELD_LIMITS.parentName) {
-      errors.parentName = `Parent name must be ${FIELD_LIMITS.parentName} characters or fewer.`;
-    }
-
     const parentMobile = form.parentMobile.trim();
-    if (!parentMobile) {
-      errors.parentMobile = "Parent mobile number is required.";
-    } else if (!/^\d{10}$/.test(parentMobile)) {
-      errors.parentMobile = "Enter a valid 10-digit mobile number.";
+
+    if (requireParentFields) {
+      if (!parentName) {
+        errors.parentName = "Parent name is required.";
+      } else if (!NAME_PATTERN.test(parentName)) {
+        errors.parentName = "Parent name can only contain letters and spaces.";
+      } else if (parentName.length > FIELD_LIMITS.parentName) {
+        errors.parentName = `Parent name must be ${FIELD_LIMITS.parentName} characters or fewer.`;
+      }
+
+      if (!parentMobile) {
+        errors.parentMobile = "Parent mobile number is required.";
+      } else if (!/^\d{10}$/.test(parentMobile)) {
+        errors.parentMobile = "Enter a valid 10-digit mobile number.";
+      }
+    } else {
+      if (parentName && !NAME_PATTERN.test(parentName)) {
+        errors.parentName = "Parent name can only contain letters and spaces.";
+      } else if (parentName.length > FIELD_LIMITS.parentName) {
+        errors.parentName = `Parent name must be ${FIELD_LIMITS.parentName} characters or fewer.`;
+      }
+
+      if (parentMobile && !/^\d{10}$/.test(parentMobile)) {
+        errors.parentMobile = "Enter a valid 10-digit mobile number.";
+      }
     }
   }
 
   const address = form.address.trim();
-  if (!address) {
-    errors.address = "Address is required.";
+  if (requireAddress) {
+    if (!address) {
+      errors.address = "Address is required.";
+    } else if (address.length > FIELD_LIMITS.address) {
+      errors.address = `Address must be ${FIELD_LIMITS.address} characters or fewer.`;
+    }
   } else if (address.length > FIELD_LIMITS.address) {
     errors.address = `Address must be ${FIELD_LIMITS.address} characters or fewer.`;
   }
@@ -148,17 +172,28 @@ export default function PortalProfilePage({
   showParentFields = true,
   storageKeyPrefix = "student-profile",
   fallbackDisplayName = "Student",
+  profileSource = "local",
 }: PortalProfilePageProps) {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const isHydrated = useAuthStore((s) => s.isHydrated);
+  const usesApiProfile = profileSource === "api";
+
+  const studentDetailsQuery = useStudentDetails(
+    usesApiProfile && isHydrated && isAuthenticated,
+  );
+  const updateProfileMutation = useUpdateStudentProfile();
 
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
   const [form, setForm] = useState<ProfileForm>(emptyForm);
   const [fieldErrors, setFieldErrors] = useState<ProfileFieldErrors>({});
   const [isReady, setIsReady] = useState(false);
   const [isIdModalOpen, setIsIdModalOpen] = useState(false);
+  const [studentId, setStudentId] = useState<string | null>(null);
+  const initializedForUserRef = useRef<string | null>(null);
+
+  const formInitKey = user ? `${user.id}:${profileSource}:${storageKeyPrefix}` : null;
 
   const displayName = useMemo(
     () =>
@@ -184,7 +219,7 @@ export default function PortalProfilePage({
       }));
     };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
 
@@ -201,7 +236,12 @@ export default function PortalProfilePage({
       address: clampFieldValue("address", form.address).trim(),
     };
 
-    const errors = validateProfileForm(normalizedForm, showParentFields);
+    const errors = validateProfileForm(
+      normalizedForm,
+      showParentFields,
+      !usesApiProfile,
+      !usesApiProfile,
+    );
     if (Object.keys(errors).length > 0) {
       setForm(normalizedForm);
       setFieldErrors(errors);
@@ -212,6 +252,38 @@ export default function PortalProfilePage({
 
     setForm(normalizedForm);
     setFieldErrors({});
+
+    if (usesApiProfile) {
+      try {
+        await updateProfileMutation.mutateAsync({
+          name: normalizedForm.name,
+          email: normalizedForm.email,
+          mobile: normalizedForm.mobile,
+          ...(showParentFields
+            ? {
+                parentName: normalizedForm.parentName,
+                parentMobile: normalizedForm.parentMobile,
+              }
+            : {}),
+        });
+
+        try {
+          localStorage.setItem(
+            profileDetailsKey(storageKeyPrefix, user.id),
+            JSON.stringify({ address: normalizedForm.address }),
+          );
+        } catch {
+          /* optional local address */
+        }
+
+        window.alert("Profile saved successfully.");
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : "Could not save profile.";
+        window.alert(message);
+      }
+      return;
+    }
 
     try {
       localStorage.setItem(
@@ -265,6 +337,71 @@ export default function PortalProfilePage({
 
     if (!isAuthenticated || !user) {
       router.replace("/login");
+    }
+  }, [isAuthenticated, isHydrated, router, user]);
+
+  useEffect(() => {
+    if (!formInitKey) {
+      initializedForUserRef.current = null;
+      setIsReady(false);
+      return;
+    }
+
+    if (initializedForUserRef.current !== formInitKey) {
+      initializedForUserRef.current = null;
+      setIsReady(false);
+    }
+  }, [formInitKey]);
+
+  useEffect(() => {
+    if (!isHydrated || !isAuthenticated || !user || !formInitKey) return;
+    if (initializedForUserRef.current === formInitKey) return;
+
+    if (usesApiProfile) {
+      if (studentDetailsQuery.isLoading) return;
+
+      if (studentDetailsQuery.isError) {
+        initializedForUserRef.current = formInitKey;
+        setIsReady(true);
+        return;
+      }
+
+      if (!studentDetailsQuery.data) return;
+
+      const { profile } = studentDetailsQuery.data;
+      let savedAddress = "";
+
+      try {
+        const raw = localStorage.getItem(profileDetailsKey(storageKeyPrefix, user.id));
+        if (raw) {
+          const saved = JSON.parse(raw) as Partial<ProfileForm>;
+          savedAddress = saved.address ?? "";
+        }
+      } catch {
+        /* ignore invalid saved data */
+      }
+
+      setStudentId(profile.studentId);
+      setForm({
+        name: profile.studentName ?? user.name ?? "",
+        mobile: profile.mobileNumber ?? user.mobile ?? "",
+        email: profile.email ?? user.email ?? "",
+        parentName: showParentFields ? profile.parentName ?? "" : "",
+        parentMobile: showParentFields ? profile.parentMobile ?? "" : "",
+        address: savedAddress,
+      });
+
+      try {
+        const savedPhoto = localStorage.getItem(
+          profilePhotoKey(storageKeyPrefix, user.id),
+        );
+        if (savedPhoto) setProfilePhoto(savedPhoto);
+      } catch {
+        /* ignore */
+      }
+
+      initializedForUserRef.current = formInitKey;
+      setIsReady(true);
       return;
     }
 
@@ -277,16 +414,12 @@ export default function PortalProfilePage({
     }
 
     setForm({
-      name: clampFieldValue("name", savedDetails.name ?? user.name ?? ""),
-      mobile: clampFieldValue("mobile", savedDetails.mobile ?? user.mobile ?? ""),
-      email: clampFieldValue("email", savedDetails.email ?? user.email ?? ""),
-      parentName: showParentFields
-        ? clampFieldValue("parentName", savedDetails.parentName ?? "")
-        : "",
-      parentMobile: showParentFields
-        ? clampFieldValue("parentMobile", savedDetails.parentMobile ?? "")
-        : "",
-      address: clampFieldValue("address", savedDetails.address ?? ""),
+      name: savedDetails.name ?? user.name ?? "",
+      mobile: savedDetails.mobile ?? user.mobile ?? "",
+      email: savedDetails.email ?? user.email ?? "",
+      parentName: showParentFields ? savedDetails.parentName ?? "" : "",
+      parentMobile: showParentFields ? savedDetails.parentMobile ?? "" : "",
+      address: savedDetails.address ?? "",
     });
 
     try {
@@ -298,14 +431,19 @@ export default function PortalProfilePage({
       /* ignore */
     }
 
+    initializedForUserRef.current = formInitKey;
     setIsReady(true);
   }, [
+    formInitKey,
     isAuthenticated,
     isHydrated,
-    router,
     showParentFields,
     storageKeyPrefix,
+    studentDetailsQuery.data,
+    studentDetailsQuery.isError,
+    studentDetailsQuery.isLoading,
     user,
+    usesApiProfile,
   ]);
 
   useEffect(() => {
@@ -321,7 +459,24 @@ export default function PortalProfilePage({
           className="text-center text-[16px] font-medium text-[#00000080]"
           style={{ fontFamily: "Montserrat, sans-serif" }}
         >
-          Loading your profile...
+          {usesApiProfile && studentDetailsQuery.isLoading
+            ? "Loading your profile..."
+            : "Loading your profile..."}
+        </p>
+      </div>
+    );
+  }
+
+  if (usesApiProfile && studentDetailsQuery.isError) {
+    return (
+      <div className="min-w-0 rounded-[24px] bg-[#EBF0FF] p-8 lg:p-10">
+        <p
+          className="text-center text-[16px] font-medium text-[#E53935]"
+          style={{ fontFamily: "Montserrat, sans-serif" }}
+        >
+          {studentDetailsQuery.error instanceof Error
+            ? studentDetailsQuery.error.message
+            : "Could not load your profile. Please try again."}
         </p>
       </div>
     );
@@ -347,7 +502,7 @@ export default function PortalProfilePage({
         isOpen={isIdModalOpen}
         onClose={() => setIsIdModalOpen(false)}
         name={displayName}
-        id={user?.id ?? "—"}
+        id={studentId ?? user?.id ?? "—"}
         mobile={form.mobile.trim() || user?.mobile}
         email={form.email.trim() || user?.email}
         role={user?.role ?? "student"}
@@ -451,7 +606,7 @@ export default function PortalProfilePage({
           <>
             <FormField
               label="Parent Name"
-              required
+              required={!usesApiProfile}
               maxLength={FIELD_LIMITS.parentName}
               placeholder="Enter the name"
               value={form.parentName}
@@ -461,7 +616,7 @@ export default function PortalProfilePage({
 
             <FormField
               label="Parents Mobile Number"
-              required
+              required={!usesApiProfile}
               type="tel"
               inputMode="numeric"
               pattern="[0-9]{10}"
@@ -476,7 +631,7 @@ export default function PortalProfilePage({
 
         <FormField
           label="Address"
-          required
+          required={!usesApiProfile}
           multiline
           maxLength={FIELD_LIMITS.address}
           value={form.address}
@@ -488,13 +643,14 @@ export default function PortalProfilePage({
         <div className="mt-2 flex justify-center md:col-span-2">
           <button
             type="submit"
-            className="rounded-full px-12 py-3 text-[17px] font-semibold text-white shadow-[0_8px_20px_rgba(0,36,54,0.25)]"
+            disabled={updateProfileMutation.isPending}
+            className="rounded-full px-12 py-3 text-[17px] font-semibold text-white shadow-[0_8px_20px_rgba(0,36,54,0.25)] disabled:opacity-60"
             style={{
               background: "linear-gradient(90deg, #00679C 0%, #002436 100%)",
               fontFamily: "Montserrat, sans-serif",
             }}
           >
-            Save
+            {updateProfileMutation.isPending ? "Saving..." : "Save"}
           </button>
         </div>
       </form>

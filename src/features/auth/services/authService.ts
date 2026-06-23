@@ -41,6 +41,23 @@ interface StudentAuthApiData {
   };
 }
 
+interface OtpLoginApiData {
+  userId: string;
+  flow?: string;
+  nextStep?: string;
+}
+
+function mapAuthUser(apiUser: StudentAuthApiData['user']): AuthUser {
+  return {
+    id: apiUser.id,
+    name: apiUser.name,
+    email: apiUser.email,
+    mobile: apiUser.mobile,
+    role: apiUser.role,
+    center: apiUser.center?.centerName ?? undefined,
+  };
+}
+
 const mockToken = () => `mock-token-${Date.now()}`;
 
 const mockUser = (
@@ -53,11 +70,6 @@ const mockUser = (
   ...overrides,
 });
 
-function assertValidOtp(otp: string) {
-  if (!/^\d{6}$/.test(otp.trim())) {
-    throw new Error('Invalid OTP. Please enter the 6-digit code.');
-  }
-}
 
 export const authService = {
   loginSuperAdmin: async (
@@ -121,45 +133,76 @@ export const authService = {
 
     return {
       token: data.data.token,
-      user: {
-        id: apiUser.id,
-        name: apiUser.name,
-        email: apiUser.email,
-        mobile: apiUser.mobile,
-        role: apiUser.role,
-        center: apiUser.center?.centerName ?? undefined,
-      },
+      user: mapAuthUser(apiUser),
     };
   },
 
+  /** Student login — request OTP (POST /api/auth/send-otp) */
   login: async (payload: LoginPayload): Promise<LoginRequestResponse> => {
-    await delay();
-    const identifier = payload.mobile ?? payload.email ?? 'user';
+    const body: Record<string, string> = {};
+    if (payload.email) body.email = payload.email.trim().toLowerCase();
+    if (payload.mobile) body.mobile = payload.mobile.trim();
+
+    const { data } = await http.post<ApiEnvelope<OtpLoginApiData>>(
+      '/auth/send-otp',
+      body,
+    );
+
     return {
-      userId: `mock-login-${identifier}`,
-      message: 'OTP sent successfully.',
+      userId: data.data.userId,
+      message: data.message,
+    };
+  },
+
+  /** Parent login — request OTP (POST /api/auth/parent-login-request) */
+  parentLoginRequest: async (
+    payload: LoginPayload,
+  ): Promise<LoginRequestResponse> => {
+    const body: Record<string, string> = {};
+    if (payload.email) body.email = payload.email.trim().toLowerCase();
+    if (payload.mobile) body.mobile = payload.mobile.trim();
+
+    const { data } = await http.post<ApiEnvelope<OtpLoginApiData>>(
+      '/auth/parent-login-request',
+      body,
+    );
+
+    return {
+      userId: data.data.userId,
+      message: data.message,
     };
   },
 
   verifyOtp: async (payload: VerifyOtpPayload): Promise<AuthResponse> => {
-    await delay();
-    assertValidOtp(payload.otp);
+    const body: Record<string, string> = { otp: payload.otp.trim() };
+    if (payload.userId) body.userId = payload.userId;
+    if (payload.email) body.email = payload.email.trim().toLowerCase();
+    if (payload.mobile) body.mobile = payload.mobile.trim();
 
-    const fallbackRole: ServerRole = payload.email ? 'employee' : 'student';
+    const { data } = await http.post<ApiEnvelope<StudentAuthApiData>>(
+      '/auth/verify-otp',
+      body,
+    );
 
     return {
-      user: mockUser(fallbackRole, {
-        id: payload.userId ?? `mock-${Date.now()}`,
-        email: payload.email,
-        mobile: payload.mobile,
-        name: payload.email?.split('@')[0] ?? payload.mobile ?? 'User',
-      }),
-      token: mockToken(),
+      token: data.data.token,
+      user: mapAuthUser(data.data.user),
     };
   },
 
-  sendOtp: async (_payload: SendOtpPayload): Promise<OtpRequestResponse> => {
-    await delay();
-    return { message: 'OTP sent successfully.' };
+  sendOtp: async (payload: SendOtpPayload): Promise<OtpRequestResponse> => {
+    const body: Record<string, string> = {};
+    if (payload.email) body.email = payload.email.trim().toLowerCase();
+    if (payload.mobile) body.mobile = payload.mobile.trim();
+
+    const { data } = await http.post<ApiEnvelope<OtpLoginApiData>>(
+      '/auth/send-otp',
+      body,
+    );
+
+    return {
+      message: data.message,
+      otpRef: data.data.userId,
+    };
   },
 };

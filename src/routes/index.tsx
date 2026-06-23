@@ -45,7 +45,43 @@ import {
   FreeResourcesStudyMaterialsPage,
   ResourceViewPage,
   ResourceSamplePage,
+  StudentLiveClassPage,
+  StudentProfilePage,
+  StudentEnrollmentsPage,
+  StudentAttendancePage,
+  StudentAnnouncementsPage,
+  StudentBookmarksPage,
+  StudentFreeResourcesPage,
+  StudentTestSeriesPrelimsListPage,
+  StudentAnswerWritingMainsListPage,
+  StudentImportantContactsPage,
+  StudentSessionPage,
+  StudentCourseDetailPage,
+  StudentRecordingDetailPage,
+  StudentTestSeriesDetailPage,
+  StudentMainsAttemptPage,
+  EmployeeMyClassesPage,
+  EmployeeProfilePage,
+  EmployeeStudentListPage,
+  EmployeeStudentFeedbackPage,
+  EmployeeAttendancePage,
+  EmployeeContentUploadPage,
+  EmployeeCopyCheckingPage,
+  EmployeeHolidaysPage,
+  EmployeeImportantContactsPage,
+  EmployeeCopyCheckingStudentPage,
+  EmployeeStudentAttendancePage,
+  ParentCourseDetailsPage,
+  ParentPerformancePage,
+  ParentAttendancePage,
+  ParentImportantContactsPage,
+  ParentTestResultPage,
 } from "./lazyPages";
+import {
+  EmployeePortalLayout,
+  ParentPortalLayout,
+  StudentPortalLayout,
+} from "./portalRouteLayouts";
 
 export default function AppRoutes() {
   return (
@@ -168,6 +204,95 @@ export default function AppRoutes() {
 
         <Route path="/resources/view/:id" element={<ResourceViewPage />} />
         <Route path="/resources/sample/:id" element={<ResourceSamplePage />} />
+
+        {/* Student portal — panel layout */}
+        <Route path="/student" element={<StudentPortalLayout />}>
+          <Route index element={<Navigate to="live-class" replace />} />
+          <Route path="live-class" element={<StudentLiveClassPage />} />
+          <Route path="profile" element={<StudentProfilePage />} />
+          <Route path="enrollments" element={<StudentEnrollmentsPage />} />
+          <Route path="attendance" element={<StudentAttendancePage />} />
+          <Route path="announcements" element={<StudentAnnouncementsPage />} />
+          <Route path="bookmarks" element={<StudentBookmarksPage />} />
+          <Route path="free-resources" element={<StudentFreeResourcesPage />} />
+          <Route
+            path="test-series-prelims"
+            element={<StudentTestSeriesPrelimsListPage />}
+          />
+          <Route
+            path="answer-writing-mains"
+            element={<StudentAnswerWritingMainsListPage />}
+          />
+          <Route
+            path="important-contacts"
+            element={<StudentImportantContactsPage />}
+          />
+        </Route>
+
+        {/* Student portal — full-width pages (outside panel sidebar) */}
+        <Route path="/student/session/:sessionId" element={<StudentSessionPage />} />
+        <Route
+          path="/student/enrollments/:courseId/recordings/:recordingId"
+          element={<StudentRecordingDetailPage />}
+        />
+        <Route
+          path="/student/enrollments/:courseId"
+          element={<StudentCourseDetailPage />}
+        />
+        <Route
+          path="/student/test-series-prelims/:seriesId"
+          element={<StudentTestSeriesDetailPage />}
+        />
+        <Route
+          path="/student/answer-writing-mains/:testId"
+          element={<StudentMainsAttemptPage />}
+        />
+
+        {/* Employee portal — panel layout */}
+        <Route path="/employee" element={<EmployeePortalLayout />}>
+          <Route index element={<Navigate to="my-classes" replace />} />
+          <Route path="my-classes" element={<EmployeeMyClassesPage />} />
+          <Route path="profile" element={<EmployeeProfilePage />} />
+          <Route path="student-list" element={<EmployeeStudentListPage />} />
+          <Route
+            path="student-feedback"
+            element={<EmployeeStudentFeedbackPage />}
+          />
+          <Route path="attendance" element={<EmployeeAttendancePage />} />
+          <Route
+            path="attendance/:studentId"
+            element={<EmployeeStudentAttendancePage />}
+          />
+          <Route path="content-upload" element={<EmployeeContentUploadPage />} />
+          <Route path="copy-checking" element={<EmployeeCopyCheckingPage />} />
+          <Route
+            path="copy-checking/:studentId"
+            element={<EmployeeCopyCheckingStudentPage />}
+          />
+          <Route path="holidays" element={<EmployeeHolidaysPage />} />
+          <Route
+            path="important-contacts"
+            element={<EmployeeImportantContactsPage />}
+          />
+        </Route>
+
+        {/* Parent portal — panel layout */}
+        <Route path="/parent" element={<ParentPortalLayout />}>
+          <Route index element={<Navigate to="course-details" replace />} />
+          <Route path="course-details" element={<ParentCourseDetailsPage />} />
+          <Route path="performance" element={<ParentPerformancePage />} />
+          <Route path="attendance" element={<ParentAttendancePage />} />
+          <Route
+            path="important-contacts"
+            element={<ParentImportantContactsPage />}
+          />
+        </Route>
+
+        {/* Parent portal — detail pages outside panel */}
+        <Route
+          path="/parent/performance/:testId"
+          element={<ParentTestResultPage />}
+        />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

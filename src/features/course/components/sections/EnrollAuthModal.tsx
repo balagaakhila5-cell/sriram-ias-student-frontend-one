@@ -6,6 +6,14 @@ import Footer from '@/components/common/Footer';
 import PaymentReceiptSuccess, {
   type PaymentReceiptRow,
 } from '@/components/common/PaymentReceiptSuccess';
+import { useAuthStore } from '@/store/authStore';
+import {
+  useLoginRequest,
+  useStudentSignup,
+  useVerifyOtp,
+  useVerifyStudentSignup,
+} from '@/features/auth/hooks/useAuth';
+import type { StudentSignupPayload } from '@/features/auth/types';
 
 type Screen =
   | 'login'
@@ -30,6 +38,11 @@ const GRADUATE_ICON = '/assets/course/graduate-icon.png';
 const ORIGINAL_PRICE = 6999;
 const COURSE_PRICE = 5999;
 const GST_PERCENT = 18;
+const OTP_LENGTH = 6;
+
+function createEmptyOtp() {
+  return Array.from({ length: OTP_LENGTH }, () => '');
+}
 
 function formatPaymentDate() {
   const now = new Date();
@@ -39,7 +52,20 @@ function formatPaymentDate() {
   return `${day}-${month}-${year}`;
 }
 
+type OtpPurpose = 'login' | 'signup';
+
 const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
+  const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isHydrated = useAuthStore((s) => s.isHydrated);
+  const isLoggedInStudent =
+    isHydrated && isAuthenticated && user?.role === 'student';
+
+  const loginRequest = useLoginRequest();
+  const verifyOtp = useVerifyOtp();
+  const studentSignup = useStudentSignup();
+  const verifyStudentSignup = useVerifyStudentSignup();
+
   const [screen, setScreen] = useState<Screen>('login');
 
   const [loginValue, setLoginValue] = useState('');
@@ -47,8 +73,14 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
   const [signupEmail, setSignupEmail] = useState('');
   const [signupMobile, setSignupMobile] = useState('');
   const [studentName, setStudentName] = useState('');
+  const [loginUserId, setLoginUserId] = useState<string | null>(null);
+  const [signupUserId, setSignupUserId] = useState<string | null>(null);
+  const [signupPayload, setSignupPayload] = useState<StudentSignupPayload | null>(
+    null,
+  );
+  const [otpPurpose, setOtpPurpose] = useState<OtpPurpose>('login');
 
-  const [otpValues, setOtpValues] = useState(['', '', '', '']);
+  const [otpValues, setOtpValues] = useState(createEmptyOtp);
 
   const [selectedPayment, setSelectedPayment] = useState('qr');
 
@@ -102,29 +134,45 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
   );
 
   useEffect(() => {
-    if (open) {
-      setScreen('login');
-      setLoginValue('');
-      setSignupName('');
-      setSignupEmail('');
-      setSignupMobile('');
-      setStudentName('');
-      setOtpValues(['', '', '', '']);
-      setSelectedPayment('qr');
-      setUpiId('');
-      setIsUpiVerified(false);
-      setCardNumber('');
-      setCardName('');
-      setCardExpiry('');
-      setCardCvv('');
-      setIsCardVerified(false);
-      setCouponCode('');
-      setDiscountAmount(0);
-      setIsCouponApplied(false);
-      setSelectedDeliveryMode('offline');
-      setPopup(null);
+    if (!open) return;
+    if (!isHydrated) return;
+
+    setOtpValues(createEmptyOtp());
+    setSelectedPayment('qr');
+    setUpiId('');
+    setIsUpiVerified(false);
+    setCardNumber('');
+    setCardName('');
+    setCardExpiry('');
+    setCardCvv('');
+    setIsCardVerified(false);
+    setCouponCode('');
+    setDiscountAmount(0);
+    setIsCouponApplied(false);
+    setSelectedDeliveryMode('offline');
+    setPopup(null);
+
+    if (isLoggedInStudent && user) {
+      setStudentName(user.name ?? 'Student');
+      setScreen('deliveryMode');
+      return;
     }
-  }, [open]);
+
+    setScreen('login');
+    setLoginValue('');
+    setSignupName('');
+    setSignupEmail('');
+    setSignupMobile('');
+    setStudentName('');
+    setLoginUserId(null);
+    setSignupUserId(null);
+    setSignupPayload(null);
+    setOtpPurpose('login');
+    loginRequest.reset();
+    verifyOtp.reset();
+    studentSignup.reset();
+    verifyStudentSignup.reset();
+  }, [open, isHydrated, isLoggedInStudent, user]);
 
   if (!open) return null;
 
@@ -143,6 +191,26 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
 
   const isValidMobile = (value: string) => /^\d{10}$/.test(value);
 
+  const isValidIndianMobile = (value: string) => /^[6-9]\d{9}$/.test(value);
+
+  const isValidGmail = (value: string) =>
+    /^[^\s@]+@gmail\.com$/i.test(value.trim());
+
+  const buildLoginIdentifierPayload = () =>
+    isValidEmail(loginValue)
+      ? { email: loginValue.trim().toLowerCase() }
+      : { mobile: loginValue.trim() };
+
+  const proceedAfterAuth = (name: string) => {
+    setStudentName(name);
+    showPopup('success', 'Authenticated successfully');
+    setScreen('loginSuccess');
+
+    setTimeout(() => {
+      setScreen('deliveryMode');
+    }, 1200);
+  };
+
   const handleLoginSendOtp = () => {
     if (!loginValue.trim()) {
       showPopup('error', 'Please enter mobile number or email id');
@@ -154,16 +222,22 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
       return;
     }
 
-    if (!studentName) {
-      setStudentName('Student');
-    }
+    loginRequest.mutate(buildLoginIdentifierPayload(), {
+      onSuccess: (res) => {
+        setLoginUserId(res.userId ?? null);
+        setOtpPurpose('login');
+        setOtpValues(createEmptyOtp());
+        setScreen('otp');
+        showPopup('success', res.message ?? 'OTP sent successfully');
 
-    setOtpValues(['', '', '', '']);
-    setScreen('otp');
-
-    setTimeout(() => {
-      otpRefs.current[0]?.focus();
-    }, 100);
+        setTimeout(() => {
+          otpRefs.current[0]?.focus();
+        }, 100);
+      },
+      onError: (err) => {
+        showPopup('error', err.message);
+      },
+    });
   };
 
   const handleSignup = () => {
@@ -172,26 +246,40 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
       return;
     }
 
-    if (!isValidEmail(signupEmail)) {
-      showPopup('error', 'Please enter valid email id');
+    if (!isValidGmail(signupEmail)) {
+      showPopup('error', 'Please enter a valid Gmail address (e.g. name@gmail.com)');
       return;
     }
 
-    if (!isValidMobile(signupMobile)) {
-      showPopup('error', 'Please enter valid 10 digit mobile number');
+    if (!isValidIndianMobile(signupMobile)) {
+      showPopup('error', 'Please enter a valid 10-digit Indian mobile number');
       return;
     }
 
-    setStudentName(signupName.trim());
-    setScreen('signupSuccess');
+    const payload: StudentSignupPayload = {
+      name: signupName.trim(),
+      email: signupEmail.trim().toLowerCase(),
+      mobile: signupMobile.trim(),
+    };
 
-    setTimeout(() => {
-      setScreen('login');
-      setLoginValue(signupEmail);
-      setSignupName('');
-      setSignupEmail('');
-      setSignupMobile('');
-    }, 1600);
+    studentSignup.mutate(payload, {
+      onSuccess: (res) => {
+        setSignupPayload(payload);
+        setSignupUserId(res.userId);
+        setOtpPurpose('signup');
+        setStudentName(payload.name);
+        setOtpValues(createEmptyOtp());
+        setScreen('otp');
+        showPopup('success', res.message ?? 'OTP sent successfully');
+
+        setTimeout(() => {
+          otpRefs.current[0]?.focus();
+        }, 100);
+      },
+      onError: (err) => {
+        showPopup('error', err.message);
+      },
+    });
   };
 
   const handleOtpChange = (index: number, value: string) => {
@@ -201,7 +289,7 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
     updatedOtp[index] = onlyNumber;
     setOtpValues(updatedOtp);
 
-    if (onlyNumber && index < 3) {
+    if (onlyNumber && index < OTP_LENGTH - 1) {
       otpRefs.current[index + 1]?.focus();
     }
   };
@@ -218,18 +306,50 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
   const handleVerifyOtp = () => {
     const enteredOtp = otpValues.join('');
 
-    if (enteredOtp.length !== 4) {
-      showPopup('error', 'Please enter 4 digit OTP');
+    if (enteredOtp.length !== OTP_LENGTH) {
+      showPopup('error', `Please enter ${OTP_LENGTH} digit OTP`);
       return;
     }
 
-    showPopup('success', 'Login successful');
-    setScreen('loginSuccess');
+    if (otpPurpose === 'signup') {
+      if (!signupUserId) {
+        showPopup('error', 'Something went wrong. Please sign up again.');
+        return;
+      }
 
-    setTimeout(() => {
-      setScreen('deliveryMode');
-    }, 1200);
+      verifyStudentSignup.mutate(
+        { userId: signupUserId, otp: enteredOtp },
+        {
+          onSuccess: (data) => {
+            proceedAfterAuth(data.user.name ?? studentName);
+          },
+          onError: (err) => {
+            showPopup('error', err.message);
+          },
+        },
+      );
+      return;
+    }
+
+    verifyOtp.mutate(
+      {
+        otp: enteredOtp,
+        ...(loginUserId ? { userId: loginUserId } : {}),
+        ...buildLoginIdentifierPayload(),
+      },
+      {
+        onSuccess: (data) => {
+          proceedAfterAuth(data.user.name ?? 'Student');
+        },
+        onError: (err) => {
+          showPopup('error', err.message);
+        },
+      },
+    );
   };
+
+  const isVerifyOtpPending =
+    verifyOtp.isPending || verifyStudentSignup.isPending;
 
   const applyCoupon = (code: string) => {
     const normalizedCode = code.trim().toUpperCase();
@@ -422,13 +542,14 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
                   <button
                     type="button"
                     onClick={handleLoginSendOtp}
-                    className="h-[42px] w-[210px] cursor-pointer rounded-full text-[15px] font-semibold text-white shadow-[0_8px_18px_rgba(0,91,136,0.22)] transition hover:scale-[1.02]"
+                    disabled={loginRequest.isPending}
+                    className="h-[42px] w-[210px] cursor-pointer rounded-full text-[15px] font-semibold text-white shadow-[0_8px_18px_rgba(0,91,136,0.22)] transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
                     style={{
                       background:
                         'linear-gradient(90deg, #42a9db 0%, #002f45 100%)',
                     }}
                   >
-                    Send OTP
+                    {loginRequest.isPending ? 'Please wait...' : 'Send OTP'}
                   </button>
 
                   <p className="mt-8 text-center text-[13px] font-medium text-black/55">
@@ -479,13 +600,14 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
                   <button
                     type="button"
                     onClick={handleSignup}
-                    className="mt-8 h-[42px] w-[210px] cursor-pointer rounded-full text-[15px] font-semibold text-white shadow-[0_8px_18px_rgba(0,91,136,0.22)] transition hover:scale-[1.02]"
+                    disabled={studentSignup.isPending}
+                    className="mt-8 h-[42px] w-[210px] cursor-pointer rounded-full text-[15px] font-semibold text-white shadow-[0_8px_18px_rgba(0,91,136,0.22)] transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
                     style={{
                       background:
                         'linear-gradient(90deg, #42a9db 0%, #002f45 100%)',
                     }}
                   >
-                    Sign Up
+                    {studentSignup.isPending ? 'Please wait...' : 'Sign Up'}
                   </button>
 
                   <p className="mt-7 text-center text-[13px] font-medium text-black/55">
@@ -511,10 +633,10 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
                   </h2>
 
                   <p className="mb-4 text-center text-[13px] font-medium text-black/45">
-                    Enter Your 4 Digit OTP
+                    Enter Your {OTP_LENGTH} Digit OTP
                   </p>
 
-                  <div className="mb-9 flex items-center justify-center gap-4">
+                  <div className="mb-9 flex flex-wrap items-center justify-center gap-3">
                     {otpValues.map((value, index) => (
                       <input
                         key={index}
@@ -536,20 +658,45 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
                   <button
                     type="button"
                     onClick={handleVerifyOtp}
-                    className="h-[42px] w-[210px] cursor-pointer rounded-full text-[15px] font-semibold text-white shadow-[0_8px_18px_rgba(0,91,136,0.22)] transition hover:scale-[1.02]"
+                    disabled={isVerifyOtpPending}
+                    className="h-[42px] w-[210px] cursor-pointer rounded-full text-[15px] font-semibold text-white shadow-[0_8px_18px_rgba(0,91,136,0.22)] transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
                     style={{
                       background:
                         'linear-gradient(90deg, #42a9db 0%, #002f45 100%)',
                     }}
                   >
-                    Verify OTP
+                    {isVerifyOtpPending ? 'Please wait...' : 'Verify OTP'}
                   </button>
+
+                  {otpPurpose === 'signup' && signupPayload ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        studentSignup.mutate(signupPayload, {
+                          onSuccess: (res) => {
+                            setSignupUserId(res.userId);
+                            showPopup(
+                              'success',
+                              `A new OTP was sent to ${signupPayload.email}`,
+                            );
+                          },
+                          onError: (err) => {
+                            showPopup('error', err.message);
+                          },
+                        });
+                      }}
+                      disabled={studentSignup.isPending || isVerifyOtpPending}
+                      className="mt-4 cursor-pointer text-[13px] font-semibold text-[#0074ab] hover:underline disabled:opacity-60"
+                    >
+                      {studentSignup.isPending ? 'Sending OTP...' : 'Resend OTP'}
+                    </button>
+                  ) : null}
 
                   <button
                     type="button"
                     onClick={() => {
-                      setScreen('login');
-                      setOtpValues(['', '', '', '']);
+                      setScreen(otpPurpose === 'signup' ? 'signup' : 'login');
+                      setOtpValues(createEmptyOtp());
                       setPopup(null);
                     }}
                     className="mt-6 cursor-pointer text-[13px] font-bold text-[#0074ab] hover:underline"
