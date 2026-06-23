@@ -64,6 +64,9 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
   const [couponCode, setCouponCode] = useState('');
   const [discountAmount, setDiscountAmount] = useState(0);
   const [isCouponApplied, setIsCouponApplied] = useState(false);
+  const [selectedDeliveryMode, setSelectedDeliveryMode] = useState<
+    'offline' | 'online'
+  >('offline');
 
   const [popup, setPopup] = useState<{
     type: 'success' | 'error';
@@ -118,6 +121,7 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
       setCouponCode('');
       setDiscountAmount(0);
       setIsCouponApplied(false);
+      setSelectedDeliveryMode('offline');
       setPopup(null);
     }
   }, [open]);
@@ -623,6 +627,8 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
                   price="₹74,999"
                   oldPrice="₹99,999"
                   saving="25% SAVINGS"
+                  selected={selectedDeliveryMode === 'offline'}
+                  onSelect={() => setSelectedDeliveryMode('offline')}
                   highlights={[
                     'Complete Set of 19 Books',
                     'Senior Faculty Expert Guidance',
@@ -641,6 +647,8 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
                   price="₹54,999"
                   oldPrice="₹79,999"
                   saving="31% SAVINGS"
+                  selected={selectedDeliveryMode === 'online'}
+                  onSelect={() => setSelectedDeliveryMode('online')}
                   highlights={[
                     'Digital E-Book Library Access',
                     'Senior Faculty Expert Guidance',
@@ -993,6 +1001,8 @@ interface DeliveryModeCardProps {
   oldPrice: string;
   saving: string;
   popular?: boolean;
+  selected: boolean;
+  onSelect: () => void;
   highlights: string[];
   onEnroll: () => void;
 }
@@ -1005,13 +1015,24 @@ const DeliveryModeCard: React.FC<DeliveryModeCardProps> = ({
   oldPrice,
   saving,
   popular = false,
+  selected,
+  onSelect,
   highlights,
   onEnroll,
 }) => {
   return (
     <div
-      className={`relative rounded-[6px] border px-7 py-7 ${
-        popular
+      role="button"
+      tabIndex={0}
+      onClick={onSelect}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onSelect();
+        }
+      }}
+      className={`relative cursor-pointer rounded-[6px] border px-7 py-7 transition-colors duration-200 ${
+        selected
           ? 'border-[#096bbb] bg-[#eef5ff] shadow-[0_6px_18px_rgba(9,107,187,0.18)]'
           : 'border-[#c2c9d4] bg-white'
       }`}
@@ -1107,7 +1128,10 @@ const DeliveryModeCard: React.FC<DeliveryModeCardProps> = ({
 
       <button
         type="button"
-        onClick={onEnroll}
+        onClick={(event) => {
+          event.stopPropagation();
+          onEnroll();
+        }}
         className="mx-auto mt-7 flex h-[38px] w-full max-w-[220px] cursor-pointer items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#42a9db] to-[#003247] text-[13px] font-extrabold text-white transition hover:scale-[1.02]"
       >
         <span className="text-[15px]">▣</span>

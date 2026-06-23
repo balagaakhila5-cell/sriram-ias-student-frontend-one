@@ -13,6 +13,11 @@ import {
   getRoleDisplayLabel,
 } from "@/features/auth/utils/roleDisplay";
 
+function preloadAuthRoutes() {
+  void import("@/pages/login/page");
+  void import("@/pages/signup/page");
+}
+
 function ProfileIcon({
   theme = "dark",
 }: {
@@ -77,6 +82,10 @@ const HeaderUserMenu: React.FC<{ theme?: 'light' | 'dark' }> = ({
   }, []);
 
   useEffect(() => {
+    preloadAuthRoutes();
+  }, []);
+
+  useEffect(() => {
     if (!open) return;
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -89,11 +98,27 @@ const HeaderUserMenu: React.FC<{ theme?: 'light' | 'dark' }> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [open]);
 
-  if (!isHydrated || !isAuthenticated || !user) {
+  if (!isHydrated) {
     return (
       <Link
         href="/login"
         aria-label="Login"
+        onMouseEnter={preloadAuthRoutes}
+        onFocus={preloadAuthRoutes}
+        className="relative z-[60] flex cursor-pointer items-center justify-center transition-opacity hover:opacity-80"
+      >
+        <ProfileIcon theme={theme} />
+      </Link>
+    );
+  }
+
+  if (!isAuthenticated || !user) {
+    return (
+      <Link
+        href="/login"
+        aria-label="Login"
+        onMouseEnter={preloadAuthRoutes}
+        onFocus={preloadAuthRoutes}
         className="relative z-[60] flex cursor-pointer items-center justify-center transition-opacity hover:opacity-80"
       >
         <ProfileIcon theme={theme} />

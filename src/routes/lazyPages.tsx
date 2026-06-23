@@ -11,8 +11,6 @@ export const OurToppersYearWisePage = withParams(
 export const BooksPage = lazy(() => import("@/pages/books/page"));
 export const CheckoutPage = lazy(() => import("@/pages/checkout/page"));
 export const CheckoutPaymentPage = lazy(() => import("@/pages/checkout/payment/page"));
-export const LoginPage = lazy(() => import("@/pages/login/page"));
-export const SignupPage = lazy(() => import("@/pages/signup/page"));
 export const CurrentAffairsPage = lazy(() => import("@/pages/current-affairs/page"));
 export const CurrentAffairsDailyPage = lazy(
   () => import("@/pages/current-affairs/daily-current-affairs/page"),

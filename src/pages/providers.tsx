@@ -5,6 +5,7 @@ import { useLayoutEffect, type ReactNode } from "react";
 import ToastContainer from "@/components/common/ToastContainer";
 import SiteSectionScope from "@/components/common/SiteSectionScope";
 import { useCartStore } from "@/store/cartStore";
+import { useAuthStore } from "@/store/authStore";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,6 +26,10 @@ interface AppProvidersProps {
 
 export function AppProviders({ children }: AppProvidersProps) {
   useLayoutEffect(() => {
+    if (!useAuthStore.persist.hasHydrated()) {
+      void useAuthStore.persist.rehydrate();
+    }
+
     if (!useCartStore.persist.hasHydrated()) {
       void useCartStore.persist.rehydrate();
     }

@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Loading from "@/pages/loading";
+import LoginPage from "@/pages/login/page";
+import SignupPage from "@/pages/signup/page";
 import {
   HomePage,
   AboutPage,
@@ -14,8 +16,6 @@ import {
   CoursePage,
   CheckoutPage,
   CheckoutPaymentPage,
-  LoginPage,
-  SignupPage,
   CurrentAffairsPage,
   CurrentAffairsDailyPage,
   CurrentAffairsMonthlyMagazinePage,
