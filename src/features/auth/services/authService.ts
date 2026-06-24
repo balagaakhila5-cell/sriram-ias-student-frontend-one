@@ -17,7 +17,7 @@ import {
   verifyStaffLogin,
 } from '../utils/registeredAuthCredentials';
 import { http } from '@/lib/http';
-import type { ApiEnvelope } from '@/lib/apiResult';
+import { ApiError, type ApiEnvelope } from '@/lib/apiResult';
 
 const delay = (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -70,6 +70,51 @@ const mockUser = (
   ...overrides,
 });
 
+
+function buildOtpLoginBody(payload: LoginPayload | SendOtpPayload) {
+  const body: Record<string, string> = {};
+  if (payload.email) body.email = payload.email.trim().toLowerCase();
+  if (payload.mobile) body.mobile = payload.mobile.trim();
+  return body;
+}
+
+function isSendOtpRouteMissing(error: unknown) {
+  return (
+    error instanceof ApiError &&
+    (error.httpStatus === 404 || error.statusCode === 11003)
+  );
+}
+
+/** Live Render API uses POST /auth/login for student OTP; newer backends use /auth/send-otp. */
+async function requestStudentLoginOtp(
+  payload: LoginPayload | SendOtpPayload,
+): Promise<LoginRequestResponse> {
+  const body = buildOtpLoginBody(payload);
+
+  try {
+    const { data } = await http.post<ApiEnvelope<OtpLoginApiData>>(
+      '/auth/send-otp',
+      body,
+    );
+
+    return {
+      userId: data.data.userId,
+      message: data.message,
+    };
+  } catch (error) {
+    if (!isSendOtpRouteMissing(error)) throw error;
+
+    const { data } = await http.post<ApiEnvelope<OtpLoginApiData>>(
+      '/auth/login',
+      body,
+    );
+
+    return {
+      userId: data.data.userId,
+      message: data.message,
+    };
+  }
+}
 
 export const authService = {
   loginSuperAdmin: async (
@@ -137,22 +182,9 @@ export const authService = {
     };
   },
 
-  /** Student login — request OTP (POST /api/auth/send-otp) */
-  login: async (payload: LoginPayload): Promise<LoginRequestResponse> => {
-    const body: Record<string, string> = {};
-    if (payload.email) body.email = payload.email.trim().toLowerCase();
-    if (payload.mobile) body.mobile = payload.mobile.trim();
-
-    const { data } = await http.post<ApiEnvelope<OtpLoginApiData>>(
-      '/auth/send-otp',
-      body,
-    );
-
-    return {
-      userId: data.data.userId,
-      message: data.message,
-    };
-  },
+  /** Student login — request OTP (send-otp, legacy fallback: login) */
+  login: async (payload: LoginPayload): Promise<LoginRequestResponse> =>
+    requestStudentLoginOtp(payload),
 
   /** Parent login — request OTP (POST /api/auth/parent-login-request) */
   parentLoginRequest: async (
@@ -191,18 +223,10 @@ export const authService = {
   },
 
   sendOtp: async (payload: SendOtpPayload): Promise<OtpRequestResponse> => {
-    const body: Record<string, string> = {};
-    if (payload.email) body.email = payload.email.trim().toLowerCase();
-    if (payload.mobile) body.mobile = payload.mobile.trim();
-
-    const { data } = await http.post<ApiEnvelope<OtpLoginApiData>>(
-      '/auth/send-otp',
-      body,
-    );
-
+    const result = await requestStudentLoginOtp(payload);
     return {
-      message: data.message,
-      otpRef: data.data.userId,
+      message: result.message ?? 'OTP sent successfully',
+      otpRef: result.userId,
     };
   },
 };
