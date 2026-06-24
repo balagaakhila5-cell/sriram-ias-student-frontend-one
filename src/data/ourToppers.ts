@@ -86,7 +86,97 @@ export function getToppersForCity(city?: string, count = 4): OurTopper[] {
 }
 
 export function topperImageSrc(img: string): string {
-  return `/assets/ourtoppers/_originals/${img}`;
+  const trimmed = img?.trim() ?? '';
+  if (!trimmed) return '/assets/student/course-card.png';
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  if (trimmed.startsWith('/')) return trimmed;
+  return `/assets/ourtoppers/_originals/${trimmed}`;
+}
+
+/** Native bounds of static topper PNGs in public/assets/ourtoppers/_originals/ */
+export const TOPPER_IMAGE_NATIVE_WIDTH = 1536;
+export const TOPPER_IMAGE_NATIVE_HEIGHT = 1104;
+export const TOPPER_IMAGE_ASPECT_CLASS = 'aspect-[1536/1104]';
+
+export function formatTopperRankLabel(
+  rank: string,
+  year?: number | string | null,
+): string {
+  const normalizedRank = rank.trim();
+  if (!normalizedRank) return '';
+
+  if (year != null && String(year).trim()) {
+    const yearText = String(year).trim();
+    if (normalizedRank.includes(yearText)) return normalizedRank;
+    return `${normalizedRank} - ${yearText}`;
+  }
+
+  return normalizedRank;
+}
+
+export function buildHomepageDisplayToppers(
+  apiToppers: Array<{
+    _id?: string;
+    name: string;
+    rank: string;
+    year?: string | number | null;
+    description?: string;
+    courseName?: string;
+    image?: string;
+  }>,
+  minCarouselCount = 8,
+): Array<{
+  id: string;
+  name: string;
+  rank: string;
+  year?: string | number | null;
+  description: string;
+  img: string;
+  y: number;
+  scale: number;
+}> {
+  const staticList = OUR_TOPPERS.map((topper, index) => ({
+    id: `static-${index}`,
+    name: topper.name,
+    rank: topper.rank,
+    year: topper.year,
+    description: topper.course,
+    img: topper.img,
+    ...getTopperLayout(index),
+  }));
+
+  if (apiToppers.length === 0) return staticList;
+
+  const merged = apiToppers.map((topper, index) => ({
+    id: topper._id ?? `api-${index}`,
+    name: topper.name,
+    rank: topper.rank,
+    year: topper.year ?? null,
+    description: topper.description ?? topper.courseName ?? '',
+    img: topper.image?.trim() ?? '',
+    ...getTopperLayout(index),
+  }));
+
+  const usedNames = new Set(
+    merged.map((topper) => topper.name.trim().toLowerCase()),
+  );
+  let layoutIndex = merged.length;
+
+  for (const staticTopper of staticList) {
+    if (merged.length >= minCarouselCount) break;
+
+    const nameKey = staticTopper.name.trim().toLowerCase();
+    if (usedNames.has(nameKey)) continue;
+
+    usedNames.add(nameKey);
+    merged.push({
+      ...staticTopper,
+      id: `static-fill-${staticTopper.id}`,
+      ...getTopperLayout(layoutIndex++),
+    });
+  }
+
+  return merged.length > 0 ? merged : staticList;
 }
 
 const TOPPER_Y_OFFSETS = [35, 15, 45, 28, 18, 10, 5, 12];

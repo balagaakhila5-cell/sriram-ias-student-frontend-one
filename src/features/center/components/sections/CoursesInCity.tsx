@@ -10,8 +10,10 @@ import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import {
   CENTER_CATEGORIES_BY_CITY,
   formatCenterDisplayName,
+  getProgramCardForApiProgram,
   type CenterCity,
 } from '@/features/center/data/centerCourseCategories';
+import { useCenterCoursesCatalog } from '@/features/homepage/hooks/useCenterCoursesCatalog';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,11 +26,18 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
   const cityName = formatCenterDisplayName(city);
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const { apiPrograms, hasApiData, isLoading } = useCenterCoursesCatalog(cityKey);
 
-  const courses = useMemo(
-    () => CENTER_CATEGORIES_BY_CITY[cityKey] ?? CENTER_CATEGORIES_BY_CITY.delhi,
-    [cityKey],
-  );
+  const courses = useMemo(() => {
+    if (hasApiData && apiPrograms.length > 0) {
+      return apiPrograms.map((programName) =>
+        getProgramCardForApiProgram(programName, cityKey),
+      );
+    }
+
+    return CENTER_CATEGORIES_BY_CITY[cityKey] ?? CENTER_CATEGORIES_BY_CITY.delhi;
+  }, [apiPrograms, cityKey, hasApiData]);
+
   useGSAP(
     () => {
       if (prefersReducedMotion) return;
@@ -62,7 +71,7 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
         },
       );
     },
-    { dependencies: [prefersReducedMotion], scope: containerRef },
+    { dependencies: [prefersReducedMotion, courses.length], scope: containerRef },
   );
 
   return (
@@ -119,41 +128,45 @@ const CoursesInCity: React.FC<Props> = ({ city }) => {
         <span className="whitespace-nowrap">{cityName}</span>
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 lg:gap-8 w-full max-w-[1400px] relative z-10">
-        {courses.map((course) => (
-          <div
-            key={course.key}
-            className="courses-city-card bg-white rounded-[24px] shadow-[0_12px_40px_rgba(0,0,0,0.06)] overflow-hidden flex flex-col group hover:-translate-y-2 transition-transform duration-300"
-          >
-            {/* Image container */}
-            <div className="w-full h-[240px] relative">
-              <Image
-                src={`/assets/our-centers/${course.img}`}
-                alt={course.title}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                className="object-cover rounded-b-[24px]"
-                onError={(e: any) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-            </div>
+      <div className="relative z-10 grid w-full max-w-[1400px] grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 lg:gap-8">
+        {courses.length > 0 ? (
+          courses.map((course) => (
+            <div
+              key={course.key}
+              className="courses-city-card group flex flex-col overflow-hidden rounded-[24px] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.06)] transition-transform duration-300 hover:-translate-y-2"
+            >
+              <div className="relative h-[240px] w-full">
+                <Image
+                  src={`/assets/our-centers/${course.img}`}
+                  alt={course.title}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="rounded-b-[24px] object-cover"
+                  onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              </div>
 
-            {/* Bottom Card Area */}
-            <div className="p-8 flex flex-col items-center gap-6 grow bg-white">
-              <h3 className="px-2 text-center font-['Montserrat'] text-[22px] font-[800] leading-tight text-[#111] md:text-[24px] lg:text-[28px]">
-                {course.title}
-              </h3>
+              <div className="flex grow flex-col items-center gap-6 bg-white p-8">
+                <h3 className="px-2 text-center font-['Montserrat'] text-[22px] font-[800] leading-tight text-[#111] md:text-[24px] lg:text-[28px]">
+                  {course.title}
+                </h3>
 
-              <Link
-                href={`/centers/${cityKey}/courses/${course.key}`}
-                className="mt-auto whitespace-nowrap rounded-full bg-[#044062] px-8 py-3 font-['Montserrat'] text-[15px] font-semibold text-white shadow-md transition-colors hover:bg-[#065A8C]"
-              >
-                View Courses
-              </Link>
+                <Link
+                  href={`/centers/${cityKey}/courses/${course.key}`}
+                  className="mt-auto whitespace-nowrap rounded-full bg-[#044062] px-8 py-3 font-['Montserrat'] text-[15px] font-semibold text-white shadow-md transition-colors hover:bg-[#065A8C]"
+                >
+                  View Courses
+                </Link>
+              </div>
             </div>
+          ))
+        ) : (
+          <div className="col-span-full flex h-[240px] items-center justify-center rounded-2xl bg-white/80 text-[16px] font-medium text-[#666]">
+            {isLoading ? 'Loading programs...' : 'No programs available at this center.'}
           </div>
-        ))}
+        )}
       </div>
     </section>
   );

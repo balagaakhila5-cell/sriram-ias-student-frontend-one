@@ -14,6 +14,19 @@ import {
   useVerifyStudentSignup,
 } from '@/features/auth/hooks/useAuth';
 import type { StudentSignupPayload } from '@/features/auth/types';
+import type { CoursePurchaseMeta } from '@/features/course/types';
+import {
+  useActivePaymentModes,
+  useAvailableCoupons,
+  useValidateCoupon,
+} from '@/features/course/hooks/usePurchase';
+import { purchaseService } from '@/features/course/services/purchaseService';
+import type { VerifyPaymentResult } from '@/features/course/services/purchaseService';
+import {
+  loadRazorpayScript,
+  mapUiPaymentToModeId,
+} from '@/features/course/utils/razorpay';
+import { ApiError } from '@/lib/apiResult';
 
 type Screen =
   | 'login'
@@ -28,6 +41,8 @@ type Screen =
 interface EnrollAuthModalProps {
   open: boolean;
   onClose: () => void;
+  purchase?: CoursePurchaseMeta | null;
+  courseTitle?: string;
 }
 
 const LOGO_40 = '/assets/40_years_experience.png';
@@ -54,7 +69,12 @@ function formatPaymentDate() {
 
 type OtpPurpose = 'login' | 'signup';
 
-const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
+const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({
+  open,
+  onClose,
+  purchase = null,
+  courseTitle = 'Course Enrollment',
+}) => {
   const user = useAuthStore((s) => s.user);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const isHydrated = useAuthStore((s) => s.isHydrated);
@@ -96,31 +116,79 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
   const [couponCode, setCouponCode] = useState('');
   const [discountAmount, setDiscountAmount] = useState(0);
   const [isCouponApplied, setIsCouponApplied] = useState(false);
+  const [appliedCouponCode, setAppliedCouponCode] = useState<string | null>(null);
+  const [verifyResult, setVerifyResult] = useState<VerifyPaymentResult | null>(
+    null,
+  );
+  const [isPaying, setIsPaying] = useState(false);
   const [selectedDeliveryMode, setSelectedDeliveryMode] = useState<
     'offline' | 'online'
-  >('offline');
+  >('online');
 
-  const [popup, setPopup] = useState<{
-    type: 'success' | 'error';
-    message: string;
-  } | null>(null);
+  const deliveryModeApi =
+    selectedDeliveryMode === 'online' ? 'ONLINE' : 'OFFLINE';
 
-  const otpRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const validateCouponMutation = useValidateCoupon();
+  const { data: paymentModes } = useActivePaymentModes(open && screen === 'payment');
+  const { data: availableCoupons } = useAvailableCoupons(
+    purchase?.courseId && purchase?.batchId
+      ? {
+          courseId: purchase.courseId,
+          batchId: purchase.batchId,
+          deliveryMode: deliveryModeApi,
+        }
+      : null,
+  );
 
-  const bookPriceAfterDiscount = COURSE_PRICE - discountAmount;
+  const baseCourseFee =
+    selectedDeliveryMode === 'online'
+      ? purchase?.onlineAmount || COURSE_PRICE
+      : purchase?.offlineAmount || COURSE_PRICE;
 
-  // Payment page amount: without GST
+  const bookPriceAfterDiscount = Math.max(
+    0,
+    validateCouponMutation.data?.baseAmount ??
+      baseCourseFee - discountAmount,
+  );
+
   const paymentPayAmount = bookPriceAfterDiscount;
+  const gstAmount = Math.round(
+    (validateCouponMutation.data?.gstAmount ??
+      (bookPriceAfterDiscount * GST_PERCENT) / 100),
+  );
+  const finalPayAmount =
+    validateCouponMutation.data?.totalPaid ??
+    bookPriceAfterDiscount + gstAmount;
 
-  // Receipt/invoice amount: GST added here only
-  const gstAmount = Math.round((bookPriceAfterDiscount * GST_PERCENT) / 100);
-  const finalPayAmount = bookPriceAfterDiscount + gstAmount;
+  const enrollReceiptRows: PaymentReceiptRow[] = verifyResult
+    ? [
+        {
+          label: 'Course Fee',
+          amount: verifyResult.billing.baseBeforeDiscount,
+        },
+        ...(verifyResult.billing.discountAmount > 0
+          ? [
+              {
+                label: `Coupon (${verifyResult.billing.couponCode || 'Applied'})`,
+                amount: verifyResult.billing.discountAmount,
+                isDiscount: true,
+              },
+            ]
+          : []),
+        {
+          label: 'Taxable Amount',
+          amount: verifyResult.billing.baseAmount,
+        },
+        {
+          label: `GST (${verifyResult.billing.gstRate || GST_PERCENT}%)`,
+          amount: verifyResult.billing.gstAmount,
+        },
+      ]
+    : [
+        { label: 'Course Fee', amount: baseCourseFee },
+      ];
 
-  const enrollReceiptRows: PaymentReceiptRow[] = [
-    { label: 'Book Price', amount: COURSE_PRICE },
-  ];
-
-  if (discountAmount > 0) {
+  if (!verifyResult && discountAmount > 0) {
     enrollReceiptRows.push({
       label: 'Coupon Discount',
       amount: discountAmount,
@@ -128,10 +196,19 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
     });
   }
 
-  enrollReceiptRows.push(
-    { label: 'Price After Discount', amount: bookPriceAfterDiscount },
-    { label: `GST (${GST_PERCENT}%)`, amount: gstAmount },
-  );
+  if (!verifyResult) {
+    enrollReceiptRows.push(
+      { label: 'Price After Discount', amount: bookPriceAfterDiscount },
+      { label: `GST (${GST_PERCENT}%)`, amount: gstAmount },
+    );
+  }
+
+  const [popup, setPopup] = useState<{
+    type: 'success' | 'error';
+    message: string;
+  } | null>(null);
+
+  const otpRefs = useRef<Array<HTMLInputElement | null>>([]);
 
   useEffect(() => {
     if (!open) return;
@@ -149,7 +226,10 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
     setCouponCode('');
     setDiscountAmount(0);
     setIsCouponApplied(false);
-    setSelectedDeliveryMode('offline');
+    setAppliedCouponCode(null);
+    setVerifyResult(null);
+    setIsPaying(false);
+    setSelectedDeliveryMode('online');
     setPopup(null);
 
     if (isLoggedInStudent && user) {
@@ -351,6 +431,31 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
   const isVerifyOtpPending =
     verifyOtp.isPending || verifyStudentSignup.isPending;
 
+  const formatRupee = (amount: number) =>
+    amount > 0 ? `₹${formatPrice(amount)}` : 'Contact us';
+
+  const offlineHighlights =
+    purchase?.offlineBulletPoints?.length
+      ? purchase.offlineBulletPoints
+      : [
+          'Complete Set of 19 Books',
+          'Senior Faculty Expert Guidance',
+          'Personalized Dedicated Mentorship Support',
+          'Recorded Classes with 3-Year Access',
+          'All India Test Series & Essay Writing Scheme Sessions',
+        ];
+
+  const onlineHighlights =
+    purchase?.onlineBulletPoints?.length
+      ? purchase.onlineBulletPoints
+      : [
+          'Digital E-Book Library Access',
+          'Senior Faculty Expert Guidance',
+          'Personalized Dedicated Mentorship Support',
+          'Recorded Classes with 3-Year Access',
+          'All India Test Series & Essay Writing Scheme Sessions',
+        ];
+
   const applyCoupon = (code: string) => {
     const normalizedCode = code.trim().toUpperCase();
 
@@ -359,25 +464,38 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
       return;
     }
 
-    if (normalizedCode === 'SAVE500') {
-      setCouponCode('SAVE500');
-      setDiscountAmount(500);
-      setIsCouponApplied(true);
-      showPopup('success', 'SAVE500 applied successfully');
+    if (!purchase?.courseId || !purchase?.batchId) {
+      showPopup('error', 'Course details are missing for coupon validation');
       return;
     }
 
-    if (normalizedCode === 'SAVE1000') {
-      setCouponCode('SAVE1000');
-      setDiscountAmount(1000);
-      setIsCouponApplied(true);
-      showPopup('success', 'SAVE1000 applied successfully');
-      return;
-    }
-
-    setDiscountAmount(0);
-    setIsCouponApplied(false);
-    showPopup('error', 'Invalid coupon code');
+    validateCouponMutation.mutate(
+      {
+        itemType: 'COURSE',
+        couponCode: normalizedCode,
+        courseId: purchase.courseId,
+        batchId: purchase.batchId,
+        deliveryMode: deliveryModeApi,
+      },
+      {
+        onSuccess: (data) => {
+          setCouponCode(data.couponCode);
+          setDiscountAmount(data.discountAmount);
+          setIsCouponApplied(true);
+          setAppliedCouponCode(data.couponCode);
+          showPopup('success', `${data.couponCode} applied successfully`);
+        },
+        onError: (error) => {
+          setDiscountAmount(0);
+          setIsCouponApplied(false);
+          setAppliedCouponCode(null);
+          showPopup(
+            'error',
+            error instanceof ApiError ? error.message : 'Invalid coupon code',
+          );
+        },
+      },
+    );
   };
 
   const handleCouponApply = () => {
@@ -430,22 +548,148 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
     showPopup('success', 'Card verified');
   };
 
-  const handlePayment = () => {
-    if (selectedPayment === 'upi' && !isUpiVerified) {
-      showPopup('error', 'Please verify UPI ID before payment');
+  const handlePayment = async () => {
+    if (!purchase?.courseId || !purchase?.batchId) {
+      showPopup('error', 'Course purchase details are unavailable for this page');
       return;
     }
 
-    if (selectedPayment === 'card' && !isCardVerified) {
-      showPopup('error', 'Please verify card details before payment');
+    if (isPaying) return;
+
+    setIsPaying(true);
+
+    try {
+      const paymentModeId = mapUiPaymentToModeId(
+        selectedPayment,
+        paymentModes ?? [],
+      );
+
+      const enrollment = await purchaseService.createEnrollment({
+        courseId: purchase.courseId,
+        batchId: purchase.batchId,
+        deliveryMode: deliveryModeApi,
+        paymentModeId,
+        ...(appliedCouponCode ? { couponCode: appliedCouponCode } : {}),
+      });
+
+      if (enrollment.requiresManualPayment) {
+        showPopup(
+          'success',
+          'Enrollment created. Please complete payment at the institute.',
+        );
+        setIsPaying(false);
+        return;
+      }
+
+      const orderData = await purchaseService.createPaymentOrder({
+        enrollmentId: enrollment.enrollmentId,
+        paymentModeId,
+      });
+
+      if (orderData.requiresManualPayment) {
+        showPopup(
+          'success',
+          orderData.message ||
+            'Enrollment created. Please complete payment at the institute.',
+        );
+        setIsPaying(false);
+        return;
+      }
+
+      if (!orderData.orderId || !orderData.key) {
+        throw new Error('Payment order could not be created');
+      }
+
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded || !window.Razorpay) {
+        throw new Error('Failed to load Razorpay checkout');
+      }
+
+      const rzp = new window.Razorpay({
+        key: orderData.key,
+        amount:
+          orderData.amountInPaise ??
+          Math.round(Number(orderData.amount ?? 0) * 100),
+        currency: orderData.currency ?? 'INR',
+        order_id: orderData.orderId,
+        name: "Sriram's IAS",
+        description: courseTitle,
+        method: orderData.checkout?.method,
+        prefill: {
+          name: studentName || user?.name || undefined,
+          email: user?.email,
+          contact: user?.mobile,
+        },
+        handler: async (response) => {
+          try {
+            const result = await purchaseService.verifyPayment({
+              enrollmentId: enrollment.enrollmentId,
+              paymentModeId,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+            setVerifyResult(result);
+            setStudentName(result.student.studentName || studentName);
+            setScreen('receipt');
+          } catch (error) {
+            showPopup(
+              'error',
+              error instanceof ApiError
+                ? error.message
+                : 'Payment verification failed',
+            );
+          } finally {
+            setIsPaying(false);
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            setIsPaying(false);
+          },
+        },
+      });
+
+      rzp.on('payment.failed', () => {
+        showPopup('error', 'Payment failed. Please try again.');
+        setIsPaying(false);
+      });
+
+      rzp.open();
+    } catch (error) {
+      showPopup(
+        'error',
+        error instanceof ApiError ? error.message : 'Payment could not be started',
+      );
+      setIsPaying(false);
+    }
+  };
+
+  const handleDownloadInvoice = async () => {
+    const enrollmentId = verifyResult?.enrollmentId;
+    if (!enrollmentId) {
+      showPopup('error', 'Invoice is not available yet');
       return;
     }
 
-    showPopup('success', 'Payment successful');
+    if (verifyResult.invoiceUrl) {
+      window.open(verifyResult.invoiceUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
 
-    setTimeout(() => {
-      setScreen('receipt');
-    }, 900);
+    try {
+      const invoice = await purchaseService.downloadInvoice(enrollmentId);
+      if (invoice.invoiceUrl) {
+        window.open(invoice.invoiceUrl, '_blank', 'noopener,noreferrer');
+      } else {
+        showPopup('error', 'Invoice PDF is not available');
+      }
+    } catch (error) {
+      showPopup(
+        'error',
+        error instanceof ApiError ? error.message : 'Failed to download invoice',
+      );
+    }
   };
 
   const paymentMethods = [
@@ -758,7 +1002,7 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
             <div className="px-7 py-7">
               <div className="mb-7 text-center">
                 <h3 className="text-[25px] font-extrabold text-[#082b52]">
-                  Advanced Financial Management Certification
+                  {courseTitle}
                 </h3>
                 <p className="mt-2 text-[16px] font-medium text-[#4b5563]">
                   Choose the learning experience that fits your professional
@@ -771,18 +1015,12 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
                   title="Offline Mode"
                   subtitle="Classroom-based Learning"
                   icon="building"
-                  price="₹74,999"
-                  oldPrice="₹99,999"
-                  saving="25% SAVINGS"
+                  price={formatRupee(purchase?.offlineAmount ?? 0)}
+                  oldPrice=""
+                  saving=""
                   selected={selectedDeliveryMode === 'offline'}
                   onSelect={() => setSelectedDeliveryMode('offline')}
-                  highlights={[
-                    'Complete Set of 19 Books',
-                    'Senior Faculty Expert Guidance',
-                    'Personalized Dedicated Mentorship Support',
-                    'Recorded Classes with 3-Year Access',
-                    'All India Test Series & Essay Writing Scheme Sessions',
-                  ]}
+                  highlights={offlineHighlights}
                   onEnroll={() => setScreen('payment')}
                 />
 
@@ -791,18 +1029,12 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
                   subtitle="Live Interactive Sessions"
                   icon="laptop"
                   popular
-                  price="₹54,999"
-                  oldPrice="₹79,999"
-                  saving="31% SAVINGS"
+                  price={formatRupee(purchase?.onlineAmount ?? 0)}
+                  oldPrice=""
+                  saving=""
                   selected={selectedDeliveryMode === 'online'}
                   onSelect={() => setSelectedDeliveryMode('online')}
-                  highlights={[
-                    'Digital E-Book Library Access',
-                    'Senior Faculty Expert Guidance',
-                    'Personalized Dedicated Mentorship Support',
-                    'Recorded Classes with 3-Year Access',
-                    'All India Test Series & Essay Writing Scheme Sessions',
-                  ]}
+                  highlights={onlineHighlights}
                   onEnroll={() => setScreen('payment')}
                 />
               </div>
@@ -994,16 +1226,12 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
 
                   <div>
                     <h2 className="mb-5 text-[22px] font-extrabold text-black">
-                      2 Years General Studies Foundation Course
+                      {courseTitle}
                     </h2>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-[16px] font-medium text-[#7b7b7b] line-through">
-                        {formatPrice(ORIGINAL_PRICE)}
-                      </span>
-
                       <span className="text-[20px] font-extrabold text-[#0b5a86]">
-                        {formatPrice(COURSE_PRICE)}
+                        {formatRupee(baseCourseFee)}
                       </span>
                     </div>
                   </div>
@@ -1037,23 +1265,20 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
                 </div>
 
                 <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <CouponCard
-                    title="Get this for 5,500 /-"
-                    desc="Apply SAVE500 to get Rs.500 off"
-                    onApply={() => handleCouponCardClick('SAVE500')}
-                  />
-
-                  <CouponCard
-                    title="Get this for 5,000 /-"
-                    desc="Apply SAVE1000 to get Rs.1000 off"
-                    onApply={() => handleCouponCardClick('SAVE1000')}
-                  />
+                  {(availableCoupons?.coupons ?? []).slice(0, 2).map((coupon) => (
+                    <CouponCard
+                      key={coupon._id}
+                      title={`Get this for ${formatPrice(coupon.displayPrice ?? baseCourseFee)} /-`}
+                      desc={`Apply ${coupon.couponCode}`}
+                      onApply={() => handleCouponCardClick(coupon.couponCode)}
+                    />
+                  ))}
                 </div>
 
                 <div className="mt-10 flex flex-col gap-5">
                   <PriceRow
                     label="Total Price"
-                    value={`Rs.${formatPrice(ORIGINAL_PRICE)}`}
+                    value={`Rs.${formatPrice(baseCourseFee)}`}
                   />
 
                   <PriceRow
@@ -1070,13 +1295,16 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
                 <button
                   type="button"
                   onClick={handlePayment}
-                  className="mx-auto mt-9 block h-[52px] w-full max-w-[260px] cursor-pointer rounded-full text-[18px] font-extrabold text-white"
+                  disabled={isPaying}
+                  className="mx-auto mt-9 block h-[52px] w-full max-w-[260px] cursor-pointer rounded-full text-[18px] font-extrabold text-white disabled:cursor-not-allowed disabled:opacity-70"
                   style={{
                     background:
                       'linear-gradient(90deg, #43a8da 0%, #003247 100%)',
                   }}
                 >
-                  Pay Rs.{formatPrice(paymentPayAmount)}
+                  {isPaying
+                    ? 'Processing...'
+                    : `Pay Rs.${formatPrice(finalPayAmount)}`}
                 </button>
               </div>
             </div>
@@ -1088,14 +1316,16 @@ const EnrollAuthModal: React.FC<EnrollAuthModalProps> = ({ open, onClose }) => {
         {screen === 'receipt' && (
           <div className="h-screen w-full overflow-y-auto">
             <PaymentReceiptSuccess
-              receiptNo="SI-090-6536"
-              customerName={studentName || 'Student'}
-              paymentDate={formatPaymentDate()}
+              receiptNo={verifyResult?.receiptNumber || '—'}
+              customerName={verifyResult?.student.studentName || studentName || 'Student'}
+              customerId={verifyResult?.student.studentId || undefined}
+              paymentDate={verifyResult?.paymentDate || formatPaymentDate()}
               detailLabel="Course Name"
-              detailValue="2 Year General Studies Foundation Course"
+              detailValue={verifyResult?.courseName || courseTitle}
               rows={enrollReceiptRows}
-              totalPaid={finalPayAmount}
+              totalPaid={verifyResult?.billing.totalPaid ?? finalPayAmount}
               onGoHome={onClose}
+              onDownloadInvoice={handleDownloadInvoice}
             />
             <Footer />
           </div>
@@ -1264,14 +1494,18 @@ const DeliveryModeCard: React.FC<DeliveryModeCardProps> = ({
         <span className="text-[48px] font-extrabold leading-none text-[#082b52]">
           {price}
         </span>
-        <span className="pb-2 text-[16px] font-medium text-[#555] line-through">
-          {oldPrice}
-        </span>
+        {oldPrice ? (
+          <span className="pb-2 text-[16px] font-medium text-[#555] line-through">
+            {oldPrice}
+          </span>
+        ) : null}
       </div>
 
-      <span className="inline-block rounded-[3px] bg-[#d7fff3] px-2 py-1 text-[14px] font-extrabold uppercase tracking-[1px] text-[#00a77a]">
-        {saving}
-      </span>
+      {saving ? (
+        <span className="inline-block rounded-[3px] bg-[#d7fff3] px-2 py-1 text-[14px] font-extrabold uppercase tracking-[1px] text-[#00a77a]">
+          {saving}
+        </span>
+      ) : null}
 
       <button
         type="button"

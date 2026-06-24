@@ -81,7 +81,7 @@ const AppAndVideos: React.FC = () => {
               const videoId = getYouTubeVideoId(video.videoUrl);
               return {
                 id: video._id ?? `video-${index}`,
-                title: `Video ${index + 1}`,
+                title: video.title ?? `Video ${index + 1}`,
                 image:
                   video.videoThumbnail
                   ?? (videoId

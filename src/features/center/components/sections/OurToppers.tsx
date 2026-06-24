@@ -9,6 +9,7 @@ import {
   getTopperLayout,
   OUR_TOPPERS,
   OUR_TOPPERS_SUBTITLE,
+  TOPPER_IMAGE_ASPECT_CLASS,
   topperImageSrc,
 } from '@/data/ourToppers';
 
@@ -83,12 +84,14 @@ const OurToppers: React.FC<Props> = () => {
                 key={`${topper.name}-${idx}`}
                 className="-ml-16 flex shrink-0 flex-col items-center overflow-visible first:ml-0 md:-ml-20 lg:-ml-24"
               >
-                <div className="relative flex h-[320px] w-full items-end justify-center overflow-visible sm:h-[360px] lg:h-[400px]">
+                <div
+                  className={`relative flex ${TOPPER_IMAGE_ASPECT_CLASS} h-[320px] w-auto shrink-0 items-end justify-center overflow-visible sm:h-[360px] lg:h-[400px]`}
+                >
                   <img
                     src={topperImageSrc(topper.img)}
                     alt={topper.name}
                     loading={idx < 6 ? 'eager' : 'lazy'}
-                    className="pointer-events-none block h-[320px] w-auto max-w-[340px] select-none object-contain object-bottom sm:h-[360px] sm:max-w-[380px] lg:h-[400px] lg:max-w-[420px]"
+                    className="pointer-events-none block h-full w-full select-none object-contain object-bottom"
                     style={{
                       transform: `translateY(${topper.y - 28}px) scale(${topper.scale})`,
                       transformOrigin: 'bottom center',

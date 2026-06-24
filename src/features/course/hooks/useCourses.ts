@@ -12,6 +12,7 @@ export const coursesKeys = {
   categories: ["courses", "categories"] as const,
   list: (filters: CourseFilters) => ["courses", "list", filters] as const,
   detail: (id: string) => ["courses", "detail", id] as const,
+  bySlug: (slug: string) => ["courses", "slug", slug] as const,
 };
 
 export function useCenters() {
@@ -52,6 +53,16 @@ export function useCourse(id: string | undefined) {
     queryKey: coursesKeys.detail(id ?? ""),
     queryFn: () => coursesService.getCourse(id as string),
     enabled: !!id,
+  });
+}
+
+export function useCourseBySlug(slug: string | undefined) {
+  return useQuery({
+    queryKey: coursesKeys.bySlug(slug ?? ""),
+    queryFn: () => coursesService.getCourseDetailBySlug(slug as string),
+    enabled: !!slug,
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
   });
 }
 

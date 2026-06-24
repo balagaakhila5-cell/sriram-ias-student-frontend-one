@@ -22,6 +22,7 @@ export interface PaymentReceiptSuccessProps {
   totalPaid: number;
   showFooter?: boolean;
   onGoHome?: () => void;
+  onDownloadInvoice?: () => void;
 }
 
 const formatPrice = (price: number) => price.toLocaleString('en-IN');
@@ -107,6 +108,7 @@ export default function PaymentReceiptSuccess({
   rows,
   totalPaid,
   onGoHome,
+  onDownloadInvoice,
 }: PaymentReceiptSuccessProps) {
   const router = useRouter();
 
@@ -119,6 +121,11 @@ export default function PaymentReceiptSuccess({
   };
 
   const handleDownloadInvoice = () => {
+    if (onDownloadInvoice) {
+      onDownloadInvoice();
+      return;
+    }
+
     const receiptWindow = window.open('', '_blank', 'width=900,height=900');
     if (!receiptWindow) return;
 

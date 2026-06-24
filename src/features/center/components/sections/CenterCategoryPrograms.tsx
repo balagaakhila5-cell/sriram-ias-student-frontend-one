@@ -11,7 +11,10 @@ import {
   formatCityLabel,
   getCenterCategory,
   getProgramsForCategory,
+  type CenterCity,
 } from '@/features/center/data/centerCourseCategories';
+import { useCenterCoursesCatalog } from '@/features/homepage/hooks/useCenterCoursesCatalog';
+import type { FlatExploreCourseCard } from '@/features/homepage/adapters/homepageAdapter';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -22,21 +25,73 @@ type Props = {
   category: string;
 };
 
+type ProgramCard = {
+  slug: string;
+  title: string;
+  feesOnline?: string;
+  startDate?: string;
+  mode?: string;
+  thumbnail?: string;
+};
+
+const formatOnlineFee = (fee?: number) => {
+  if (typeof fee !== 'number' || fee <= 0) return undefined;
+  return `Rs.${fee.toLocaleString('en-IN')}/-`;
+};
+
+const formatMode = (course: FlatExploreCourseCard) => {
+  const hasOnline = (course.prices?.online ?? 0) > 0;
+  const hasOffline = (course.prices?.offline ?? 0) > 0;
+
+  if (hasOnline && hasOffline) return 'Online , Offline';
+  if (hasOffline) return 'Offline';
+  if (hasOnline) return 'Online';
+  return undefined;
+};
+
+const mapApiCourseToCard = (course: FlatExploreCourseCard): ProgramCard => ({
+  slug: course.slug,
+  title: course.courseName,
+  feesOnline: formatOnlineFee(course.prices?.online),
+  startDate: 'Admission Open!',
+  mode: formatMode(course),
+  thumbnail: course.thumbnail?.trim() || PROGRAM_CARD_IMAGE,
+});
+
 const CenterCategoryPrograms: React.FC<Props> = ({ city, category }) => {
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
-  const cityKey = city.toLowerCase();
+  const cityKey = city.toLowerCase() as CenterCity;
   const cityLabel = formatCityLabel(cityKey);
+  const {
+    resolveProgramName,
+    getCoursesForCategory,
+    hasApiData,
+    isLoading,
+  } = useCenterCoursesCatalog(cityKey);
 
   const categoryData = useMemo(
     () => getCenterCategory(cityKey, category),
     [cityKey, category],
   );
 
-  const programs = useMemo(
-    () => getProgramsForCategory(cityKey, category),
-    [cityKey, category],
+  const programName = useMemo(
+    () => resolveProgramName(category),
+    [category, resolveProgramName],
   );
+
+  const programs = useMemo((): ProgramCard[] => {
+    if (hasApiData && programName) {
+      return getCoursesForCategory(category).map(mapApiCourseToCard);
+    }
+
+    return getProgramsForCategory(cityKey, category).map((program) => ({
+      ...program,
+      thumbnail: PROGRAM_CARD_IMAGE,
+    }));
+  }, [category, cityKey, getCoursesForCategory, hasApiData, programName]);
+
+  const pageTitle = categoryData?.title ?? programName ?? 'Courses';
 
   useGSAP(
     () => {
@@ -74,14 +129,14 @@ const CenterCategoryPrograms: React.FC<Props> = ({ city, category }) => {
     { dependencies: [prefersReducedMotion, programs.length], scope: containerRef },
   );
 
-  if (!categoryData) return null;
+  if (!categoryData && !programName && !isLoading) return null;
 
   return (
     <section
       ref={containerRef}
       className="relative w-full overflow-hidden bg-white px-6 py-20 md:px-12 lg:px-24"
     >
-      <div className="absolute inset-0 z-0 opacity-40 pointer-events-none">
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-40">
         <div
           className="h-full w-full"
           style={{
@@ -103,7 +158,7 @@ const CenterCategoryPrograms: React.FC<Props> = ({ city, category }) => {
             color: 'transparent',
           }}
         >
-          {categoryData.title}
+          {pageTitle}
         </h1>
 
         <p className="mb-12 text-[16px] font-medium text-[#666] md:text-[18px]">
@@ -113,12 +168,12 @@ const CenterCategoryPrograms: React.FC<Props> = ({ city, category }) => {
         <div className="center-programs-grid grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {programs.map((program) => (
             <article
-              key={program.slug}
+              key={`${program.slug}-${program.title}`}
               className="center-program-card group flex flex-col overflow-hidden rounded-[20px] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.08)] transition-transform duration-300 hover:-translate-y-1"
             >
               <div className="relative h-[200px] w-full overflow-hidden">
                 <Image
-                  src={PROGRAM_CARD_IMAGE}
+                  src={program.thumbnail ?? PROGRAM_CARD_IMAGE}
                   alt={program.title}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -164,7 +219,9 @@ const CenterCategoryPrograms: React.FC<Props> = ({ city, category }) => {
 
         {programs.length === 0 ? (
           <div className="flex h-[240px] items-center justify-center rounded-2xl bg-[#F8FAFC] text-[16px] font-medium text-[#666]">
-            No programs available in this category right now.
+            {isLoading
+              ? 'Loading courses...'
+              : 'No courses available in this program right now.'}
           </div>
         ) : null}
       </div>

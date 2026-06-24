@@ -312,6 +312,8 @@ const CourseInfoBar: React.FC<Props> = ({ course }) => {
       <EnrollAuthModal
         open={isEnrollOpen}
         onClose={() => setIsEnrollOpen(false)}
+        purchase={course.purchase ?? null}
+        courseTitle={course.title.replace(/\n/g, ' ')}
       />
 
       <YouTubeVideoModal

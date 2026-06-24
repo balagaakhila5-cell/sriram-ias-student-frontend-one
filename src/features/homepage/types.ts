@@ -7,6 +7,9 @@ export interface HomepageTopper {
   name: string;
   rank: string;
   description?: string;
+  image?: string;
+  year?: string | null;
+  courseName?: string;
 }
 
 export interface HomepageSection3 {
@@ -58,6 +61,7 @@ export interface HomepageVideo {
   _id: string;
   videoUrl: string;
   videoThumbnail?: string;
+  title?: string;
 }
 
 export interface HomepageSection7 {
@@ -94,6 +98,79 @@ export interface HomepageSectionBooks {
   books: HomepageBook[];
 }
 
+/** Raw course card from POST /api/homepage/details */
+export interface HomepageExploreCoursePrice {
+  currency: string;
+  online: number;
+  offline: number;
+  discount: number;
+}
+
+export interface HomepageExploreCourseItem {
+  batchId: string;
+  slug: string;
+  thumbnail: string;
+  courseName: string;
+  centerName: string;
+  prices: HomepageExploreCoursePrice;
+}
+
+export interface HomepageExploreSubCategory {
+  subCategoryId: string | null;
+  subCategoryName: string;
+  courses: HomepageExploreCourseItem[];
+}
+
+export interface HomepageExploreExamCategory {
+  examCategoryId: string | null;
+  examCategoryName: string;
+  subCategories: HomepageExploreSubCategory[];
+}
+
+export interface HomepageExploreProgram {
+  programId: string;
+  programName: string;
+  examCategories: HomepageExploreExamCategory[];
+}
+
+export interface HomepageExploreCenter {
+  centerId: string;
+  centerName: string;
+  programs: HomepageExploreProgram[];
+}
+
+/** API response body for POST /api/homepage/details */
+export interface HomepageDetailsApiData {
+  courses: HomepageExploreCenter[];
+  toppers: Array<{
+    _id: string;
+    name: string;
+    rank: string;
+    year: string | null;
+    image: string;
+    courseName: string;
+  }>;
+  freeLearning: Array<{
+    _id: string;
+    title: string;
+    description: string;
+    images: string[];
+  }>;
+  books: Array<{
+    productId: string;
+    productName: string;
+    thumbnail: string;
+    price: number;
+    stockQuantity: number;
+  }>;
+  youtubeVideos: Array<{
+    _id: string;
+    title: string;
+    thumbnail: string;
+    youtubeUrl: string;
+  }>;
+}
+
 export interface HomepageData {
   section2?: HomepageSection2;
   section3?: HomepageSection3;
@@ -103,6 +180,7 @@ export interface HomepageData {
   section7?: HomepageSection7;
   sectionCourses?: HomepageSectionCourses;
   sectionBooks?: HomepageSectionBooks;
+  exploreCenters?: HomepageExploreCenter[];
   _id?: string;
   createdAt?: string;
   updatedAt?: string;

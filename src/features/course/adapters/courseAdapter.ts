@@ -70,6 +70,7 @@ export function mergeCourseDetail(
       ctaBg: "/assets/course/cta-bg-1.png",
       coursedetailsbg: "/assets/course/course-details-bg.png",
       brochure: detail.brochure,
+      purchase: detail.purchase,
     };
   }
 
@@ -101,6 +102,7 @@ export function mergeCourseDetail(
     helpPoints: firstNonEmpty(d.howItHelps?.howItHelpsTexts, base.helpPoints) ?? base.helpPoints,
     helpImages: firstNonEmpty(d.gallery, base.helpImages) ?? base.helpImages,
     brochure: firstNonEmpty(d.brochure, base.brochure),
+    purchase: d.purchase ?? base.purchase,
   };
 }
 

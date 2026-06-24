@@ -197,6 +197,65 @@ export function getCategoryKeyFromTab(tab: string): CourseCategoryKey | undefine
   return TAB_TO_CATEGORY_KEY[tab];
 }
 
+export function getProgramNameForCategoryKey(
+  category: string,
+): string | undefined {
+  if (!isCourseCategoryKey(category)) return undefined;
+
+  const entry = Object.entries(TAB_TO_CATEGORY_KEY).find(
+    ([, key]) => key === category,
+  );
+  return entry?.[0];
+}
+
+export function programNameToCategorySlug(programName: string): string {
+  const direct = TAB_TO_CATEGORY_KEY[programName];
+  if (direct) return direct;
+
+  const matched = Object.entries(TAB_TO_CATEGORY_KEY).find(
+    ([tab]) => tab.trim().toLowerCase() === programName.trim().toLowerCase(),
+  );
+  if (matched) return matched[1];
+
+  return programName
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+export function findProgramNameByCategorySlug(
+  programNames: string[],
+  categorySlug: string,
+): string | undefined {
+  return programNames.find(
+    (name) => programNameToCategorySlug(name) === categorySlug,
+  );
+}
+
+export function getProgramCardForApiProgram(
+  programName: string,
+  cityKey: CenterCity,
+): { title: string; img: string; key: string } {
+  const key = programNameToCategorySlug(programName);
+  const categoryKey = isCourseCategoryKey(key) ? key : undefined;
+
+  if (categoryKey) {
+    const staticCard = CENTER_CATEGORIES_BY_CITY[cityKey]?.find(
+      (item) => item.key === categoryKey,
+    );
+    if (staticCard) {
+      return { title: staticCard.title, img: staticCard.img, key: staticCard.key };
+    }
+  }
+
+  return {
+    title: programName,
+    img: 'course-1.png',
+    key,
+  };
+}
+
 export function isCenterCity(value: string): value is CenterCity {
   return ALLOWED_CENTER_CITIES.includes(value.toLowerCase() as CenterCity);
 }

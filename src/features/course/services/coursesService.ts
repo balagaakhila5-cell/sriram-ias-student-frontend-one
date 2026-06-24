@@ -1,8 +1,11 @@
+import { http } from "@/lib/http";
+import type { ApiEnvelope } from "@/lib/apiResult";
 import {
   buildCanonicalExploreCategories,
   EXPLORE_COURSE_TAB_NAMES,
 } from "@/features/homepage/data/exploreCourseCatalog";
 import { courses as staticCourses, getCourseBySlug } from "../data/courses";
+import type { CoursePurchaseMeta } from "../types";
 
 /* ------------------------------------------------------------------ */
 /*  Public types (consumed by components / adapters)                   */
@@ -31,6 +34,7 @@ export interface CourseSummary {
   center?: Center | string;
   category?: Category | string;
   slug?: string;
+  purchase?: CoursePurchaseMeta;
 }
 
 export interface KeyHighlights {
@@ -62,6 +66,7 @@ export interface CourseDetail extends CourseSummary {
   gallery?: string[];
   video?: string;
   brochure?: string;
+  demoVideo?: string;
   extraFields?: Record<string, unknown>;
 }
 
@@ -70,11 +75,49 @@ export interface CourseFilters {
   categoryName?: string;
 }
 
-// Canonical EnquiryPayload now lives in the enquiry feature module.
 export type { EnquiryPayload } from "@/features/enquiry/types";
 
+interface PublicCourseDetailApi {
+  course: {
+    _id: string;
+    courseId?: string;
+    courseName?: string;
+    title?: string;
+    slug?: string;
+    courseOverview?: string;
+    keyFeatures?: string[];
+    keyFeatureImage?: string;
+    whyChooseTitle?: string;
+    helpSectionTitle?: string;
+    helpSectionPoints?: string[];
+    helpSectionImages?: string[];
+    helpSectionVideo?: string;
+    demoVideo?: string;
+    featureCards?: unknown[];
+    center?: { centerName?: string; city?: string };
+    program?: { programName?: string };
+  };
+  batch: {
+    _id: string;
+    batchId?: string;
+    batchName?: string;
+    commencementDate?: string;
+    durationInMonths?: number;
+    bannerImage?: string;
+    brochure?: string | { url?: string };
+  };
+  fees?: {
+    currency?: string;
+    onlineAmount?: number;
+    offlineAmount?: number;
+    discountAmount?: number;
+    onlineBulletPoints?: string[];
+    offlineBulletPoints?: string[];
+  };
+}
+
 /* ------------------------------------------------------------------ */
-/*  Mock data                                                          */
+/*  Mock data (fallback when API unavailable)                          */
 /* ------------------------------------------------------------------ */
 
 const MOCK_CENTERS: Center[] = [
@@ -130,6 +173,57 @@ function buildMockCourses(): CourseSummary[] {
 }
 
 const MOCK_COURSES = buildMockCourses();
+
+function mapPublicCourseDetail(api: PublicCourseDetailApi): CourseDetail {
+  const { course, batch, fees } = api;
+  const brochure =
+    typeof batch.brochure === "string"
+      ? batch.brochure
+      : batch.brochure?.url;
+
+  const purchase: CoursePurchaseMeta = {
+    courseId: course._id,
+    batchId: batch._id,
+    batchBusinessId: batch.batchId,
+    onlineAmount: fees?.onlineAmount ?? 0,
+    offlineAmount: fees?.offlineAmount ?? 0,
+    discountAmount: fees?.discountAmount ?? 0,
+    onlineBulletPoints: fees?.onlineBulletPoints,
+    offlineBulletPoints: fees?.offlineBulletPoints,
+  };
+
+  return {
+    _id: course._id,
+    title: course.courseName || course.title || "",
+    slug: course.slug,
+    description: course.courseOverview,
+    duration: batch.durationInMonths
+      ? `${batch.durationInMonths} Months`
+      : undefined,
+    startDate: batch.commencementDate,
+    onlineFees: fees?.onlineAmount,
+    offlineFees: fees?.offlineAmount,
+    modes: ["Online", "Offline"],
+    banner: batch.bannerImage || course.keyFeatureImage,
+    center: course.center?.centerName
+      ? { _id: course.center.centerName, name: course.center.centerName }
+      : undefined,
+    category: course.program?.programName
+      ? { _id: course.program.programName, name: course.program.programName }
+      : undefined,
+    keyHighlights: course.keyFeatures?.length
+      ? { keyHighlightTexts: course.keyFeatures }
+      : undefined,
+    howItHelps: course.helpSectionPoints?.length
+      ? { howItHelpsTexts: course.helpSectionPoints }
+      : undefined,
+    gallery: course.helpSectionImages,
+    brochure,
+    demoVideo: course.demoVideo,
+    video: course.demoVideo,
+    purchase,
+  };
+}
 
 function toCourseDetail(summary: CourseSummary): CourseDetail {
   const staticCourse = summary.slug ? getCourseBySlug(summary.slug) : undefined;
@@ -191,7 +285,23 @@ export const coursesService = {
     });
   },
 
+  getCourseDetailBySlug: async (slug: string): Promise<CourseDetail> => {
+    const { data } = await http.post<ApiEnvelope<PublicCourseDetailApi>>(
+      "/public/course-detail",
+      { slug },
+    );
+    return mapPublicCourseDetail(data.data);
+  },
+
   getCourse: async (id: string): Promise<CourseDetail> => {
+    if (id.includes("-") && !id.startsWith("category-")) {
+      try {
+        return await coursesService.getCourseDetailBySlug(id);
+      } catch {
+        // fall through to mock lookup
+      }
+    }
+
     await delay();
     const summary =
       MOCK_COURSES.find((course) => course._id === id) ??
@@ -218,4 +328,3 @@ export const coursesService = {
     return toCourseDetail(summary);
   },
 };
-

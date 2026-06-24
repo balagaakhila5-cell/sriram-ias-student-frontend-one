@@ -1,11 +1,7 @@
 import MainLayout from '@/components/common/MainLayout';
 import CenterCategoryPrograms from '@/features/center/components/sections/CenterCategoryPrograms';
 import JoinCTA from '@/features/course/components/sections/JoinCTA';
-import {
-  getCenterCategory,
-  isCenterCity,
-  isCourseCategoryKey,
-} from '@/features/center/data/centerCourseCategories';
+import { isCenterCity } from '@/features/center/data/centerCourseCategories';
 import { notFound } from '@/lib/appRouter';
 
 export default async function CenterCategoryPage({
@@ -16,11 +12,7 @@ export default async function CenterCategoryPage({
   const { city, category } = await params;
   const cityKey = city.toLowerCase();
 
-  if (!isCenterCity(cityKey) || !isCourseCategoryKey(category)) {
-    notFound();
-  }
-
-  if (!getCenterCategory(cityKey, category)) {
+  if (!isCenterCity(cityKey) || !category.trim()) {
     notFound();
   }
 

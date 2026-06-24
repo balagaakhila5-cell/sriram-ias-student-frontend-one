@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import Link from '@/components/common/AppLink';
 import Image from '@/components/common/AppImage';
 import {
@@ -28,6 +28,7 @@ import {
   getHeaderCourseLinks,
   getHeaderTabsForCity,
 } from '@/features/center/data/centerCourseCategories';
+import { useNavbarCoursesCatalog } from '@/features/homepage/hooks/useNavbarCoursesCatalog';
 import CoursesMegaMenuBackground from './CoursesMegaMenuBackground';
 import CentersDropdownBackground from './CentersDropdownBackground';
 import NavbarDropdownGradientBackground, {
@@ -96,6 +97,8 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
 
   const [activeCity, setActiveCity] = useState('New Delhi');
   const [activeTab, setActiveTab] = useState('GS Foundation');
+  const { getProgramsForCity, getCoursesForCityProgram, hasApiData } =
+    useNavbarCoursesCatalog();
 
   const closeAllDesktopMenus = () => {
     setIsCoursesOpen(false);
@@ -207,11 +210,23 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
     },
   ];
 
-  const tabs = getHeaderTabsForCity(activeCity);
-  const courseList = getHeaderCourseLinks(activeCity, activeTab);
+  const tabs = hasApiData
+    ? getProgramsForCity(activeCity)
+    : getHeaderTabsForCity(activeCity);
+
+  const courseList = useMemo(() => {
+    if (hasApiData) {
+      return getCoursesForCityProgram(activeCity, activeTab).map((course) => ({
+        label: course.courseName,
+        slug: course.slug,
+        href: `/course/${course.slug}`,
+      }));
+    }
+    return getHeaderCourseLinks(activeCity, activeTab);
+  }, [activeCity, activeTab, getCoursesForCityProgram, hasApiData]);
 
   useEffect(() => {
-    if (!tabs.includes(activeTab)) {
+    if (tabs.length > 0 && !tabs.includes(activeTab)) {
       setActiveTab(tabs[0] ?? 'GS Foundation');
     }
   }, [activeCity, activeTab, tabs]);
@@ -227,10 +242,14 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
     />
   );
 
-  const renderMegaMenuCourseLink = (course: { href: string; slug: string; label: string }) => (
+  const renderMegaMenuCourseLink = (course: {
+    href: string;
+    slug: string;
+    label: string;
+  }) => (
     <Link
       href={course.href}
-      key={course.slug}
+      key={`${course.slug}-${course.label}`}
       onClick={() => setIsCoursesOpen(false)}
       className="group/course-item flex w-full min-w-0 items-center gap-2.5"
     >
@@ -936,6 +955,7 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                 {cities.map((city) => (
                   <button
                     key={city.name}
+                    type="button"
                     onClick={() => setActiveCity(city.name)}
                     className={`grid w-full grid-cols-[44px_1fr] items-center gap-2.5 rounded-[14px] px-2.5 py-2 transition-all duration-300 ${
                       activeCity === city.name
@@ -961,18 +981,23 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
 
             <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden p-4 md:p-5 md:pl-6">
               <div className="relative z-10 flex h-full min-h-0 flex-1 flex-col">
-                <div className="relative mb-4 shrink-0 overflow-hidden rounded-full border border-[#D6EBF5] bg-[#F0F8FD]/95 p-1 backdrop-blur-sm">
-                  <div className="relative z-10 flex w-full justify-between gap-1">
+                <div className="relative mb-4 shrink-0 overflow-x-auto rounded-full border border-[#D6EBF5] bg-[#F0F8FD]/95 p-1 backdrop-blur-sm [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  <div className="relative z-10 flex min-w-max gap-1">
                     {tabs.map((tab) => (
                       <button
                         key={tab}
+                        type="button"
                         onClick={() => setActiveTab(tab)}
-                        className={`flex-1 rounded-full px-3 py-2.5 text-[14px] md:text-[15px] font-semibold font-[Montserrat] transition-all duration-300 whitespace-nowrap ${
+                        className={`shrink-0 rounded-full px-3 py-2.5 text-[13px] font-semibold font-[Montserrat] transition-all duration-300 whitespace-nowrap md:px-4 md:text-[15px] ${
                           activeTab === tab
                             ? 'text-white shadow-sm'
                             : 'bg-transparent text-[#333333] hover:text-[#15658D]'
                         }`}
-                        style={activeTab === tab ? { background: 'linear-gradient(90deg, #2A9FDB 0%, #15658D 100%)' } : {}}
+                        style={
+                          activeTab === tab
+                            ? { background: 'linear-gradient(90deg, #2A9FDB 0%, #15658D 100%)' }
+                            : {}
+                        }
                       >
                         {tab}
                       </button>
@@ -980,8 +1005,14 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
                   </div>
                 </div>
 
-                <div className="grid flex-1 grid-cols-1 content-start gap-3 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-3">
-                  {courseList.map((course) => renderMegaMenuCourseLink(course))}
+                <div className="grid max-h-[220px] flex-1 grid-cols-1 content-start gap-3 overflow-y-auto sm:grid-cols-2 sm:gap-x-6 sm:gap-y-3">
+                  {courseList.length > 0 ? (
+                    courseList.map((course) => renderMegaMenuCourseLink(course))
+                  ) : (
+                    <p className="col-span-full py-6 text-center text-sm text-gray-500">
+                      No courses available under {activeTab} in {activeCity}.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

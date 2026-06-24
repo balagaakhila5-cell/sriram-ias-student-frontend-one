@@ -4,11 +4,8 @@ import React, { Suspense, lazy, useMemo } from 'react';
 import MainLayout from '@/components/common/MainLayout';
 import NotFoundPage from '@/components/common/NotFound';
 import { getCourseBySlug } from '@/features/course/data/courses';
-import { useCourse, useCourses } from '@/features/course/hooks/useCourses';
-import {
-  findApiIdForSlug,
-  mergeCourseDetail,
-} from '@/features/course/adapters/courseAdapter';
+import { useCourseBySlug } from '@/features/course/hooks/useCourses';
+import { mergeCourseDetail } from '@/features/course/adapters/courseAdapter';
 import CourseHero from '@/features/course/components/sections/CourseHero';
 import CourseInfoBar from '@/features/course/components/sections/CourseInfoBar';
 import CourseDescription from '@/features/course/components/sections/CourseDescription';
@@ -44,24 +41,16 @@ const CoursePageClient: React.FC<CoursePageClientProps> = ({ courseSlug }) => {
   const staticCourse = getCourseBySlug(courseSlug);
 
   const {
-    data: apiCourses,
-    isLoading: isCoursesLoading,
-  } = useCourses();
-
-  const apiId = useMemo(() => {
-    return findApiIdForSlug(courseSlug, apiCourses);
-  }, [courseSlug, apiCourses]);
-
-  const {
     data: apiDetail,
     isLoading: isDetailLoading,
-  } = useCourse(apiId);
+    isError: isDetailError,
+  } = useCourseBySlug(courseSlug);
 
   const course = useMemo(() => {
     return mergeCourseDetail(apiDetail, courseSlug) ?? staticCourse;
   }, [apiDetail, courseSlug, staticCourse]);
 
-  if (!course && (isCoursesLoading || isDetailLoading)) {
+  if (!course && isDetailLoading) {
     return (
       <MainLayout logoOnlyHeader logoOnlyTransparent>
         <div className="min-h-screen flex items-center justify-center">
@@ -69,6 +58,10 @@ const CoursePageClient: React.FC<CoursePageClientProps> = ({ courseSlug }) => {
         </div>
       </MainLayout>
     );
+  }
+
+  if (!course && isDetailError && !staticCourse) {
+    return <NotFoundPage />;
   }
 
   if (!course) {
@@ -93,9 +86,9 @@ const CoursePageClient: React.FC<CoursePageClientProps> = ({ courseSlug }) => {
         <HowWillHelp course={course} />
       </Suspense>
 
-      {isCenterCity(course.city ?? 'delhi') && (
+      {isCenterCity(course.city) && (
         <Suspense fallback={sectionFallback}>
-          <OurToppers city={course.city ?? 'delhi'} />
+          <OurToppers city={course.city} />
         </Suspense>
       )}
 

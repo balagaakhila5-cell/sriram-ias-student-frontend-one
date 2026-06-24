@@ -9,9 +9,21 @@ export interface CoursePersona {
   label: string;
 }
 
+export interface CoursePurchaseMeta {
+  courseId: string;
+  batchId: string;
+  batchBusinessId?: string;
+  onlineAmount: number;
+  offlineAmount: number;
+  discountAmount?: number;
+  onlineBulletPoints?: string[];
+  offlineBulletPoints?: string[];
+}
+
 export interface CourseData {
   slug: string;
   city?: 'delhi' | 'hyderabad' | 'pune';
+  purchase?: CoursePurchaseMeta;
   title: string;
   subtitle?: string;
   heroImage: string;
