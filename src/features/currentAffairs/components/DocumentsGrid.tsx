@@ -2,8 +2,13 @@
 
 import { type ReactNode } from "react";
 import type { CatalogDocument } from "@/features/resources/catalog/types";
-import ResourceDocumentCard from "@/features/resources/components/ResourceDocumentCard";
-import PaginatedPdfGrid from "@/features/resources/components/PaginatedPdfGrid";
+import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
+import { RESOURCE_CARD_GRID } from "@/features/resources/components/cardStyles";
+import CurrentAffairsCard from "./CurrentAffairsCard";
+import EmptyState from "./EmptyState";
+import ErrorState from "./ErrorState";
+import LoadingSkeleton from "./LoadingSkeleton";
+import PaginationComponent from "./PaginationComponent";
 
 interface DocumentsGridProps {
   documents: CatalogDocument[];
@@ -11,38 +16,60 @@ interface DocumentsGridProps {
   isError: boolean;
   error?: { message?: string } | null;
   emptyLabel?: string;
+  pagination?: {
+    page: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+    total?: number;
+  };
+  onPageChange?: (page: number) => void;
+  onRetry?: () => void;
 }
 
-/** Renders the document-card grid with shared loading / error / empty states. */
 export default function DocumentsGrid({
   documents,
   isLoading,
   isError,
   error,
   emptyLabel = "No documents found for the selected filters.",
+  pagination,
+  onPageChange,
+  onRetry,
 }: DocumentsGridProps) {
   if (isLoading) {
-    return <GridMessage>Loading…</GridMessage>;
+    return <LoadingSkeleton />;
   }
 
   if (isError) {
     return (
-      <GridMessage tone="error">
-        {error?.message ?? "Failed to load. Please try again."}
-      </GridMessage>
+      <ErrorState message={error?.message} onRetry={onRetry} />
     );
   }
 
   if (documents.length === 0) {
-    return <GridMessage>{emptyLabel}</GridMessage>;
+    return <EmptyState message={emptyLabel} />;
   }
 
   return (
-    <PaginatedPdfGrid
-      items={documents}
-      getKey={(item) => item.id}
-      renderItem={(item) => <ResourceDocumentCard item={item} />}
-    />
+    <div>
+      <ResourceCardGrid className={RESOURCE_CARD_GRID}>
+        {documents.map((item) => (
+          <CurrentAffairsCard key={item.id} item={item} />
+        ))}
+      </ResourceCardGrid>
+
+      {pagination && onPageChange ? (
+        <PaginationComponent
+          page={pagination.page}
+          totalPages={pagination.totalPages}
+          hasNextPage={pagination.hasNextPage}
+          hasPrevPage={pagination.hasPrevPage}
+          total={pagination.total}
+          onPageChange={onPageChange}
+        />
+      ) : null}
+    </div>
   );
 }
 
@@ -63,3 +90,5 @@ function GridMessage({
     </p>
   );
 }
+
+export { GridMessage };

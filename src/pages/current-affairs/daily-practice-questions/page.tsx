@@ -7,16 +7,22 @@ import { useGSAP } from "@gsap/react";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 
 import { FileText, ClipboardList } from "lucide-react";
-import { buildDpqDateFilterOptions } from "@/features/resources/catalog/currentAffairs";
-import { useDailyPracticeTests } from "@/features/currentAffairs/hooks/useCurrentAffairs";
+import {
+  useCurrentAffairsFilterDates,
+  useCurrentAffairsFilterMonths,
+  useCurrentAffairsFilterYears,
+  useDailyPracticeTests,
+} from "@/features/currentAffairs/hooks/useCurrentAffairs";
 import {
   ALL_FILTER,
-  CA_FILTER_MONTHS,
-  CA_FILTER_YEARS,
   toFilterValue,
 } from "@/features/currentAffairs/filters";
 import PracticeTestCard from "@/features/resources/components/PracticeTestCard";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
+import EmptyState from "@/features/currentAffairs/components/EmptyState";
+import ErrorState from "@/features/currentAffairs/components/ErrorState";
+import LoadingSkeleton from "@/features/currentAffairs/components/LoadingSkeleton";
+import PaginationComponent from "@/features/currentAffairs/components/PaginationComponent";
 import {
   PRACTICE_TEST_CARD_GRID,
   RESOURCE_PAGE_HEADING_GRADIENT,
@@ -40,30 +46,60 @@ export default function DailyPracticeQuestionsPage() {
   const [activeTab, setActiveTab] = useState<ExamType>("prelims");
   const [filterYear, setFilterYear] = useState<string>(ALL_FILTER);
   const [filterMonth, setFilterMonth] = useState<string>(ALL_FILTER);
+  const [page, setPage] = useState(1);
 
-  const dateOptions = useMemo(
-    () => buildDpqDateFilterOptions(filterMonth, ALL_FILTER),
-    [filterMonth],
+  const { data: yearOptions = [ALL_FILTER] } = useCurrentAffairsFilterYears(
+    "DAILY_PRACTICE_QUESTIONS",
+    activeTab === "prelims" ? "PRELIMS" : "MAINS",
   );
 
-  const [selectedDate, setSelectedDate] = useState<string>("");
+  const { data: monthOptions = [ALL_FILTER] } = useCurrentAffairsFilterMonths(
+    "DAILY_PRACTICE_QUESTIONS",
+    toFilterValue(filterYear),
+    activeTab === "prelims" ? "PRELIMS" : "MAINS",
+  );
+
+  const { data: apiDates = [] } = useCurrentAffairsFilterDates(
+    "DAILY_PRACTICE_QUESTIONS",
+    toFilterValue(filterYear),
+    toFilterValue(filterMonth),
+    activeTab === "prelims" ? "PRELIMS" : "MAINS",
+  );
+
+  const dateOptions = useMemo(
+    () => [ALL_FILTER, ...apiDates],
+    [apiDates],
+  );
+
+  const [selectedDate, setSelectedDate] = useState<string>(ALL_FILTER);
+
+  useEffect(() => {
+    setPage(1);
+  }, [activeTab, filterYear, filterMonth, selectedDate]);
+
+  useEffect(() => {
+    setSelectedDate(ALL_FILTER);
+  }, [activeTab, filterYear, filterMonth]);
 
   useEffect(() => {
     setSelectedDate((current) =>
-      dateOptions.includes(current) ? current : dateOptions[0] ?? "",
+      dateOptions.includes(current) ? current : ALL_FILTER,
     );
   }, [dateOptions]);
 
   const {
     tests: practiceTests,
+    pagination,
     isLoading,
     isError,
     error,
-  } = useDailyPracticeTests(
-    activeTab,
-    toFilterValue(filterYear),
-    toFilterValue(filterMonth),
-  );
+    refetch,
+  } = useDailyPracticeTests(activeTab, {
+    year: toFilterValue(filterYear),
+    month: toFilterValue(filterMonth),
+    date: toFilterValue(selectedDate),
+    page,
+  });
 
   useGSAP(
     () => {
@@ -196,13 +232,13 @@ export default function DailyPracticeQuestionsPage() {
 
                 <div className="dpq-animate-filters mb-10 flex flex-col items-center justify-center gap-5 md:flex-row md:gap-6">
                   <CustomDropdown
-                    options={CA_FILTER_YEARS}
+                    options={yearOptions}
                     value={filterYear}
                     onChange={setFilterYear}
                     placeholder="Year"
                   />
                   <CustomDropdown
-                    options={CA_FILTER_MONTHS}
+                    options={monthOptions}
                     value={filterMonth}
                     onChange={setFilterMonth}
                     placeholder="Month"
@@ -217,27 +253,34 @@ export default function DailyPracticeQuestionsPage() {
 
                 <div className="cards-grid">
                   {isLoading ? (
-                    <p className="text-center text-[16px] font-medium text-[#555]">
-                      Loading…
-                    </p>
+                    <LoadingSkeleton />
                   ) : isError ? (
-                    <p className="text-center text-[16px] font-medium text-red-600">
-                      {error?.message ?? "Failed to load practice tests."}
-                    </p>
+                    <ErrorState
+                      message={error?.message ?? "Failed to load practice tests."}
+                      onRetry={() => refetch()}
+                    />
                   ) : practiceTests.length === 0 ? (
-                    <p className="text-center text-[16px] font-medium text-[#555]">
-                      No practice tests found for the selected filters.
-                    </p>
+                    <EmptyState message="No practice tests found for the selected filters." />
                   ) : (
-                    <ResourceCardGrid className={PRACTICE_TEST_CARD_GRID}>
-                      {practiceTests.map((card) => (
-                        <PracticeTestCard
-                          key={card.id}
-                          test={card}
-                          variant="public"
-                        />
-                      ))}
-                    </ResourceCardGrid>
+                    <>
+                      <ResourceCardGrid className={PRACTICE_TEST_CARD_GRID}>
+                        {practiceTests.map((card) => (
+                          <PracticeTestCard
+                            key={card.id}
+                            test={card}
+                            variant="public"
+                          />
+                        ))}
+                      </ResourceCardGrid>
+                      <PaginationComponent
+                        page={pagination.page}
+                        totalPages={pagination.totalPages}
+                        hasNextPage={pagination.hasNextPage}
+                        hasPrevPage={pagination.hasPrevPage}
+                        total={pagination.total}
+                        onPageChange={setPage}
+                      />
+                    </>
                   )}
                 </div>
               </div>

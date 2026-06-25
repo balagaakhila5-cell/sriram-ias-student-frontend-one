@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "@/components/common/AppImage";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -15,10 +15,11 @@ import FloatingActions from "@/components/common/FloatingActions";
 import HoverCard from "@/components/common/HoverCard";
 import FreeResourcesOurBooksSlider from "@/components/common/FreeResourcesOurBooksSlider";
 import { DAILY_LEARNING_CARD_IMAGE } from "@/features/currentAffairs/components/DailyLearningTopicCarousel";
+import { useCurrentAffairsHubCards } from "@/features/currentAffairs/hooks/useCurrentAffairs";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const categories = [
+const FALLBACK_CATEGORIES = [
   {
     title: "Daily Current Affairs",
     href: "/current-affairs/daily-current-affairs",
@@ -99,6 +100,29 @@ const quickLinks = [
 export default function CurrentAffairsPage() {
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const { cards: apiCards } = useCurrentAffairsHubCards();
+
+  const categories = useMemo(() => {
+    const fromApi = apiCards.map((card) => ({
+      title: card.title,
+      href: card.href,
+      image: card.image,
+    }));
+
+    if (fromApi.length === 0) return FALLBACK_CATEGORIES;
+
+    const dailyLearning = {
+      title: "Daily Learning",
+      href: "/current-affairs/daily-learning",
+      image: DAILY_LEARNING_CARD_IMAGE,
+    };
+
+    if (fromApi.length >= 6) {
+      return [...fromApi.slice(0, 5), dailyLearning];
+    }
+
+    return [...fromApi, dailyLearning].slice(0, 6);
+  }, [apiCards]);
 
   useGSAP(
     () => {

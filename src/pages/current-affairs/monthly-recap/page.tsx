@@ -231,7 +231,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import usePrefersReducedMotion from "@/hooks/usePrefersReducedMotion";
 import { revealResourceCards } from "@/features/resources/utils/resourceCardGsap";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCurrentAffairsDocuments } from "@/features/currentAffairs/hooks/useCurrentAffairs";
 import DocumentsGrid from "@/features/currentAffairs/components/DocumentsGrid";
 import {
@@ -274,12 +274,18 @@ export default function MonthlyRecapPage() {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [selectedYear, setSelectedYear] = useState<string>(ALL_FILTER);
   const [selectedMonth, setSelectedMonth] = useState<string>(ALL_FILTER);
+  const [page, setPage] = useState(1);
 
-  const { documents, isLoading, isError, error } = useCurrentAffairsDocuments(
-    "MONTHLY_RECAP",
-    toFilterValue(selectedYear),
-    toFilterValue(selectedMonth),
-  );
+  useEffect(() => {
+    setPage(1);
+  }, [selectedYear, selectedMonth]);
+
+  const { documents, pagination, isLoading, isError, error, refetch } =
+    useCurrentAffairsDocuments("MONTHLY_RECAP", {
+      year: toFilterValue(selectedYear),
+      month: toFilterValue(selectedMonth),
+      page,
+    });
 
   useGSAP(
     () => {
@@ -390,6 +396,9 @@ export default function MonthlyRecapPage() {
                     isLoading={isLoading}
                     isError={isError}
                     error={error}
+                    pagination={pagination}
+                    onPageChange={setPage}
+                    onRetry={() => refetch()}
                   />
                 </div>
               </div>

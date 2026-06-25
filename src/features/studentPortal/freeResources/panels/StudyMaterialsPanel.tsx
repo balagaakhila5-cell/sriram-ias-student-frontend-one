@@ -7,11 +7,10 @@ import { FREE_RESOURCE_CARD_GRID } from "@/features/resources/components/cardSty
 import { mapApiFilesToCatalog } from "@/features/resources/utils/mapApiToCatalog";
 import {
   findCategoryByKey,
-  findSubCategoryByName,
   useResourceCategories,
   useResourceFiles,
-  useResourceSubCategories,
 } from "@/features/resources/hooks/useResources";
+import type { StudyMaterialCategoryValue } from "@/features/resources/types/customerFreeResources";
 import type { CatalogDocument } from "@/features/resources/catalog/types";
 import type { StudyMaterialsExamType } from "../config";
 
@@ -40,16 +39,11 @@ export default function StudyMaterialsPanel({
   );
   const categoryId = studyCategory?._id;
 
-  const { data: subCategories } = useResourceSubCategories(categoryId);
-  const subCategory = useMemo(
-    () => findSubCategoryByName(subCategories, examType),
-    [subCategories, examType],
-  );
-  const subCategoryId = subCategory?._id;
+  const studyMaterialCategory = examType.toUpperCase() as StudyMaterialCategoryValue;
 
   const { data: files = [], isFetching } = useResourceFiles(
-    { categoryId, subCategoryId },
-    !!categoryId && !!subCategoryId,
+    { categoryId, studyCategory: studyMaterialCategory },
+    !!categoryId,
   );
 
   const items: CatalogDocument[] = useMemo(

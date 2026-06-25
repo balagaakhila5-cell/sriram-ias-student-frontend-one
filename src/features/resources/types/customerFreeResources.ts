@@ -112,6 +112,7 @@ export interface MockTestCheckAnswerItem {
 export interface StudyMaterialItem {
   _id: string;
   studyMaterialName: string;
+  studyMaterialCategory?: StudyMaterialCategoryValue | null;
   previewUrl: string;
   downloadUrl: string;
 }

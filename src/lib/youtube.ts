@@ -1,4 +1,11 @@
 const YOUTUBE_VIDEO_ID_PATTERN = /^[a-zA-Z0-9_-]{11}$/;
+const YOUTUBE_ID_REGEX =
+  /(?:youtu\.be\/|v=|embed\/|shorts\/|live\/)([a-zA-Z0-9_-]{11})/;
+
+function matchYouTubeIdFromText(text: string): string | null {
+  const match = text.match(YOUTUBE_ID_REGEX);
+  return match?.[1] ?? null;
+}
 
 export function isValidYouTubeVideoId(value?: string | null): value is string {
   return Boolean(value && YOUTUBE_VIDEO_ID_PATTERN.test(value));
@@ -7,11 +14,11 @@ export function isValidYouTubeVideoId(value?: string | null): value is string {
 export function getYouTubeVideoId(url?: string | null): string | null {
   if (!url) return null;
 
-  const trimmed = url.trim();
-  if (isValidYouTubeVideoId(trimmed)) return trimmed;
+  const input = url.trim();
+  if (isValidYouTubeVideoId(input)) return input;
 
   try {
-    const parsed = new URL(trimmed);
+    const parsed = new URL(input);
     const host = parsed.hostname.replace(/^www\./, '');
 
     if (host === 'youtu.be') {
@@ -32,10 +39,8 @@ export function getYouTubeVideoId(url?: string | null): string | null {
     // Fall through to regex for non-standard URLs.
   }
 
-  const match = trimmed.match(
-    /(?:youtu\.be\/|v=|embed\/|shorts\/|live\/)([a-zA-Z0-9_-]{11})/,
-  );
-  return match?.[1] ?? null;
+  const match = matchYouTubeIdFromText(input);
+  return match;
 }
 
 export function buildYouTubeEmbedUrl(

@@ -27,11 +27,10 @@ import StudyMaterialsSidebar from "@/features/resources/components/StudyMaterial
 
 import {
   findCategoryByKey,
-  findSubCategoryByName,
   useResourceCategories,
   useResourceFiles,
-  useResourceSubCategories,
 } from "@/features/resources/hooks/useResources";
+import type { StudyMaterialCategoryValue } from "@/features/resources/types/customerFreeResources";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -51,6 +50,12 @@ const EXAM_TO_TAB: Record<StudyMaterialsExamType, "PRELIMS" | "MAINS" | "INTERVI
 
 type TabKey = keyof typeof TAB_TO_EXAM;
 
+const TAB_LABELS: Record<TabKey, string> = {
+  PRELIMS: "Prelims",
+  MAINS: "Mains",
+  INTERVIEW: "Interview",
+};
+
 export default function StudyMaterialsPage() {
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -63,16 +68,12 @@ export default function StudyMaterialsPage() {
   );
   const categoryId = studyCategory?._id;
 
-  const { data: subCategories } = useResourceSubCategories(categoryId);
-  const subCategory = useMemo(
-    () => findSubCategoryByName(subCategories, activeTab.toLowerCase()),
-    [subCategories, activeTab],
-  );
-  const subCategoryId = subCategory?._id;
-
   const { data: files = [], isFetching, isError, error } = useResourceFiles(
-    { categoryId, subCategoryId },
-    !!categoryId && !!subCategoryId,
+    {
+      categoryId,
+      studyCategory: activeTab as StudyMaterialCategoryValue,
+    },
+    !!categoryId,
   );
 
   const examType =
@@ -191,7 +192,7 @@ export default function StudyMaterialsPage() {
                   )}
                   <StudyMaterialsGrid
                     items={catalogItems}
-                    emptyMessage="No Records Found"
+                    emptyMessage={`No study materials available for ${TAB_LABELS[activeTab]} yet.`}
                     gridClassName={FREE_RESOURCE_CARD_GRID}
                     resetKey={activeTab}
                   />

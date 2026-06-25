@@ -1,179 +1,132 @@
+import { customerCurrentAffairsService } from "./customerCurrentAffairsService";
+import {
+  buildListQuery,
+  mapPaginatedListToResult,
+  mapQuizDetailsToQuestions,
+  mapQuizResultsToSubmitResult,
+} from "../adapters/customerCurrentAffairsAdapter";
 import type {
+  CurrentAffairsCategory,
   CurrentAffairsListFilters,
   CurrentAffairsListResult,
-  CurrentAffairsOption,
-  CurrentAffairsQuestion,
   CurrentAffairsQuestionsResult,
-  CurrentAffairsReviewItem,
   CurrentAffairsSubmitResult,
+  MainsCategory,
   SubmitAnswerInput,
-} from '../types';
-
-const delay = (ms = 120) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const LOCAL_QUESTION_BANK: Array<{
-  question: string;
-  options: string[];
-  correctKey: string;
-  explanation: string;
-}> = [
-  {
-    question:
-      'Which article of the Indian Constitution deals with Fundamental Rights?',
-    options: ['Article 12-35', 'Article 36-51', 'Article 52-78', 'Article 79-122'],
-    correctKey: 'A',
-    explanation: 'Fundamental Rights are covered under Articles 12 to 35.',
-  },
-  {
-    question: 'The Tropic of Cancer passes through how many Indian states?',
-    options: ['6', '7', '8', '9'],
-    correctKey: 'C',
-    explanation: 'Eight Indian states lie on the Tropic of Cancer.',
-  },
-  {
-    question: 'Who was the first President of India?',
-    options: [
-      'Dr. Rajendra Prasad',
-      'Dr. B.R. Ambedkar',
-      'Jawaharlal Nehru',
-      'Sardar Patel',
-    ],
-    correctKey: 'A',
-    explanation: 'Dr. Rajendra Prasad served as the first President of India.',
-  },
-  {
-    question: 'Which river is known as the Dakshin Ganga?',
-    options: ['Krishna', 'Godavari', 'Kaveri', 'Mahanadi'],
-    correctKey: 'B',
-    explanation: 'The Godavari is often called the Dakshin Ganga.',
-  },
-  {
-    question:
-      'The Panchayati Raj system was constitutionalized by which amendment?',
-    options: ['42nd', '44th', '73rd', '74th'],
-    correctKey: 'C',
-    explanation: 'The 73rd Constitutional Amendment institutionalized Panchayati Raj.',
-  },
-];
-
-const OPTION_KEYS = ['A', 'B', 'C', 'D'] as const;
-
-function toOptions(values: string[]): CurrentAffairsOption[] {
-  return values.map((value, index) => ({
-    key: OPTION_KEYS[index] ?? String(index + 1),
-    value,
-  }));
-}
-
-function buildQuestions(testId: string): CurrentAffairsQuestion[] {
-  return LOCAL_QUESTION_BANK.map((item, index) => ({
-    _id: `${testId}-q${index + 1}`,
-    currentAffairId: testId,
-    questionNumber: index + 1,
-    question: item.question,
-    options: toOptions(item.options),
-    imageUrl: null,
-    explanation: item.explanation,
-  }));
-}
-
-function gradeFromPercentage(percentage: number): string {
-  if (percentage >= 90) return 'A+';
-  if (percentage >= 75) return 'A';
-  if (percentage >= 60) return 'B';
-  if (percentage >= 45) return 'C';
-  if (percentage >= 30) return 'D';
-  return 'F';
-}
-
-function evaluateAnswers(
-  testId: string,
-  answers: SubmitAnswerInput[],
-): CurrentAffairsSubmitResult {
-  const questions = buildQuestions(testId);
-  const answerMap = new Map(
-    answers.map((answer) => [answer.questionId, answer.selectedAnswer]),
-  );
-
-  const review: CurrentAffairsReviewItem[] = questions.map((question, index) => {
-    const bankItem = LOCAL_QUESTION_BANK[index];
-    const selectedAnswer = answerMap.get(question._id) ?? null;
-    const correctAnswer = bankItem.correctKey;
-    const isSkipped = selectedAnswer == null || selectedAnswer === '';
-    const isCorrect = !isSkipped && selectedAnswer === correctAnswer;
-
-    return {
-      _id: question._id,
-      questionNumber: question.questionNumber,
-      question: question.question,
-      options: question.options,
-      selectedAnswer,
-      correctAnswer,
-      isCorrect,
-      isSkipped,
-      explanation: question.explanation,
-      imageUrl: null,
-    };
-  });
-
-  const totalQuestions = review.length;
-  const attemptedCount = review.filter((item) => !item.isSkipped).length;
-  const correctCount = review.filter((item) => item.isCorrect).length;
-  const wrongCount = attemptedCount - correctCount;
-  const skippedCount = totalQuestions - attemptedCount;
-  const percentage =
-    totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
-
-  return {
-    paper: null,
-    totalQuestions,
-    attemptedCount,
-    correctCount,
-    wrongCount,
-    skippedCount,
-    percentage,
-    grade: gradeFromPercentage(percentage),
-    review,
-  };
-}
-
-function emptyListResult(filters: CurrentAffairsListFilters): CurrentAffairsListResult {
-  const limit = filters.limit ?? 24;
-  return {
-    items: [],
-    count: 0,
-    total: 0,
-    page: filters.page ?? 1,
-    limit,
-    totalPages: 1,
-    hasNextPage: false,
-    hasPrevPage: false,
-  };
-}
+} from "../types";
+import type { FilterQuery } from "../types/customerCurrentAffairs";
 
 export const currentAffairsService = {
+  getCategories: () => customerCurrentAffairsService.getCategories(),
+
+  getMainsCategories: () => customerCurrentAffairsService.getMainsCategories(),
+
+  getYears: (query: FilterQuery) => customerCurrentAffairsService.getYears(query),
+
+  getMonths: (query: FilterQuery) =>
+    customerCurrentAffairsService.getMonths(query),
+
+  getDates: (query: FilterQuery) => customerCurrentAffairsService.getDates(query),
+
   list: async (
     filters: CurrentAffairsListFilters = {},
   ): Promise<CurrentAffairsListResult> => {
-    await delay();
-    return emptyListResult(filters);
+    const category = filters.category ?? "CURRENT_AFFAIRS";
+    const result = await customerCurrentAffairsService.list(
+      buildListQuery({ ...filters, category }),
+    );
+
+    return mapPaginatedListToResult(result.items, category, {
+      count: result.count,
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+      totalPages: result.totalPages,
+      hasNextPage: result.hasNextPage,
+      hasPrevPage: result.hasPrevPage,
+    });
   },
 
+  getDailyCurrentAffairs: (filters: Omit<CurrentAffairsListFilters, "category"> = {}) =>
+    currentAffairsService.list({ ...filters, category: "CURRENT_AFFAIRS" }),
+
+  getMonthlyMagazines: (filters: Omit<CurrentAffairsListFilters, "category"> = {}) =>
+    currentAffairsService.list({ ...filters, category: "MONTHLY_MAGAZINE" }),
+
+  getInfographics: (filters: Omit<CurrentAffairsListFilters, "category"> = {}) =>
+    currentAffairsService.list({ ...filters, category: "INFOGRAPHICS" }),
+
+  getMonthlyRecaps: (filters: Omit<CurrentAffairsListFilters, "category"> = {}) =>
+    currentAffairsService.list({ ...filters, category: "MONTHLY_RECAP" }),
+
+  getPrelimsQuizzes: (
+    filters: Omit<CurrentAffairsListFilters, "category" | "mainsCategory"> = {},
+  ) =>
+    currentAffairsService.list({
+      ...filters,
+      category: "DAILY_PRACTICE_QUESTIONS",
+      mainsCategory: "PRELIMS",
+    }),
+
+  getMainsQuizzes: (
+    filters: Omit<CurrentAffairsListFilters, "category" | "mainsCategory"> = {},
+  ) =>
+    currentAffairsService.list({
+      ...filters,
+      category: "DAILY_PRACTICE_QUESTIONS",
+      mainsCategory: "MAINS",
+    }),
+
+  viewResource: (resourceId: string) =>
+    customerCurrentAffairsService.view(resourceId),
+
+  downloadResource: (resourceId: string) =>
+    customerCurrentAffairsService.download(resourceId),
+
+  sampleResource: (resourceId: string) =>
+    customerCurrentAffairsService.sample(resourceId),
+
   getQuestions: async (id: string): Promise<CurrentAffairsQuestionsResult> => {
-    await delay();
-    const questions = buildQuestions(id);
-    return {
-      paper: null,
-      count: questions.length,
-      questions,
-    };
+    const data = await customerCurrentAffairsService.getDetails(id);
+    return mapQuizDetailsToQuestions(data);
   },
+
+  getDailyCurrentAffairById: (id: string) =>
+    customerCurrentAffairsService.view(id),
+
+  getMonthlyMagazineById: (id: string) =>
+    customerCurrentAffairsService.view(id),
+
+  getInfographicById: (id: string) =>
+    customerCurrentAffairsService.view(id),
+
+  getMonthlyRecapById: (id: string) =>
+    customerCurrentAffairsService.view(id),
 
   submitAnswers: async (
     id: string,
     answers: SubmitAnswerInput[],
   ): Promise<CurrentAffairsSubmitResult> => {
-    await delay(250);
-    return evaluateAnswers(id, answers);
+    const payload = {
+      currentAffairId: id,
+      answers: answers.map((answer) => ({
+        questionId: answer.questionId,
+        selectedAnswer: answer.selectedAnswer,
+      })),
+    };
+
+    const [submitResult, reviewItems, details] = await Promise.all([
+      customerCurrentAffairsService.submitQuiz(payload),
+      customerCurrentAffairsService.checkAnswers(payload),
+      customerCurrentAffairsService.getDetails(id).catch(() => null),
+    ]);
+
+    const paper = details
+      ? mapQuizDetailsToQuestions(details).paper
+      : null;
+
+    return mapQuizResultsToSubmitResult(submitResult, reviewItems, paper);
   },
 };
+
+export type { CurrentAffairsCategory, MainsCategory };

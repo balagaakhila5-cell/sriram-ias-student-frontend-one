@@ -40,6 +40,7 @@ export interface CurrentAffairsListFilters {
   mainsCategory?: MainsCategory;
   /** Optional exact-date filter, format YYYY-MM-DD. */
   date?: string;
+  search?: string;
   page?: number;
   limit?: number;
 }

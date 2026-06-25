@@ -333,10 +333,13 @@ export const resourcesService = {
     if (categoryId === "STUDY_MATERIAL") {
       const payload: StudyMaterialListQuery = {
         search: query.search,
-        category:
-          query.studyCategory ||
-          (query.subCategoryId?.toUpperCase() as StudyMaterialCategoryValue | undefined),
       };
+      const studyCategory =
+        query.studyCategory ||
+        (query.subCategoryId?.toUpperCase() as StudyMaterialCategoryValue | undefined);
+      if (studyCategory) {
+        payload.category = studyCategory;
+      }
       const materials =
         await customerFreeResourcesService.listStudyMaterials(payload);
       return mapStudyMaterialsToFiles(materials);
