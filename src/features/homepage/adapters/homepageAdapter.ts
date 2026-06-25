@@ -226,6 +226,7 @@ export function mapHomepageDetailsResponse(
       videos: (api.youtubeVideos ?? []).map((video) => ({
         _id: video._id,
         videoUrl: video.youtubeUrl,
+        youtubeVideoId: video.youtubeVideoId,
         videoThumbnail: video.thumbnail,
         title: video.title,
       })),

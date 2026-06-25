@@ -1,15 +1,14 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import useInViewport from '@/hooks/useInViewport';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 import { useHomepage } from '@/features/homepage/hooks/useHomepage';
-import YouTubeVideoModal from '@/components/common/YouTubeVideoModal';
-import { getYouTubeVideoId } from '@/lib/youtube';
+import { buildYouTubeEmbedUrl, getYouTubeVideoId } from '@/lib/youtube';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,17 +18,28 @@ const FEATURED_YOUTUBE_VIDEO = {
   image: 'https://img.youtube.com/vi/8aLYn6C9n8I/hqdefault.jpg',
   author: 'Sriram IAS',
   url: 'https://youtu.be/8aLYn6C9n8I?si=GRscIaL1AhLEtOoD',
+  videoId: '8aLYn6C9n8I',
+};
+
+type CarouselVideo = {
+  id: string;
+  title: string;
+  image: string;
+  author: string;
+  url: string;
+  videoId: string;
 };
 
 const MIN_YOUTUBE_CARDS = 5;
 
-const YOUTUBE_FALLBACK_POOL = [
+const YOUTUBE_FALLBACK_POOL: CarouselVideo[] = [
   {
     id: 'yt-fallback-1',
     title: 'The Hindu Daily Current Affairs',
     image: FEATURED_YOUTUBE_VIDEO.image,
     author: 'Saurabh Tripathi',
     url: FEATURED_YOUTUBE_VIDEO.url,
+    videoId: FEATURED_YOUTUBE_VIDEO.videoId,
   },
   FEATURED_YOUTUBE_VIDEO,
   {
@@ -38,6 +48,7 @@ const YOUTUBE_FALLBACK_POOL = [
     image: FEATURED_YOUTUBE_VIDEO.image,
     author: 'Expert Faculty',
     url: FEATURED_YOUTUBE_VIDEO.url,
+    videoId: FEATURED_YOUTUBE_VIDEO.videoId,
   },
   {
     id: 'yt-fallback-4',
@@ -45,6 +56,7 @@ const YOUTUBE_FALLBACK_POOL = [
     image: FEATURED_YOUTUBE_VIDEO.image,
     author: 'Sriram IAS Faculty',
     url: FEATURED_YOUTUBE_VIDEO.url,
+    videoId: FEATURED_YOUTUBE_VIDEO.videoId,
   },
   {
     id: 'yt-fallback-5',
@@ -52,15 +64,16 @@ const YOUTUBE_FALLBACK_POOL = [
     image: FEATURED_YOUTUBE_VIDEO.image,
     author: 'Sriram IAS',
     url: FEATURED_YOUTUBE_VIDEO.url,
+    videoId: FEATURED_YOUTUBE_VIDEO.videoId,
   },
-] as const;
+];
 
 const VISIBLE_CARD_OFFSET = 2;
 
 const AppAndVideos: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(2);
   const [isPaused, setIsPaused] = useState(false);
-  const [playingVideo, setPlayingVideo] = useState<{ videoId: string; title: string } | null>(null);
+  const [playingIndex, setPlayingIndex] = useState<number | null>(null);
   const touchStartX = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const isInViewport = useInViewport(sectionRef, { threshold: 0.2 });
@@ -76,23 +89,27 @@ const AppAndVideos: React.FC = () => {
       apiVideos.length === 0
         ? fallbackVideos
         : apiVideos
-            .filter((video) => Boolean(getYouTubeVideoId(video.videoUrl)))
             .map((video, index) => {
-              const videoId = getYouTubeVideoId(video.videoUrl);
+              const videoId =
+                video.youtubeVideoId ?? getYouTubeVideoId(video.videoUrl);
+              if (!videoId) return null;
+
               return {
                 id: video._id ?? `video-${index}`,
                 title: video.title ?? `Video ${index + 1}`,
                 image:
                   video.videoThumbnail
-                  ?? (videoId
-                    ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-                    : '/assets/youtube_video_image.png'),
+                  ?? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
                 author: 'Sriram IAS',
                 url: video.videoUrl,
-              };
-            });
+                videoId,
+              } satisfies CarouselVideo;
+            })
+            .filter((video): video is CarouselVideo => video !== null);
 
-    const hasFeaturedVideo = mapped.some((video) => video.url?.includes('8aLYn6C9n8I'));
+    const hasFeaturedVideo = mapped.some(
+      (video) => video.videoId === FEATURED_YOUTUBE_VIDEO.videoId,
+    );
     let result = hasFeaturedVideo
       ? [...mapped]
       : (() => {
@@ -146,17 +163,26 @@ const AppAndVideos: React.FC = () => {
     }
   };
 
-  const openVideo = (url?: string, title?: string) => {
-    const videoId =
-      getYouTubeVideoId(url) ?? getYouTubeVideoId(FEATURED_YOUTUBE_VIDEO.url);
-    if (!videoId) return;
-    setPlayingVideo({ videoId, title: title ?? 'YouTube video' });
+  const openVideo = (index: number) => {
+    const video = videos[index];
+    if (!video?.videoId) return;
+    setActiveIndex(index);
+    setPlayingIndex(index);
+    setIsPaused(true);
   };
 
-  const closeVideo = () => setPlayingVideo(null);
+  const closeVideo = () => {
+    setPlayingIndex(null);
+  };
 
   useEffect(() => {
-    if (isPaused || prefersReducedMotion || !isInViewport) {
+    if (playingIndex !== null && playingIndex !== activeIndex) {
+      setPlayingIndex(null);
+    }
+  }, [activeIndex, playingIndex]);
+
+  useEffect(() => {
+    if (isPaused || prefersReducedMotion || !isInViewport || playingIndex !== null) {
       return;
     }
 
@@ -165,7 +191,7 @@ const AppAndVideos: React.FC = () => {
     }, 2500);
 
     return () => clearInterval(interval);
-  }, [isInViewport, isPaused, prefersReducedMotion, videos.length]);
+  }, [isInViewport, isPaused, prefersReducedMotion, playingIndex, videos.length]);
 
   useGSAP(() => {
     if (prefersReducedMotion) {
@@ -425,12 +451,13 @@ const AppAndVideos: React.FC = () => {
           </h2>
         </div>
 
-        {!playingVideo ? (
         <div className="youtube-carousel relative group max-w-[1440px] mx-auto px-6 md:px-16">
           <div
             className="relative h-[360px] md:h-[480px] lg:h-[520px] w-full flex items-center justify-center py-4 px-6 z-10 touch-pan-y md:px-10 md:py-6"
             onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
+            onMouseLeave={() => {
+              if (playingIndex === null) setIsPaused(false);
+            }}
             onTouchStart={(e) => { setIsPaused(true); handleTouchStart(e); }}
             onTouchEnd={(e) => { setIsPaused(false); handleTouchEnd(e); }}
             onMouseDown={(e) => { setIsPaused(true); handleTouchStart(e); }}
@@ -440,12 +467,21 @@ const AppAndVideos: React.FC = () => {
             {videos.map((video, idx) => {
               const position = getCarouselPosition(idx);
               const isActive = position === 0;
+              const isPlaying = playingIndex === idx && isActive;
               const { transform, zIndex, opacity } = getCarouselStyle(position);
 
               return (
                 <div
                   key={video.id}
-                  onClick={() => setActiveIndex(idx)}
+                  onClick={() => {
+                    if (isActive && !isPlaying) {
+                      openVideo(idx);
+                      return;
+                    }
+                    if (!isPlaying) {
+                      setActiveIndex(idx);
+                    }
+                  }}
                   className="absolute w-[280px] sm:w-[340px] md:w-[520px] lg:w-[620px] xl:w-[700px] cursor-pointer transition-[transform,opacity] duration-700 ease-out will-change-transform"
                   style={{
                     transform,
@@ -453,41 +489,66 @@ const AppAndVideos: React.FC = () => {
                     opacity,
                   }}
                 >
-                  <div className="relative aspect-[16/9] overflow-hidden transition-colors duration-500">
-                    {opacity > 0 ? (
-                      <img
-                        src={video.image}
-                        alt={video.title}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                        onError={(e) => {
-                          const target = e.currentTarget;
-                          target.onerror = null;
-                          target.src = '/assets/youtube_video_image.png';
-                        }}
-                      />
-                    ) : null}
+                  <div className="relative aspect-[16/9] overflow-hidden transition-colors duration-500 bg-black">
+                    {isPlaying ? (
+                      <>
+                        <iframe
+                          key={video.videoId}
+                          src={buildYouTubeEmbedUrl(video.videoId, { autoplay: true })}
+                          title={video.title}
+                          className="absolute inset-0 h-full w-full border-0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          allowFullScreen
+                        />
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            closeVideo();
+                          }}
+                          className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/70 text-white transition-colors hover:bg-black/90"
+                          aria-label="Close video"
+                        >
+                          <X size={18} />
+                        </button>
+                      </>
+                    ) : opacity > 0 ? (
+                      <>
+                        <img
+                          src={video.image}
+                          alt={video.title}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            target.onerror = null;
+                            target.src = '/assets/youtube_video_image.png';
+                          }}
+                        />
 
-                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-[transform,opacity] duration-500 ${isActive ? 'scale-100 opacity-100 hover:scale-110' : 'scale-50 opacity-0'}`}>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openVideo(video.url, video.title);
-                        }}
-                        className="relative w-20 h-20 flex items-center justify-center"
-                        aria-label="Play video"
-                      >
-                        <svg viewBox="0 0 68 48" className="w-full h-full drop-shadow-xl">
-                          <path
-                            d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z"
-                            fill="#FF0000"
-                          />
-                          <path d="M27.31 34.33V13.67L45.47 24z" fill="#FFF" />
-                        </svg>
-                      </button>
-                    </div>
+                        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-[transform,opacity] duration-500 ${isActive ? 'scale-100 opacity-100 hover:scale-110' : 'scale-50 opacity-0'}`}>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openVideo(idx);
+                            }}
+                            className="relative w-20 h-20 flex items-center justify-center"
+                            aria-label={`Play ${video.title}`}
+                          >
+                            <svg viewBox="0 0 68 48" className="w-full h-full drop-shadow-xl">
+                              <path
+                                d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z"
+                                fill="#FF0000"
+                              />
+                              <path d="M27.31 34.33V13.67L45.47 24z" fill="#FFF" />
+                            </svg>
+                          </button>
+                        </div>
+                      </>
+                    ) : null}
                   </div>
                 </div>
               );
@@ -518,15 +579,7 @@ const AppAndVideos: React.FC = () => {
             ))}
           </div>
         </div>
-        ) : null}
       </div>
-
-      <YouTubeVideoModal
-        isOpen={playingVideo !== null}
-        videoId={playingVideo?.videoId ?? null}
-        title={playingVideo?.title}
-        onClose={closeVideo}
-      />
     </section>
   );
 };

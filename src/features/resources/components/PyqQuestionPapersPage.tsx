@@ -144,11 +144,14 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
 
   const { data: allPapers = [] } = useResourceFilters(
-
-    { type: "PAPER", categoryId },
-
+    {
+      type: "PAPER",
+      categoryId,
+      moduleType: "PYQ",
+      paperType: section.toUpperCase() as "PRELIMS" | "MAINS",
+      subCategoryId,
+    },
     !!categoryId,
-
   );
 
   const papers = useMemo(() => {
@@ -191,12 +194,14 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
 
 
+  const paperOptions = useMemo(
+    () => papers.map((paper) => paper.value),
+    [papers],
+  );
+
   const paperId = useMemo(
-
     () => resolvePyqPaperId(papers, selectedPaper),
-
     [papers, selectedPaper],
-
   );
 
   const yearId = useMemo(
@@ -209,11 +214,14 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
 
 
+  const yearOptions = useMemo(
+    () => years.map((year) => year.value),
+    [years],
+  );
+
   const showResults = hasSearched;
 
-
-
-  const { data: files = [], isFetching } = useResourceFiles(
+  const { data: files = [], isFetching, isError, error } = useResourceFiles(
 
     {
 
@@ -433,7 +441,7 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
                         variant="filter"
 
-                        options={[...PYQ_SELECT_PAPER_OPTIONS]}
+                        options={paperOptions.length > 0 ? paperOptions : [...PYQ_SELECT_PAPER_OPTIONS]}
 
                         value={selectedPaper}
 
@@ -448,7 +456,7 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
                         variant="filter"
 
-                        options={[...PYQ_YEAR_OPTIONS]}
+                        options={yearOptions.length > 0 ? yearOptions : [...PYQ_YEAR_OPTIONS]}
 
                         value={selectedYear}
 
@@ -487,14 +495,16 @@ export default function PyqQuestionPapersPage({ section }: PyqQuestionPapersPage
 
                   )}
 
-                  {showResults && !isFetching && catalogItems.length === 0 && (
-
-                    <p className="mb-4 text-center text-[16px] text-[#555]">
-
-                      No question papers found for the selected filters.
-
+                  {showResults && isError && (
+                    <p className="mb-4 text-center text-[16px] text-red-600">
+                      {error instanceof Error ? error.message : "Failed to load papers."}
                     </p>
+                  )}
 
+                  {showResults && !isFetching && !isError && catalogItems.length === 0 && (
+                    <p className="mb-4 text-center text-[16px] text-[#555]">
+                      No Records Found
+                    </p>
                   )}
 
                   {showResults && !isFetching && catalogItems.length > 0 && (

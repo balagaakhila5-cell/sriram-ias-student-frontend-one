@@ -4,14 +4,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   getDemoMockTestDetail,
   isDemoMockTestId,
-  listDemoMockTestCards,
 } from "../catalog/demoMockTests";
 import {
   resourcesService,
   type FilesQuery,
   type FilterQuery,
   type MockTestAttemptPayload,
-  type MockTestSummary,
   type MockTestsQuery,
 } from "../services/resourcesService";
 
@@ -35,8 +33,7 @@ export function useResourceCategories() {
     queryKey: resourcesKeys.categories,
     queryFn: resourcesService.listCategories,
     staleTime: 10 * 60 * 1000,
-    retry: 0,
-    placeholderData: [],
+    retry: 1,
   });
 }
 
@@ -46,22 +43,17 @@ export function useResourceSubCategories(categoryId?: string) {
     queryFn: () => resourcesService.listSubCategories(categoryId),
     enabled: !!categoryId,
     staleTime: 10 * 60 * 1000,
-    retry: 0,
-    placeholderData: [],
+    retry: 1,
   });
 }
 
-export function useResourceFilters(
-  query: FilterQuery,
-  enabled = true,
-) {
+export function useResourceFilters(query: FilterQuery, enabled = true) {
   return useQuery({
     queryKey: resourcesKeys.filters(query),
     queryFn: () => resourcesService.listFilters(query),
-    enabled: enabled && !!query.categoryId,
+    enabled,
     staleTime: 10 * 60 * 1000,
-    retry: 0,
-    placeholderData: [],
+    retry: 1,
   });
 }
 
@@ -70,54 +62,16 @@ export function useResourceFiles(query: FilesQuery, enabled = true) {
     queryKey: resourcesKeys.files(query),
     queryFn: () => resourcesService.listFiles(query),
     enabled: enabled && !!query.categoryId,
-    retry: 0,
-    placeholderData: [],
+    retry: 1,
   });
 }
 
-function demoMockSummaries(examType: "prelims" | "mains"): MockTestSummary[] {
-  return listDemoMockTestCards(examType).map((card) => ({
-    _id: card._id,
-    title: `${card.title} — ${card.subtitle}`,
-    duration: card.duration,
-    totalQuestions: card.totalQuestions,
-  }));
-}
-
-export function useMockTests(
-  query: MockTestsQuery,
-  enabled = true,
-  examType: "prelims" | "mains" = "prelims",
-) {
+export function useMockTests(query: MockTestsQuery, enabled = true) {
   return useQuery({
-    queryKey: [...resourcesKeys.mockTests(query), examType],
-    queryFn: async (): Promise<MockTestSummary[]> => {
-      if (!query.categoryId) {
-        return demoMockSummaries(examType);
-      }
-      try {
-        const apiTests = await resourcesService.listMockTests(query);
-        if (apiTests.length >= 6) return apiTests.slice(0, 6);
-        const merged = [...apiTests];
-        for (const card of listDemoMockTestCards(examType)) {
-          if (merged.length >= 6) break;
-          if (!merged.some((t) => t._id === card._id)) {
-            merged.push({
-              _id: card._id,
-              title: `${card.title} — ${card.subtitle}`,
-              duration: card.duration,
-              totalQuestions: card.totalQuestions,
-            });
-          }
-        }
-        return merged.slice(0, 6);
-      } catch {
-        return demoMockSummaries(examType);
-      }
-    },
+    queryKey: resourcesKeys.mockTests(query),
+    queryFn: () => resourcesService.listMockTests(query),
     enabled,
-    retry: 0,
-    placeholderData: demoMockSummaries(examType),
+    retry: 1,
     staleTime: 5 * 60 * 1000,
   });
 }
@@ -133,6 +87,7 @@ export function useMockTest(id: string | undefined) {
       return resourcesService.getMockTest(id as string);
     },
     enabled: !!id,
+    retry: 1,
   });
 }
 
@@ -144,11 +99,15 @@ export function useSubmitMockTest(testId: string | undefined) {
         if (!test) throw new Error("Demo test not found");
         let correctCount = 0;
         for (const q of test.questions) {
-          if (payload.answers[q._id] === q.correctAnswer) correctCount += 1;
+          const answer = payload.answers[q._id];
+          if (answer === q.correctAnswer) correctCount += 1;
         }
         const total = test.questions.length;
         const answeredCount = Object.values(payload.answers).filter(
-          (answer) => answer !== undefined && answer !== "",
+          (answer) =>
+            answer !== undefined &&
+            answer !== "" &&
+            !(Array.isArray(answer) && answer.length === 0),
         ).length;
         const incorrectCount = Math.max(answeredCount - correctCount, 0);
         const unattemptedCount = Math.max(total - answeredCount, 0);
@@ -186,15 +145,11 @@ export function useMockTestHistory() {
   });
 }
 
-/* ------------------------------------------------------------------ */
-/*  Helpers to resolve well-known categories by name                   */
-/* ------------------------------------------------------------------ */
-
 export const RESOURCE_CATEGORY_NAMES = {
-  NCERT: ["ncert", "ncert books"],
-  PYQ: ["pyq", "previous year question papers", "previous year"],
-  MOCK_TESTS: ["mock", "free mock tests", "mock tests"],
-  STUDY_MATERIALS: ["study material", "study materials"],
+  NCERT: ["ncert", "ncert books", "ncert_books"],
+  PYQ: ["pyq", "previous year question papers", "previous year", "previous_year_questions"],
+  MOCK_TESTS: ["mock", "free mock tests", "mock tests", "free_mock_test"],
+  STUDY_MATERIALS: ["study material", "study materials", "study_material"],
 } as const;
 
 export type ResourceCategoryKey = keyof typeof RESOURCE_CATEGORY_NAMES;
@@ -207,7 +162,8 @@ export function findCategoryByKey(
   const candidates = RESOURCE_CATEGORY_NAMES[key].map((n) => n.toLowerCase());
   return categories.find((c) => {
     const name = c.name.toLowerCase();
-    return candidates.some((cand) => name.includes(cand));
+    const id = c._id.toLowerCase();
+    return candidates.some((cand) => name.includes(cand) || id.includes(cand));
   });
 }
 

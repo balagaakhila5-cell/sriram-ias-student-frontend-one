@@ -70,7 +70,7 @@ export default function StudyMaterialsPage() {
   );
   const subCategoryId = subCategory?._id;
 
-  const { data: files = [], isFetching } = useResourceFiles(
+  const { data: files = [], isFetching, isError, error } = useResourceFiles(
     { categoryId, subCategoryId },
     !!categoryId && !!subCategoryId,
   );
@@ -184,9 +184,14 @@ export default function StudyMaterialsPage() {
                       Loading...
                     </p>
                   )}
+                  {isError && (
+                    <p className="mb-4 text-center text-[16px] text-red-600">
+                      {error instanceof Error ? error.message : "Failed to load study materials."}
+                    </p>
+                  )}
                   <StudyMaterialsGrid
                     items={catalogItems}
-                    emptyMessage={`No study material available for ${activeTab}.`}
+                    emptyMessage="No Records Found"
                     gridClassName={FREE_RESOURCE_CARD_GRID}
                     resetKey={activeTab}
                   />

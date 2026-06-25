@@ -33,9 +33,9 @@ export default function MockTestRunnerPage({ params }: PageProps) {
   const totalQuestions = questions.length;
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>(
-    {},
-  );
+  const [selectedAnswers, setSelectedAnswers] = useState<
+    Record<string, string | string[]>
+  >({});
   const [showSubmitModal, setShowSubmitModal] = useState(false);
 
   const startedAtRef = useRef<string>(new Date().toISOString());
@@ -58,13 +58,53 @@ export default function MockTestRunnerPage({ params }: PageProps) {
     return () => clearInterval(id);
   }, [test, durationSeconds]);
 
-  const answeredCount = Object.keys(selectedAnswers).length;
+  const answeredCount = useMemo(
+    () =>
+      questions.filter((item) => {
+        const answer = selectedAnswers[item._id];
+        if (Array.isArray(answer)) return answer.length > 0;
+        return answer !== undefined && answer !== "";
+      }).length,
+    [questions, selectedAnswers],
+  );
   const unansweredCount = totalQuestions - answeredCount;
 
   const question = questions[currentQuestion];
 
   const handleOptionSelect = (questionId: string, option: string) => {
-    setSelectedAnswers((prev) => ({ ...prev, [questionId]: option }));
+    const currentQuestionData = questions.find((item) => item._id === questionId);
+    const isMultiple = currentQuestionData?.questionType === "MULTIPLE";
+
+    setSelectedAnswers((prev) => {
+      if (!isMultiple) {
+        return { ...prev, [questionId]: option };
+      }
+
+      const current = prev[questionId];
+      const currentValues = Array.isArray(current)
+        ? current
+        : current
+          ? [current]
+          : [];
+
+      const nextValues = currentValues.includes(option)
+        ? currentValues.filter((value) => value !== option)
+        : [...currentValues, option];
+
+      return { ...prev, [questionId]: nextValues };
+    });
+  };
+
+  const isQuestionAnswered = (questionId: string) => {
+    const answer = selectedAnswers[questionId];
+    if (Array.isArray(answer)) return answer.length > 0;
+    return answer !== undefined && answer !== "";
+  };
+
+  const isOptionSelected = (questionId: string, option: string) => {
+    const answer = selectedAnswers[questionId];
+    if (Array.isArray(answer)) return answer.includes(option);
+    return answer === option;
   };
 
   const handlePrevious = () => {
@@ -192,7 +232,7 @@ export default function MockTestRunnerPage({ params }: PageProps) {
           <div className="mb-4 flex flex-wrap justify-center gap-4 border-b border-[#ECECEC] pb-4">
             {questions.map((item, index) => {
               const active = currentQuestion === index;
-              const isAnswered = selectedAnswers[item._id] !== undefined;
+              const isAnswered = isQuestionAnswered(item._id);
               return (
                 <button
                   key={item._id}
@@ -223,7 +263,7 @@ export default function MockTestRunnerPage({ params }: PageProps) {
 
               <div className="space-y-4">
                 {question.options.map((option, i) => {
-                  const isSelected = selectedAnswers[question._id] === option;
+                  const isSelected = isOptionSelected(question._id, option);
                   return (
                     <button
                       key={`${question._id}-${i}`}
@@ -328,7 +368,9 @@ export default function MockTestRunnerPage({ params }: PageProps) {
 
             {submitMutation.isError && (
               <p className="mt-4 text-center text-[14px] text-red-600">
-                Failed to submit. Please try again.
+                {submitMutation.error instanceof Error
+                  ? submitMutation.error.message
+                  : "Failed to submit. Please try again."}
               </p>
             )}
           </div>

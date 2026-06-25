@@ -19,7 +19,9 @@ function resolveApiBaseURL(raw: string | undefined): string | undefined {
   return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
 }
 
-const baseURL = resolveApiBaseURL(import.meta.env.VITE_API_BASE_URL);
+const baseURL =
+  resolveApiBaseURL(import.meta.env.VITE_API_BASE_URL) ??
+  (import.meta.env.DEV ? "/api" : undefined);
 
 if (!baseURL) {
   // Fail loud in dev so a missing env var doesn't silently hit the wrong host.

@@ -21,12 +21,10 @@ import MockTestCard from "@/features/resources/components/MockTestCard";
 import ResourceCardGrid from "@/features/resources/components/ResourceCardGrid";
 import {
   FREE_RESOURCE_CARD_GRID,
-  RESOURCE_CARD_LIMIT,
   RESOURCE_PAGE_HEADING_GRADIENT,
   RESOURCE_SECTION_SHELL,
   RESOURCE_SECTION_WAVE_OVERLAY,
 } from "@/features/resources/components/cardStyles";
-import { listDemoMockTestCards } from "@/features/resources/catalog/demoMockTests";
 import {
   findCategoryByKey,
   findSubCategoryByName,
@@ -69,7 +67,12 @@ export default function FreeMockTestsPage() {
   const subCategoryId = subCategory?._id;
 
   const { data: allPapers = [] } = useResourceFilters(
-    { type: "PAPER", categoryId },
+    {
+      type: "PAPER",
+      categoryId,
+      paperType: activeTab.toUpperCase() as "PRELIMS" | "MAINS",
+      subCategoryId,
+    },
     !!categoryId,
   );
   const papers = useMemo(() => {
@@ -87,38 +90,27 @@ export default function FreeMockTestsPage() {
     );
   }, [allPapers, subCategoryId]);
 
-  const paperOptions = useMemo(
-    () =>
-      activeTab === "prelims" ? PRELIMS_PAPER_OPTIONS : MAINS_PAPER_OPTIONS,
-    [activeTab],
-  );
+  const paperOptions = useMemo(() => {
+    const fromApi = papers.map((paper) => paper.value);
+    if (fromApi.length > 0) return fromApi;
+    return activeTab === "prelims" ? PRELIMS_PAPER_OPTIONS : MAINS_PAPER_OPTIONS;
+  }, [papers, activeTab]);
 
   const paperId = useMemo(
     () => papers.find((p) => p.value === selectedPaper)?._id,
     [papers, selectedPaper],
   );
 
-  const showResults = appliedFilters.examTab != null;
-  const resultsExamTab = appliedFilters.examTab ?? activeTab;
-
-  const { data: mockTests = [], isFetching } = useMockTests(
+  const { data: mockTests = [], isFetching, isError, error } = useMockTests(
     {
       categoryId,
-      subCategoryId: appliedFilters.subCategoryId,
+      subCategoryId,
       paperId: appliedFilters.paperId,
     },
-    showResults,
-    resultsExamTab,
+    !!categoryId,
   );
 
-  const displayTests = useMemo(() => {
-    if (!showResults) return [];
-    const tests =
-      mockTests.length > 0
-        ? mockTests
-        : listDemoMockTestCards(resultsExamTab);
-    return tests.slice(0, RESOURCE_CARD_LIMIT);
-  }, [showResults, mockTests, resultsExamTab]);
+  const displayTests = useMemo(() => mockTests, [mockTests]);
 
   const handleTabChange = (tab: "prelims" | "mains") => {
     setActiveTab(tab);
@@ -157,7 +149,7 @@ export default function FreeMockTestsPage() {
     },
     {
       scope: containerRef,
-      dependencies: [prefersReducedMotion, activeTab, showResults],
+      dependencies: [prefersReducedMotion, activeTab, displayTests.length],
     },
   );
 
@@ -212,24 +204,29 @@ export default function FreeMockTestsPage() {
                 </div>
 
                 <div ref={cardsRef} className="animate-cards-container">
-                  {showResults && isFetching && (
+                  {isFetching && (
                     <p className="mb-4 text-center text-[16px] text-[#555]">
                       Loading...
                     </p>
                   )}
-                  {showResults && !isFetching && displayTests.length === 0 && (
-                    <p className="mb-4 text-center text-[16px] text-[#555]">
-                      No mock tests available.
+                  {isError && (
+                    <p className="mb-4 text-center text-[16px] text-red-600">
+                      {error instanceof Error ? error.message : "Failed to load mock tests."}
                     </p>
                   )}
-                  {showResults && !isFetching && displayTests.length > 0 && (
+                  {!isFetching && !isError && displayTests.length === 0 && (
+                    <p className="mb-4 text-center text-[16px] text-[#555]">
+                      No Records Found
+                    </p>
+                  )}
+                  {!isFetching && !isError && displayTests.length > 0 && (
                     <ResourceCardGrid className={FREE_RESOURCE_CARD_GRID}>
                       {displayTests.map((test, index) => (
                         <MockTestCard
                           key={test._id}
                           test={test}
                           variant="public"
-                          examType={resultsExamTab}
+                          examType={activeTab}
                           index={index}
                         />
                       ))}

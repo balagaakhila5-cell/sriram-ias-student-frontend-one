@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "@/components/common/AppImage";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -17,37 +17,35 @@ import {
   RESOURCE_SECTION_GATEWAY_OVERLAY,
   RESOURCE_SECTION_SHELL,
 } from "@/features/resources/components/cardStyles";
+import { CATEGORY_ROUTE_MAP } from "@/features/resources/adapters/customerFreeResourcesAdapter";
 import { useResourceCategories } from "@/features/resources/hooks/useResources";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const resourceCards = [
-  {
-    title: "NCERT Books",
-    image: "/assets/free-resources/NCERT/NCERT-books.png",
-    href: "/free_resources/ncert-page",
-  },
-  {
-    title: "Previous Year Question Papers",
-    image: "/assets/free-resources/NCERT/Previous-year-questionpaper.png",
-    href: "/free_resources/previous-year",
-  },
-  {
-    title: "Free Mock Tests",
-    image: "/assets/free-resources/NCERT/free-mocktest.png",
-    href: "/free_resources/free-mocktests",
-  },
-  {
-    title: "Study Materials",
-    image: "/assets/free-resources/NCERT/studymaterials.png",
-    href: "/free_resources/study-materials",
-  },
-];
-
 export default function NcertBooksPage() {
   const containerRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
-  const { data: categories = [] } = useResourceCategories();
+  const { data: categories = [], isLoading, isError, error } = useResourceCategories();
+
+  const resourceCards = useMemo(
+    () =>
+      categories.map((category) => {
+        const config = CATEGORY_ROUTE_MAP[category._id] ?? {
+          href: "/free_resources/ncert-books",
+          image: category.thumbnail || "/assets/free-resources/NCERT/NCERT-books.png",
+          description: category.description || category.name,
+        };
+
+        return {
+          id: category._id,
+          title: category.name,
+          description: config.description,
+          image: config.image,
+          href: config.href,
+        };
+      }),
+    [categories],
+  );
 
   useGSAP(
     () => {
@@ -77,7 +75,7 @@ export default function NcertBooksPage() {
     },
     {
       scope: containerRef,
-      dependencies: [prefersReducedMotion, categories.length],
+      dependencies: [prefersReducedMotion, resourceCards.length],
     },
   );
 
@@ -86,7 +84,6 @@ export default function NcertBooksPage() {
       <Header />
 
       <main ref={containerRef} className="min-h-screen overflow-x-hidden bg-[#f2f6fa]">
-        {/* Banner */}
         <section className="relative h-[260px] w-full overflow-hidden sm:h-[320px] md:h-[360px] lg:h-[400px]">
           <Image
             src="/assets/free-resources/NCERT/free-resources-banner.png"
@@ -108,25 +105,40 @@ export default function NcertBooksPage() {
             </h1>
 
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-10 xl:gap-12 items-start">
-              {/* Cards */}
               <div className="w-full">
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                  {resourceCards.map((card) => (
-                    <HoverCard
-                      key={card.title}
-                      title={card.title}
-                      image={card.image}
-                      href={card.href}
-                      className="h-[210px] sm:h-[230px] md:h-[250px] lg:h-[260px]"
-                    />
-                  ))}
-                </div>
+                {isLoading && (
+                  <p className="mb-6 text-center text-[16px] text-[#555]">Loading...</p>
+                )}
+
+                {isError && (
+                  <p className="mb-6 text-center text-[16px] text-red-600">
+                    {error instanceof Error ? error.message : "Failed to load resources."}
+                  </p>
+                )}
+
+                {!isLoading && !isError && resourceCards.length === 0 && (
+                  <p className="mb-6 text-center text-[16px] text-[#555]">
+                    No Records Found
+                  </p>
+                )}
+
+                {!isLoading && !isError && resourceCards.length > 0 && (
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    {resourceCards.map((card) => (
+                      <HoverCard
+                        key={card.id}
+                        title={card.title}
+                        image={card.image}
+                        href={card.href}
+                        className="animate-card h-[210px] sm:h-[230px] md:h-[250px] lg:h-[260px]"
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {/* Sidebar */}
               <aside className="animate-sidebar w-full max-w-full space-y-5 lg:ml-auto lg:max-w-[340px] lg:pt-[2px]">
                 <QuickLinks />
-
                 <FreeResourcesOurBooksSlider gradientTitle />
               </aside>
             </div>

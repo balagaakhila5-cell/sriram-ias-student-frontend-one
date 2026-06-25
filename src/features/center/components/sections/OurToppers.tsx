@@ -9,9 +9,8 @@ import {
   getTopperLayout,
   OUR_TOPPERS,
   OUR_TOPPERS_SUBTITLE,
-  TOPPER_IMAGE_ASPECT_CLASS,
-  topperImageSrc,
 } from '@/data/ourToppers';
+import TopperPortraitImage from '@/components/common/TopperPortraitImage';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -84,20 +83,14 @@ const OurToppers: React.FC<Props> = () => {
                 key={`${topper.name}-${idx}`}
                 className="-ml-16 flex shrink-0 flex-col items-center overflow-visible first:ml-0 md:-ml-20 lg:-ml-24"
               >
-                <div
-                  className={`relative flex ${TOPPER_IMAGE_ASPECT_CLASS} h-[320px] w-auto shrink-0 items-end justify-center overflow-visible sm:h-[360px] lg:h-[400px]`}
-                >
-                  <img
-                    src={topperImageSrc(topper.img)}
-                    alt={topper.name}
-                    loading={idx < 6 ? 'eager' : 'lazy'}
-                    className="pointer-events-none block h-full w-full select-none object-contain object-bottom"
-                    style={{
-                      transform: `translateY(${topper.y - 28}px) scale(${topper.scale})`,
-                      transformOrigin: 'bottom center',
-                    }}
-                  />
-                </div>
+                <TopperPortraitImage
+                  img={topper.img}
+                  alt={topper.name}
+                  y={topper.y}
+                  scale={topper.scale}
+                  loading={idx < 6 ? 'eager' : 'lazy'}
+                  heightClass="h-[320px] sm:h-[360px] lg:h-[400px]"
+                />
 
                 <div className="relative z-20 mt-2 flex min-h-[76px] flex-col items-center justify-start px-1 text-center sm:mt-3">
                   <h3 className="max-w-full truncate text-[14px] font-bold leading-tight text-white md:text-[15px]">

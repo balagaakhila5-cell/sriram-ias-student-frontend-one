@@ -7,7 +7,6 @@ import {
   FREE_RESOURCE_CARD_GRID,
   RESOURCE_CARD_LIMIT,
 } from "@/features/resources/components/cardStyles";
-import { listDemoMockTestCards } from "@/features/resources/catalog/demoMockTests";
 import {
   findCategoryByKey,
   findSubCategoryByName,
@@ -22,11 +21,6 @@ interface MockTestsPanelProps {
 }
 
 export default function MockTestsPanel({ examType }: MockTestsPanelProps) {
-  const demoTests = useMemo(
-    () => listDemoMockTestCards(examType).slice(0, RESOURCE_CARD_LIMIT),
-    [examType],
-  );
-
   const { data: categories } = useResourceCategories();
   const mockCategory = useMemo(
     () => findCategoryByKey(categories, "MOCK_TESTS"),
@@ -41,16 +35,27 @@ export default function MockTestsPanel({ examType }: MockTestsPanelProps) {
   );
   const subCategoryId = subCategory?._id;
 
-  const { data: mockTests = [] } = useMockTests(
+  const { data: mockTests = [], isLoading, isError } = useMockTests(
     { categoryId, subCategoryId },
     Boolean(categoryId && subCategoryId),
-    examType,
   );
 
   const displayTests = useMemo(
-    () => (mockTests.length > 0 ? mockTests : demoTests).slice(0, RESOURCE_CARD_LIMIT),
-    [mockTests, demoTests],
+    () => mockTests.slice(0, RESOURCE_CARD_LIMIT),
+    [mockTests],
   );
+
+  if (isLoading) {
+    return <p className="text-center text-[15px] text-[#555]">Loading...</p>;
+  }
+
+  if (isError) {
+    return <p className="text-center text-[15px] text-red-600">Failed to load mock tests.</p>;
+  }
+
+  if (displayTests.length === 0) {
+    return <p className="text-center text-[15px] text-[#555]">No Records Found</p>;
+  }
 
   return (
     <ResourceCardGrid className={FREE_RESOURCE_CARD_GRID}>

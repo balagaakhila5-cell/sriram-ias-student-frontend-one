@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
+import { buildYouTubeEmbedUrl } from '@/lib/youtube';
 
 interface YouTubeVideoModalProps {
   isOpen: boolean;
@@ -42,7 +43,7 @@ const YouTubeVideoModal: React.FC<YouTubeVideoModalProps> = ({
 
   if (!isOpen || !videoId || !mounted) return null;
 
-  const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+  const embedUrl = buildYouTubeEmbedUrl(videoId, { autoplay: true });
 
   return createPortal(
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 p-4 sm:p-6 md:p-8">
@@ -66,6 +67,7 @@ const YouTubeVideoModal: React.FC<YouTubeVideoModalProps> = ({
             title={title ?? 'YouTube video'}
             className="absolute inset-0 h-full w-full border-0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
           />
 

@@ -60,6 +60,7 @@ export interface HomepageSection6 {
 export interface HomepageVideo {
   _id: string;
   videoUrl: string;
+  youtubeVideoId?: string;
   videoThumbnail?: string;
   title?: string;
 }
@@ -168,6 +169,7 @@ export interface HomepageDetailsApiData {
     title: string;
     thumbnail: string;
     youtubeUrl: string;
+    youtubeVideoId?: string;
   }>;
 }
 

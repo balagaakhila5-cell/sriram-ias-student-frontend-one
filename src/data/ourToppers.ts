@@ -88,9 +88,30 @@ export function getToppersForCity(city?: string, count = 4): OurTopper[] {
 export function topperImageSrc(img: string): string {
   const trimmed = img?.trim() ?? '';
   if (!trimmed) return '/assets/student/course-card.png';
-  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  if (/^https?:\/\//i.test(trimmed)) return optimizeTopperImageUrl(trimmed);
   if (trimmed.startsWith('/')) return trimmed;
   return `/assets/ourtoppers/_originals/${trimmed}`;
+}
+
+export function isRemoteTopperImage(img: string): boolean {
+  return /^https?:\/\//i.test(img?.trim() ?? '');
+}
+
+/** Face-centered portrait crop for CMS photos on Cloudinary. */
+export function optimizeTopperImageUrl(url: string): string {
+  const trimmed = url.trim();
+  if (!trimmed.includes('res.cloudinary.com') || !trimmed.includes('/upload/')) {
+    return trimmed;
+  }
+
+  if (/\/upload\/[^/]*[cg]_/.test(trimmed)) {
+    return trimmed;
+  }
+
+  return trimmed.replace(
+    '/upload/',
+    '/upload/c_fill,g_auto,h_900,w_640,q_auto,f_auto/',
+  );
 }
 
 /** Native bounds of static topper PNGs in public/assets/ourtoppers/_originals/ */

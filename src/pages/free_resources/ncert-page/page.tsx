@@ -113,7 +113,7 @@ export default function NcertBooksPage() {
     [classes, selectedClass]
   );
 
-  const { data: files = [], isFetching } = useResourceFiles(
+  const { data: files = [], isFetching, isError, error } = useResourceFiles(
     {
       categoryId,
       subjectId: appliedFilters.subjectId,
@@ -246,9 +246,15 @@ export default function NcertBooksPage() {
                     </p>
                   )}
 
-                  {showResults && !isFetching && catalogItems.length === 0 && (
+                  {showResults && isError && (
+                    <p className="mb-4 text-center text-[16px] text-red-600">
+                      {error instanceof Error ? error.message : "Failed to load books."}
+                    </p>
+                  )}
+
+                  {showResults && !isFetching && !isError && catalogItems.length === 0 && (
                     <p className="mb-4 text-center text-[16px] text-[#555]">
-                      No books found for the selected filters.
+                      No Records Found
                     </p>
                   )}
 

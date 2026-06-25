@@ -7,7 +7,26 @@ import {
   listFreeResourceDocuments,
 } from "../catalog/freeResources";
 import type { FreeResourcesSubtopicId } from "../catalog/types";
-import { buildYearOptions } from "@/utils/yearFilterOptions";
+import {
+  mapCategoriesToResourceCategories,
+  mapCheckAnswersToEvaluation,
+  mapMockTestDetail,
+  mapMockTestListToSummaries,
+  mapMockTestSubmitResult,
+  mapNcertBooksToFiles,
+  mapPyqPapersToFiles,
+  mapStringsToFilters,
+  mapStudyMaterialsToFiles,
+} from "../adapters/customerFreeResourcesAdapter";
+import { customerFreeResourcesService } from "./customerFreeResourcesService";
+import type {
+  MockTestListQuery,
+  NcertListQuery,
+  PaperTypeValue,
+  PyqListQuery,
+  StudyMaterialCategoryValue,
+  StudyMaterialListQuery,
+} from "../types/customerFreeResources";
 
 /* ------------------------------------------------------------------ */
 /*  Shared / raw shapes                                                */
@@ -51,6 +70,8 @@ export interface MockTestQuestion {
   _id: string;
   question: string;
   options: string[];
+  optionKeys?: string[];
+  questionType?: "SINGLE" | "MULTIPLE";
   correctAnswer?: string;
   explanation?: string;
   marks: number;
@@ -77,7 +98,7 @@ export interface MockTestDetail extends MockTestSummary {
 export interface MockTestAttemptPayload {
   startedAt: string;
   timeTaken: number;
-  answers: Record<string, string>;
+  answers: Record<string, string | string[]>;
 }
 
 export interface MockTestResult {
@@ -91,16 +112,19 @@ export interface MockTestResult {
   totalQuestions?: number;
   passed?: boolean;
   percentage?: number;
+  grade?: string;
   timeTaken?: number;
   startedAt?: string;
   submittedAt?: string;
-  answers?: Record<string, string>;
+  answers?: Record<string, string | string[]>;
   evaluation?: Array<{
     questionId: string;
     question?: string;
     options?: string[];
     selected?: string;
+    selectedAnswers?: string[];
     correctAnswer?: string;
+    correctAnswers?: string[];
     isCorrect?: boolean;
     marksAwarded?: number;
     explanation?: string;
@@ -112,6 +136,7 @@ export interface FilterQuery {
   categoryId?: string;
   subCategoryId?: string;
   moduleType?: "NCERT" | "PYQ";
+  paperType?: PaperTypeValue;
 }
 
 export interface FilesQuery {
@@ -121,217 +146,302 @@ export interface FilesQuery {
   classId?: string;
   paperId?: string;
   yearId?: string;
+  search?: string;
+  subject?: string;
+  class?: string;
+  paper?: string;
+  year?: string;
+  paperType?: PaperTypeValue;
+  studyCategory?: StudyMaterialCategoryValue;
 }
 
 export interface MockTestsQuery {
   categoryId?: string;
   subCategoryId?: string;
   paperId?: string;
+  paperType?: PaperTypeValue;
+  paper?: string;
 }
 
-const delay = (ms = 120) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const MOCK_CATEGORIES: ResourceCategory[] = [
-  { _id: "mock-ncert", name: "NCERT Books" },
-  { _id: "mock-pyq", name: "Previous Year Question Papers" },
-  { _id: "mock-mock-tests", name: "Free Mock Tests" },
-  { _id: "mock-study-materials", name: "Study Materials" },
-];
-
-const MOCK_SUBCATEGORIES: ResourceSubCategory[] = [
-  { _id: "mock-prelims", name: "prelims", category: "mock-mock-tests" },
-  { _id: "mock-mains", name: "mains", category: "mock-mock-tests" },
-];
-
 const SUBTOPIC_BY_CATEGORY: Record<string, FreeResourcesSubtopicId> = {
-  "mock-ncert": "ncert-books",
-  "mock-pyq": "previous-year",
-  "mock-study-materials": "study-materials",
+  NCERT_BOOKS: "ncert-books",
+  PREVIOUS_YEAR_QUESTIONS: "previous-year",
+  STUDY_MATERIAL: "study-materials",
 };
 
 function filesForSubtopic(subtopic: FreeResourcesSubtopicId): ResourceFile[] {
   return listFreeResourceDocuments(subtopic).map(catalogDocumentToResourceFile);
 }
 
-function evaluateDemoAttempt(
-  testId: string,
-  payload: MockTestAttemptPayload,
-): MockTestResult {
-  const test = getDemoMockTestDetail(testId);
-  if (!test) throw new Error("Mock test not found");
+function filterIdToValue(id?: string): string | undefined {
+  if (!id) return undefined;
+  const index = id.indexOf("-");
+  return index >= 0 ? id.slice(index + 1) : id;
+}
 
-  let correctCount = 0;
-  for (const question of test.questions) {
-    if (payload.answers[question._id] === question.correctAnswer) {
-      correctCount += 1;
-    }
-  }
+function resolveYearFromId(yearId?: string): number | undefined {
+  if (!yearId) return undefined;
+  const match = yearId.match(/(\d{4})$/);
+  return match ? Number(match[1]) : undefined;
+}
 
-  const total = test.questions.length;
-  const answeredCount = Object.values(payload.answers).filter(
-    (answer) => answer !== undefined && answer !== "",
-  ).length;
-  const incorrectCount = Math.max(answeredCount - correctCount, 0);
-  const unattemptedCount = Math.max(total - answeredCount, 0);
+function toSubmitAnswers(
+  test: MockTestDetail,
+  answers: Record<string, string | string[]>,
+) {
+  return test.questions.map((question) => {
+    const raw = answers[question._id];
+    const selectedValues = Array.isArray(raw)
+      ? raw
+      : raw
+        ? [raw]
+        : [];
 
-  return {
-    _id: `demo-result-${testId}-${Date.now()}`,
-    score: correctCount * 2,
-    totalMarks: total * 2,
-    correctCount,
-    incorrectCount,
-    unattemptedCount,
-    totalQuestions: total,
-    passed: correctCount >= Math.ceil(total * 0.4),
-    percentage: Math.round((correctCount / total) * 100),
-    timeTaken: payload.timeTaken,
-    startedAt: payload.startedAt,
-    submittedAt: new Date().toISOString(),
-    answers: payload.answers,
-  };
+    const selectedAnswers =
+      question.optionKeys && question.optionKeys.length > 0
+        ? selectedValues.map((value) => {
+            const index = question.options.indexOf(value);
+            if (index >= 0 && question.optionKeys?.[index]) {
+              return question.optionKeys[index];
+            }
+            return value;
+          })
+        : selectedValues;
+
+    return {
+      questionId: question._id,
+      selectedAnswers,
+    };
+  });
 }
 
 export const resourcesService = {
   listCategories: async (): Promise<ResourceCategory[]> => {
-    await delay();
-    return MOCK_CATEGORIES;
+    const categories = await customerFreeResourcesService.getCategories();
+    return mapCategoriesToResourceCategories(categories);
   },
 
   listSubCategories: async (
     categoryId?: string,
   ): Promise<ResourceSubCategory[]> => {
-    await delay();
     if (!categoryId) return [];
-    return MOCK_SUBCATEGORIES.filter((item) => item.category === categoryId);
+
+    if (categoryId === "FREE_MOCK_TEST") {
+      const paperTypes = await customerFreeResourcesService.getMockTestPaperTypes();
+      return paperTypes.map((item) => ({
+        _id: item.value.toLowerCase(),
+        name: item.label.toLowerCase(),
+        category: categoryId,
+      }));
+    }
+
+    if (categoryId === "STUDY_MATERIAL") {
+      const categories =
+        await customerFreeResourcesService.getStudyMaterialCategories();
+      return categories.map((item) => ({
+        _id: item.value.toLowerCase(),
+        name: item.label.toLowerCase(),
+        category: categoryId,
+      }));
+    }
+
+    if (categoryId === "PREVIOUS_YEAR_QUESTIONS") {
+      const paperTypes = await customerFreeResourcesService.getPyqPaperTypes();
+      return paperTypes.map((item) => ({
+        _id: item.value.toLowerCase(),
+        name: item.label.toLowerCase(),
+        category: categoryId,
+      }));
+    }
+
+    return [];
   },
 
   listFilters: async (query: FilterQuery): Promise<ResourceFilter[]> => {
-    await delay();
-    if (query.type === "SUBJECT") {
-      return [
-        { _id: "filter-history", type: "SUBJECT", value: "History" },
-        { _id: "filter-geography", type: "SUBJECT", value: "Geography" },
-        { _id: "filter-polity", type: "SUBJECT", value: "Polity" },
-      ];
+    if (query.type === "SUBJECT" && query.moduleType === "NCERT") {
+      const subjects = await customerFreeResourcesService.getNcertSubjects();
+      return mapStringsToFilters(subjects, "SUBJECT");
     }
-    if (query.type === "CLASS") {
-      return [
-        { _id: "filter-class-6", type: "CLASS", value: "Class 6" },
-        { _id: "filter-class-7", type: "CLASS", value: "Class 7" },
-        { _id: "filter-class-8", type: "CLASS", value: "Class 8" },
-      ];
+
+    if (query.type === "CLASS" && query.moduleType === "NCERT") {
+      const classes = await customerFreeResourcesService.getNcertClasses();
+      return mapStringsToFilters(classes, "CLASS");
     }
+
     if (query.type === "PAPER") {
-      return [
-        {
-          _id: "filter-prelims-gs",
-          type: "PAPER",
-          value: "General Studies",
-          subCategory: "mock-prelims",
-        },
-        {
-          _id: "filter-prelims-csat",
-          type: "PAPER",
-          value: "CSAT",
-          subCategory: "mock-prelims",
-        },
-        {
-          _id: "filter-mains-gs1",
-          type: "PAPER",
-          value: "GS I",
-          subCategory: "mock-mains",
-        },
-        {
-          _id: "filter-mains-gs2",
-          type: "PAPER",
-          value: "GS II",
-          subCategory: "mock-mains",
-        },
-        {
-          _id: "filter-mains-gs3",
-          type: "PAPER",
-          value: "GS III",
-          subCategory: "mock-mains",
-        },
-        {
-          _id: "filter-mains-gs4",
-          type: "PAPER",
-          value: "GS IV",
-          subCategory: "mock-mains",
-        },
-      ];
+      const paperType =
+        query.paperType ||
+        (query.subCategoryId?.toUpperCase() as PaperTypeValue | undefined);
+
+      if (!paperType) return [];
+
+      if (query.moduleType === "PYQ" || query.categoryId === "PREVIOUS_YEAR_QUESTIONS") {
+        const papers = await customerFreeResourcesService.getPyqPapers(paperType);
+        return mapStringsToFilters(papers, "PAPER").map((item) => ({
+          ...item,
+          subCategory: query.subCategoryId,
+        }));
+      }
+
+      const papers = await customerFreeResourcesService.getMockTestPapers(paperType);
+      return mapStringsToFilters(papers, "PAPER").map((item) => ({
+        ...item,
+        subCategory: query.subCategoryId,
+      }));
     }
-    return buildYearOptions().map((year) => ({
-      _id: `filter-year-${year}`,
-      type: "YEAR" as const,
-      value: year,
-    }));
+
+    if (query.type === "YEAR") {
+      const years = await customerFreeResourcesService.getPyqYears();
+      return years.map((year) => ({
+        _id: `filter-year-${year}`,
+        type: "YEAR" as const,
+        value: String(year),
+      }));
+    }
+
+    return [];
   },
 
   listFiles: async (query: FilesQuery = {}): Promise<ResourceFile[]> => {
-    await delay();
-    const subtopic = query.categoryId
-      ? SUBTOPIC_BY_CATEGORY[query.categoryId]
-      : undefined;
+    const categoryId = query.categoryId;
+
+    if (categoryId === "NCERT_BOOKS") {
+      const payload: NcertListQuery = {
+        search: query.search,
+        subject: query.subject ?? filterIdToValue(query.subjectId),
+        class: query.class ?? filterIdToValue(query.classId),
+      };
+      const books = await customerFreeResourcesService.listNcertBooks(payload);
+      return mapNcertBooksToFiles(books);
+    }
+
+    if (categoryId === "PREVIOUS_YEAR_QUESTIONS") {
+      const payload: PyqListQuery = {
+        search: query.search,
+        paperType:
+          query.paperType ||
+          (query.subCategoryId?.toUpperCase() as PaperTypeValue | undefined),
+        paper: query.paper ?? filterIdToValue(query.paperId),
+        year: query.year
+          ? Number(query.year)
+          : resolveYearFromId(query.yearId),
+      };
+      const papers = await customerFreeResourcesService.listPyqPapers(payload);
+      return mapPyqPapersToFiles(papers);
+    }
+
+    if (categoryId === "STUDY_MATERIAL") {
+      const payload: StudyMaterialListQuery = {
+        search: query.search,
+        category:
+          query.studyCategory ||
+          (query.subCategoryId?.toUpperCase() as StudyMaterialCategoryValue | undefined),
+      };
+      const materials =
+        await customerFreeResourcesService.listStudyMaterials(payload);
+      return mapStudyMaterialsToFiles(materials);
+    }
+
+    const subtopic = categoryId ? SUBTOPIC_BY_CATEGORY[categoryId] : undefined;
     return subtopic ? filesForSubtopic(subtopic) : [];
   },
 
   getFile: async (id: string): Promise<ResourceFile | null> => {
-    await delay();
-    const allFiles = [
-      ...filesForSubtopic("ncert-books"),
-      ...filesForSubtopic("previous-year"),
-      ...filesForSubtopic("study-materials"),
-    ];
-    return allFiles.find((file) => file._id === id) ?? null;
+    try {
+      const [ncert, pyq, study] = await Promise.allSettled([
+        customerFreeResourcesService.viewNcertBook(id),
+        customerFreeResourcesService.viewPyqPaper(id),
+        customerFreeResourcesService.viewStudyMaterial(id),
+      ]);
+
+      const resolved =
+        ncert.status === "fulfilled"
+          ? ncert.value
+          : pyq.status === "fulfilled"
+            ? pyq.value
+            : study.status === "fulfilled"
+              ? study.value
+              : null;
+
+      if (!resolved) return null;
+
+      return {
+        _id: id,
+        title: resolved.resourceName || resolved.studyMaterialName || "Resource",
+        fileUrl: resolved.fileUrl,
+      };
+    } catch {
+      const allFiles = [
+        ...filesForSubtopic("ncert-books"),
+        ...filesForSubtopic("previous-year"),
+        ...filesForSubtopic("study-materials"),
+      ];
+      return allFiles.find((file) => file._id === id) ?? null;
+    }
   },
 
   listMockTests: async (
     query: MockTestsQuery = {},
   ): Promise<MockTestSummary[]> => {
-    await delay();
-    const examType = query.subCategoryId?.includes("mains")
-      ? "mains"
-      : "prelims";
-    return listDemoMockTestCards(examType).map((card) => ({
-      _id: card._id,
-      title: `${card.title} — ${card.subtitle}`,
-      duration: card.duration,
-      totalQuestions: card.totalQuestions,
-    }));
+    const payload: MockTestListQuery = {
+      paperType:
+        query.paperType ||
+        (query.subCategoryId?.toUpperCase() as PaperTypeValue | undefined),
+      paper: query.paper ?? filterIdToValue(query.paperId),
+    };
+    const tests = await customerFreeResourcesService.listMockTests(payload);
+    return mapMockTestListToSummaries(tests);
   },
 
   getMockTest: async (id: string): Promise<MockTestDetail | null> => {
-    await delay();
-    return getDemoMockTestDetail(id);
+    const demo = getDemoMockTestDetail(id);
+    if (demo) return demo;
+
+    const data = await customerFreeResourcesService.getMockTestDetails(id);
+    return mapMockTestDetail(data);
   },
 
   submitMockTest: async (
     id: string,
     payload: MockTestAttemptPayload,
   ): Promise<MockTestResult> => {
-    await delay();
-    return evaluateDemoAttempt(id, payload);
+    const test = await resourcesService.getMockTest(id);
+    if (!test) throw new Error("Mock test not found");
+
+    const submitPayload = {
+      mockTestId: id,
+      timeTaken: payload.timeTaken,
+      answers: toSubmitAnswers(test, payload.answers),
+    };
+
+    const [submitResult, checkAnswers] = await Promise.all([
+      customerFreeResourcesService.submitMockTest(submitPayload),
+      customerFreeResourcesService.checkMockTestAnswers(submitPayload),
+    ]);
+
+    const result = mapMockTestSubmitResult(submitResult);
+    return {
+      ...result,
+      startedAt: payload.startedAt,
+      submittedAt: new Date().toISOString(),
+      answers: payload.answers,
+      evaluation: mapCheckAnswersToEvaluation(checkAnswers),
+    };
   },
 
   getMockTestResult: async (resultId: string): Promise<MockTestResult | null> => {
-    await delay();
-    const match = resultId.match(/^demo-result-(demo-mock-(?:prelims|mains)-\d+)-/);
-    if (!match) return null;
-
-    const testId = match[1];
     if (typeof window !== "undefined") {
-      const saved = window.localStorage.getItem(`test-review-${testId}`);
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved) as {
-            result?: MockTestResult;
-          };
-          if (parsed.result) {
-            return parsed.result;
+      const match = resultId.match(/^result-(.+)-\d+$/);
+      const testId = match?.[1];
+      if (testId) {
+        const saved = window.localStorage.getItem(`test-review-${testId}`);
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved) as { result?: MockTestResult };
+            if (parsed.result) return parsed.result;
+          } catch {
+            /* ignore invalid stored payload */
           }
-        } catch {
-          /* ignore invalid stored payload */
         }
       }
     }
@@ -339,8 +449,5 @@ export const resourcesService = {
     return null;
   },
 
-  listMockTestResults: async (): Promise<MockTestResult[]> => {
-    await delay();
-    return [];
-  },
+  listMockTestResults: async (): Promise<MockTestResult[]> => [],
 };

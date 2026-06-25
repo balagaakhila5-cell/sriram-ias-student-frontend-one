@@ -5,9 +5,8 @@ import { useHomepage } from '@/features/homepage/hooks/useHomepage';
 import {
   buildHomepageDisplayToppers,
   formatTopperRankLabel,
-  TOPPER_IMAGE_ASPECT_CLASS,
-  topperImageSrc,
 } from '@/data/ourToppers';
+import TopperPortraitImage from '@/components/common/TopperPortraitImage';
 
 const OurToppers: React.FC = () => {
   const { data: homepage } = useHomepage();
@@ -54,20 +53,13 @@ const OurToppers: React.FC = () => {
                 key={`${topper.id}-${idx}`}
                 className="-ml-20 flex shrink-0 flex-col items-center overflow-visible first:ml-0 md:-ml-24 lg:-ml-28"
               >
-                <div
-                  className={`relative flex ${TOPPER_IMAGE_ASPECT_CLASS} h-[360px] w-auto shrink-0 items-end justify-center overflow-visible sm:h-[400px] lg:h-[460px]`}
-                >
-                  <img
-                    src={topperImageSrc(topper.img)}
-                    alt={topper.name}
-                    loading={idx < 5 ? 'eager' : 'lazy'}
-                    className="pointer-events-none block h-full w-full select-none object-contain object-bottom"
-                    style={{
-                      transform: `translateY(${topper.y - 28}px) scale(${topper.scale})`,
-                      transformOrigin: 'bottom center',
-                    }}
-                  />
-                </div>
+                <TopperPortraitImage
+                  img={topper.img}
+                  alt={topper.name}
+                  y={topper.y}
+                  scale={topper.scale}
+                  loading={idx < 5 ? 'eager' : 'lazy'}
+                />
 
                 <div className="relative z-20 -mt-2 flex min-h-[76px] flex-col items-center justify-start px-1 text-center sm:-mt-1">
                   <h3 className="min-h-[20px] max-w-[220px] truncate text-[14px] font-bold leading-tight text-white md:text-[15px]">
