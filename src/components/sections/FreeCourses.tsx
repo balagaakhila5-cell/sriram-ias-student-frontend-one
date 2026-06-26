@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import Link from '@/components/common/AppLink';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -31,6 +31,7 @@ const FreeCourses: React.FC = () => {
       backgroundImage: '/assets/daily_quizes_full_bg.png',
       rightImage: '/assets/daily_quizes_right_image.png',
       floatingImage: '',
+      panelImages: null as string[] | null,
       accentColor: 'text-[#C5727A]',
     },
     {
@@ -43,6 +44,7 @@ const FreeCourses: React.FC = () => {
       backgroundImage: '/assets/bolgs.png',
       rightImage: '/assets/Group_64.png',
       floatingImage: '',
+      panelImages: null as string[] | null,
       accentColor: 'text-[#FFCE8C]',
     },
     {
@@ -55,6 +57,7 @@ const FreeCourses: React.FC = () => {
       backgroundImage: '/assets/current_affairs_full_bg.png',
       rightImage: '/assets/current_affairs.png',
       floatingImage: '',
+      panelImages: null as string[] | null,
       accentColor: 'text-[#EDD1AC]',
     },
     {
@@ -67,6 +70,7 @@ const FreeCourses: React.FC = () => {
       backgroundImage: '/assets/main_questions_full_bg.png',
       rightImage: '/assets/Group_63.png',
       floatingImage: '',
+      panelImages: null as string[] | null,
       accentColor: 'text-[#EDD1AC]',
     },
   ];
@@ -78,12 +82,13 @@ const FreeCourses: React.FC = () => {
     { bg: 'bg-[#004D40]', accentColor: 'text-[#EDD1AC]' },
   ];
 
-  const { data: homepage } = useHomepage();
+  const { data: homepage, isFetched, isPending } = useHomepage();
   const section4 = homepage?.section4;
   const sectionTitle = section4?.title ?? 'ACCESS FREE LEARNING RESOURCES';
 
   const sections = useMemo(() => {
     const cards = section4?.cards ?? [];
+    if (!isFetched && isPending) return [];
     if (cards.length === 0) return fallbackSections;
 
     const sortedCards = [...cards].sort(
@@ -93,7 +98,11 @@ const FreeCourses: React.FC = () => {
     return sortedCards.map((card, index) => {
       const fallback = fallbackSections[index % fallbackSections.length];
       const palette = colorPalette[index % colorPalette.length];
-      const [backgroundImage, rightImage, floatingImage] = card.images ?? [];
+      const apiImages = (card.images ?? []).filter(
+        (image): image is string => Boolean(image?.trim()),
+      );
+      const panelImages =
+        apiImages.length >= 3 ? apiImages.slice(0, 3) : null;
 
       const title = card.title ?? fallback.title;
       const id = card._id ?? fallback.id ?? `card-${index}`;
@@ -103,14 +112,28 @@ const FreeCourses: React.FC = () => {
         title,
         href: freeLearningHref(title, id),
         description: card.description ?? fallback.description,
-        backgroundImage: backgroundImage ?? fallback.backgroundImage,
-        rightImage: rightImage ?? fallback.rightImage,
-        floatingImage: floatingImage ?? fallback.floatingImage,
+        backgroundImage: fallback.backgroundImage,
+        rightImage: panelImages ? '' : fallback.rightImage,
+        panelImages,
+        floatingImage: fallback.floatingImage,
         bg: palette.bg,
         accentColor: palette.accentColor,
       };
     });
-  }, [section4]);
+  }, [section4, isFetched, isPending]);
+
+  useEffect(() => {
+    for (const section of sections) {
+      for (const imageUrl of section.panelImages ?? []) {
+        const img = new Image();
+        img.src = imageUrl;
+      }
+      if (section.rightImage) {
+        const img = new Image();
+        img.src = section.rightImage;
+      }
+    }
+  }, [sections]);
 
   useGSAP(
     () => {
@@ -132,7 +155,6 @@ const FreeCourses: React.FC = () => {
         },
       });
 
-      // BACKGROUND MOTION FOR ALL CARDS
       gsap.utils.toArray<HTMLElement>('.free-bg-motion').forEach((bg, index) => {
         gsap.fromTo(
           bg,
@@ -188,12 +210,19 @@ const FreeCourses: React.FC = () => {
       </div>
 
       <div className="relative">
+        {!isFetched && isPending && (
+          <div
+            className="section-card relative flex h-screen w-full items-center justify-center bg-[#000000] text-white"
+            aria-busy="true"
+            aria-label="Loading free learning resources"
+          />
+        )}
+
         {sections.map((section) => (
           <div
             key={section.id}
             className={`section-card relative h-screen w-full overflow-hidden ${section.bg} text-white flex items-center justify-center px-4 md:px-10 lg:px-16 xl:px-20 shadow-2xl`}
           >
-            {/* BACKGROUND IMAGE WITH MOTION */}
             {section.backgroundImage && (
               <div className="absolute inset-0 z-0 overflow-hidden">
                 <div className="free-bg-motion absolute top-[-10%] left-[-10%] w-[120%] h-[120%]">
@@ -209,7 +238,6 @@ const FreeCourses: React.FC = () => {
             )}
 
             <div className="relative z-10 grid w-full max-w-[1450px] mx-auto grid-cols-1 md:grid-cols-[44%_56%] items-center gap-8 md:gap-8 lg:gap-10">
-              {/* Text */}
               <div className="section-text w-full min-w-0">
                 <h3 className="whitespace-nowrap text-[24px] font-extrabold leading-[1.05] sm:text-[32px] md:text-[44px] lg:text-[52px] xl:text-[58px]">
                   <span className={section.accentColor}>{section.title}</span>
@@ -231,15 +259,78 @@ const FreeCourses: React.FC = () => {
                 </div>
               </div>
 
-              {/* Image — scale by height; center + clip so wide PNGs grow without right overflow */}
-              <div className="relative w-full min-w-0 overflow-hidden">
-                {section.rightImage && (
-                  <div className="free-learning-image-wrapper group flex h-[clamp(360px,58vh,840px)] w-full cursor-pointer items-center justify-center overflow-hidden">
-                    <img
-                      src={section.rightImage}
-                      alt={section.title}
-                      className="free-learning-section-image h-full w-auto max-w-none object-contain object-center drop-shadow-2xl transition-transform duration-500 ease-out group-hover:scale-[1.12]"
-                    />
+              <div
+                className={`relative w-full min-w-0 ${section.panelImages ? 'overflow-visible' : 'overflow-hidden'}`}
+              >
+                {(section.panelImages || section.rightImage) && (
+                  <div className="free-learning-image-wrapper group flex h-[clamp(280px,48vh,560px)] w-full cursor-pointer items-center justify-center overflow-visible px-2 sm:px-2">
+                    {section.panelImages ? (
+                      <div className="free-learning-hero-composition relative flex h-full w-full items-center justify-center overflow-visible">
+                        <div className="relative mx-auto hidden w-[90%] max-w-[520px] overflow-visible md:block">
+                          <div className="relative mx-auto w-full max-w-[320px]">
+                            <div className="relative z-[1] aspect-square w-full">
+                              <img
+                                src={section.panelImages[1]}
+                                alt={section.title}
+                                loading="eager"
+                                fetchPriority="high"
+                                decoding="async"
+                                className="h-full w-full object-contain object-center drop-shadow-2xl transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+                              />
+                            </div>
+                            <div className="absolute bottom-0 right-[calc(100%-11.7%)] z-[2] aspect-square w-[55%]">
+                              <img
+                                src={section.panelImages[0]}
+                                alt=""
+                                loading="eager"
+                                decoding="async"
+                                className="h-full w-full object-contain object-center drop-shadow-2xl"
+                              />
+                            </div>
+
+                            <div className="absolute top-[18%] left-[85.7%] z-[2] aspect-square w-[55%]">
+                              <img
+                                src={section.panelImages[2]}
+                                alt=""
+                                loading="eager"
+                                decoding="async"
+                                className="h-full w-full object-contain object-center drop-shadow-2xl"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex w-full flex-col items-center gap-4 py-4 md:hidden">
+                          <div className="aspect-square w-full max-w-[220px]">
+                            <img
+                              src={section.panelImages[1]}
+                              alt={section.title}
+                              className="h-full w-full object-contain object-center drop-shadow-2xl"
+                            />
+                          </div>
+                          <div className="aspect-square w-full max-w-[180px]">
+                            <img
+                              src={section.panelImages[2]}
+                              alt=""
+                              className="h-full w-full object-contain object-center drop-shadow-2xl"
+                            />
+                          </div>
+                          <div className="aspect-square w-full max-w-[140px]">
+                            <img
+                              src={section.panelImages[0]}
+                              alt=""
+                              className="h-full w-full object-contain object-center drop-shadow-2xl"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <img
+                        src={section.rightImage}
+                        alt={section.title}
+                        className="free-learning-section-image h-full w-auto max-w-none object-contain object-center drop-shadow-2xl transition-transform duration-500 ease-out group-hover:scale-[1.12]"
+                      />
+                    )}
 
                     {section.floatingImage && (
                       <img

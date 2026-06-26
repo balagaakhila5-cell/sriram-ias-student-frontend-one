@@ -28,7 +28,7 @@ const OurToppers: React.FC = () => {
     'Driven by a commitment to success, we stand behind our toppers with constant support, expert mentorship, and personalized attention.';
 
   return (
-    <section className="relative flex min-h-[520px] w-full flex-col items-center overflow-hidden pb-0 pt-0">
+    <section className="relative w-full min-h-[520px] flex flex-col items-center pt-0 pb-0 overflow-hidden">
       <img
         src="/assets/our-centers/centers-bg.png"
         alt="Background"
@@ -37,12 +37,12 @@ const OurToppers: React.FC = () => {
         className="absolute inset-0 z-0 h-full w-full object-cover"
       />
 
-      <div className="relative z-10 flex w-full max-w-[1900px] flex-col items-center">
-        <div className="mt-8 pt-2 text-center md:mt-10">
+      <div className="relative z-10 w-full max-w-[1900px] flex flex-col items-center">
+        <div className="text-center mt-8 md:mt-10 pt-2">
           <h2 className="global-section-heading normal-case">{heading}</h2>
         </div>
 
-        <p className="mx-auto mb-0 max-w-[800px] px-6 text-center text-[13px] font-medium leading-snug text-[#2A3742] md:text-[15px]">
+        <p className="text-center text-[#2A3742] font-medium max-w-[800px] mx-auto text-[13px] md:text-[15px] leading-snug px-6 mb-0">
           {subTitle}
         </p>
 
@@ -51,7 +51,7 @@ const OurToppers: React.FC = () => {
             {duplicatedToppers.map((topper, idx) => (
               <div
                 key={`${topper.id}-${idx}`}
-                className="-ml-20 flex shrink-0 flex-col items-center overflow-visible first:ml-0 md:-ml-24 lg:-ml-28"
+                className="-ml-20 md:-ml-24 lg:-ml-28 first:ml-0 flex shrink-0 flex-col items-center overflow-visible"
               >
                 <TopperPortraitImage
                   img={topper.img}
@@ -61,8 +61,8 @@ const OurToppers: React.FC = () => {
                   loading={idx < 5 ? 'eager' : 'lazy'}
                 />
 
-                <div className="relative z-20 -mt-2 flex min-h-[76px] flex-col items-center justify-start px-1 text-center sm:-mt-1">
-                  <h3 className="min-h-[20px] max-w-[220px] truncate text-[14px] font-bold leading-tight text-white md:text-[15px]">
+                <div className="-mt-2 flex min-h-[76px] flex-col items-center justify-start text-center relative z-20 px-1 sm:-mt-1">
+                  <h3 className="text-white text-[14px] md:text-[15px] font-bold leading-tight min-h-[20px] max-w-full truncate">
                     {topper.name}
                   </h3>
 
@@ -70,7 +70,7 @@ const OurToppers: React.FC = () => {
                     {formatTopperRankLabel(topper.rank, topper.year)}
                   </span>
 
-                  <span className="mt-2 max-w-[220px] truncate text-center text-[12px] text-white opacity-90">
+                  <span className="text-white text-[12px] opacity-90 text-center mt-2">
                     {topper.description}
                   </span>
                 </div>
@@ -96,13 +96,6 @@ const OurToppers: React.FC = () => {
           }
           to {
             transform: translateX(-50%);
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .toppers-track {
-            animation: none;
-            transform: none;
           }
         }
       `}</style>

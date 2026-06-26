@@ -198,9 +198,9 @@ const ExploreCourses: React.FC = () => {
 
         <div
           ref={tabsRef}
-          className="relative overflow-x-auto rounded-full bg-[#F5F5F5] p-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="relative mx-auto w-fit max-w-full overflow-x-auto rounded-full bg-[#F5F5F5] p-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          <div className="relative flex min-w-max gap-1">
+          <div className="relative inline-flex gap-1">
             <div
               ref={indicatorRef}
               className="btn-gradient absolute bottom-2 left-0 top-2 z-0 rounded-full shadow-md will-change-transform"
@@ -215,7 +215,7 @@ const ExploreCourses: React.FC = () => {
                   buttonRefs.current[idx] = el;
                 }}
                 onClick={() => handleTabClick(tab, idx)}
-                className={`relative z-10 shrink-0 rounded-full px-4 py-3 text-center text-[11px] font-medium leading-tight transition-colors duration-300 sm:px-5 sm:text-sm md:text-base ${
+                className={`relative z-10 whitespace-nowrap rounded-full px-4 py-3 text-center text-[11px] font-medium leading-tight transition-colors duration-300 sm:px-5 sm:text-sm md:text-base ${
                   activeTab === tab
                     ? 'text-white'
                     : 'text-gray-500 hover:text-gray-800'

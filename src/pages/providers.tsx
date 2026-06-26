@@ -1,9 +1,10 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useLayoutEffect, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, type ReactNode } from "react";
 import ToastContainer from "@/components/common/ToastContainer";
 import SiteSectionScope from "@/components/common/SiteSectionScope";
+import { prefetchHomepage } from "@/features/homepage/hooks/useHomepage";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
 
@@ -25,6 +26,10 @@ interface AppProvidersProps {
 }
 
 export function AppProviders({ children }: AppProvidersProps) {
+  useEffect(() => {
+    void prefetchHomepage(queryClient);
+  }, []);
+
   useLayoutEffect(() => {
     if (!useAuthStore.persist.hasHydrated()) {
       void useAuthStore.persist.rehydrate();
