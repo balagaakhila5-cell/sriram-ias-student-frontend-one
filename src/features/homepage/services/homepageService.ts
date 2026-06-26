@@ -8,6 +8,8 @@ export const homepageService = {
     const { data } = await http.post<ApiEnvelope<HomepageDetailsApiData>>(
       '/homepage/details',
       {},
+      // Render cold starts can exceed the default 20s client timeout.
+      { timeout: 90_000 },
     );
     return mapHomepageDetailsResponse(data.data);
   },

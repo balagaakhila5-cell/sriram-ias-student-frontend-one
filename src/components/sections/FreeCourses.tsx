@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import Link from '@/components/common/AppLink';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -82,12 +82,13 @@ const FreeCourses: React.FC = () => {
     { bg: 'bg-[#004D40]', accentColor: 'text-[#EDD1AC]' },
   ];
 
-  const { data: homepage } = useHomepage();
+  const { data: homepage, isFetched, isPending } = useHomepage();
   const section4 = homepage?.section4;
   const sectionTitle = section4?.title ?? 'ACCESS FREE LEARNING RESOURCES';
 
   const sections = useMemo(() => {
     const cards = section4?.cards ?? [];
+    if (!isFetched && isPending) return [];
     if (cards.length === 0) return fallbackSections;
 
     const sortedCards = [...cards].sort(
@@ -119,7 +120,20 @@ const FreeCourses: React.FC = () => {
         accentColor: palette.accentColor,
       };
     });
-  }, [section4]);
+  }, [section4, isFetched, isPending]);
+
+  useEffect(() => {
+    for (const section of sections) {
+      for (const imageUrl of section.panelImages ?? []) {
+        const img = new Image();
+        img.src = imageUrl;
+      }
+      if (section.rightImage) {
+        const img = new Image();
+        img.src = section.rightImage;
+      }
+    }
+  }, [sections]);
 
   useGSAP(
     () => {
@@ -196,6 +210,14 @@ const FreeCourses: React.FC = () => {
       </div>
 
       <div className="relative">
+        {!isFetched && isPending && (
+          <div
+            className="section-card relative flex h-screen w-full items-center justify-center bg-[#000000] text-white"
+            aria-busy="true"
+            aria-label="Loading free learning resources"
+          />
+        )}
+
         {sections.map((section) => (
           <div
             key={section.id}
@@ -241,53 +263,59 @@ const FreeCourses: React.FC = () => {
                 className={`relative w-full min-w-0 ${section.panelImages ? 'overflow-visible' : 'overflow-hidden'}`}
               >
                 {(section.panelImages || section.rightImage) && (
-                  <div className="free-learning-image-wrapper group flex h-[clamp(400px,75vh,1000px)] w-full cursor-pointer items-center justify-center overflow-visible px-2 sm:px-2">
+                  <div className="free-learning-image-wrapper group flex h-[clamp(280px,48vh,560px)] w-full cursor-pointer items-center justify-center overflow-visible px-2 sm:px-2">
                     {section.panelImages ? (
                       <div className="free-learning-hero-composition relative flex h-full w-full items-center justify-center overflow-visible">
-                        <div className="relative mx-auto hidden w-full max-w-[900px] overflow-visible md:block">
-                          <div className="relative mx-auto w-full max-w-[580px]">
+                        <div className="relative mx-auto hidden w-[90%] max-w-[520px] overflow-visible md:block">
+                          <div className="relative mx-auto w-full max-w-[320px]">
                             <div className="relative z-[1] aspect-square w-full">
                               <img
                                 src={section.panelImages[1]}
                                 alt={section.title}
+                                loading="eager"
+                                fetchPriority="high"
+                                decoding="async"
                                 className="h-full w-full object-contain object-center drop-shadow-2xl transition-transform duration-500 ease-out group-hover:scale-[1.02]"
                               />
                             </div>
-                            <div className="absolute bottom-[5%] right-[calc(100%-22%)] z-[2] aspect-square w-[72%]">
-                            
+                            <div className="absolute bottom-0 right-[calc(100%-11.7%)] z-[2] aspect-square w-[55%]">
                               <img
                                 src={section.panelImages[0]}
                                 alt=""
+                                loading="eager"
+                                decoding="async"
                                 className="h-full w-full object-contain object-center drop-shadow-2xl"
                               />
                             </div>
 
-                            <div className="absolute top-[12%] left-[70%] z-[2] aspect-square w-[72%]">
+                            <div className="absolute top-[18%] left-[85.7%] z-[2] aspect-square w-[55%]">
                               <img
                                 src={section.panelImages[2]}
                                 alt=""
+                                loading="eager"
+                                decoding="async"
                                 className="h-full w-full object-contain object-center drop-shadow-2xl"
                               />
                             </div>
                           </div>
                         </div>
 
-                        <div className="flex w-full flex-col items-center gap-5 py-6 md:hidden">
-                          <div className="aspect-square w-full max-w-[320px]">
+                        <div className="flex w-full flex-col items-center gap-4 py-4 md:hidden">
+                          <div className="aspect-square w-full max-w-[220px]">
                             <img
                               src={section.panelImages[1]}
                               alt={section.title}
                               className="h-full w-full object-contain object-center drop-shadow-2xl"
                             />
                           </div>
-                          <div className="aspect-square w-full max-w-[260px]">
+                          <div className="aspect-square w-full max-w-[180px]">
                             <img
                               src={section.panelImages[2]}
                               alt=""
                               className="h-full w-full object-contain object-center drop-shadow-2xl"
                             />
                           </div>
-                          <div className="aspect-square w-full max-w-[200px]">
+                          <div className="aspect-square w-full max-w-[140px]">
                             <img
                               src={section.panelImages[0]}
                               alt=""
