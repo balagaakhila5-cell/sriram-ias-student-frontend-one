@@ -93,11 +93,6 @@ export function topperImageSrc(img: string): string {
   return `/assets/ourtoppers/_originals/${trimmed}`;
 }
 
-/** Native bounds of static topper PNGs in public/assets/ourtoppers/_originals/ */
-export const TOPPER_IMAGE_NATIVE_WIDTH = 1536;
-export const TOPPER_IMAGE_NATIVE_HEIGHT = 1104;
-export const TOPPER_IMAGE_ASPECT_CLASS = 'aspect-[1536/1104]';
-
 export function formatTopperRankLabel(
   rank: string,
   year?: number | string | null,
