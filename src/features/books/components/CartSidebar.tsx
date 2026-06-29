@@ -5,13 +5,15 @@ import Image from '@/components/common/AppImage';
 import { useRouter } from '@/lib/appRouter';
 import { X, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
-import { mockBooks } from '@/features/books/data/books';
+import { Book } from '@/features/books/types';
 
-const CartSidebar: React.FC = () => {
+interface CartSidebarProps {
+  suggestedBooks?: Book[];
+}
+
+const CartSidebar: React.FC<CartSidebarProps> = ({ suggestedBooks = [] }) => {
   const { items, isOpen, closeCart, removeItem, updateQuantity, subtotal } = useCartStore();
   const router = useRouter();
-
-  const suggestedBooks = mockBooks.slice(0, 3);
 
   const handleCheckout = () => {
     closeCart();

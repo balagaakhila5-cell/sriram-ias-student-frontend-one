@@ -8,6 +8,7 @@ import {
   AboutPage,
   FoundersMessagePage,
   OurToppersGalleryPage,
+  OurTopperDetailPage,
   OurToppersYearWisePage,
   BooksPage,
   BookDetailsPage,
@@ -91,6 +92,7 @@ export default function AppRoutes() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/founders-message" element={<FoundersMessagePage />} />
         <Route path="/our-toppers-gallery" element={<OurToppersGalleryPage />} />
+        <Route path="/our-toppers/:id" element={<OurTopperDetailPage />} />
         <Route
           path="/our-toppers-gallery/year-wise/:year"
           element={<OurToppersYearWisePage />}

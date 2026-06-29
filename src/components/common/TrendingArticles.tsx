@@ -1,7 +1,9 @@
+'use client';
+
 import Link from "@/components/common/AppLink";
-import React from "react";
+import React, { useMemo } from "react";
 import { RESOURCE_PAGE_HEADING_GRADIENT } from "@/features/resources/components/cardStyles";
-import { TRENDING_BLOG_ARTICLES } from "@/features/blogs/data/blogsCatalog";
+import { usePublishedBlogs } from "@/features/blogs/hooks/useBlogs";
 
 export interface TrendingArticleItem {
   title: string;
@@ -31,9 +33,23 @@ const ArticleIcon = () => (
 );
 
 const TrendingArticles = ({
-  articles = TRENDING_BLOG_ARTICLES,
+  articles,
   viewAllHref = "/blogs/all",
 }: TrendingArticlesProps) => {
+  const { data: apiBlogs = [] } = usePublishedBlogs();
+
+  const resolvedArticles = useMemo(() => {
+    if (articles) return articles;
+    return apiBlogs.slice(0, 6).map((blog) => ({
+      title: blog.title,
+      href: `/blogs/${blog.slug}`,
+    }));
+  }, [articles, apiBlogs]);
+
+  if (resolvedArticles.length === 0) {
+    return null;
+  }
+
   return (
     <div className="rounded-[22px] bg-white px-5 py-6 shadow-[0px_10px_30px_rgba(0,0,0,0.05)]">
       {/* Heading */}
@@ -46,7 +62,7 @@ const TrendingArticles = ({
 
       {/* Article list */}
       <ul className="divide-y divide-gray-100">
-        {articles.map((article, index) => (
+        {resolvedArticles.map((article, index) => (
           <li key={`${article.href}-${index}`}>
             <Link
               href={article.href}

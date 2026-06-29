@@ -63,10 +63,5 @@ export function freeLearningHref(title: string, id?: string): string {
 }
 
 export function bookDetailSlug(bookId: string): string {
-  const numericId = Number.parseInt(bookId, 10);
-  if (Number.isFinite(numericId) && numericId >= 1 && numericId <= 8) {
-    return `indian-economy-general-studies-book-${numericId}`;
-  }
-
-  return `indian-economy-general-studies-book-1`;
+  return String(bookId || "").trim();
 }

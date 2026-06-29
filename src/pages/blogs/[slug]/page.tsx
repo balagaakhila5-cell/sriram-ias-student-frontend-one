@@ -4,7 +4,7 @@ import Image from '@/components/common/AppImage';
 import Link from '@/components/common/AppLink';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { useParams } from '@/lib/appRouter';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -13,40 +13,224 @@ import { TrendingVideosViewAllButton } from '@/components/common/TrendingVideosC
 import { FREE_LEARNING_EXPLORE_HREFS } from '@/features/homepage/utils/homepageLinks';
 import { FOOTER_SOCIAL_LINKS } from '@/config/footerLinks';
 import BlogDetailBookmarkButton from '@/features/blogs/components/BlogDetailBookmarkButton';
+import BlogHtmlContent from '@/features/blogs/components/BlogHtmlContent';
 import DailyLearningCard from '@/features/blogs/components/DailyLearningCard';
-import { getBlogBookmarkId } from '@/features/blogs/utils/blogBookmarks';
+import { useBlogBySlug } from '@/features/blogs/hooks/useBlogs';
+import {
+  getBlogSectionId,
+  getYoutubeEmbedUrl,
+  mapPortalBlogToBookmarkInput,
+} from '@/features/blogs/services/blogsService';
+import type { BlogBookmarkInput } from '@/features/blogs/types';
 import {
   ChevronDown,
   Clock3,
   Lightbulb,
   BookOpenText,
   BarChart3,
+  Loader2,
 } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const sections = [
-  { id: 'introduction', label: '1. Introduction' },
-  { id: 'background', label: '2. Background' },
-  { id: 'key-points', label: '3. Key Points' },
-  { id: 'latest-development', label: '4. Latest Development' },
-  { id: 'analysis', label: '5. Analysis' },
-  { id: 'faqs', label: '6. FAQs' },
-  { id: 'references', label: '7. References' },
-  { id: 'conclusion', label: '8. Conclusion' },
-];
+function BlogSidebar() {
+  return (
+    <aside className="space-y-6">
+      <DailyLearningCard className="right-sidebar-card" />
+
+      <div className="right-sidebar-card rounded-[10px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+        <h3 className="mb-5 text-center text-[30px] font-extrabold leading-none">
+          <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
+            Daily Quiz
+          </span>
+        </h3>
+
+        <p className="mb-4 text-[18px] font-semibold text-black">
+          Q . What is the capital of India?
+        </p>
+
+        {['Delhi', 'Mumbai', 'Hyderabad', 'Pune'].map((opt, i) => (
+          <div
+            key={opt}
+            className={`mb-3 flex h-[49px] items-center rounded-[7px] border px-7 text-[14px] font-semibold ${
+              i === 0 ? 'bg-[#EEF3FF]' : 'bg-white'
+            }`}
+          >
+            {String.fromCharCode(65 + i)} .&nbsp;&nbsp; {opt}
+          </div>
+        ))}
+
+        <div className="mt-8 flex justify-center">
+          <Link
+            href={FREE_LEARNING_EXPLORE_HREFS.dailyQuiz}
+            className="inline-flex h-[45px] items-center justify-center rounded-full bg-gradient-to-r from-[#38AEE5] to-[#07344D] px-7 text-[18px] font-bold text-white transition hover:opacity-90"
+          >
+            Attempt Quiz →
+          </Link>
+        </div>
+      </div>
+
+      <div className="right-sidebar-card rounded-[10px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+        <FreeResourcesCourseSlider />
+      </div>
+
+      <div className="right-sidebar-card rounded-[10px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+        <h3 className="mb-5 text-center text-[30px] font-extrabold leading-none">
+          <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
+            Trending Videos
+          </span>
+        </h3>
+
+        {[1, 2].map((item) => (
+          <div key={item} className="mb-4 flex gap-4 border-b pb-4 last:border-b-0">
+            <div className="relative h-[96px] w-[155px] shrink-0 overflow-hidden rounded-[4px]">
+              <Image
+                src="/assets/current-affairs/daily-current-affairs/trending-video.png"
+                alt="Daily Current Affairs"
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            <div>
+              <p className="text-[16px] font-bold leading-[1.45] text-black sm:text-[17px]">
+                Daily Current Affairs - 16 March 2026
+              </p>
+            </div>
+          </div>
+        ))}
+
+        <div className="mt-2 flex justify-center">
+          <TrendingVideosViewAllButton href={FOOTER_SOCIAL_LINKS.youtube} />
+        </div>
+      </div>
+
+      <div className="right-sidebar-card relative overflow-hidden rounded-[10px] bg-white px-5 py-6 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+        <div
+          className="pointer-events-none absolute right-[-30px] top-0 h-full w-[170px] opacity-60"
+          style={{
+            background:
+              'repeating-radial-gradient(circle at top right, transparent 0, transparent 10px, rgba(203,166,95,0.35) 11px, transparent 12px)',
+          }}
+        />
+
+        <h3 className="relative mb-8 text-center text-[30px] font-extrabold leading-none">
+          <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
+            Quick Links
+          </span>
+        </h3>
+
+        <div className="relative space-y-5">
+          <Link
+            href="/current-affairs"
+            className="group flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#E47A7D] bg-white text-[17px] font-bold text-[#C76B70] transition-all duration-300 hover:bg-[#E47A7D] hover:text-white"
+          >
+            <Lightbulb size={26} className="transition-colors duration-300 group-hover:text-white" />
+            Daily Current Affairs
+          </Link>
+
+          <Link
+            href="/current-affairs/daily-practice-questions"
+            className="group flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#7F72C9] bg-white text-[17px] font-bold text-[#6962B4] transition-all duration-300 hover:bg-[#7F72C9] hover:text-white"
+          >
+            <BookOpenText size={26} className="transition-colors duration-300 group-hover:text-white" />
+            Daily Practice Quiz
+          </Link>
+
+          <Link
+            href="/current-affairs/infographics"
+            className="group flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#7A9B42] bg-white text-[17px] font-bold text-[#5D842D] transition-all duration-300 hover:bg-[#7A9B42] hover:text-white"
+          >
+            <BarChart3 size={26} className="transition-colors duration-300 group-hover:text-white" />
+            Infographics
+          </Link>
+        </div>
+      </div>
+    </aside>
+  );
+}
 
 export default function BlogDetailPage() {
   const params = useParams();
-  const slug = typeof params.slug === 'string' ? params.slug : 'discipline-beats-motivation';
-  const [activeId, setActiveId] = useState('introduction');
+  const slug = typeof params.slug === 'string' ? params.slug : '';
+  const { data: blogData, isLoading: blogLoading, isError: blogError } = useBlogBySlug(slug);
+  const [activeId, setActiveId] = useState('');
   const [isTocOpen, setIsTocOpen] = useState(true);
   const tocRef = useRef<HTMLUListElement>(null);
   const articleRef = useRef<HTMLDivElement>(null);
   const bgTopRef = useRef<HTMLDivElement>(null);
   const bgBottomRef = useRef<HTMLDivElement>(null);
 
+  const sections = useMemo(
+    () => blogData?.tableOfContents ?? [],
+    [blogData?.tableOfContents],
+  );
+
+  const bookmark: BlogBookmarkInput = useMemo(() => {
+    if (blogData) {
+      return mapPortalBlogToBookmarkInput(blogData);
+    }
+
+    return {
+      id: slug,
+      slug,
+      title: 'Blog',
+      date: '',
+      time: '',
+      image: '/assets/blogs/main-cup.png',
+      category: '',
+      language: '',
+      readTime: '',
+    };
+  }, [blogData, slug]);
+
+  const youtubeEmbedUrl = useMemo(
+    () => getYoutubeEmbedUrl(blogData?.youtubeVideoUrl),
+    [blogData?.youtubeVideoUrl],
+  );
+
   useEffect(() => {
+    if (!blogData) return undefined;
+
+    const previousTitle = document.title;
+    const pageTitle =
+      blogData.metaTitle?.trim() ||
+      blogData.searchPreview?.title?.trim() ||
+      blogData.title?.trim() ||
+      '';
+    const pageDescription =
+      blogData.metaDescription?.trim() ||
+      blogData.searchPreview?.description?.trim() ||
+      '';
+
+    if (pageTitle) {
+      document.title = pageTitle;
+    }
+
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (!metaDescription) {
+      metaDescription = document.createElement('meta');
+      metaDescription.setAttribute('name', 'description');
+      document.head.appendChild(metaDescription);
+    }
+    const previousDescription = metaDescription.getAttribute('content') || '';
+    if (pageDescription) {
+      metaDescription.setAttribute('content', pageDescription);
+    }
+
+    return () => {
+      document.title = previousTitle;
+      if (pageDescription) {
+        metaDescription?.setAttribute('content', previousDescription);
+      }
+    };
+  }, [blogData]);
+
+  useEffect(() => {
+    if (!sections.length) return undefined;
+
+    setActiveId(getBlogSectionId(sections[0].order));
+
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -57,16 +241,16 @@ export default function BlogDetailPage() {
           setActiveId(visible[0].target.id);
         }
       },
-      { rootMargin: '-10% 0px -70% 0px', threshold: 0 }
+      { rootMargin: '-10% 0px -70% 0px', threshold: 0 },
     );
 
-    sections.forEach(({ id }) => {
-      const el = document.getElementById(id);
+    sections.forEach((section) => {
+      const el = document.getElementById(getBlogSectionId(section.order));
       if (el) observer.observe(el);
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [sections]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -110,7 +294,7 @@ export default function BlogDetailPage() {
               start: 'top 85%',
               once: true,
             },
-          }
+          },
         );
       });
 
@@ -129,15 +313,16 @@ export default function BlogDetailPage() {
               start: 'top 90%',
               once: true,
             },
-          }
+          },
         );
       });
     });
 
     return () => ctx.revert();
-  }, []);
+  }, [sections.length]);
 
-  const scrollToSection = (id: string) => {
+  const scrollToSection = (sectionOrder: number) => {
+    const id = getBlogSectionId(sectionOrder);
     const el = document.getElementById(id);
     if (!el) return;
 
@@ -153,7 +338,6 @@ export default function BlogDetailPage() {
       <Header />
 
       <main className="min-h-screen bg-white font-['Montserrat',sans-serif]">
-        {/* Banner */}
         <section className="relative h-[380px] w-full overflow-hidden">
           <Image
             src="/assets/blogs/blogs-banner.png"
@@ -162,9 +346,7 @@ export default function BlogDetailPage() {
             priority
             className="object-cover"
           />
-
           <div className="absolute inset-0 bg-black/30" />
-
           <h1 className="absolute left-[28px] top-[200px] text-[48px] font-black uppercase leading-none">
             <span className="ml-10 bg-gradient-to-r from-white via-[#c9c4ff] to-[#8f8cff] bg-clip-text text-transparent">
               BLOGS
@@ -173,402 +355,226 @@ export default function BlogDetailPage() {
         </section>
 
         <section className="relative overflow-hidden px-4 py-14 lg:px-6 xl:px-8">
-          {/* Visible animated background - top */}
           <div
             ref={bgTopRef}
             className="pointer-events-none absolute right-[-90px] top-[10px] z-0 h-[760px] w-[760px] opacity-45"
           >
             <Image
               src="/assets/blogs/background-animation-blog1.png"
-              alt="Background Animation Blog 1"
+              alt=""
               fill
               className="object-contain"
             />
           </div>
 
-          {/* Visible animated background - bottom */}
           <div
             ref={bgBottomRef}
             className="pointer-events-none absolute bottom-[-170px] left-[-130px] z-0 h-[850px] w-[850px] opacity-45"
           >
             <Image
               src="/assets/blogs/background-animation-blog2.png"
-              alt="Background Animation Blog 2"
+              alt=""
               fill
               className="object-contain"
             />
           </div>
 
           <div className="relative z-10 mx-auto max-w-[1360px]">
-            {/* Title area */}
-            <div className="mb-10 flex items-start justify-between gap-6">
-              <div>
-                <h2 className="mb-6 text-[44px] font-black leading-[1.15] sm:text-[48px]">
-                  <span className="bg-gradient-to-r from-[#3099DD] via-[#8B85AA] to-[#D06D7A] bg-clip-text text-transparent">
-                    Why Discipline Beats Motivation Every Time ?
-                  </span>
-                </h2>
-
-                <div className="flex flex-wrap items-center gap-5 text-[18px] font-semibold text-[#666]">
-                  <span>Current Affairs</span>
-                  <span>|</span>
-                  <span>Tags ( Prelims )</span>
-                  <span>|</span>
-                  <span className="flex items-center gap-2">
-                    <Clock3 size={20} />
-                    Read Time : 1 Hour
-                  </span>
-                </div>
+            {blogLoading ? (
+              <div className="flex min-h-[320px] items-center justify-center gap-3 text-[#246392]">
+                <Loader2 className="h-6 w-6 animate-spin" aria-hidden />
+                <span className="text-lg font-semibold">Loading blog…</span>
               </div>
-
-              <BlogDetailBookmarkButton
-                bookmark={{
-                  id: getBlogBookmarkId(slug),
-                  slug,
-                  title: 'Why Discipline Beats Motivation Every Time ?',
-                  date: 'March 23 , 2026',
-                  time: '12:30 PM',
-                  image: '/assets/blogs/main-cup.png',
-                  category: 'Current Affairs',
-                }}
-              />
-            </div>
-
-            {/* MAIN LAYOUT: TOC + FULL RIGHT CONTENT */}
-            <div ref={articleRef} className="grid grid-cols-1 gap-8 xl:grid-cols-[255px_1fr]">
-              {/* Table Of Content */}
-              <aside className="h-fit rounded-[12px] bg-white px-6 py-7 shadow-[0_8px_30px_rgba(0,0,0,0.08)] xl:sticky xl:top-[100px]">
-                <button
-                  type="button"
-                  onClick={() => setIsTocOpen((prev) => !prev)}
-                  className="mb-0 flex w-full items-center justify-between gap-3 text-left"
-                  aria-expanded={isTocOpen}
-                  aria-controls="blog-table-of-content"
+            ) : blogError || !blogData ? (
+              <div className="rounded-xl border border-red-200 bg-red-50 px-6 py-8 text-center">
+                <p className="text-lg font-semibold text-red-700">Unable to load this blog.</p>
+                <p className="mt-2 text-sm font-medium text-red-600/90">
+                  This blog may not exist or may have been removed.
+                </p>
+                <Link
+                  href="/blogs"
+                  className="mt-4 inline-flex text-sm font-semibold text-[#246392] underline"
                 >
-                  <h3 className="text-[24px] font-bold">
-                    <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
-                      Table Of Content
-                    </span>
-                  </h3>
+                  Back to Blogs
+                </Link>
+              </div>
+            ) : (
+              <>
+                <div className="mb-10 flex items-start justify-between gap-6">
+                  <div>
+                    <h2 className="mb-6 text-[44px] font-black leading-[1.15] sm:text-[48px]">
+                      <span className="bg-gradient-to-r from-[#3099DD] via-[#8B85AA] to-[#D06D7A] bg-clip-text text-transparent">
+                        {bookmark.title}
+                      </span>
+                    </h2>
 
-                  <ChevronDown
-                    size={24}
-                    className={`shrink-0 text-[#349EE3] transition-transform duration-300 ${
-                      isTocOpen ? 'rotate-180' : ''
-                    }`}
-                    aria-hidden
-                  />
-                </button>
+                    <div className="flex flex-wrap items-center gap-5 text-[18px] font-semibold text-[#666]">
+                      {bookmark.category ? <span>{bookmark.category}</span> : null}
+                      {bookmark.category && bookmark.language ? <span>|</span> : null}
+                      {bookmark.language ? <span>{bookmark.language}</span> : null}
+                      {(bookmark.category || bookmark.language) && bookmark.readTime ? (
+                        <span>|</span>
+                      ) : null}
+                      {bookmark.readTime ? (
+                        <span className="flex items-center gap-2">
+                          <Clock3 size={20} />
+                          Read Time : {bookmark.readTime}
+                        </span>
+                      ) : null}
+                    </div>
 
-                <ul
-                  id="blog-table-of-content"
-                  ref={tocRef}
-                  className={`space-y-4 overflow-hidden text-[18px] font-bold transition-all duration-300 ease-in-out ${
-                    isTocOpen
-                      ? 'mt-7 max-h-[640px] opacity-100'
-                      : 'mt-0 max-h-0 opacity-0'
-                  }`}
-                >
-                  {sections.map(({ id, label }) => (
-                    <li key={id}>
-                      <button
-                        type="button"
-                        onClick={() => scrollToSection(id)}
-                        className={`w-full rounded-[8px] px-3 py-2 text-left text-[20px] font-semibold transition-all duration-300 ${
-                          activeId === id
-                            ? 'bg-[#EBF7FF] text-[#22A8EA]'
-                            : 'text-[#777] hover:bg-[#F5FBFF] hover:text-[#22A8EA]'
+                    {blogData.tags?.length ? (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {blogData.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-full bg-[#eef6fc] px-3 py-1 text-sm font-semibold text-[#246392]"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <BlogDetailBookmarkButton bookmark={bookmark} />
+                </div>
+
+                <div ref={articleRef} className="grid grid-cols-1 gap-8 xl:grid-cols-[255px_1fr]">
+                  <aside className="h-fit rounded-[12px] bg-white px-6 py-7 shadow-[0_8px_30px_rgba(0,0,0,0.08)] xl:sticky xl:top-[100px]">
+                    <button
+                      type="button"
+                      onClick={() => setIsTocOpen((prev) => !prev)}
+                      className="mb-0 flex w-full items-center justify-between gap-3 text-left"
+                      aria-expanded={isTocOpen}
+                      aria-controls="blog-table-of-content"
+                    >
+                      <h3 className="text-[24px] font-bold">
+                        <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
+                          Table Of Content
+                        </span>
+                      </h3>
+                      <ChevronDown
+                        size={24}
+                        className={`shrink-0 text-[#349EE3] transition-transform duration-300 ${
+                          isTocOpen ? 'rotate-180' : ''
                         }`}
-                      >
-                        {label}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </aside>
-
-              {/* RIGHT SIDE FULL AREA */}
-              <div className="min-w-0">
-                {/* Image full width beside TOC */}
-                <div className="blog-section-card relative mb-10 h-[440px] overflow-hidden rounded-[10px] sm:h-[460px] md:h-[480px]">
-                  <Image
-                    src="/assets/blogs/timer-in-hand.png"
-                    alt="Discipline Blog"
-                    fill
-                    priority
-                    className="object-cover"
-                  />
-                </div>
-
-                {/* Introduction full width beside TOC */}
-                <section id="introduction" className="blog-section-card mb-14 scroll-mt-[100px]">
-                  <h3 className="mb-6 text-[24px] font-semibold text-black">
-                    1 . Introduction
-                  </h3>
-
-                  <p className="text-[21px] font-normal leading-[1.8] text-[#111]">
-                    Motivation feels powerful, but it&apos;s unreliable.{' '}
-                    <span className="font-semibold text-[#22A8EA]">
-                      Some days you wake up energized and ready to conquer your goals;
-                      other days, even the smallest tasks feel overwhelming.
-                    </span>{' '}
-                    That&apos;s where discipline steps in. Discipline is not about how you
-                    feel—it&apos;s about what you do despite how you feel. It creates
-                    consistency, and consistency is what ultimately drives real success.
-                  </p>
-                </section>
-
-                {/* From Background onwards: article + sidebar */}
-                <div className="grid grid-cols-1 gap-8 xl:grid-cols-[1fr_335px]">
-                  {/* Article content */}
-                  <article className="min-w-0">
-                    <section id="background" className="blog-section-card mb-12 scroll-mt-[100px]">
-                      <h3 className="mb-6 text-[24px] font-semibold text-black">
-                        2 . Background
-                      </h3>
-
-                      <p className="mb-7 text-[21px] font-normal leading-[1.8] text-[#111]">
-                        Motivation is emotional and temporary. It often depends on external
-                        factors like mood, environment, or inspiration.{' '}
-                        <span className="font-semibold text-[#22A8EA]">
-                          For example, watching a powerful video or attending a seminar can
-                          boost motivation—but that feeling fades quickly.
-                        </span>
-                      </p>
-
-                      <p className="text-[21px] font-normal leading-[1.8] text-[#111]">
-                        Discipline, on the other hand, is built through habits and routines.
-                        It doesn&apos;t rely on excitement. Instead, it relies on commitment and
-                        structure. Highly successful individuals don&apos;t depend on motivation
-                        every day—they depend on disciplined systems that keep them moving
-                        forward even when they don&apos;t feel like it.
-                      </p>
-                    </section>
-
-                    <section id="key-points" className="blog-section-card mb-12 scroll-mt-[100px]">
-                      <h3 className="mb-6 text-[24px] font-semibold text-black">
-                        3 . Key Points
-                      </h3>
-
-                      <p className="text-[21px] font-normal leading-[1.8] text-[#111]">
-                        Motivation is emotional and temporary. It often depends on external
-                        factors like mood, environment, or inspiration. For example, watching
-                        a powerful video or attending a seminar can boost motivation—but that
-                        feeling fades quickly.
-                      </p>
-
-                      <p className="mt-8 text-[21px] font-normal leading-[1.8] text-[#111]">
-                        Discipline, on the other hand, is built through habits and routines.
-                        It doesn&apos;t rely on excitement. Instead, it relies on commitment and
-                        structure. Highly successful individuals don&apos;t depend on motivation
-                        every day—they depend on disciplined systems.
-                      </p>
-                    </section>
-
-                    <section id="latest-development" className="blog-section-card mb-12 scroll-mt-[100px]">
-                      <h3 className="mb-6 text-[24px] font-semibold text-black">
-                        4 . Latest Development
-                      </h3>
-
-                      <p className="text-[21px] font-normal leading-[1.8] text-[#111]">
-                        Recent behavioral studies confirm that people who rely on disciplined
-                        routines consistently outperform those driven purely by motivation.
-                        Organizations and schools are increasingly incorporating habit-science
-                        into their frameworks for sustained performance.
-                      </p>
-                    </section>
-
-                    <section id="analysis" className="blog-section-card mb-12 scroll-mt-[100px]">
-                      <h3 className="mb-6 text-[24px] font-semibold text-black">
-                        5 . Analysis
-                      </h3>
-
-                      <p className="text-[21px] font-normal leading-[1.8] text-[#111]">
-                        When we compare motivation vs discipline over a 90-day period, discipline
-                        shows a significantly higher success rate. Motivation provides the initial
-                        spark, but discipline sustains the flame. The key is building micro-habits
-                        that require minimal willpower to execute daily.
-                      </p>
-                    </section>
-
-                    <section id="faqs" className="blog-section-card mb-12 scroll-mt-[100px]">
-                      <h3 className="mb-6 text-[24px] font-semibold text-black">
-                        6 . FAQs
-                      </h3>
-
-                      <div className="space-y-6">
-                        <div>
-                          <p className="text-[18px] font-semibold text-[#333]">
-                            Q: Can discipline replace motivation entirely?
-                          </p>
-
-                          <p className="mt-2 text-[21px] font-normal leading-[1.8] text-[#555]">
-                            A: Discipline doesn&apos;t replace motivation—it supplements it.
-                            Use motivation to start, discipline to continue.
-                          </p>
-                        </div>
-
-                        <div>
-                          <p className="text-[21px] font-semibold text-[#333]">
-                            Q: How long does it take to build discipline?
-                          </p>
-
-                          <p className="mt-2 text-[21px] font-normal leading-[1.8] text-[#555]">
-                            A: Research suggests it takes between 21 to 66 days to form a lasting habit.
-                          </p>
-                        </div>
-                      </div>
-                    </section>
-
-                    <section id="references" className="blog-section-card mb-12 scroll-mt-[100px]">
-                      <h3 className="mb-6 text-[24px] font-semibold text-black">
-                        7 . References
-                      </h3>
-
-                      <ul className="list-disc space-y-3 pl-8 text-[21px] font-normal leading-[1.8] text-[#111]">
-                        <li>James Clear – Atomic Habits (2018)</li>
-                        <li>Angela Duckworth – Grit: The Power of Passion and Perseverance</li>
-                        <li>Stanford Behavioral Research Lab, 2023</li>
-                      </ul>
-                    </section>
-
-                    <section id="conclusion" className="blog-section-card mb-12 scroll-mt-[100px]">
-                      <h3 className="mb-6 text-[24px] font-semibold text-black">
-                        8 . Conclusion
-                      </h3>
-
-                      <p className="text-[21px] font-normal leading-[1.8] text-[#111]">
-                        Discipline is the bridge between goals and accomplishment. While motivation
-                        is the spark, discipline is the engine. Building strong daily habits and
-                        committing to them—regardless of how you feel—is the true secret to
-                        long-term success in UPSC or any endeavor.
-                      </p>
-                    </section>
-                  </article>
-
-                  {/* Right Sidebar starts exactly from Background */}
-                  <aside className="space-y-6">
-                    <DailyLearningCard className="right-sidebar-card" />
-
-                    {/* Daily Quiz */}
-                    <div className="right-sidebar-card rounded-[10px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
-                      <h3 className="mb-5 text-center text-[30px] font-extrabold leading-none">
-                        <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
-                          Daily Quiz
-                        </span>
-                      </h3>
-
-                      <p className="mb-4 text-[18px] font-semibold text-black">
-                        Q . What is the capital of India?
-                      </p>
-
-                      {['Delhi', 'Mumbai', 'Hyderabad', 'Pune'].map((opt, i) => (
-                        <div
-                          key={opt}
-                          className={`mb-3 flex h-[49px] items-center rounded-[7px] border px-7 text-[14px] font-semibold ${
-                            i === 0 ? 'bg-[#EEF3FF]' : 'bg-white'
-                          }`}
-                        >
-                          {String.fromCharCode(65 + i)} .&nbsp;&nbsp; {opt}
-                        </div>
-                      ))}
-
-                      <div className="mt-8 flex justify-center">
-                        <Link
-                          href={FREE_LEARNING_EXPLORE_HREFS.dailyQuiz}
-                          className="inline-flex h-[45px] items-center justify-center rounded-full bg-gradient-to-r from-[#38AEE5] to-[#07344D] px-7 text-[18px] font-bold text-white transition hover:opacity-90"
-                        >
-                          Attempt Quiz →
-                        </Link>
-                      </div>
-                    </div>
-
-                    {/* Courses */}
-                    <div className="right-sidebar-card rounded-[10px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
-                      <FreeResourcesCourseSlider />
-                    </div>
-
-                    {/* Trending Videos */}
-                    <div className="right-sidebar-card rounded-[10px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
-                      <h3 className="mb-5 text-center text-[30px] font-extrabold leading-none">
-                        <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
-                          Trending Videos
-                        </span>
-                      </h3>
-
-                      {[1, 2].map((item) => (
-                        <div
-                          key={item}
-                          className="mb-4 flex gap-4 border-b pb-4 last:border-b-0"
-                        >
-                          <div className="relative h-[96px] w-[155px] shrink-0 overflow-hidden rounded-[4px]">
-                            <Image
-                              src="/assets/current-affairs/daily-current-affairs/trending-video.png"
-                              alt="Daily Current Affairs"
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-
-                          <div>
-                            <p className="text-[16px] font-bold leading-[1.45] text-black sm:text-[17px]">
-                              Daily Current Affairs - 16 March 2026
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-
-                      <div className="mt-2 flex justify-center">
-                        <TrendingVideosViewAllButton href={FOOTER_SOCIAL_LINKS.youtube} />
-                      </div>
-                    </div>
-
-                    {/* Quick Links */}
-                    <div className="right-sidebar-card relative overflow-hidden rounded-[10px] bg-white px-5 py-6 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
-                      <div
-                        className="pointer-events-none absolute right-[-30px] top-0 h-full w-[170px] opacity-60"
-                        style={{
-                          background:
-                            'repeating-radial-gradient(circle at top right, transparent 0, transparent 10px, rgba(203,166,95,0.35) 11px, transparent 12px)',
-                        }}
+                        aria-hidden
                       />
+                    </button>
 
-                      <h3 className="relative mb-8 text-center text-[30px] font-extrabold leading-none">
-                        <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
-                          Quick Links
-                        </span>
-                      </h3>
-
-                      <div className="relative space-y-5">
-                        <Link
-                          href="/current-affairs"
-                          className="group flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#E47A7D] bg-white text-[17px] font-bold text-[#C76B70] transition-all duration-300 hover:bg-[#E47A7D] hover:text-white"
-                        >
-                          <Lightbulb size={26} className="transition-colors duration-300 group-hover:text-white" />
-                          Daily Current Affairs
-                        </Link>
-
-                        <Link
-                          href="/current-affairs/daily-practice-questions"
-                          className="group flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#7F72C9] bg-white text-[17px] font-bold text-[#6962B4] transition-all duration-300 hover:bg-[#7F72C9] hover:text-white"
-                        >
-                          <BookOpenText size={26} className="transition-colors duration-300 group-hover:text-white" />
-                          Daily Practice Quiz
-                        </Link>
-
-                        <Link
-                          href="/current-affairs/infographics"
-                          className="group flex h-[58px] items-center justify-center gap-4 rounded-full border border-[#7A9B42] bg-white text-[17px] font-bold text-[#5D842D] transition-all duration-300 hover:bg-[#7A9B42] hover:text-white"
-                        >
-                          <BarChart3 size={26} className="transition-colors duration-300 group-hover:text-white" />
-                          Infographics
-                        </Link>
-                      </div>
-                    </div>
+                    <ul
+                      id="blog-table-of-content"
+                      ref={tocRef}
+                      className={`space-y-4 overflow-hidden text-[18px] font-bold transition-all duration-300 ease-in-out ${
+                        isTocOpen
+                          ? 'mt-7 max-h-[640px] opacity-100'
+                          : 'mt-0 max-h-0 opacity-0'
+                      }`}
+                    >
+                      {sections.map((section) => {
+                        const sectionId = getBlogSectionId(section.order);
+                        return (
+                          <li key={sectionId}>
+                            <button
+                              type="button"
+                              onClick={() => scrollToSection(section.order)}
+                              className={`w-full rounded-[8px] px-3 py-2 text-left text-[20px] font-semibold transition-all duration-300 ${
+                                activeId === sectionId
+                                  ? 'bg-[#EBF7FF] text-[#22A8EA]'
+                                  : 'text-[#777] hover:bg-[#F5FBFF] hover:text-[#22A8EA]'
+                              }`}
+                            >
+                              {section.order}. {section.topic}
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
                   </aside>
+
+                  <div className="min-w-0">
+                    <div className="blog-section-card relative mb-10 h-[440px] overflow-hidden rounded-[10px] sm:h-[460px] md:h-[480px]">
+                      <Image
+                        src={bookmark.image}
+                        alt={bookmark.title}
+                        fill
+                        priority
+                        className="object-cover"
+                      />
+                    </div>
+
+                    {youtubeEmbedUrl ? (
+                      <div className="blog-section-card mb-10 aspect-video overflow-hidden rounded-[10px]">
+                        <iframe
+                          src={youtubeEmbedUrl}
+                          title={bookmark.title}
+                          className="h-full w-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      </div>
+                    ) : null}
+
+                    {sections.length <= 1 ? (
+                      <>
+                        {sections.map((section) => (
+                          <section
+                            key={getBlogSectionId(section.order)}
+                            id={getBlogSectionId(section.order)}
+                            className="blog-section-card mb-14 scroll-mt-[100px]"
+                          >
+                            <h3 className="mb-6 text-[24px] font-semibold text-black">
+                              {section.order} . {section.topic}
+                            </h3>
+                            {section.image ? (
+                              <div className="relative mb-6 h-[280px] overflow-hidden rounded-[10px]">
+                                <Image
+                                  src={section.image}
+                                  alt={section.topic}
+                                  fill
+                                  className="object-cover"
+                                />
+                              </div>
+                            ) : null}
+                            <BlogHtmlContent html={section.content} />
+                          </section>
+                        ))}
+                      </>
+                    ) : (
+                      <div className="grid grid-cols-1 gap-8 xl:grid-cols-[1fr_335px]">
+                        <article className="min-w-0">
+                          {sections.map((section) => (
+                            <section
+                              key={getBlogSectionId(section.order)}
+                              id={getBlogSectionId(section.order)}
+                              className="blog-section-card mb-12 scroll-mt-[100px]"
+                            >
+                              <h3 className="mb-6 text-[24px] font-semibold text-black">
+                                {section.order} . {section.topic}
+                              </h3>
+                              {section.image ? (
+                                <div className="relative mb-6 h-[280px] overflow-hidden rounded-[10px]">
+                                  <Image
+                                    src={section.image}
+                                    alt={section.topic}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                </div>
+                              ) : null}
+                              <BlogHtmlContent html={section.content} />
+                            </section>
+                          ))}
+                        </article>
+
+                        <BlogSidebar />
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
         </section>
       </main>

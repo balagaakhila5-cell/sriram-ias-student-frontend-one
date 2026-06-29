@@ -216,20 +216,34 @@ export function mapHomepageDetailsResponse(
       title: 'BUY BOOKS',
       books: (api.books ?? []).map((book) => ({
         _id: book.productId,
+        productId: book.productId,
+        productName: book.productName,
         title: book.productName,
         image: book.thumbnail || '/assets/books.png',
+        thumbnail: book.thumbnail || undefined,
         discountedPrice: book.price,
-        summary: 'Explore this book to level up your preparation.',
+        price: book.price,
+        stockQuantity: book.stockQuantity,
+        slug: book.productId,
+        summary: book.bookSummary || '',
       })),
     },
     section7: {
-      videos: (api.youtubeVideos ?? []).map((video) => ({
-        _id: video._id,
-        videoUrl: video.youtubeUrl,
-        youtubeVideoId: video.youtubeVideoId,
-        videoThumbnail: video.thumbnail,
-        title: video.title,
-      })),
+      videos: [...(api.youtubeVideos ?? [])]
+        .map((video) => ({
+          _id: video._id,
+          videoUrl: video.youtubeUrl,
+          youtubeVideoId: video.youtubeVideoId,
+          videoThumbnail: video.thumbnail,
+          title: video.title,
+          description: video.description ?? '',
+          priority: video.priority,
+        }))
+        .sort(
+          (left, right) =>
+            (left.priority ?? Number.MAX_SAFE_INTEGER) -
+            (right.priority ?? Number.MAX_SAFE_INTEGER),
+        ),
     },
   };
 }

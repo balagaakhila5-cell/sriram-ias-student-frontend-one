@@ -8,6 +8,7 @@ import Footer from '@/components/common/Footer';
 import BlogGridCard from '@/features/blogs/components/BlogGridCard';
 import BlogsCalendar from '@/features/blogs/components/BlogsCalendar';
 import BlogsSidebar from '@/features/blogs/components/BlogsSidebar';
+import { usePublishedBlogs } from '@/features/blogs/hooks/useBlogs';
 import { ALL_BLOGS } from '@/features/blogs/data/blogsCatalog';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -16,6 +17,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function AllBlogsPage() {
   const mainRef = useRef<HTMLElement>(null);
+  const { data: apiBlogs = [], isLoading: blogsLoading } = usePublishedBlogs();
+  const blogs = apiBlogs.length > 0 ? apiBlogs : ALL_BLOGS;
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -103,11 +106,17 @@ export default function AllBlogsPage() {
                 <BlogsCalendar />
               </div>
 
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-                {ALL_BLOGS.map((blog) => (
-                  <BlogGridCard key={blog.id} blog={blog} />
-                ))}
-              </div>
+              {blogsLoading ? (
+                <div className="rounded-xl border border-[#d8e8f5] bg-[#f7fbff] px-6 py-14 text-center text-[#246392]">
+                  Loading blogs…
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                  {blogs.map((blog) => (
+                    <BlogGridCard key={blog.id} blog={blog} />
+                  ))}
+                </div>
+              )}
             </div>
 
             <aside className="lg:sticky lg:top-24 lg:self-start">

@@ -63,6 +63,8 @@ export interface HomepageVideo {
   youtubeVideoId?: string;
   videoThumbnail?: string;
   title?: string;
+  description?: string;
+  priority?: number;
 }
 
 export interface HomepageSection7 {
@@ -88,10 +90,22 @@ export interface HomepageSectionCourses {
 
 export interface HomepageBook {
   _id: string;
+  productId?: string;
+  productName?: string;
   image?: string;
+  thumbnail?: string;
   title: string;
+  price?: number;
   discountedPrice?: number;
+  originalPrice?: number;
+  stockQuantity?: number;
   summary?: string;
+  bookSummary?: string;
+  authorName?: string;
+  categoryName?: string;
+  examCategoryName?: string;
+  slug?: string;
+  tags?: string[];
 }
 
 export interface HomepageSectionBooks {
@@ -167,9 +181,11 @@ export interface HomepageDetailsApiData {
   youtubeVideos: Array<{
     _id: string;
     title: string;
+    description?: string;
     thumbnail: string;
     youtubeUrl: string;
     youtubeVideoId?: string;
+    priority?: number;
   }>;
 }
 

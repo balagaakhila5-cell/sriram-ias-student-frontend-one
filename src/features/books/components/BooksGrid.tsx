@@ -56,6 +56,12 @@ const BookGridCard: React.FC<{
     updateQuantity(book.id, cartQuantity - 1);
   };
 
+  const handleViewDetails = (event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    router.push(`/books/${book.slug}`);
+  };
+
   const handleBuyNow = (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
@@ -100,24 +106,52 @@ const BookGridCard: React.FC<{
         <h3 className="font-[Montserrat] text-[18px] font-semibold leading-snug text-gray-900 sm:text-[20px]">
           {book.title}
         </h3>
-        <p className="mt-1 font-[Montserrat] text-[14px] font-normal leading-snug text-[#666666]">
-          {book.subtitle ?? "Sriram's IAS Prelims Series"}
+        {book.categoryName || book.subtitle ? (
+          <span className="mt-2 inline-flex rounded-full bg-violet-50 px-3 py-1 text-[12px] font-semibold text-violet-800">
+            {book.categoryName || book.subtitle}
+          </span>
+        ) : null}
+        <p className="mt-2 font-[Montserrat] text-[13px] font-medium text-[#555]">
+          by {book.author}
         </p>
+        {typeof book.stockQuantity === 'number' ? (
+          <p className="mt-1 font-[Montserrat] text-[12px] font-medium text-[#888]">
+            {book.stockQuantity > 0
+              ? `${book.stockQuantity.toLocaleString('en-IN')} in stock`
+              : 'Out of stock'}
+          </p>
+        ) : null}
+        {book.summary ? (
+          <p className="mt-2 line-clamp-2 font-[Montserrat] text-[13px] leading-snug text-[#777]">
+            {book.summary}
+          </p>
+        ) : null}
       </div>
 
       <div className="mt-1 flex items-center justify-center gap-2">
         <span className="text-xl font-bold text-[#4999C6]">
-          {book.discountedPrice.toLocaleString('en-IN')}
+          ₹{book.discountedPrice.toLocaleString('en-IN')}
         </span>
-        <span className="text-sm font-bold text-gray-400 line-through">
-          ({book.originalPrice.toLocaleString('en-IN')})
-        </span>
-        <span className="ml-1 text-sm font-semibold text-gray-800">
-          {book.discountPercentage}
-        </span>
+        {book.originalPrice > book.discountedPrice ? (
+          <span className="text-sm font-bold text-gray-400 line-through">
+            ₹{book.originalPrice.toLocaleString('en-IN')}
+          </span>
+        ) : null}
+        {book.discountPercentage ? (
+          <span className="ml-1 text-sm font-semibold text-gray-800">
+            {book.discountPercentage}
+          </span>
+        ) : null}
       </div>
 
       <div className="mt-5 grid w-full max-w-[280px] grid-cols-2 gap-3">
+        <button
+          type="button"
+          onClick={handleViewDetails}
+          className="cursor-pointer rounded-full border border-[#249EDC] py-2 text-xs font-medium text-[#007BB5] transition-all hover:bg-gray-50"
+        >
+          View Details
+        </button>
         <button
           type="button"
           onClick={handleBuyNow}
@@ -130,6 +164,9 @@ const BookGridCard: React.FC<{
         >
           Buy Now
         </button>
+      </div>
+
+      <div className="mt-3 w-full max-w-[280px]">
 
         {cartQuantity > 0 ? (
           <div className="flex h-[34px] items-center justify-between rounded-md border border-[#249EDC] bg-[#EAF7FF] px-2">

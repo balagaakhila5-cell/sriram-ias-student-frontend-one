@@ -11,17 +11,22 @@ import {
 import FlipBook from '@/components/common/FlipBook';
 import BookSamplePanel from '@/features/books/components/BookSamplePanel';
 import { useCartStore } from '@/store/cartStore';
-import { INDIAN_ECONOMY_SAMPLE_BOOK, mockBooks } from '@/features/books/data/books';
+import { INDIAN_ECONOMY_SAMPLE_BOOK } from '@/features/books/data/books';
+import type { Book } from '@/features/books/types';
 
-const featuredBook = mockBooks[0];
+interface BooksOverviewTabsProps {
+  featuredBook?: Book;
+}
 
-const BooksOverviewTabs: React.FC = () => {
+const BooksOverviewTabs: React.FC<BooksOverviewTabsProps> = ({ featuredBook }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [justAdded, setJustAdded] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
   const openCart = useCartStore((state) => state.openCart);
   const isInCart = useCartStore((state) =>
-    state.items.some((item) => item.book.id === featuredBook.id),
+    featuredBook
+      ? state.items.some((item) => item.book.id === featuredBook.id)
+      : false,
   );
 
   const showAddedLabel = justAdded || isInCart;
@@ -33,7 +38,9 @@ const BooksOverviewTabs: React.FC = () => {
     }
 
     setJustAdded(true);
-    addItem(featuredBook, { openSidebar: false });
+    if (featuredBook) {
+      addItem(featuredBook, { openSidebar: false });
+    }
 
     window.setTimeout(() => {
       openCart();
@@ -138,7 +145,9 @@ const BooksOverviewTabs: React.FC = () => {
                 />
               ) : (
                 <div className="absolute inset-0 z-20 flex w-full flex-col bg-[#01285A] px-4 py-10 sm:px-8">
-                  <FlipBook coverImage={INDIAN_ECONOMY_SAMPLE_BOOK.image} />
+                  <FlipBook
+                    coverImage={featuredBook?.coverImage || INDIAN_ECONOMY_SAMPLE_BOOK.image}
+                  />
 
                   <div className="flex shrink-0 justify-center pb-4">
                     <button

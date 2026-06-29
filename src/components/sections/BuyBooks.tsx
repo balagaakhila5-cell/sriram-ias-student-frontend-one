@@ -21,15 +21,6 @@ import FlipBook from '@/components/common/FlipBook';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const fallbackBooks = [
-  { id: '1', title: 'UPSC Book sciences - 1', summary: 'Atomic Habits by James Clear', priceLabel: 'Rs. 10,000', image: '/assets/books.png' },
-  { id: '2', title: 'UPSC Book sciences - 2', summary: 'Deep Work by Cal Newport', priceLabel: 'Rs. 12,000', image: '/assets/books.png' },
-  { id: '3', title: 'UPSC Book sciences - 3', summary: 'Thinking Fast and Slow', priceLabel: 'Rs. 15,000', image: '/assets/books.png' },
-  { id: '4', title: 'UPSC Book sciences - 4', summary: 'The Lean Startup', priceLabel: 'Rs. 11,000', image: '/assets/books.png' },
-  { id: '5', title: 'UPSC Book sciences - 5', summary: 'Zero to One', priceLabel: 'Rs. 13,000', image: '/assets/books.png' },
-  { id: '6', title: 'UPSC Book sciences - 6', summary: 'The Four Hour Workweek', priceLabel: 'Rs. 14,000', image: '/assets/books.png' },
-];
-
 const BUY_NOW_BUTTON_GRADIENT =
   'linear-gradient(88.42deg, #249EDC 15.64%, #135576 93.77%)';
 
@@ -40,12 +31,6 @@ const formatPrice = (value?: number) =>
   typeof value === 'number'
     ? `Rs. ${value.toLocaleString('en-IN')}`
     : 'Rs. —';
-
-const parseFallbackPrice = (label: string) => {
-  const digits = label.replace(/[^\d]/g, '');
-  const parsed = Number.parseInt(digits, 10);
-  return Number.isFinite(parsed) ? parsed : 5999;
-};
 
 type SampleBook = {
   title: string;
@@ -213,16 +198,7 @@ const BuyBooks: React.FC = () => {
   const books = useMemo(() => {
     const apiBooks = sectionBooks?.books ?? [];
     if (apiBooks.length === 0) {
-      return fallbackBooks.map((book) =>
-        mapHomepageBook({
-          id: book.id,
-          title: book.title,
-          summary: book.summary,
-          priceLabel: book.priceLabel,
-          image: book.image,
-          discountedPrice: parseFallbackPrice(book.priceLabel),
-        }),
-      );
+      return [];
     }
 
     return apiBooks.map((book) =>

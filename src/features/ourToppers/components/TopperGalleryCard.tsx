@@ -1,3 +1,4 @@
+import Link from '@/components/common/AppLink';
 import type { GalleryTopper } from '@/features/ourToppers/types';
 
 export const topperGalleryImagePath = (fileName: string) =>
@@ -10,8 +11,9 @@ type TopperGalleryCardProps = {
 
 export default function TopperGalleryCard({ topper, index }: TopperGalleryCardProps) {
   const isSecondRow = index >= 5;
+  const detailHref = topper.id ? `/our-toppers/${topper.id}` : null;
 
-  return (
+  const card = (
     <article className="group relative flex w-full flex-col items-center bg-transparent text-center">
       <div
         className={`relative w-full overflow-visible bg-transparent ${
@@ -59,5 +61,15 @@ export default function TopperGalleryCard({ topper, index }: TopperGalleryCardPr
         </p>
       </div>
     </article>
+  );
+
+  if (!detailHref) {
+    return card;
+  }
+
+  return (
+    <Link href={detailHref} className="block w-full">
+      {card}
+    </Link>
   );
 }

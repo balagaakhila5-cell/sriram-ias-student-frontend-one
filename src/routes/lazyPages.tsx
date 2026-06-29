@@ -5,6 +5,7 @@ export const HomePage = lazy(() => import("@/pages/page"));
 export const AboutPage = lazy(() => import("@/pages/about/page"));
 export const FoundersMessagePage = lazy(() => import("@/pages/founders-message/page"));
 export const OurToppersGalleryPage = lazy(() => import("@/pages/our-toppers-gallery/page"));
+export const OurTopperDetailPage = lazy(() => import("@/pages/our-toppers/[id]/page"));
 export const OurToppersYearWisePage = withParams(
   lazy(() => import("@/pages/our-toppers-gallery/year-wise/[year]/page")),
 );

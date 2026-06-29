@@ -97,27 +97,28 @@ export function isRemoteTopperImage(img: string): boolean {
   return /^https?:\/\//i.test(img?.trim() ?? '');
 }
 
-/** Face-centered portrait crop for CMS photos on Cloudinary. */
+/** Native bounds of static topper PNGs in public/assets/ourtoppers/_originals/ */
+export const TOPPER_IMAGE_NATIVE_WIDTH = 1536;
+export const TOPPER_IMAGE_NATIVE_HEIGHT = 1104;
+export const TOPPER_IMAGE_ASPECT_CLASS = 'aspect-[1536/1104]';
+
+/** Scale CMS topper photos without cropping — preserve alpha without forced PNG re-encode. */
 export function optimizeTopperImageUrl(url: string): string {
   const trimmed = url.trim();
   if (!trimmed.includes('res.cloudinary.com') || !trimmed.includes('/upload/')) {
     return trimmed;
   }
 
-  if (/\/upload\/[^/]*[cg]_/.test(trimmed)) {
+  const uploadSegment = trimmed.match(/\/upload\/([^/]+)\//)?.[1];
+  if (uploadSegment && !/^v\d+$/.test(uploadSegment)) {
     return trimmed;
   }
 
   return trimmed.replace(
     '/upload/',
-    '/upload/c_fill,g_auto,h_900,w_640,q_auto,f_auto/',
+    `/upload/c_limit,h_${TOPPER_IMAGE_NATIVE_HEIGHT},w_${TOPPER_IMAGE_NATIVE_WIDTH},f_auto,fl_preserve_transparency,q_auto:best/`,
   );
 }
-
-/** Native bounds of static topper PNGs in public/assets/ourtoppers/_originals/ */
-export const TOPPER_IMAGE_NATIVE_WIDTH = 1536;
-export const TOPPER_IMAGE_NATIVE_HEIGHT = 1104;
-export const TOPPER_IMAGE_ASPECT_CLASS = 'aspect-[1536/1104]';
 
 export function formatTopperRankLabel(
   rank: string,
@@ -135,69 +136,75 @@ export function formatTopperRankLabel(
   return normalizedRank;
 }
 
+import type { DisplayTopperCard } from "@/features/ourToppers/types/portalTopper";
+import { isPortalTopperDisplayed } from "@/features/ourToppers/utils/portalTopperHelpers";
+
+export function mapDisplayedToppersToCarousel(
+  apiToppers: Array<{
+    _id?: string;
+    studentId?: string;
+    studentName?: string;
+    name?: string;
+    rank: string;
+    year?: string | number | null;
+    courseOrProgram?: string;
+    courseName?: string;
+    description?: string;
+    image?: string | { url?: string } | null;
+    isTop10?: boolean;
+    isDisplayed?: boolean;
+  }>,
+): DisplayTopperCard[] {
+  return apiToppers
+    .filter((topper) => isPortalTopperDisplayed(topper.isDisplayed))
+    .map((topper, index) => {
+      const imageValue =
+        typeof topper.image === "object"
+          ? topper.image?.url ?? ""
+          : topper.image?.trim() ?? "";
+
+      return {
+        id: topper._id ?? `api-${index}`,
+        name: topper.studentName ?? topper.name ?? "",
+        studentId: topper.studentId ?? "",
+        rank: topper.rank,
+        year: topper.year ?? null,
+        course:
+          topper.courseOrProgram ??
+          topper.courseName ??
+          topper.description ??
+          "",
+        img: imageValue,
+        isTop10: Boolean(topper.isTop10),
+        ...getTopperLayout(index),
+      };
+    });
+}
+
 export function buildHomepageDisplayToppers(
   apiToppers: Array<{
     _id?: string;
-    name: string;
+    name?: string;
+    studentName?: string;
     rank: string;
     year?: string | number | null;
     description?: string;
     courseName?: string;
-    image?: string;
+    courseOrProgram?: string;
+    image?: string | { url?: string } | null;
   }>,
-  minCarouselCount = 8,
-): Array<{
-  id: string;
-  name: string;
-  rank: string;
-  year?: string | number | null;
-  description: string;
-  img: string;
-  y: number;
-  scale: number;
-}> {
-  const staticList = OUR_TOPPERS.map((topper, index) => ({
-    id: `static-${index}`,
-    name: topper.name,
-    rank: topper.rank,
-    year: topper.year,
-    description: topper.course,
-    img: topper.img,
-    ...getTopperLayout(index),
-  }));
-
-  if (apiToppers.length === 0) return staticList;
-
-  const merged = apiToppers.map((topper, index) => ({
-    id: topper._id ?? `api-${index}`,
-    name: topper.name,
-    rank: topper.rank,
-    year: topper.year ?? null,
-    description: topper.description ?? topper.courseName ?? '',
-    img: topper.image?.trim() ?? '',
-    ...getTopperLayout(index),
-  }));
-
-  const usedNames = new Set(
-    merged.map((topper) => topper.name.trim().toLowerCase()),
+): ReturnType<typeof mapDisplayedToppersToCarousel> {
+  return mapDisplayedToppersToCarousel(
+    apiToppers.map((topper) => ({
+      _id: topper._id,
+      studentName: topper.studentName ?? topper.name,
+      rank: topper.rank,
+      year: topper.year,
+      courseOrProgram: topper.courseOrProgram ?? topper.courseName,
+      description: topper.description,
+      image: topper.image,
+    })),
   );
-  let layoutIndex = merged.length;
-
-  for (const staticTopper of staticList) {
-    if (merged.length >= minCarouselCount) break;
-
-    const nameKey = staticTopper.name.trim().toLowerCase();
-    if (usedNames.has(nameKey)) continue;
-
-    usedNames.add(nameKey);
-    merged.push({
-      ...staticTopper,
-      id: `static-fill-${staticTopper.id}`,
-      ...getTopperLayout(layoutIndex++),
-    });
-  }
-
-  return merged.length > 0 ? merged : staticList;
 }
 
 const TOPPER_Y_OFFSETS = [35, 15, 45, 28, 18, 10, 5, 12];

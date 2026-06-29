@@ -3,7 +3,7 @@
 import React, { useCallback, useState } from 'react';
 import Image from '@/components/common/AppImage';
 import Link from '@/components/common/AppLink';
-import { Share2 } from 'lucide-react';
+import { ExternalLink, Share2 } from 'lucide-react';
 import { Book } from '../types';
 import FlipBook from '@/components/common/FlipBook';
 import FreeResourcesCourseSlider from '@/components/common/FreeResourcesCourseSlider';
@@ -13,6 +13,19 @@ import { validatePincode } from '@/features/books/utils/checkoutFormValidation';
 
 interface BookDetailsContentProps {
    book: Book;
+}
+
+const PLACEHOLDER_COVER = '/assets/books.png';
+
+function formatDisplayDate(value?: string): string {
+   if (!value) return '—';
+   const date = new Date(value);
+   if (Number.isNaN(date.getTime())) return '—';
+   return date.toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+   });
 }
 
 const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
@@ -99,6 +112,8 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
       window.setTimeout(() => setShareMessage(null), 2500);
    }, [book.title]);
 
+   const coverImage = book.coverImage || PLACEHOLDER_COVER;
+
    return (
       <section className="relative w-full max-w-[1400px] mx-auto px-6 md:px-12 py-16 pb-32">
          <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
@@ -106,7 +121,7 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
             {/* Left Column: FlipBook */}
             <div className="w-full lg:w-[42%] max-w-[600px]">
                <div className="bg-[#01285A] rounded-3xl p-8 flex flex-col min-h-[500px]">
-                  <FlipBook coverImage={book.coverImage} />
+                  <FlipBook coverImage={coverImage} />
                </div>
             </div>
 
@@ -136,6 +151,34 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
                <p className="text-xl font-bold text-[#207CA5]">
                   Author <span className="text-gray-900">{book.author}</span>
                </p>
+
+               <div className="grid gap-3 rounded-xl border border-[#E8ECF4] bg-[#F8FAFF] p-4 text-sm sm:grid-cols-2">
+                  <p><span className="font-semibold text-gray-600">Product ID:</span> {book.id}</p>
+                  {book.categoryName ? (
+                     <p><span className="font-semibold text-gray-600">Exam Category:</span> {book.categoryName}</p>
+                  ) : null}
+                  {book.isbn ? (
+                     <p><span className="font-semibold text-gray-600">ISBN:</span> {book.isbn}</p>
+                  ) : null}
+                  {book.language ? (
+                     <p><span className="font-semibold text-gray-600">Language:</span> {book.language}</p>
+                  ) : null}
+                  {typeof book.stockQuantity === 'number' ? (
+                     <p><span className="font-semibold text-gray-600">Stock:</span> {book.stockQuantity.toLocaleString('en-IN')}</p>
+                  ) : null}
+                  {typeof book.soldQuantity === 'number' ? (
+                     <p><span className="font-semibold text-gray-600">Sold:</span> {book.soldQuantity.toLocaleString('en-IN')}</p>
+                  ) : null}
+                  {book.status ? (
+                     <p><span className="font-semibold text-gray-600">Status:</span> {book.status}</p>
+                  ) : null}
+                  {book.createdAt ? (
+                     <p><span className="font-semibold text-gray-600">Created:</span> {formatDisplayDate(book.createdAt)}</p>
+                  ) : null}
+                  {book.updatedAt ? (
+                     <p><span className="font-semibold text-gray-600">Updated:</span> {formatDisplayDate(book.updatedAt)}</p>
+                  ) : null}
+               </div>
 
                <div className="flex flex-wrap gap-3 mt-1">
                   {book.tags.map(tag => (
@@ -253,8 +296,35 @@ const BookDetailsContent: React.FC<BookDetailsContentProps> = ({ book }) => {
                      <h3 className="font-semibold text-xl bg-gradient-to-r from-[#1897D8CC] to-[#021C29] bg-clip-text text-transparent">Book Summary</h3>
                   </div>
                   <p className="text-[#00000099] text-lg leading-relaxed font-semibold ">
-                     {book.summary}
+                     {book.summary || 'No book summary available.'}
                   </p>
+               </div>
+
+               <div className="rounded-xl border border-[#E8ECF4] bg-white p-6 mt-4">
+                  <h3 className="font-semibold text-xl text-gray-900 mb-3">Preview PDF</h3>
+                  {book.previewPdf ? (
+                     <div className="space-y-3">
+                        <a
+                           href={book.previewPdf}
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           className="inline-flex items-center gap-2 rounded-full border border-[#249EDC] px-5 py-2 text-sm font-semibold text-[#007BB5] transition hover:bg-[#EAF7FF]"
+                        >
+                           Preview PDF
+                           <ExternalLink size={16} />
+                        </a>
+                        {book.previewPdfFileName ? (
+                           <p className="text-sm text-gray-500">{book.previewPdfFileName}</p>
+                        ) : null}
+                        <iframe
+                           title={book.previewPdfFileName || `${book.title} preview`}
+                           src={book.previewPdf}
+                           className="h-80 w-full rounded-xl border border-[#E8ECF4] bg-white"
+                        />
+                     </div>
+                  ) : (
+                     <p className="text-sm font-medium text-gray-500">Preview PDF Not Available</p>
+                  )}
                </div>
             </div>
          </div>

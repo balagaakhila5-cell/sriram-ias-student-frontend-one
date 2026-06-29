@@ -4,7 +4,6 @@ import React from 'react';
 import Image from '@/components/common/AppImage';
 import { useRouter } from '@/lib/appRouter';
 import { useCartStore } from '@/store/cartStore';
-import { mockBooks } from '../data/books';
 import { computeCheckoutTotals } from '@/features/books/utils/checkoutTotals';
 
 const brandGradient =
@@ -44,8 +43,7 @@ export default function CheckoutOrderSummary({
   } = computeCheckoutTotals(items, couponDiscount);
   const totalDiscount = bookDiscount + couponDiscount;
   const firstItem = items[0];
-  const offerBook =
-    firstItem?.book.offers?.length ? firstItem.book : mockBooks[0];
+  const offerBook = firstItem?.book;
   const showCartDetails = variant === 'cart';
 
   const handleIncrement = (book: (typeof items)[0]['book']) => {
@@ -180,6 +178,7 @@ export default function CheckoutOrderSummary({
                 </div>
               ) : null}
 
+              {offerBook?.offers?.length ? (
               <div className="flex gap-3 pb-2">
                 {offerBook.offers.map((offer, index) => {
                   const isActive =
@@ -222,6 +221,7 @@ export default function CheckoutOrderSummary({
                   );
                 })}
               </div>
+              ) : null}
             </>
 
             {priceSummary}

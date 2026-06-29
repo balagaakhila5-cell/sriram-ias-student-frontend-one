@@ -7,68 +7,34 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import useInViewport from '@/hooks/useInViewport';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
-import { useHomepage } from '@/features/homepage/hooks/useHomepage';
+import { useActiveYoutubeVideos } from '@/features/youtube/hooks/useActiveYoutubeVideos';
 import { buildYouTubeEmbedUrl, getYouTubeVideoId } from '@/lib/youtube';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const FEATURED_YOUTUBE_VIDEO = {
-  id: 'featured-youtube-8aLYn6C9n8I',
-  title: 'Sriram IAS',
-  image: 'https://img.youtube.com/vi/8aLYn6C9n8I/hqdefault.jpg',
-  author: 'Sriram IAS',
-  url: 'https://youtu.be/8aLYn6C9n8I?si=GRscIaL1AhLEtOoD',
-  videoId: '8aLYn6C9n8I',
-};
-
 type CarouselVideo = {
   id: string;
   title: string;
+  description: string;
   image: string;
-  author: string;
   url: string;
   videoId: string;
+  rank: number | null;
 };
 
-const MIN_YOUTUBE_CARDS = 5;
-
-const YOUTUBE_FALLBACK_POOL: CarouselVideo[] = [
-  {
-    id: 'yt-fallback-1',
-    title: 'The Hindu Daily Current Affairs',
-    image: FEATURED_YOUTUBE_VIDEO.image,
-    author: 'Saurabh Tripathi',
-    url: FEATURED_YOUTUBE_VIDEO.url,
-    videoId: FEATURED_YOUTUBE_VIDEO.videoId,
-  },
-  FEATURED_YOUTUBE_VIDEO,
-  {
-    id: 'yt-fallback-3',
-    title: 'Complete Modern History',
-    image: FEATURED_YOUTUBE_VIDEO.image,
-    author: 'Expert Faculty',
-    url: FEATURED_YOUTUBE_VIDEO.url,
-    videoId: FEATURED_YOUTUBE_VIDEO.videoId,
-  },
-  {
-    id: 'yt-fallback-4',
-    title: 'Geography Masterclass',
-    image: FEATURED_YOUTUBE_VIDEO.image,
-    author: 'Sriram IAS Faculty',
-    url: FEATURED_YOUTUBE_VIDEO.url,
-    videoId: FEATURED_YOUTUBE_VIDEO.videoId,
-  },
-  {
-    id: 'yt-fallback-5',
-    title: 'UPSC Prelims Strategy',
-    image: FEATURED_YOUTUBE_VIDEO.image,
-    author: 'Sriram IAS',
-    url: FEATURED_YOUTUBE_VIDEO.url,
-    videoId: FEATURED_YOUTUBE_VIDEO.videoId,
-  },
-];
-
+const PLACEHOLDER_THUMBNAIL = '/assets/youtube_video_image.png';
 const VISIBLE_CARD_OFFSET = 2;
+
+function YoutubeVideosSkeleton() {
+  return (
+    <div className="relative mx-auto flex h-[360px] max-w-[1440px] items-center justify-center px-6 md:h-[480px] md:px-16 lg:h-[520px]">
+      <div className="grid w-full max-w-[700px] gap-4">
+        <div className="aspect-[16/9] animate-pulse rounded-xl bg-gray-200" />
+        <div className="mx-auto h-3 w-40 animate-pulse rounded bg-gray-200" />
+      </div>
+    </div>
+  );
+}
 
 const AppAndVideos: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(2);
@@ -78,62 +44,41 @@ const AppAndVideos: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const isInViewport = useInViewport(sectionRef, { threshold: 0.2 });
   const prefersReducedMotion = usePrefersReducedMotion();
-  const { data: homepage } = useHomepage();
-  const section7 = homepage?.section7;
-
-  const fallbackVideos = [...YOUTUBE_FALLBACK_POOL];
+  const {
+    data: youtubeData,
+    isLoading: youtubeLoading,
+    isError: youtubeError,
+    error: youtubeQueryError,
+  } = useActiveYoutubeVideos();
 
   const videos = useMemo(() => {
-    const apiVideos = section7?.videos ?? [];
-    const mapped =
-      apiVideos.length === 0
-        ? fallbackVideos
-        : apiVideos
-            .map((video, index) => {
-              const videoId =
-                video.youtubeVideoId ?? getYouTubeVideoId(video.videoUrl);
-              if (!videoId) return null;
+    return (youtubeData?.videos ?? [])
+      .map((video) => {
+        const videoId = video.youtubeVideoId ?? getYouTubeVideoId(video.youtubeUrl);
+        if (!videoId || !video.youtubeUrl) return null;
 
-              return {
-                id: video._id ?? `video-${index}`,
-                title: video.title ?? `Video ${index + 1}`,
-                image:
-                  video.videoThumbnail
-                  ?? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
-                author: 'Sriram IAS',
-                url: video.videoUrl,
-                videoId,
-              } satisfies CarouselVideo;
-            })
-            .filter((video): video is CarouselVideo => video !== null);
-
-    const hasFeaturedVideo = mapped.some(
-      (video) => video.videoId === FEATURED_YOUTUBE_VIDEO.videoId,
-    );
-    let result = hasFeaturedVideo
-      ? [...mapped]
-      : (() => {
-          const withFeatured = [...mapped];
-          const insertAt = Math.min(1, withFeatured.length);
-          withFeatured.splice(insertAt, 0, FEATURED_YOUTUBE_VIDEO);
-          return withFeatured;
-        })();
-
-    if (result.length < MIN_YOUTUBE_CARDS) {
-      const existingIds = new Set(result.map((video) => String(video.id)));
-      for (const fallback of YOUTUBE_FALLBACK_POOL) {
-        if (result.length >= MIN_YOUTUBE_CARDS) break;
-        if (!existingIds.has(String(fallback.id))) {
-          result.push({ ...fallback });
-          existingIds.add(String(fallback.id));
-        }
-      }
-    }
-
-    return result;
-  }, [section7]);
+        return {
+          id: video.id,
+          title: video.title,
+          description: video.description,
+          image: video.thumbnailUrl || PLACEHOLDER_THUMBNAIL,
+          url: video.youtubeUrl,
+          videoId,
+          rank:
+            video.rank < Number.MAX_SAFE_INTEGER && video.rank >= 1
+              ? video.rank
+              : null,
+        } satisfies CarouselVideo;
+      })
+      .filter((video): video is CarouselVideo => video !== null);
+  }, [youtubeData?.videos]);
 
   useEffect(() => {
+    if (videos.length === 0) {
+      setActiveIndex(0);
+      return;
+    }
+
     if (activeIndex >= videos.length) {
       setActiveIndex(Math.min(2, Math.max(0, videos.length - 1)));
     }
@@ -165,7 +110,7 @@ const AppAndVideos: React.FC = () => {
 
   const openVideo = (index: number) => {
     const video = videos[index];
-    if (!video?.videoId) return;
+    if (!video?.url) return;
     setActiveIndex(index);
     setPlayingIndex(index);
     setIsPaused(true);
@@ -452,6 +397,24 @@ const AppAndVideos: React.FC = () => {
         </div>
 
         <div className="youtube-carousel relative group max-w-[1440px] mx-auto px-6 md:px-16">
+          {youtubeLoading ? (
+            <div className="pointer-events-none">
+              <YoutubeVideosSkeleton />
+            </div>
+          ) : youtubeError ? (
+            <div className="flex min-h-[280px] items-center justify-center rounded-2xl border border-dashed border-red-200 bg-red-50 px-6 py-16 text-center">
+              <p className="text-lg font-semibold text-red-600">
+                {youtubeQueryError instanceof Error
+                  ? youtubeQueryError.message
+                  : 'Unable to fetch ranked YouTube videos. Please try again.'}
+              </p>
+            </div>
+          ) : videos.length === 0 ? (
+            <div className="flex min-h-[280px] items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-[#f8fbfd] px-6 py-16 text-center">
+              <p className="text-lg font-semibold text-gray-500">No Videos Available</p>
+            </div>
+          ) : (
+            <>
           <div
             className="relative h-[360px] md:h-[480px] lg:h-[520px] w-full flex items-center justify-center py-4 px-6 z-10 touch-pan-y md:px-10 md:py-6"
             onMouseEnter={() => setIsPaused(true)}
@@ -524,9 +487,28 @@ const AppAndVideos: React.FC = () => {
                           onError={(e) => {
                             const target = e.currentTarget;
                             target.onerror = null;
-                            target.src = '/assets/youtube_video_image.png';
+                            target.src = PLACEHOLDER_THUMBNAIL;
                           }}
                         />
+
+                        {video.rank ? (
+                          <span className="absolute left-3 top-3 z-10 rounded-full bg-black/70 px-3 py-1 text-xs font-bold text-white">
+                            Rank #{video.rank}
+                          </span>
+                        ) : null}
+
+                        {isActive ? (
+                          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/45 to-transparent px-4 pb-4 pt-10 text-left">
+                            <p className="text-base font-semibold text-white md:text-lg">
+                              {video.title}
+                            </p>
+                            {video.description ? (
+                              <p className="mt-1 line-clamp-2 text-sm text-white/85">
+                                {video.description}
+                              </p>
+                            ) : null}
+                          </div>
+                        ) : null}
 
                         <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-[transform,opacity] duration-500 ${isActive ? 'scale-100 opacity-100 hover:scale-110' : 'scale-50 opacity-0'}`}>
                           <button
@@ -578,6 +560,8 @@ const AppAndVideos: React.FC = () => {
               />
             ))}
           </div>
+            </>
+          )}
         </div>
       </div>
     </section>
