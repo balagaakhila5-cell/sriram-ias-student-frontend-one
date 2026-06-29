@@ -8,6 +8,7 @@ import { FREE_LEARNING_EXPLORE_HREFS } from '@/features/homepage/utils/homepageL
 import BlogsCalendar from '@/features/blogs/components/BlogsCalendar';
 import DailyLearningCard from '@/features/blogs/components/DailyLearningCard';
 import {
+  BLOG_TRENDING_VIDEOS_SECTION_ID,
   getBlogTrendingViewAllHref,
   type BlogTrendingVideo,
 } from '@/features/blogs/services/blogDetailsService';
@@ -42,6 +43,9 @@ type SidebarVideo = {
 
 type BlogsSidebarProps = {
   showTrendingVideos?: boolean;
+  showTrendingVideoList?: boolean;
+  showTrendingViewAll?: boolean;
+  trendingVideosFirst?: boolean;
   showCalendar?: boolean;
   trendingVideos?: BlogTrendingVideo[];
   viewAllHref?: string;
@@ -86,12 +90,34 @@ function GradientHeading({ children }: { children: ReactNode }) {
 
 export default function BlogsSidebar({
   showTrendingVideos = false,
+  showTrendingVideoList = true,
+  showTrendingViewAll = true,
+  trendingVideosFirst = false,
   showCalendar = true,
   trendingVideos = DEFAULT_TRENDING,
   viewAllHref = getBlogTrendingViewAllHref(),
 }: BlogsSidebarProps) {
+  const trendingVideosCard = showTrendingVideos ? (
+    <div
+      id={BLOG_TRENDING_VIDEOS_SECTION_ID}
+      className="scroll-mt-28 rounded-[10px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]"
+    >
+      <GradientHeading>Trending Videos</GradientHeading>
+      {showTrendingVideoList
+        ? trendingVideos.map((video) => <SidebarVideoRow key={video.id} video={video} />)
+        : null}
+      {showTrendingViewAll ? (
+        <div className={showTrendingVideoList ? 'mt-2 flex justify-center' : 'flex justify-center'}>
+          <TrendingVideosViewAllButton href={viewAllHref} />
+        </div>
+      ) : null}
+    </div>
+  ) : null;
+
   return (
     <div className="space-y-6">
+      {trendingVideosFirst ? trendingVideosCard : null}
+
       {showCalendar ? (
         <div className="hidden lg:block">
           <BlogsCalendar />
@@ -134,17 +160,7 @@ export default function BlogsSidebar({
         <FreeResourcesCourseSlider />
       </div>
 
-      {showTrendingVideos ? (
-        <div className="rounded-[10px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
-          <GradientHeading>Trending Videos</GradientHeading>
-          {trendingVideos.map((video) => (
-            <SidebarVideoRow key={video.id} video={video} />
-          ))}
-          <div className="mt-2 flex justify-center">
-            <TrendingVideosViewAllButton href={viewAllHref} />
-          </div>
-        </div>
-      ) : null}
+      {trendingVideosFirst ? null : trendingVideosCard}
 
       <div className="relative overflow-hidden rounded-[10px] bg-white px-5 py-6 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
         <div

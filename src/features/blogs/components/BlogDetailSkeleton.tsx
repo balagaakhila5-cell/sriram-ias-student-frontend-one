@@ -19,16 +19,19 @@ export default function BlogDetailSkeleton() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 xl:grid-cols-[255px_1fr]">
+      <div className="grid grid-cols-1 gap-8 xl:grid-cols-[255px_minmax(0,1fr)]">
         <div className="hidden h-[320px] rounded-[12px] bg-slate-200 xl:block" />
         <div className="space-y-8">
           <div className="h-[440px] rounded-[10px] bg-slate-200" />
-          <div className="h-[280px] rounded-[10px] bg-slate-200" />
           <div className="space-y-3">
             <div className="h-6 w-1/3 rounded bg-slate-200" />
             <div className="h-4 w-full rounded bg-slate-200" />
             <div className="h-4 w-full rounded bg-slate-200" />
             <div className="h-4 w-4/5 rounded bg-slate-200" />
+          </div>
+          <div className="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,1fr)_335px]">
+            <div className="h-[280px] rounded-[10px] bg-slate-200" />
+            <div className="hidden h-[420px] rounded-[10px] bg-slate-200 xl:block" />
           </div>
         </div>
       </div>

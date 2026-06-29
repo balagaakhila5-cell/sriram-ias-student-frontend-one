@@ -23,7 +23,8 @@ export default function BlogDetailTableOfContents({
   if (sections.length === 0) return null;
 
   return (
-    <aside
+    <nav
+      aria-label="Table of contents"
       className={`h-fit rounded-[12px] bg-white px-6 py-7 shadow-[0_8px_30px_rgba(0,0,0,0.08)] xl:sticky xl:top-[100px] ${className}`}
     >
       <button
@@ -73,6 +74,6 @@ export default function BlogDetailTableOfContents({
           );
         })}
       </ul>
-    </aside>
+    </nav>
   );
 }

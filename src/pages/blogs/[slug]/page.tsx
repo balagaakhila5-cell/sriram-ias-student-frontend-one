@@ -13,11 +13,10 @@ import BlogDetailHero from '@/features/blogs/components/BlogDetailHero';
 import BlogDetailSidebar from '@/features/blogs/components/BlogDetailSidebar';
 import BlogDetailSkeleton from '@/features/blogs/components/BlogDetailSkeleton';
 import BlogDetailTableOfContents from '@/features/blogs/components/BlogDetailTableOfContents';
+import BlogYoutubeEmbed from '@/features/blogs/components/BlogYoutubeEmbed';
 import { useBlogDetails } from '@/features/blogs/hooks/useBlogDetails';
-import { useBlogSidebarTrendingVideo } from '@/features/blogs/hooks/useBlogSidebarTrendingVideo';
 import { getBlogSectionId } from '@/features/blogs/services/blogDetailsService';
 import { mapBlogDetailsToBookmark } from '@/features/blogs/utils/mapBlogDetailsToBookmark';
-import { cn } from '@/lib/utils';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -51,14 +50,6 @@ export default function BlogDetailPage() {
     () => (blogData ? mapBlogDetailsToBookmark(blogData) : null),
     [blogData],
   );
-
-  const { trendingVideos, viewAllHref } = useBlogSidebarTrendingVideo({
-    language: blogData?.language?.languageName,
-    enabled: Boolean(blogData?.language?.languageName),
-    additionalSources: blogData?.youtubeVideoUrl
-      ? [{ youtubeVideoUrl: blogData.youtubeVideoUrl, title: blogData.title }]
-      : [],
-  });
 
   useEffect(() => {
     if (!blogData) return undefined;
@@ -276,61 +267,65 @@ export default function BlogDetailPage() {
                   showImage={false}
                 />
 
-                <div
-                  className={cn(
-                    'grid grid-cols-1 items-start gap-8',
-                    sections.length > 0
-                      ? 'xl:grid-cols-[255px_1fr_335px] xl:grid-rows-[auto_auto]'
-                      : 'xl:grid-cols-[1fr_335px] xl:grid-rows-[auto_auto]',
-                  )}
-                >
+                <div className="grid grid-cols-1 items-start gap-8 xl:grid-cols-[255px_minmax(0,1fr)]">
                   {sections.length > 0 ? (
-                    <BlogDetailTableOfContents
-                      sections={sections}
-                      activeId={activeId}
-                      onSectionClick={scrollToSection}
-                      className="order-2 xl:order-none xl:col-start-1 xl:row-start-1 xl:row-span-2"
-                    />
+                    <div className="hidden xl:block">
+                      <BlogDetailTableOfContents
+                        sections={sections}
+                        activeId={activeId}
+                        onSectionClick={scrollToSection}
+                        className="right-sidebar-card"
+                      />
+                    </div>
                   ) : null}
 
-                  <div
-                    className={cn(
-                      'order-1 min-w-0 w-full xl:order-none xl:row-start-1',
-                      sections.length > 0
-                        ? 'xl:col-start-2 xl:col-span-2'
-                        : 'xl:col-start-1',
-                    )}
-                  >
+                  <div className="min-w-0">
+                    {sections.length > 0 ? (
+                      <div className="mb-8 xl:hidden">
+                        <BlogDetailTableOfContents
+                          sections={sections}
+                          activeId={activeId}
+                          onSectionClick={scrollToSection}
+                          className="blog-section-card"
+                        />
+                      </div>
+                    ) : null}
+
                     <BlogDetailHero
                       blog={blogData}
                       bookmark={bookmark}
                       showHeader={false}
-                      imageClassName="mb-0 w-full"
+                      imageClassName="mb-10 w-full"
                     />
+
+                    {sections[0] ? (
+                      <BlogDetailContentSection section={sections[0]} />
+                    ) : null}
+
+                    <div className="grid grid-cols-1 items-start gap-8 xl:grid-cols-[minmax(0,1fr)_335px]">
+                      <div className="min-w-0">
+                        {sections.slice(1).map((section) => (
+                          <BlogDetailContentSection
+                            key={section.order}
+                            section={section}
+                          />
+                        ))}
+
+                        {blogData.youtubeVideoUrl ? (
+                          <BlogYoutubeEmbed
+                            youtubeVideoUrl={blogData.youtubeVideoUrl}
+                            title={blogData.title}
+                            className="mx-auto w-full max-w-[720px]"
+                          />
+                        ) : null}
+                      </div>
+
+                      <BlogDetailSidebar
+                        part="all"
+                        className="xl:sticky xl:top-[100px] xl:self-start"
+                      />
+                    </div>
                   </div>
-
-                  {sections.length > 0 ? (
-                    <article className="order-3 min-w-0 xl:order-none xl:col-start-2 xl:row-start-2">
-                      {sections.map((section) => (
-                        <BlogDetailContentSection
-                          key={section.order}
-                          section={section}
-                        />
-                      ))}
-                    </article>
-                  ) : null}
-
-                  <BlogDetailSidebar
-                    part="all"
-                    trendingVideos={trendingVideos}
-                    viewAllHref={viewAllHref}
-                    className={cn(
-                      'order-4 xl:order-none',
-                      sections.length > 0
-                        ? 'xl:col-start-3 xl:row-start-2'
-                        : 'xl:col-start-2 xl:row-start-1',
-                    )}
-                  />
                 </div>
               </div>
             )}

@@ -239,8 +239,22 @@ export type BlogVideoSource = {
 
 export const BLOG_TRENDING_VIDEO_PREVIEW_LIMIT = 2;
 
-export function getBlogTrendingViewAllHref(): string {
-  return FOOTER_SOCIAL_LINKS.youtube;
+export const BLOG_TRENDING_VIDEOS_SECTION_ID = 'trending-videos';
+
+export function getBlogTrendingViewAllHref(languageSlug?: string | null): string {
+  const params = new URLSearchParams();
+  if (languageSlug?.trim()) {
+    params.set('lang', languageSlug.trim());
+  }
+  const query = params.toString();
+  return `/blogs/all${query ? `?${query}` : ''}#${BLOG_TRENDING_VIDEOS_SECTION_ID}`;
+}
+
+export function resolveBlogDetailHrefForViewAll(
+  bundle: BlogHomepageViewModel | undefined,
+  languageSlug?: string | null,
+): string {
+  return getBlogTrendingViewAllHref(languageSlug);
 }
 
 export function collectHomepageBlogIds(
@@ -304,6 +318,17 @@ export function buildBlogTrendingVideoPreview(
   }
 
   return videos;
+}
+
+export function buildBlogTrendingVideosAll(
+  sources: BlogVideoSource[],
+  fallbackVideos: BlogTrendingVideo[] = [],
+): BlogTrendingVideo[] {
+  return buildBlogTrendingVideoPreview(
+    sources,
+    fallbackVideos,
+    Number.POSITIVE_INFINITY,
+  );
 }
 
 export function buildBlogTrendingVideos(

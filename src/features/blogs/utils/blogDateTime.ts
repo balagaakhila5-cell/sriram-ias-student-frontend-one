@@ -68,3 +68,50 @@ export function buildBlogMetaLine({
 
   return parts.join('   ');
 }
+
+export function formatBlogCardDateLabel(value?: string | null): string {
+  if (!value?.trim()) return '';
+  const date = new Date(value.trim());
+  if (Number.isNaN(date.getTime())) return value.trim();
+
+  const month = date.toLocaleDateString(undefined, { month: 'long' });
+  const day = date.getDate();
+  const year = date.getFullYear();
+  return `${month} ${day} , ${year}`;
+}
+
+export function formatBlogCardTimeLabel(value?: string | null): string {
+  if (!value?.trim()) return '';
+  const date = new Date(value.trim());
+  if (Number.isNaN(date.getTime())) return value.trim();
+
+  return date.toLocaleTimeString(undefined, {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+}
+
+export function resolveBlogCardDateTime(source: BlogDateTimeSource): {
+  date: string;
+  time: string;
+} {
+  const timestamp =
+    source.publishedAt?.trim() ||
+    source.createdAt?.trim() ||
+    source.updatedAt?.trim() ||
+    '';
+
+  return {
+    date:
+      formatBlogCardDateLabel(source.date) ||
+      formatBlogCardDateLabel(timestamp) ||
+      source.date?.trim() ||
+      '',
+    time:
+      formatBlogCardTimeLabel(source.time) ||
+      formatBlogCardTimeLabel(timestamp) ||
+      source.time?.trim() ||
+      '',
+  };
+}

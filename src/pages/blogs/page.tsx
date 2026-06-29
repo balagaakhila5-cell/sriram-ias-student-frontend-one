@@ -10,7 +10,7 @@ import { BlogFeaturedSkeleton } from '@/features/blogs/components/BlogListSkelet
 import BlogsCalendar from '@/features/blogs/components/BlogsCalendar';
 import BlogsSidebar from '@/features/blogs/components/BlogsSidebar';
 import { useBlogHomepage } from '@/features/blogs/hooks/useBlogHomepage';
-import { useBlogSidebarTrendingVideo } from '@/features/blogs/hooks/useBlogSidebarTrendingVideo';
+import { getBlogTrendingViewAllHref } from '@/features/blogs/services/blogDetailsService';
 import { useBlogLanguages } from '@/features/blogs/hooks/useBlogLanguages';
 import { useSelectedBlogLanguage } from '@/features/blogs/hooks/useSelectedBlogLanguage';
 import { useSelectedBlogCategory } from '@/features/blogs/hooks/useSelectedBlogCategory';
@@ -47,10 +47,10 @@ export default function BlogsPage() {
   const showHomepageLoading =
     homepageLoading || (homepageFetching && !homepageBundle && !homepageError);
 
-  const { trendingVideos, viewAllHref } = useBlogSidebarTrendingVideo({
-    language: languageName,
-    enabled: languageReady,
-  });
+  const viewAllDetailHref = useMemo(
+    () => getBlogTrendingViewAllHref(selectedLanguage?.slug),
+    [selectedLanguage?.slug],
+  );
 
   const selectedCategoryValue = selectedCategory?.value ?? null;
   const categoryBlogCount = useMemo(() => {
@@ -146,13 +146,13 @@ export default function BlogsPage() {
             <div className="min-w-0 lg:col-span-2">
               {showHomepageLoading ? (
                 <BlogFeaturedSkeleton />
-              ) : (
+              ) : homepageBundle?.featured ? (
                 <FeaturedBlog
-                  blog={homepageBundle?.featured}
+                  blog={homepageBundle.featured}
                   isError={homepageError}
                   errorMessage={homepageQueryError?.message}
                 />
-              )}
+              ) : null}
             </div>
 
             <div className="min-w-0">
@@ -174,8 +174,8 @@ export default function BlogsPage() {
             <aside className="lg:sticky lg:top-24 lg:self-start">
               <BlogsSidebar
                 showTrendingVideos
-                trendingVideos={trendingVideos}
-                viewAllHref={viewAllHref}
+                showTrendingVideoList
+                viewAllHref={viewAllDetailHref}
               />
             </aside>
           </div>

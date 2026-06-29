@@ -75,7 +75,7 @@ export default function BlogHomepage({
 
   return (
     <>
-      {!hideFeatured ? <FeaturedBlog blog={bundle.featured} /> : null}
+      {!hideFeatured && bundle.featured ? <FeaturedBlog blog={bundle.featured} /> : null}
 
       {bundle.previewBlogs.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">

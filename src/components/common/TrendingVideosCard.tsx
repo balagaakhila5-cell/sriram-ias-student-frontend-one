@@ -1,4 +1,5 @@
 import Image from "@/components/common/AppImage";
+import Link from "@/components/common/AppLink";
 import { FOOTER_SOCIAL_LINKS } from "@/config/footerLinks";
 import { RESOURCE_PAGE_HEADING_GRADIENT } from "@/features/resources/components/cardStyles";
 
@@ -45,12 +46,23 @@ export function TrendingVideosViewAllButton({
   href: string;
   className?: string;
 }) {
+  const classNames = `${TRENDING_VIDEOS_VIEW_ALL_CLASS} ${className}`.trim();
+  const isInternal = href.startsWith("/");
+
+  if (isInternal) {
+    return (
+      <Link href={href} className={classNames}>
+        View All
+      </Link>
+    );
+  }
+
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`${TRENDING_VIDEOS_VIEW_ALL_CLASS} ${className}`.trim()}
+      className={classNames}
     >
       View All
     </a>

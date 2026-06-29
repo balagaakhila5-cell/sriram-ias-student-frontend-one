@@ -10,6 +10,7 @@ import { useBlogHomepage } from '@/features/blogs/hooks/useBlogHomepage';
 import {
   blogDetailsService,
   buildBlogTrendingVideoPreview,
+  buildBlogTrendingVideosAll,
   collectHomepageBlogIds,
   getBlogTrendingViewAllHref,
   type BlogVideoSource,
@@ -35,6 +36,7 @@ const BLOG_SIDEBAR_FALLBACK_VIDEOS: BlogTrendingVideo[] = [
 
 type UseBlogSidebarTrendingVideoOptions = {
   language?: string | null;
+  languageSlug?: string | null;
   enabled?: boolean;
   /** Used when homepage has no featured/main blog id (e.g. on /blogs/all). */
   fallbackBlogId?: string | null;
@@ -93,6 +95,7 @@ function mapInlineBlogSources(
 
 export function useBlogSidebarTrendingVideo({
   language,
+  languageSlug,
   enabled = true,
   fallbackBlogId,
   additionalSources = [],
@@ -170,12 +173,18 @@ export function useBlogSidebarTrendingVideo({
     [videoSources, fallbackVideos],
   );
 
-  const viewAllHref = getBlogTrendingViewAllHref();
+  const allTrendingVideos = useMemo(
+    () => buildBlogTrendingVideosAll(videoSources, fallbackVideos),
+    [videoSources, fallbackVideos],
+  );
+
+  const viewAllHref = getBlogTrendingViewAllHref(languageSlug);
 
   const primarySource = videoSources[0];
 
   return {
     trendingVideos,
+    allTrendingVideos,
     viewAllHref,
     youtubeVideoUrl: primarySource?.youtubeVideoUrl ?? null,
     videoTitle: primarySource?.title,

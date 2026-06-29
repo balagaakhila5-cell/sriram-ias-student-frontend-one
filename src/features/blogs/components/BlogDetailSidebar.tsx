@@ -97,6 +97,7 @@ type BlogDetailSidebarPart = 'hero' | 'content' | 'all';
 
 type BlogDetailSidebarProps = {
   trendingVideos?: BlogTrendingVideo[];
+  showTrendingVideoList?: boolean;
   viewAllHref?: string;
   className?: string;
   part?: BlogDetailSidebarPart;
@@ -104,6 +105,7 @@ type BlogDetailSidebarProps = {
 
 export default function BlogDetailSidebar({
   trendingVideos = DEFAULT_TRENDING,
+  showTrendingVideoList = true,
   viewAllHref = getBlogTrendingViewAllHref(),
   className = '',
   part = 'all',
@@ -152,10 +154,12 @@ export default function BlogDetailSidebar({
 
           <SidebarCard>
             <GradientHeading>Trending Videos</GradientHeading>
-            {trendingVideos.map((video) => (
-              <SidebarVideoRow key={video.id} video={video} />
-            ))}
-            <div className="mt-2 flex justify-center">
+            {showTrendingVideoList
+              ? trendingVideos.map((video) => (
+                  <SidebarVideoRow key={video.id} video={video} />
+                ))
+              : null}
+            <div className={showTrendingVideoList ? 'mt-2 flex justify-center' : 'flex justify-center'}>
               <TrendingVideosViewAllButton href={viewAllHref} />
             </div>
           </SidebarCard>

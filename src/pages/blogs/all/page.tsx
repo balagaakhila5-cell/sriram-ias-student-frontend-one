@@ -9,9 +9,9 @@ import BlogList from '@/features/blogs/components/BlogList';
 import BlogsCalendar from '@/features/blogs/components/BlogsCalendar';
 import BlogsSidebar from '@/features/blogs/components/BlogsSidebar';
 import { usePublicBlogs } from '@/features/blogs/hooks/usePublicBlogs';
-import { useBlogSidebarTrendingVideo } from '@/features/blogs/hooks/useBlogSidebarTrendingVideo';
 import { useBlogLanguages } from '@/features/blogs/hooks/useBlogLanguages';
 import { useSelectedBlogLanguage } from '@/features/blogs/hooks/useSelectedBlogLanguage';
+import { BLOG_TRENDING_VIDEOS_SECTION_ID } from '@/features/blogs/services/blogDetailsService';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -43,18 +43,21 @@ export default function AllBlogsPage() {
   const pagination = blogListData?.pagination;
   const showBlogLoading = blogsLoading || (blogsFetching && blogs.length === 0);
 
-  const fallbackBlogId =
-    blogs.find((blog) => blog.isMainBlog)?.id ?? blogs[0]?.id ?? null;
-
-  const { trendingVideos, viewAllHref } = useBlogSidebarTrendingVideo({
-    language: selectedLanguage?.languageName,
-    enabled: Boolean(selectedLanguage?.languageName) && languages.length > 0,
-    fallbackBlogId,
-  });
-
   useEffect(() => {
     setPage(1);
   }, [selectedLanguage?.languageName]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.location.hash !== `#${BLOG_TRENDING_VIDEOS_SECTION_ID}`) return;
+
+    const scrollTarget = document.getElementById(BLOG_TRENDING_VIDEOS_SECTION_ID);
+    if (!scrollTarget) return;
+
+    window.requestAnimationFrame(() => {
+      scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [showBlogLoading]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -156,8 +159,8 @@ export default function AllBlogsPage() {
             <aside className="lg:sticky lg:top-24 lg:self-start">
               <BlogsSidebar
                 showTrendingVideos
-                trendingVideos={trendingVideos}
-                viewAllHref={viewAllHref}
+                showTrendingVideoList
+                showTrendingViewAll={false}
               />
             </aside>
           </div>
