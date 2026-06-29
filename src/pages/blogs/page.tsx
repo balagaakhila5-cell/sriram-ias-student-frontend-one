@@ -6,7 +6,10 @@ import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import BlogHomepage from '@/features/blogs/components/BlogHomepage';
 import FeaturedBlog from '@/features/blogs/components/FeaturedBlog';
-import { BlogFeaturedSkeleton } from '@/features/blogs/components/BlogListSkeleton';
+import BlogGridCard from '@/features/blogs/components/BlogGridCard';
+import BlogListSkeleton, {
+  BlogFeaturedSkeleton,
+} from '@/features/blogs/components/BlogListSkeleton';
 import BlogsCalendar from '@/features/blogs/components/BlogsCalendar';
 import BlogsSidebar from '@/features/blogs/components/BlogsSidebar';
 import { useBlogHomepage } from '@/features/blogs/hooks/useBlogHomepage';
@@ -46,6 +49,9 @@ export default function BlogsPage() {
 
   const showHomepageLoading =
     homepageLoading || (homepageFetching && !homepageBundle && !homepageError);
+
+  const previewBlogs = homepageBundle?.previewBlogs ?? [];
+  const featuredBlog = homepageBundle?.featured ?? null;
 
   const viewAllDetailHref = useMemo(
     () => getBlogTrendingViewAllHref(selectedLanguage?.slug),
@@ -99,8 +105,8 @@ export default function BlogsPage() {
 
     return () => ctx.revert();
   }, [
-    homepageBundle?.featured?.id,
-    homepageBundle?.previewBlogs.length,
+    featuredBlog?.id,
+    previewBlogs.length,
     categoryBlogCount,
     selectedCategoryValue,
     showHomepageLoading,
@@ -142,23 +148,41 @@ export default function BlogsPage() {
             />
           </div>
 
-          <div className="relative mx-auto grid max-w-[1320px] grid-cols-1 gap-8 lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_350px]">
-            <div className="min-w-0 lg:col-span-2">
-              {showHomepageLoading ? (
-                <BlogFeaturedSkeleton />
-              ) : homepageBundle?.featured ? (
-                <FeaturedBlog
-                  blog={homepageBundle.featured}
-                  isError={homepageError}
-                  errorMessage={homepageQueryError?.message}
-                />
-              ) : null}
-            </div>
-
+          <div className="relative mx-auto grid max-w-[1320px] grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,1fr)_350px]">
+            {/* Main column — featured, preview grid, then GS section */}
             <div className="min-w-0">
               <div className="mb-7 lg:hidden">
                 <BlogsCalendar />
               </div>
+
+              {showHomepageLoading ? (
+                <>
+                  <BlogFeaturedSkeleton />
+                  <BlogListSkeleton count={3} className="mt-7" />
+                </>
+              ) : (
+                <>
+                  {featuredBlog ? (
+                    <FeaturedBlog
+                      blog={featuredBlog}
+                      isError={homepageError}
+                      errorMessage={homepageQueryError?.message}
+                    />
+                  ) : null}
+
+                  {previewBlogs.length > 0 ? (
+                    <div
+                      className={
+                        featuredBlog ? 'grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3' : 'mb-7 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'
+                      }
+                    >
+                      {previewBlogs.map((blog) => (
+                        <BlogGridCard key={blog.id} blog={blog} />
+                      ))}
+                    </div>
+                  ) : null}
+                </>
+              )}
 
               <BlogHomepage
                 bundle={homepageBundle}
@@ -168,15 +192,24 @@ export default function BlogsPage() {
                 selectedCategory={selectedCategory}
                 onSelectCategory={setSelectedCategory}
                 hideFeatured
+                hidePreview
               />
             </div>
 
-            <aside className="lg:sticky lg:top-24 lg:self-start">
-              <BlogsSidebar
-                showTrendingVideos
-                showTrendingVideoList
-                viewAllHref={viewAllDetailHref}
-              />
+            {/* Right sidebar — calendar + widgets only */}
+            <aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
+              <div className="hidden lg:block">
+                <BlogsCalendar />
+              </div>
+
+              <div className="mt-0 lg:mt-6">
+                <BlogsSidebar
+                  showTrendingVideos
+                  showTrendingVideoList
+                  showCalendar={false}
+                  viewAllHref={viewAllDetailHref}
+                />
+              </div>
             </aside>
           </div>
         </section>

@@ -21,6 +21,7 @@ type BlogHomepageProps = {
   selectedCategory: BlogCategory | null;
   onSelectCategory: (category: BlogCategory) => void;
   hideFeatured?: boolean;
+  hidePreview?: boolean;
 };
 
 export default function BlogHomepage({
@@ -31,6 +32,7 @@ export default function BlogHomepage({
   selectedCategory,
   onSelectCategory,
   hideFeatured = false,
+  hidePreview = false,
 }: BlogHomepageProps) {
   const categoryBlogs = useMemo(
     () => getGsPaperWiseBlogs(bundle, selectedCategory?.value ?? null),
@@ -45,7 +47,9 @@ export default function BlogHomepage({
     return (
       <>
         {!hideFeatured ? <BlogFeaturedSkeleton /> : null}
-        <BlogList skeletonCount={3} blogs={[]} isLoading showPagination={false} />
+        {!hidePreview ? (
+          <BlogList skeletonCount={3} blogs={[]} isLoading showPagination={false} />
+        ) : null}
         <div className="mt-16">
           <div className="mb-8 flex flex-wrap justify-center gap-4">
             {Array.from({ length: 5 }).map((_, index) => (
@@ -77,15 +81,17 @@ export default function BlogHomepage({
     <>
       {!hideFeatured && bundle.featured ? <FeaturedBlog blog={bundle.featured} /> : null}
 
-      {bundle.previewBlogs.length > 0 ? (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {bundle.previewBlogs.map((blog) => (
-            <BlogGridCard key={blog.id} blog={blog} />
-          ))}
-        </div>
-      ) : (
-        <BlogList blogs={[]} showPagination={false} />
-      )}
+      {!hidePreview ? (
+        bundle.previewBlogs.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {bundle.previewBlogs.map((blog) => (
+              <BlogGridCard key={blog.id} blog={blog} />
+            ))}
+          </div>
+        ) : (
+          <BlogList blogs={[]} showPagination={false} />
+        )
+      ) : null}
 
       <div className="mt-8 flex justify-end">
         <Link

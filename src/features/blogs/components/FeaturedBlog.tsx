@@ -3,6 +3,7 @@
 import Link from '@/components/common/AppLink';
 import Image from '@/components/common/AppImage';
 import { ArrowRight } from 'lucide-react';
+import BlogActionButtons from '@/features/blogs/components/BlogActionButtons';
 import BlogCardDateTime from '@/features/blogs/components/BlogCardDateTime';
 import { BlogFeaturedSkeleton } from '@/features/blogs/components/BlogListSkeleton';
 import type { BlogBookmarkInput } from '@/features/blogs/types';
@@ -60,14 +61,18 @@ export default function FeaturedBlog({
         alt={blog.title}
         fill
         priority
-        sizes="(max-width: 1024px) 100vw, 1320px"
+        sizes="(max-width: 1024px) 100vw, 900px"
         className="object-cover object-[38%_center]"
       />
 
       <div className="absolute inset-0 bg-black/25" />
 
+      <div className="absolute right-[18px] top-[18px] z-20 sm:right-7 sm:top-7">
+        <BlogActionButtons bookmark={blog} size="md" className="gap-3" />
+      </div>
+
       <div className="absolute left-5 top-10 max-w-[480px] sm:left-[38px] sm:top-[62px]">
-        <h2 className="mb-3 text-[28px] font-extrabold leading-[1.35] text-white sm:mb-4 sm:text-[42px]">
+        <h2 className="mb-4 text-left text-[40px] font-extrabold leading-[1.35] text-white sm:text-[42px]">
           {blog.title}
         </h2>
 
@@ -75,7 +80,6 @@ export default function FeaturedBlog({
           date={blog.date}
           time={blog.time}
           variant="featured"
-          className="mb-1 sm:mb-2"
         />
       </div>
 

@@ -20,13 +20,21 @@ export default function BlogCardDateTime({
 
   const lineClassName =
     variant === 'featured'
-      ? 'text-[16px] font-normal leading-snug text-white sm:text-[18px]'
-      : 'text-[13px] font-normal leading-snug text-white sm:text-[14px]';
+      ? 'text-[16px] font-bold leading-snug text-white sm:text-[18px]'
+      : 'text-[11px] font-normal leading-snug text-white/95 sm:text-[12px]';
 
   return (
-    <div className={cn('mb-3 space-y-0.5', className)}>
-      {dateLabel ? <p className={lineClassName}>{dateLabel}</p> : null}
-      {timeLabel ? <p className={lineClassName}>{timeLabel}</p> : null}
+    <div className={cn(className)}>
+      {dateLabel ? (
+        <p className={cn(lineClassName, variant === 'featured' ? 'mb-3' : 'mb-0.5')}>
+          {dateLabel}
+        </p>
+      ) : null}
+      {timeLabel ? (
+        <p className={cn(lineClassName, variant === 'grid' ? 'mb-0' : undefined)}>
+          {timeLabel}
+        </p>
+      ) : null}
     </div>
   );
 }

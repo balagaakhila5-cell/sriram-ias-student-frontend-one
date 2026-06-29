@@ -85,7 +85,7 @@ export function formatBlogCardTimeLabel(value?: string | null): string {
   const date = new Date(value.trim());
   if (Number.isNaN(date.getTime())) return value.trim();
 
-  return date.toLocaleTimeString(undefined, {
+  return date.toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
     hour12: true,

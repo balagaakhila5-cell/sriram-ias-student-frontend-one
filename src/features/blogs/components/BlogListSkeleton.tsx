@@ -12,7 +12,7 @@ function BlogCardSkeleton({ className = '' }: { className?: string }) {
   return (
     <div
       className={cn(
-        'relative h-[240px] overflow-hidden rounded-[8px] bg-slate-200 animate-pulse',
+        'relative h-[260px] overflow-hidden rounded-[8px] bg-slate-200 animate-pulse',
         className,
       )}
     >
