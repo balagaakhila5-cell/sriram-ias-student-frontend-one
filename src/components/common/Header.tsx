@@ -34,6 +34,8 @@ import CentersDropdownBackground from './CentersDropdownBackground';
 import NavbarDropdownGradientBackground, {
   NAV_DROPDOWN_GRADIENT_CLASS,
 } from './NavbarDropdownGradientBackground';
+import { useBlogLanguages } from '@/features/blogs/hooks/useBlogLanguages';
+import { buildBlogLanguageHref } from '@/features/blogs/utils/blogLanguageSelection';
 
 const CENTER_CITY_ICONS = {
   delhi: '/assets/our-centers/new-delhi-india-gate-icon-1.png',
@@ -99,6 +101,15 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
   const [activeTab, setActiveTab] = useState('GS Foundation');
   const { getProgramsForCity, getCoursesForCityProgram, hasApiData } =
     useNavbarCoursesCatalog();
+  const { data: blogLanguages = [] } = useBlogLanguages();
+  const blogLanguageLinks = useMemo(
+    () =>
+      blogLanguages.map((language) => ({
+        label: language.languageName,
+        href: buildBlogLanguageHref(language.slug),
+      })),
+    [blogLanguages],
+  );
 
   const closeAllDesktopMenus = () => {
     setIsCoursesOpen(false);
@@ -352,20 +363,26 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
 
                 {isBlogLangOpen && (
                   <div className={`absolute top-full left-0 z-50 mt-2 w-36 overflow-hidden rounded-lg border border-white/50 py-2 text-center shadow-xl ${NAV_DROPDOWN_GRADIENT_CLASS}`}>
-                    {[
-                      { label: 'English', href: '/blogs?lang=english' },
-                      { label: 'Marathi', href: '/blogs?lang=marathi' },
-                      { label: 'Telugu', href: '/blogs?lang=telugu' },
-                    ].map((item) => (
+                    {blogLanguageLinks.length > 0 ? (
+                      blogLanguageLinks.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setIsBlogLangOpen(false)}
+                          className="block w-full px-4 py-2 text-center text-sm font-medium text-gray-800 transition-colors hover:bg-white/40 hover:text-[#1897D8] cursor-pointer normal-case"
+                        >
+                          {item.label}
+                        </Link>
+                      ))
+                    ) : (
                       <Link
-                        key={item.label}
-                        href={item.href}
+                        href="/blogs"
                         onClick={() => setIsBlogLangOpen(false)}
                         className="block w-full px-4 py-2 text-center text-sm font-medium text-gray-800 transition-colors hover:bg-white/40 hover:text-[#1897D8] cursor-pointer normal-case"
                       >
-                        {item.label}
+                        Blogs
                       </Link>
-                    ))}
+                    )}
                   </div>
                 )}
               </div>
@@ -1096,9 +1113,21 @@ const Header: React.FC<{ variant?: 'transparent' | 'light' }> = ({
             <a href="/our-toppers-gallery" className="hover:text-primary transition-colors">Our Toppers&apos;</a>
             <a href="/about" className="hover:text-primary transition-colors">About us</a>
             <a href="/founders-message" className="hover:text-primary transition-colors">Founder&apos;s Message</a>
-            <a href="/blogs?lang=english" className="hover:text-primary transition-colors">Blogs - English</a>
-            <a href="/blogs?lang=marathi" className="hover:text-primary transition-colors">Blogs - Marathi</a>
-            <a href="/blogs?lang=telugu" className="hover:text-primary transition-colors">Blogs - Telugu</a>
+            {blogLanguageLinks.length > 0
+              ? blogLanguageLinks.map((item) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className="hover:text-primary transition-colors"
+                  >
+                    Blogs - {item.label}
+                  </a>
+                ))
+              : (
+                  <a href="/blogs" className="hover:text-primary transition-colors">
+                    Blogs
+                  </a>
+                )}
             <a href="/contact" className="hover:text-primary transition-colors">Contact Us</a>
 
             <div className="flex flex-col gap-2 mt-2">

@@ -1,24 +1,60 @@
 'use client';
 
 import Link from '@/components/common/AppLink';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from '@/components/common/AppImage';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
-import BlogGridCard from '@/features/blogs/components/BlogGridCard';
+import BlogList from '@/features/blogs/components/BlogList';
 import BlogsCalendar from '@/features/blogs/components/BlogsCalendar';
 import BlogsSidebar from '@/features/blogs/components/BlogsSidebar';
-import { usePublishedBlogs } from '@/features/blogs/hooks/useBlogs';
-import { ALL_BLOGS } from '@/features/blogs/data/blogsCatalog';
+import { usePublicBlogs } from '@/features/blogs/hooks/usePublicBlogs';
+import { useBlogSidebarTrendingVideo } from '@/features/blogs/hooks/useBlogSidebarTrendingVideo';
+import { useBlogLanguages } from '@/features/blogs/hooks/useBlogLanguages';
+import { useSelectedBlogLanguage } from '@/features/blogs/hooks/useSelectedBlogLanguage';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const BLOGS_PAGE_SIZE = 12;
+
 export default function AllBlogsPage() {
   const mainRef = useRef<HTMLElement>(null);
-  const { data: apiBlogs = [], isLoading: blogsLoading } = usePublishedBlogs();
-  const blogs = apiBlogs.length > 0 ? apiBlogs : ALL_BLOGS;
+  const [page, setPage] = useState(1);
+  const { data: languages = [] } = useBlogLanguages();
+  const { selectedLanguage } = useSelectedBlogLanguage({
+    languages,
+  });
+  const {
+    data: blogListData,
+    isLoading: blogsLoading,
+    isFetching: blogsFetching,
+    isError: blogsError,
+    error: blogsQueryError,
+  } = usePublicBlogs({
+    language: selectedLanguage?.languageName,
+    page,
+    limit: BLOGS_PAGE_SIZE,
+    enabled: Boolean(selectedLanguage?.languageName) && languages.length > 0,
+  });
+
+  const blogs = blogListData?.blogs ?? [];
+  const pagination = blogListData?.pagination;
+  const showBlogLoading = blogsLoading || (blogsFetching && blogs.length === 0);
+
+  const fallbackBlogId =
+    blogs.find((blog) => blog.isMainBlog)?.id ?? blogs[0]?.id ?? null;
+
+  const { trendingVideos, viewAllHref } = useBlogSidebarTrendingVideo({
+    language: selectedLanguage?.languageName,
+    enabled: Boolean(selectedLanguage?.languageName) && languages.length > 0,
+    fallbackBlogId,
+  });
+
+  useEffect(() => {
+    setPage(1);
+  }, [selectedLanguage?.languageName]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -44,7 +80,7 @@ export default function AllBlogsPage() {
     }, mainRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [blogs.length, page, showBlogLoading]);
 
   return (
     <>
@@ -106,21 +142,23 @@ export default function AllBlogsPage() {
                 <BlogsCalendar />
               </div>
 
-              {blogsLoading ? (
-                <div className="rounded-xl border border-[#d8e8f5] bg-[#f7fbff] px-6 py-14 text-center text-[#246392]">
-                  Loading blogs…
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-                  {blogs.map((blog) => (
-                    <BlogGridCard key={blog.id} blog={blog} />
-                  ))}
-                </div>
-              )}
+              <BlogList
+                blogs={blogs}
+                isLoading={showBlogLoading}
+                isError={blogsError}
+                errorMessage={blogsQueryError?.message}
+                pagination={pagination}
+                onPageChange={setPage}
+                skeletonCount={BLOGS_PAGE_SIZE}
+              />
             </div>
 
             <aside className="lg:sticky lg:top-24 lg:self-start">
-              <BlogsSidebar />
+              <BlogsSidebar
+                showTrendingVideos
+                trendingVideos={trendingVideos}
+                viewAllHref={viewAllHref}
+              />
             </aside>
           </div>
         </section>

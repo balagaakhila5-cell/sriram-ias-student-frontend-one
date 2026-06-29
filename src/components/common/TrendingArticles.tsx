@@ -42,7 +42,7 @@ const TrendingArticles = ({
     if (articles) return articles;
     return apiBlogs.slice(0, 6).map((blog) => ({
       title: blog.title,
-      href: `/blogs/${blog.slug}`,
+      href: `/blogs/${blog.id}`,
     }));
   }, [articles, apiBlogs]);
 

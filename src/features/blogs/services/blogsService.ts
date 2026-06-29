@@ -94,7 +94,7 @@ function resolveLanguageName(blog: BlogDetail): string {
 }
 
 function normalizeTableOfContents(blog: BlogDetail): BlogTableOfContentsItem[] {
-  const source = blog.tableOfContents || blog.sections || blog.contents || [];
+  const source = blog.tableOfContents || blog.tableContent || blog.sections || blog.contents || [];
 
   return [...source]
     .map((section, index) => {

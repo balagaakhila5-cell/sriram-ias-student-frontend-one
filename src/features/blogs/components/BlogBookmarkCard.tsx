@@ -41,7 +41,7 @@ export default function BlogBookmarkCard({
         ) : null}
 
         <Link
-          href={`/blogs/${bookmark.slug}`}
+          href={`/blogs/${bookmark.id}`}
           className="ml-auto flex h-[36px] w-fit min-w-[120px] items-center justify-center gap-2 rounded-full border border-[#159DE2] bg-white px-5 text-[14px] font-semibold text-[#148ED1] transition-all duration-300 hover:bg-[#148ED1] hover:text-white"
         >
           Read More <ArrowRight size={15} />

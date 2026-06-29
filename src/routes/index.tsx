@@ -160,7 +160,7 @@ export default function AppRoutes() {
         />
         <Route path="/blogs" element={<BlogsPage />} />
         <Route path="/blogs/all" element={<AllBlogsPage />} />
-        <Route path="/blogs/:slug" element={<BlogDetailsPage />} />
+        <Route path="/blogs/:id" element={<BlogDetailsPage />} />
 
         <Route path="/free_resources" element={<FreeResourcesPage />} />
         <Route

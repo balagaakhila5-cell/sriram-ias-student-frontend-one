@@ -13,10 +13,11 @@ import {
 
 export type BlogBookmarkMode = "listing" | "detail";
 
-export function getBlogShareUrl(slug: string) {
+export function getBlogShareUrl(bookmark: Pick<BlogBookmarkInput, 'id' | 'slug'>) {
+  const segment = bookmark.id || bookmark.slug;
   return typeof window !== "undefined"
-    ? `${window.location.origin}/blogs/${slug}`
-    : `/blogs/${slug}`;
+    ? `${window.location.origin}/blogs/${segment}`
+    : `/blogs/${segment}`;
 }
 
 export function getBlogShareText(title: string) {
@@ -36,7 +37,7 @@ export function useBlogBookmarkActions(
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [shareMessage, setShareMessage] = useState<string | null>(null);
 
-  const shareUrl = getBlogShareUrl(bookmark.slug);
+  const shareUrl = getBlogShareUrl(bookmark);
   const shareText = getBlogShareText(bookmark.title);
 
   const isStudent = isAuthenticated && user?.role === "student";

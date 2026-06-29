@@ -1,23 +1,94 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import Image from '@/components/common/AppImage';
 import Link from '@/components/common/AppLink';
 import FreeResourcesCourseSlider from '@/components/common/FreeResourcesCourseSlider';
 import { FREE_LEARNING_EXPLORE_HREFS } from '@/features/homepage/utils/homepageLinks';
 import BlogsCalendar from '@/features/blogs/components/BlogsCalendar';
 import DailyLearningCard from '@/features/blogs/components/DailyLearningCard';
+import {
+  getBlogTrendingViewAllHref,
+  type BlogTrendingVideo,
+} from '@/features/blogs/services/blogDetailsService';
 import { TrendingVideosViewAllButton } from '@/components/common/TrendingVideosCard';
 import { FOOTER_SOCIAL_LINKS } from '@/config/footerLinks';
-import { BarChart3, BookOpenText, Lightbulb } from 'lucide-react';
+import { BarChart3, BookOpenText, Lightbulb, Play } from 'lucide-react';
+
+const GRADIENT_TITLE =
+  'bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent';
+
+const DEFAULT_TRENDING = [
+  {
+    id: 'trending-1',
+    title: 'Daily Current Affairs - 16 March 2026',
+    image: '/assets/current-affairs/daily-current-affairs/trending-video.png',
+    href: FOOTER_SOCIAL_LINKS.youtube,
+  },
+  {
+    id: 'trending-2',
+    title: 'Daily Current Affairs - 16 March 2026',
+    image: '/assets/current-affairs/daily-current-affairs/trending-video.png',
+    href: FOOTER_SOCIAL_LINKS.youtube,
+  },
+];
+
+type SidebarVideo = {
+  id: string;
+  title: string;
+  image: string;
+  href: string;
+};
 
 type BlogsSidebarProps = {
   showTrendingVideos?: boolean;
   showCalendar?: boolean;
+  trendingVideos?: BlogTrendingVideo[];
+  viewAllHref?: string;
 };
+
+function SidebarVideoRow({ video }: { video: SidebarVideo }) {
+  return (
+    <a
+      href={video.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="mb-4 flex gap-4 border-b border-[#E7E7E7] pb-4 transition-opacity last:mb-0 last:border-b-0 hover:opacity-90"
+    >
+      <div className="relative h-[96px] w-[160px] shrink-0 overflow-hidden rounded-[4px]">
+        <Image src={video.image} alt={video.title} fill className="object-cover" />
+        <span className="absolute inset-0 flex items-center justify-center bg-black/20">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#FF0000] text-white shadow-md">
+            <Play size={16} fill="currentColor" className="ml-0.5" aria-hidden />
+          </span>
+        </span>
+      </div>
+      <div className="min-w-0 pt-1">
+        <p className="text-[16px] font-bold leading-[1.45] text-black sm:text-[17px]">
+          {video.title}
+        </p>
+        <span className="mt-2 inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#3380C4]">
+          <Play size={14} fill="currentColor" aria-hidden />
+          Youtube
+        </span>
+      </div>
+    </a>
+  );
+}
+
+function GradientHeading({ children }: { children: ReactNode }) {
+  return (
+    <h3 className="mb-5 text-center text-[30px] font-extrabold leading-none">
+      <span className={GRADIENT_TITLE}>{children}</span>
+    </h3>
+  );
+}
 
 export default function BlogsSidebar({
   showTrendingVideos = false,
   showCalendar = true,
+  trendingVideos = DEFAULT_TRENDING,
+  viewAllHref = getBlogTrendingViewAllHref(),
 }: BlogsSidebarProps) {
   return (
     <div className="space-y-6">
@@ -31,9 +102,7 @@ export default function BlogsSidebar({
 
       <div className="rounded-[10px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
         <h3 className="mb-5 text-center text-[30px] font-extrabold leading-none">
-          <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
-            Daily Quiz
-          </span>
+          <span className={GRADIENT_TITLE}>Daily Quiz</span>
         </h3>
 
         <p className="mb-4 text-[18px] font-semibold text-black">
@@ -67,36 +136,12 @@ export default function BlogsSidebar({
 
       {showTrendingVideos ? (
         <div className="rounded-[10px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
-          <h3 className="mb-5 text-center text-[30px] font-extrabold leading-none">
-            <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
-              Trending Videos
-            </span>
-          </h3>
-
-          {[1, 2].map((item) => (
-            <div
-              key={item}
-              className="mb-4 flex gap-4 border-b pb-4 last:border-b-0"
-            >
-              <div className="relative h-[96px] w-[160px] shrink-0 overflow-hidden rounded-[4px]">
-                <Image
-                  src="/assets/current-affairs/daily-current-affairs/trending-video.png"
-                  alt="Daily Current Affairs"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-
-              <div>
-                <p className="text-[16px] font-bold leading-[1.45] text-black sm:text-[17px]">
-                  Daily Current Affairs - 16 March 2026
-                </p>
-              </div>
-            </div>
+          <GradientHeading>Trending Videos</GradientHeading>
+          {trendingVideos.map((video) => (
+            <SidebarVideoRow key={video.id} video={video} />
           ))}
-
           <div className="mt-2 flex justify-center">
-            <TrendingVideosViewAllButton href={FOOTER_SOCIAL_LINKS.youtube} />
+            <TrendingVideosViewAllButton href={viewAllHref} />
           </div>
         </div>
       ) : null}
@@ -111,9 +156,7 @@ export default function BlogsSidebar({
         />
 
         <h3 className="relative mb-8 text-center text-[30px] font-extrabold leading-none">
-          <span className="bg-gradient-to-r from-[#349EE3] to-[#D36B7B] bg-clip-text text-transparent">
-            Quick Links
-          </span>
+          <span className={GRADIENT_TITLE}>Quick Links</span>
         </h3>
 
         <div className="relative space-y-5">
